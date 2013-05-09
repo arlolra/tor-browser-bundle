@@ -1,0 +1,75 @@
+---
+name: "tor"
+suites:
+- "lucid"
+architectures:
+- "i386"
+- "amd64"
+packages: 
+- "git-core"
+- "unzip"
+- "autoconf"
+- "autoconf2.13"
+- "faketime"
+- "libtool"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://git.torproject.org/tor.git"
+  "dir": "tor"
+files:
+# TODO: Can we use an env for this file+version??
+- "libevent-2.0.21-stable.tar.gz"
+- "openssl-1.0.1e.tar.gz"
+- "zlib-1.2.7.tar.gz"
+script: |
+  INSTDIR="$HOME/install"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  # 
+  mkdir -p $OUTDIR/src
+  mkdir -p $OUTDIR/bin/$GBUILD_BITS
+  mkdir -p $OUTDIR/lib/$GBUILD_BITS/libz/
+  #
+  tar xzf zlib-*.tar.gz
+  cd zlib-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --prefix=$INSTDIR/zlib
+  make $MAKEOPTS SHARED_MODE=1
+  make $MAKEOPTS SHARED_MODE=1 install
+  cp $INSTDIR/zlib/lib/libz*so* $OUTDIR/lib/$GBUILD_BITS/libz/
+  cd ..
+  #
+  tar -zxvf libevent-*.tar.gz
+  cd libevent-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --disable-static --prefix=$INSTDIR/libevent
+  make $MAKEOPTS
+  make install
+  cp $INSTDIR/libevent/lib/lib*so* $OUTDIR/lib/$GBUILD_BITS
+  cd ..
+  #
+  tar xzf openssl-*.tar.gz
+  cd openssl-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
+  ./config -shared --prefix=$INSTDIR/openssl
+  make
+  make install
+  cp $INSTDIR/openssl/lib/lib*so* $OUTDIR/lib/$GBUILD_BITS
+  cd ..
+  #
+  cd tor
+  mkdir -p $OUTDIR/src
+  #git archive HEAD | tar -x -C $OUTDIR/src
+  # FIXME: Do we need to fixup these prefixes? The prefix and the install prefix
+  # will be different for TBB.
+  ./autogen.sh
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --disable-asciidoc --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
+  make $MAKEOPTS
+  make install
+  cd ..
+  install -s $INSTDIR/bin/tor $OUTDIR/bin/$GBUILD_BITS
+

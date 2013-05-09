@@ -1,0 +1,82 @@
+---
+name: "tor-browser"
+suites:
+- "lucid"
+architectures:
+- "i386"
+- "amd64"
+packages: 
+- "faketime"
+- "unzip"
+- "zip"
+- "libglib2.0-dev"
+- "libgtk2.0-dev"
+- "libdbus-1-dev"
+- "libdbus-glib-1-dev"
+- "yasm-1"
+- "libasound2-dev"
+- "libcurl4-openssl-dev"
+- "libxt-dev"
+- "mesa-common-dev"
+- "autoconf"
+- "autoconf2.13"
+- "libtool"
+- "libiw-dev"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://git.torproject.org/tor-browser.git"
+  "dir": "tor-browser"
+- "url": "https://git.torproject.org/tor-launcher.git"
+  "dir": "tor-launcher"
+files:
+- "torbrowser.version"
+script: |
+  INSTDIR="$HOME/install"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export CFLAGS="-frandom-seed=tor"
+  export CXXFLAGS="-frandom-seed=tor"
+  export TZ=UTC
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  #
+  mkdir -p $INSTDIR/build/bin/
+  ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
+  export PATH=$PATH:$INSTDIR/build/bin
+  #
+  mkdir -p $OUTDIR/src
+  mkdir -p $OUTDIR/bin/$GBUILD_BITS
+  #
+  cd tor-launcher
+  make clean
+  make package
+  cp ./pkg/* $OUTDIR/bin/
+  cd ..
+  #
+  cd tor-browser
+  grep -v '^pref(\"torbrowser.version\",' browser/app/profile/tor-browser.js > browser/app/profile/tor-browser.js.fixed
+  cat ../torbrowser.version >> browser/app/profile/tor-browser.js.fixed
+  mv browser/app/profile/tor-browser.js.fixed browser/app/profile/tor-browser.js
+  # .git and the src takes up a lot of useless space, and we need the space to build
+  #git archive HEAD | tar -x -C $OUTDIR/src
+  rm -rf .git
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  make -f client.mk configure
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #
+  # The build sometimes randomly fails (faketime issues?) Just restart it until success
+  make $MAKEOPTS -f client.mk build
+  while [ $? -ne 0 ];
+  do
+    make $MAKEOPTS -f client.mk build
+  done
+  #
+  make -C obj-* package INNER_MAKE_PACKAGE=true
+  while [ $? -ne 0 ];
+  do
+    make -C obj-* package INNER_MAKE_PACKAGE=true
+  done
+  cp -a obj-*/dist/firefox/ $OUTDIR/bin/$GBUILD_BITS
+
+  # XXX: Output the exact dpkgs we used to a txt file. Should this be
+  # part of gitian?
+  # dpkg-query -W -f='${Package}=${Version}\n' libglib2.0-dev >> $OUTDIR/bin/deps.txt
