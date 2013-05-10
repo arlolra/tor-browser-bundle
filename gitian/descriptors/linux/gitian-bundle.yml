@@ -1,0 +1,47 @@
+---
+name: "tor"
+suites:
+- "precise"
+architectures:
+- "i386"
+- "amd64"
+packages: 
+- "git-core"
+- "unzip"
+- "zip"
+- "mingw-w64"
+- "p7zip-full"
+- "faketime"
+reference_datetime: "2000-01-01 00:00:00"
+remotes: []
+files:
+# TODO: Can we use an env for this file+version??
+- "tor-browser-linux32-gbuilt.zip"
+- "tor-browser-linux64-gbuilt.zip"
+- "tor-linux32-gbuilt.zip"
+- "tor-linux64-gbuilt.zip"
+- "relativelink-src.zip"
+- "linux-skeleton.zip"
+script: |
+  INSTDIR="$HOME/install"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  # 
+  mkdir -p $OUTDIR/
+  mkdir -p tor-browser
+  #
+  unzip relativelink-src.zip
+  cd RelativeLink
+  cp RelativeLink.sh ../tor-browser/start-tor-browser
+  cd ..
+  #
+  cd tor-browser
+  unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
+  unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
+  unzip ~/build/linux-skeleton.zip
+  cd ..
+  7z a -sfx tor-browser.exe tor-browser
+  mv tor-browser.exe $OUTDIR/tor-browser-linux-($uname -p)_en-US.7z-selfextract
+  # XXX: Localization..

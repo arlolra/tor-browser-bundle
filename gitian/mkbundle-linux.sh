@@ -6,9 +6,8 @@
 . ./versions
 
 WRAPPER_DIR=$PWD
-GITIAN_DIR=$PWD/../../gitian-builder.git
+GITIAN_DIR=$PWD/../../gitian-builder
 DESCRIPTOR_DIR=$PWD/descriptors/
-BUNDLE_DIR=$PWD/bundle-linux/
 
 if [ ! -f $GITIAN_DIR/bin/gbuild ];
 then
@@ -16,31 +15,18 @@ then
   exit 1
 fi
 
-# Set up the bundle dir skeleton
-if [ ! -d $BUNDLE_DIR ];
-then
-  mkdir -p $BUNDLE_DIR/32/App/Firefox
-  mkdir -p $BUNDLE_DIR/32/Lib/libz
-  mkdir -p $BUNDLE_DIR/32/Data/profile/extensions
-  mkdir -p $BUNDLE_DIR/32/Data/Tor
-  mkdir -p $BUNDLE_DIR/32/Docs
-
-  mkdir -p $BUNDLE_DIR/64/App/Firefox
-  mkdir -p $BUNDLE_DIR/64/Lib/libz
-  mkdir -p $BUNDLE_DIR/64/Data/profile/extensions
-  mkdir -p $BUNDLE_DIR/64/Data/Tor
-  mkdir -p $BUNDLE_DIR/64/Docs
-fi
-
-mkdir -p $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/
-
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
 # TODO: Make a super-fresh option that kills the base vms
 if [ ! -f ./base-lucid-amd64.qcow2 -a ! -f ./base-lucid-amd64.qcow2 ];
 then
-  ./bin/make-base-vm --arch i386
+  if [ "z$USE_LXC" = "z1" ];
+  then
+    ./bin/make-base-vm --lxc --arch i386
+  else
+    ./bin/make-base-vm --arch i386
+  fi
 
   if [ $? -ne 0 ];
   then
@@ -49,7 +35,12 @@ then
   fi
   stop-target
 
-  ./bin/make-base-vm --arch amd64
+  if [ "z$USE_LXC" = "z1" ];
+  then
+    ./bin/make-base-vm --lxc --arch amd64
+  else
+    ./bin/make-base-vm --arch amd64
+  fi
   if [ $? -ne 0 ];
   then
       echo "i386 VM creation failed"
@@ -57,78 +48,45 @@ then
   fi
   stop-target
 fi
-
-if [ ! -d $GITIAN_DIR/inputs ];
-then
-  mkdir -p $GITIAN_DIR/inputs
-fi
-
-#torsocks $DESCRIPTOR_DIR/../fetch-inputs.sh $GITIAN_DIR/inputs
 
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION\");" > $GITIAN_DIR/inputs/torbrowser.version 
 
-./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
-while [ $? -ne 0 ];
-do
-  mv var/build.log ./firefox-fail.log.`date +%Y%m%d%H%M%S`
-  ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
-done
+cd $WRAPPER_DIR/..
+zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
-cp -a build/out/bin/32/firefox/* $BUNDLE_DIR/32/App/Firefox/
-cp -a build/out/bin/64/firefox/* $BUNDLE_DIR/64/App/Firefox/
-cp -a build/out/bin/torlauncher*.xpi $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/torlauncher@torproject.org.xpi
+cd ./Bundle-Data/linux
+zip -rX $GITIAN_DIR/inputs/linux-skeleton.zip ./
 
-# TODO: There goes FIPS-140.. We could upload these somewhere unique and
-# subsequent builds could test to see if they've been uploaded before...
-# But let's find out if it actually matters first..
-rm $BUNDLE_DIR/32/App/Firefox/*.chk
-rm $BUNDLE_DIR/64/App/Firefox/*.chk
-
-./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
-while [ $? -ne 0 ];
-do
-  mv var/build.log ./tor-fail.log.`date +%Y%m%d%H%M%S`
+if [ ! -f $GITIAN_DIR/inputs/tor-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-linux64-gbuilt.zip];
+then
   ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
+  while [ $? -ne 0 ];
+  do
+    mv var/build.log ./tor-fail-linux.log.`date +%Y%m%d%H%M%S`
+    ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
+  done
+  
+  cp -a build/out/tor-linux*-gbuilt.zip $GITIAN_DIR/inputs/
+fi
+
+if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip];
+then
+  ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+  while [ $? -ne 0 ];
+  do
+    mv var/build.log ./firefox-fail-linux.log.`date +%Y%m%d%H%M%S`
+    ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+  done
+
+  cp -a build/out/tor-browser-linux*-gbuilt.zip $GITIAN_DIR/inputs/
+fi
+
+./bin/gbuild $DESCRIPTOR_DIR/linux/gitian-bundle.yml
+while [ $? -ne 0 ];
+do
+  mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`
+  ./bin/gbuild $DESCRIPTOR_DIR/linux/gitian-bundle.yml
 done
 
-cp -a build/out/bin/32/tor $BUNDLE_DIR/32/App/
-cp -a build/out/bin/64/tor $BUNDLE_DIR/64/App/
-
-cp -a build/out/lib/32/lib* $BUNDLE_DIR/32/Lib/
-cp -a build/out/lib/64/lib* $BUNDLE_DIR/64/Lib/
-
-# FIXME: Alpha vs non-alpha xpis??
-# FIXME: NoScript versioning??
-# FIXME: tor-launcher+torbutton from git?
-cp -a $GITIAN_DIR/inputs/$NOSCRIPT_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/noscript@noscript.net.xpi
-cp -a $GITIAN_DIR/inputs/$TORBUTTON_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/torbutton@torproject.org.xpi
-cp -a $GITIAN_DIR/inputs/$HTTPSE_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/https-everywhere@eff.org.xpi
-cp -a $GITIAN_DIR/inputs/$PDFJS_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/uriloader@pdf.js.xpi
-
-cp -a $WRAPPER_DIR/../Bundle-Data/linux/* $BUNDLE_DIR/32/Data/
-cp -a $WRAPPER_DIR/../Bundle-Data/linux/* $BUNDLE_DIR/64/Data/
-
-cp -a $WRAPPER_DIR/../RelativeLink/RelativeLink.sh $BUNDLE_DIR/32/start-tor-browser
-cp -a $WRAPPER_DIR/../RelativeLink/RelativeLink.sh $BUNDLE_DIR/64/start-tor-browser
-
-# XXX: Fix this path juggling nonsense
-cd $BUNDLE_DIR
-cp -a 64 tor-browser_en-US
-find tor-browser_en-US | xargs touch --date="2013-01-01 00:00:00"
-tar -cvf ../tor-browser-gnu-linux-x86_64-$TORBROWSER_VERSION-en-US.tar --owner=root --group=root tor-browser_en-US
-rm -rf tor-browser_en-US 
-cd ..
-gzip -n tor-browser-gnu-linux-x86_64-$TORBROWSER_VERSION-en-US.tar
-
-cd $BUNDLE_DIR
-cp -a 32 tor-browser_en-US
-find tor-browser_en-US | xargs touch --date="2013-01-01 00:00:00"
-tar -cvf ../tor-browser-gnu-linux-x86-$TORBROWSER_VERSION-en-US.tar --owner=root --group=root tor-browser_en-US
-rm -rf tor-browser_en-US
-cd ..
-gzip -n tor-browser-gnu-linux-x86_64-$TORBROWSER_VERSION-en-US.tar
-
-# FIXME: localization
-
-# FIXME: docs
+cp -a build/out/tor-browser-linux*7z* $WRAPPER_DIR
 

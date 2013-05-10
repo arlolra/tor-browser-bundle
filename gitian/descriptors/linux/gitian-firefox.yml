@@ -3,7 +3,7 @@ name: "tor-browser"
 suites:
 - "lucid"
 architectures:
-#- "i386"
+- "i386"
 - "amd64"
 packages: 
 - "faketime"
@@ -43,8 +43,7 @@ script: |
   ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
   export PATH=$PATH:$INSTDIR/build/bin
   #
-  mkdir -p $OUTDIR/src
-  mkdir -p $OUTDIR/bin/$GBUILD_BITS
+  mkdir -p $INSTDIR/App/Firefox/
   #
   cd tor-launcher
   make clean
@@ -75,8 +74,17 @@ script: |
   do
     make -C obj-* package INNER_MAKE_PACKAGE=true
   done
-  cp -a obj-*/dist/firefox/ $OUTDIR/bin/$GBUILD_BITS
-
+  cp -a obj-*/dist/firefox/* $INSTDIR/App/Firefox/
+  # TODO: There goes FIPS-140.. We could upload these somewhere unique and
+  # subsequent builds could test to see if they've been uploaded before...
+  # But let's find out if it actually matters first..
+  rm $INSTDIR/App/Firefox/*.chk
+  rm $INSTDIR/App/Firefox/*.chk
+  #
+  cd $INSTDIR
+  zip -rX tor-browser-linux$GBUILD_BITS-gbuilt.zip App/
+  cp tor-browser-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
+  #
   # XXX: Output the exact dpkgs we used to a txt file. Should this be
   # part of gitian?
   # dpkg-query -W -f='${Package}=${Version}\n' libglib2.0-dev >> $OUTDIR/bin/deps.txt
