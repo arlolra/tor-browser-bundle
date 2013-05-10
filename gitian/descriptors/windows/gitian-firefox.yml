@@ -25,16 +25,20 @@ files:
 # XXX: we need to make this input tarball deterministic :/
 - "mingw-w64-svn-snapshot-r5830.tar.gz"
 - "torbrowser.version"
+- "noscript@noscript.net.xpi"
+- "torbutton@torproject.org.xpi"
+- "https-everywhere@eff.org.xpi"
+- "uriloader@pdf.js.xpi"
 script: |
-  INSTDIR="$HOME/install"
-  export LIBRARY_PATH="$INSTDIR/lib"
+  INSTDIR="$HOME/install/FirefoxPortable/"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
-  # 
-  mkdir -p $OUTDIR/src
-  mkdir -p $OUTDIR/bin/$GBUILD_BITS
-  mkdir -p $OUTDIR/lib/$GBUILD_BITS
+  #
+  mkdir -p $INSTDIR/Data/profile/preferences 
+  mkdir -p $INSTDIR/Data/profile/extensions
+  mkdir -p $INSTDIR/App/Firefox/
+  mkdir -p $OUTDIR/
   # XXX: Do we need this?
   #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
   #sudo apt-get update
@@ -43,8 +47,10 @@ script: |
   cd tor-launcher
   make clean
   make package
-  cp ./pkg/* $OUTDIR/bin/
+  cp ./pkg/* $INSTDIR/Data/profile/extensions/
   cd ..
+  #
+  cp *.xpi $INSTDIR/Data/profile/extensions/
   #
   # Build the latest MinGW-w64 headers and CRT
   # FIXME: We need sudo for all of this because otherwise
@@ -98,8 +104,11 @@ script: |
   do
     make -C obj-* package INNER_MAKE_PACKAGE=true
   done
-  cp -a obj-*/dist/firefox/ $OUTDIR/bin/$GBUILD_BITS
-  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $OUTDIR/bin/$GBUILD_BITS
-  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $OUTDIR/bin/$GBUILD_BITS
-  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc*dll $OUTDIR/bin/$GBUILD_BITS
-
+  cp -a obj-*/dist/firefox/* $INSTDIR/App/Firefox/
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/Firefox/
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/Firefox/
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc*dll $INSTDIR/App/Firefox/
+  #
+  cd $INSTDIR
+  zip -rX tor-browser-gbuilt.zip ./FirefoxPortable/
+  cp tor-browser-gbuilt.zip $OUTDIR

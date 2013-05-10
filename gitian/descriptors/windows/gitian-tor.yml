@@ -27,16 +27,16 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   # 
-  mkdir -p $OUTDIR/src
-  mkdir -p $OUTDIR/bin/$GBUILD_BITS
-  mkdir -p $OUTDIR/lib/$GBUILD_BITS
+  mkdir -p $INSTDIR/bin/
+  mkdir -p $INSTDIR/App/
+  mkdir -p $OUTDIR/
   #
   tar xzf zlib-*.tar.gz
   cd zlib-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 install
-  cp $INSTDIR/zlib/lib/*.dll $OUTDIR/lib/$GBUILD_BITS
+  cp $INSTDIR/zlib/lib/*.dll $INSTDIR/App/
   cd ..
   #
   tar -zxvf libevent-*.tar.gz
@@ -45,7 +45,7 @@ script: |
   ./configure --disable-static --host=i686-w64-mingw32 --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
-  cp $INSTDIR/libevent/bin/*.dll $OUTDIR/lib/$GBUILD_BITS
+  cp $INSTDIR/libevent/bin/*.dll $INSTDIR/App/
   cd ..
   #
   tar xzf openssl-*.tar.gz
@@ -54,7 +54,7 @@ script: |
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
   make
   make install
-  cp $INSTDIR/openssl/bin/*.dll $OUTDIR/lib/$GBUILD_BITS
+  cp $INSTDIR/openssl/bin/*.dll $INSTDIR/App/
   cd ..
   #
   cd tor
@@ -68,8 +68,12 @@ script: |
   make $MAKEOPTS
   make install
   cd ..
-  install -s $INSTDIR/bin/tor.exe $OUTDIR/bin/$GBUILD_BITS
-
-  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $OUTDIR/bin/$GBUILD_BITS
-  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $OUTDIR/bin/$GBUILD_BITS
-
+  install -s $INSTDIR/bin/tor.exe $INSTDIR/App/
+  # XXX: Geoip files..
+  #
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/
+  #
+  cd $INSTDIR
+  zip -rX tor-gbuilt.zip App/
+  cp tor-gbuilt.zip $OUTDIR/

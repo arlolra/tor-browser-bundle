@@ -1,0 +1,47 @@
+---
+name: "tor"
+suites:
+- "precise"
+architectures:
+- "i386"
+packages: 
+- "git-core"
+- "unzip"
+- "zip"
+- "mingw-w64"
+- "nsis"
+- "faketime"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://github.com/moba/tbb-windows-installer.git"
+  "dir": "tbb-windows-installer"
+files:
+# TODO: Can we use an env for this file+version??
+- "tor-browser-gbuilt.zip"
+- "tor-gbuilt.zip"
+- "relativelink-src.zip"
+- "windows-skeleton.zip"
+script: |
+  INSTDIR="$HOME/install"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  # 
+  mkdir -p $OUTDIR/
+  mkdir -p tbb-windows-installer/"Tor Browser"
+  #
+  unzip relativelink-src.zip
+  cd RelativeLink
+  make clean
+  make
+  cp StartTorBrowserBundle.exe ../tbb-windows-installer/"Tor Browser"/"Start Tor Browser.exe"
+  #
+  cd tbb-windows-installer
+  cd "Tor Browser"
+  unzip ~/build/tor-browser-gbuilt.zip
+  unzip ~/build/tor-gbuilt.zip
+  unzip ~/build/windows-skeleton.zip
+  makensis torbrowser.nsi
+  cp torbrowser-install.exe $OUTDIR/
+  cd ..
