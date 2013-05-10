@@ -7,6 +7,7 @@ architectures:
 packages: 
 - "git-core"
 - "unzip"
+- "zip"
 - "autoconf"
 - "autoconf2.13"
 - "mingw-w64"
@@ -75,5 +76,5 @@ script: |
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/
   #
   cd $INSTDIR
-  zip -rX tor-gbuilt.zip App/
-  cp tor-gbuilt.zip $OUTDIR/
+  zip -rX tor-win32-gbuilt.zip App/
+  cp tor-win32-gbuilt.zip $OUTDIR/

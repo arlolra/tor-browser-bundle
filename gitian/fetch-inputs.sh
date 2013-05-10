@@ -5,6 +5,11 @@
 
 . ./versions
 
+if [ -n $1 -a ! -d $1 ];
+then
+  mkdir $1
+fi
+
 if [ -d $1 ]; then
   cd $1
 fi
@@ -56,6 +61,11 @@ do
     exit 1
   fi
 done
+
+ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
+ln -sf $TORBUTTON_PACKAGE torbutton@torproject.org.xpi
+ln -sf $HTTPSE_PACKAGE https-everywhere@eff.org.xpi
+ln -sf $PDFJS_PACKAGE uriloader@pdf.js.xpi
 
 exit 0
 

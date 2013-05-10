@@ -110,5 +110,6 @@ script: |
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc*dll $INSTDIR/App/Firefox/
   #
   cd $INSTDIR
-  zip -rX tor-browser-gbuilt.zip ./FirefoxPortable/
-  cp tor-browser-gbuilt.zip $OUTDIR
+  cd ..
+  zip -rX tor-browser-win32-gbuilt.zip ./FirefoxPortable/
+  cp tor-browser-win32-gbuilt.zip $OUTDIR

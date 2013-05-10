@@ -4,6 +4,7 @@ build: prep
 
 prep:
 	./check-prerequisites.sh
+	./fetch-inputs.sh ../../gitian-builder/inputs/
 
 clean:
 	rm ../../gitian-builder/inputs/tor-win32-browser-gbuilt.zip

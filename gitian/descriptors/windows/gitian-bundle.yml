@@ -17,8 +17,8 @@ remotes:
   "dir": "tbb-windows-installer"
 files:
 # TODO: Can we use an env for this file+version??
-- "tor-browser-gbuilt.zip"
-- "tor-gbuilt.zip"
+- "tor-browser-win32-gbuilt.zip"
+- "tor-win32-gbuilt.zip"
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
 script: |
@@ -39,9 +39,10 @@ script: |
   #
   cd tbb-windows-installer
   cd "Tor Browser"
-  unzip ~/build/tor-browser-gbuilt.zip
-  unzip ~/build/tor-gbuilt.zip
+  unzip ~/build/tor-browser-win32-gbuilt.zip
+  unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   makensis torbrowser.nsi
   cp torbrowser-install.exe $OUTDIR/
   cd ..
+  # XXX: Localization..
