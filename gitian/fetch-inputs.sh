@@ -62,6 +62,12 @@ do
   fi
 done
 
+for i in de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN
+do
+  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_VER/linux-i686/xpi/$i.xpi -O linux-$i.xpi
+  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_VER/win32/xpi/$i.xpi -O win32-$i.xpi
+done
+
 ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
 ln -sf $TORBUTTON_PACKAGE torbutton@torproject.org.xpi
 ln -sf $HTTPSE_PACKAGE https-everywhere@eff.org.xpi
