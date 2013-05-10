@@ -45,6 +45,8 @@ script: |
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   cd ..
+  makensis torbrowser.nsi
+  mv torbrowser-install.exe $OUTDIR/torbrowser-install_en-US.exe
   #
   unzip ../win32-langpacks.zip
   cd win32-langpacks
@@ -54,7 +56,7 @@ script: |
     cp $i ../"Tor Browser"/FirefoxPortable/Data/profile/extensions/
     cd ..
     makensis torbrowser.nsi
-    mv torbrowser-install.exe $OUTDIR/torbrowser-install-$LANG.exe
+    mv torbrowser-install.exe $OUTDIR/torbrowser-install_$LANG.exe
     rm ./"Tor Browser"/FirefoxPortable/Data/profile/extensions/$i
     cd win32-langpacks
   done 
