@@ -21,6 +21,7 @@ files:
 - "tor-win32-gbuilt.zip"
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
+- "win32-langpacks.zip"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -36,13 +37,25 @@ script: |
   make clean
   make
   cp StartTorBrowserBundle.exe ../tbb-windows-installer/"Tor Browser"/"Start Tor Browser.exe"
+  cd ..
   #
   cd tbb-windows-installer
   cd "Tor Browser"
   unzip ~/build/tor-browser-win32-gbuilt.zip
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
-  makensis torbrowser.nsi
-  cp torbrowser-install.exe $OUTDIR/
   cd ..
-  # XXX: Localization..
+  #
+  unzip ../win32-langpacks.zip
+  cd win32-langpacks
+  for i in *.xpi
+  do
+    LANG=`basename $i .xpi`
+    cp $i ../"Tor Browser"/FirefoxPortable/Data/profile/extensions/
+    cd ..
+    makensis torbrowser.nsi
+    mv torbrowser-install.exe $OUTDIR/torbrowser-install-$LANG.exe
+    rm ./"Tor Browser"/FirefoxPortable/Data/profile/extensions/$i
+    cd win32-langpacks
+  done 
+  cd ..

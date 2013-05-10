@@ -77,7 +77,7 @@ do
   ./bin/gbuild --commit tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
 done
 
-cp -a build/out/torbrowser-install.exe $WRAPPER_DIR
+cp -a build/out/*.exe $WRAPPER_DIR
 
 # FIXME: localization
 # FIXME: docs

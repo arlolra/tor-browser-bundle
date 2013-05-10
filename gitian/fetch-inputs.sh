@@ -62,11 +62,21 @@ do
   fi
 done
 
+mkdir -p linux-langpacks
+mkdir -p win32-langpacks
+
 for i in de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN
 do
-  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_VER/linux-i686/xpi/$i.xpi -O linux-$i.xpi
-  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_VER/win32/xpi/$i.xpi -O win32-$i.xpi
+  cd linux-langpacks
+  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_VER/linux-i686/xpi/$i.xpi
+  cd ..
+  cd win32-langpacks
+  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_VER/win32/xpi/$i.xpi
+  cd ..
 done
+
+zip -rX win32-langpacks.zip win32-langpacks
+zip -rX linux-langpacks.zip linux-langpacks
 
 ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
 ln -sf $TORBUTTON_PACKAGE torbutton@torproject.org.xpi
