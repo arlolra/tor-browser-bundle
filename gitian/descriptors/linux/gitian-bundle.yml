@@ -22,6 +22,7 @@ files:
 - "tor-linux64-gbuilt.zip"
 - "relativelink-src.zip"
 - "linux-skeleton.zip"
+- "linux-langpacks.zip"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -42,6 +43,19 @@ script: |
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   cd ..
-  7z a -sfx tor-browser.exe tor-browser
-  mv tor-browser.exe $OUTDIR/tor-browser-linux-($uname -p)_en-US.7z-selfextract
-  # XXX: Localization..
+  #
+  unzip linux-langpacks.zip
+  cd linux-langpacks
+  for i in *.xpi
+  do
+    LANG=`basename $i .xpi`
+    cp $i ../tor-browser/Data/profile/extensions/
+    cd ..
+    mv tor-browser tor-browser_$LANG
+    7z a -sfx tor-browser.exe tor-browser_$LANG
+    mv tor-browser.exe $OUTDIR/tor-browser-linux-($uname -p)_$LANG.7z-selfextract
+
+    rm ./tor-browser/FirefoxPortable/Data/profile/extensions/$i
+    mv tor-browser_$LANG tor-browser
+    cd linux-langpacks
+  done 
