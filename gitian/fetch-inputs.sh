@@ -67,5 +67,26 @@ ln -sf $TORBUTTON_PACKAGE torbutton@torproject.org.xpi
 ln -sf $HTTPSE_PACKAGE https-everywhere@eff.org.xpi
 ln -sf $PDFJS_PACKAGE uriloader@pdf.js.xpi
 
+if [ ! -d tbb-windows-installer ];
+then
+  git clone https://github.com/moba/tbb-windows-installer.git
+fi
+
+if [ ! -d tor-launcher ];
+then
+  git clone https://git.torproject.org/tor-launcher.git
+fi
+
+if [ ! -d tor ];
+then
+  git clone https://git.torproject.org/tor.git
+fi
+
+
+if [ ! -d tor-browser ];
+then
+  git clone https://git.torproject.org/tor-browser.git
+fi
+
 exit 0
 
