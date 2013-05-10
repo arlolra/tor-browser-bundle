@@ -32,12 +32,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ZeroMemory ( &pi, sizeof(pi) );
 
     TCHAR *ProgramToStart;
-    ProgramToStart = TEXT ("App/vidalia.exe --datadir .\\Data\\Vidalia\\");
+    ProgramToStart = TEXT ("FirefoxPortable\\App\\Firefox\\firefox.exe -no-remote -profile .\\FirefoxPortable\\Data\\profile\\");
 
     if( !CreateProcess( 
         NULL, ProgramToStart, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ))
     {
-         MessageBox ( NULL, TEXT ("Unable to start Vidalia"), NULL, MB_OK);
+         MessageBox ( NULL, TEXT ("Unable to start Tor Browser"), NULL, MB_OK);
          return -1;
     }
 

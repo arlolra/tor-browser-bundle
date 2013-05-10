@@ -70,3 +70,6 @@ script: |
   cd ..
   install -s $INSTDIR/bin/tor.exe $OUTDIR/bin/$GBUILD_BITS
 
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $OUTDIR/bin/$GBUILD_BITS
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $OUTDIR/bin/$GBUILD_BITS
+

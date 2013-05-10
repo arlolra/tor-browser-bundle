@@ -6,8 +6,8 @@
 
 APPNAME = StartTorBrowserBundle.exe
 OBJECTS = RelativeLink-res.rc.o RelativeLink.o
-CFLAGS = -Wall -mwindows -static
-CC = gcc
+CFLAGS = -Wall -mwindows -static -frandom-seed=tor
+CC = i686-w64-mingw32-gcc
 
 all: RelativeLink
 
@@ -19,7 +19,7 @@ RelativeLink.o: RelativeLink.c
 	$(CC) $(CFLAGS) -c RelativeLink.c -o RelativeLink.o
 
 RelativeLink-res.rc.o: RelativeLink-res.rc
-	windres.exe RelativeLink-res.rc RelativeLink-res.rc.o
+	i686-w64-mingw32-windres RelativeLink-res.rc RelativeLink-res.rc.o
 
 clean:
 	rm -rf *.exe

@@ -5,8 +5,6 @@
 
 . ./versions
 
-TORBROWSER_VERSION=3.0-alpha-1
-
 WRAPPER_DIR=$PWD
 GITIAN_DIR=$PWD/../../gitian-builder.git
 DESCRIPTOR_DIR=$PWD/descriptors/
@@ -60,23 +58,20 @@ then
   stop-target
 fi
 
-# XXX: Check args for sanity and extract tags -> git hashes
-
 if [ ! -d $GITIAN_DIR/inputs ];
 then
   mkdir -p $GITIAN_DIR/inputs
 fi
 
-torsocks $DESCRIPTOR_DIR/../fetch-inputs.sh $GITIAN_DIR/inputs
+#torsocks $DESCRIPTOR_DIR/../fetch-inputs.sh $GITIAN_DIR/inputs
 
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION\");" > $GITIAN_DIR/inputs/torbrowser.version 
 
-# XXX: Set these tags from args
-./bin/gbuild --commit tor-launcher=master,tor-browser=tor-browser-17.0.5esr-2 $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
 while [ $? -ne 0 ];
 do
   mv var/build.log ./firefox-fail.log.`date +%Y%m%d%H%M%S`
-  ./bin/gbuild --commit tor-launcher=master,tor-browser=tor-browser-17.0.5esr-2 $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+  ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
 done
 
 cp -a build/out/bin/32/firefox/* $BUNDLE_DIR/32/App/Firefox/
@@ -89,11 +84,11 @@ cp -a build/out/bin/torlauncher*.xpi $WRAPPER_DIR/../Bundle-Data/linux/profile/e
 rm $BUNDLE_DIR/32/App/Firefox/*.chk
 rm $BUNDLE_DIR/64/App/Firefox/*.chk
 
-./bin/gbuild --commit tor=tor-0.2.4.12-alpha $DESCRIPTOR_DIR/linux/gitian-tor.yml
+./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
 while [ $? -ne 0 ];
 do
   mv var/build.log ./tor-fail.log.`date +%Y%m%d%H%M%S`
-  ./bin/gbuild --commit tor=tor-0.2.4.12-alpha $DESCRIPTOR_DIR/linux/gitian-tor.yml
+  ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
 done
 
 cp -a build/out/bin/32/tor $BUNDLE_DIR/32/App/
@@ -102,14 +97,12 @@ cp -a build/out/bin/64/tor $BUNDLE_DIR/64/App/
 cp -a build/out/lib/32/lib* $BUNDLE_DIR/32/Lib/
 cp -a build/out/lib/64/lib* $BUNDLE_DIR/64/Lib/
 
-
-# XXX: Alpha vs non-alpha xpis??
-# XXX: NoScript versioning??
-# XXX: tor-launcher+torbutton from git?
+# FIXME: Alpha vs non-alpha xpis??
+# FIXME: NoScript versioning??
+# FIXME: tor-launcher+torbutton from git?
 cp -a $GITIAN_DIR/inputs/$NOSCRIPT_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/noscript@noscript.net.xpi
 cp -a $GITIAN_DIR/inputs/$TORBUTTON_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/torbutton@torproject.org.xpi
 cp -a $GITIAN_DIR/inputs/$HTTPSE_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/https-everywhere@eff.org.xpi
-cp -a $GITIAN_DIR/inputs/$NOSCRIPT_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/\{73a6fe31-595d-460b-a920-fcc0f8843232\}.xpi
 cp -a $GITIAN_DIR/inputs/$PDFJS_PACKAGE $WRAPPER_DIR/../Bundle-Data/linux/profile/extensions/uriloader@pdf.js.xpi
 
 cp -a $WRAPPER_DIR/../Bundle-Data/linux/* $BUNDLE_DIR/32/Data/
@@ -122,17 +115,18 @@ cp -a $WRAPPER_DIR/../RelativeLink/RelativeLink.sh $BUNDLE_DIR/64/start-tor-brow
 cd $BUNDLE_DIR
 cp -a 64 tor-browser_en-US
 find tor-browser_en-US | xargs touch --date="2013-01-01 00:00:00"
-tar -cvf ../tor-browser-gnu-linux-x86_64-$VERSION-en-US.tar --owner=root --group=root tor-browser_en-US
+tar -cvf ../tor-browser-gnu-linux-x86_64-$TORBROWSER_VERSION-en-US.tar --owner=root --group=root tor-browser_en-US
 rm -rf tor-browser_en-US 
 cd ..
-gzip -n tor-browser-gnu-linux-x86_64-$VERSION-en-US.tar
+gzip -n tor-browser-gnu-linux-x86_64-$TORBROWSER_VERSION-en-US.tar
 
+cd $BUNDLE_DIR
 cp -a 32 tor-browser_en-US
 find tor-browser_en-US | xargs touch --date="2013-01-01 00:00:00"
-tar -cvf ../tor-browser-gnu-linux-x86-$VERSION-en-US.tar --owner=root --group=root tor-browser_en-US
+tar -cvf ../tor-browser-gnu-linux-x86-$TORBROWSER_VERSION-en-US.tar --owner=root --group=root tor-browser_en-US
 rm -rf tor-browser_en-US
 cd ..
-gzip -n tor-browser-gnu-linux-x86_64-$VERSION-en-US.tar
+gzip -n tor-browser-gnu-linux-x86_64-$TORBROWSER_VERSION-en-US.tar
 
 # FIXME: localization
 

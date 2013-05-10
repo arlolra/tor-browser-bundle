@@ -28,6 +28,13 @@ done
 wget -N https://addons.mozilla.org/firefox/downloads/latest/722/addon-722-latest.xpi
 wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-latest.xpi
 
+# So is mingw:
+if [ ! -f mingw-w64-svn-snapshot-r5830.zip ];
+then
+  svn co -r 5830 https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn
+  zip -x*/.svn/* -rX mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
+fi
+
 # Get+verify sigs that exist
 # XXX: This doesn't cover everything. See #8525
 for i in TORBUTTON LIBEVENT OBFSPROXY OPENSSL

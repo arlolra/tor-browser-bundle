@@ -1,0 +1,105 @@
+---
+name: "tor"
+suites:
+- "precise"
+architectures:
+- "i386"
+packages: 
+- "git-core"
+- "unzip"
+- "zip"
+- "autoconf"
+- "autoconf2.13"
+- "mingw-w64"
+- "faketime"
+- "yasm"
+- "g++-mingw-w64-i686"
+- "mingw-w64-tools"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://git.torproject.org/tor-launcher.git"
+  "dir": "tor-launcher"
+- "url": "https://git.torproject.org/tor-browser.git"
+  "dir": "tor-browser"
+files:
+# XXX: we need to make this input tarball deterministic :/
+- "mingw-w64-svn-snapshot-r5830.tar.gz"
+- "torbrowser.version"
+script: |
+  INSTDIR="$HOME/install"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  # 
+  mkdir -p $OUTDIR/src
+  mkdir -p $OUTDIR/bin/$GBUILD_BITS
+  mkdir -p $OUTDIR/lib/$GBUILD_BITS
+  # XXX: Do we need this?
+  #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
+  #sudo apt-get update
+  #sudo apt-get install g++-mingw-w64-i686 mingw-w64-tools mingw-w64
+  #
+  cd tor-launcher
+  make clean
+  make package
+  cp ./pkg/* $OUTDIR/bin/
+  cd ..
+  #
+  # Build the latest MinGW-w64 headers and CRT
+  # FIXME: We need sudo for all of this because otherwise
+  # the toolchain can't find the alternate prefix for the CRT headers :/ 
+  # 
+  mkdir mingw-w64
+  cd mingw-w64
+  tar -zxf ../mingw-w64-svn-snapshot-*.tar.gz
+  #
+  mkdir mingw-w64-headers32 && cd mingw-w64-headers32
+  ../mingw-w64-svn/mingw-w64-headers/configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32/ --enable-sdk=all --enable-secure-api --enable-idl
+  sudo make install
+  cd ..
+  #
+  mkdir mingw-w64-crt32 && cd mingw-w64-crt32
+  ../mingw-w64-svn/mingw-w64-crt/configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32/
+  make
+  sudo make install
+  cd ..
+  #
+  mkdir widl32 && cd widl32
+  ../mingw-w64-svn/mingw-w64-tools/widl/configure --prefix=/usr --target=i686-w64-mingw32
+  make
+  sudo make install
+  cd ..
+  #
+  cd ..
+  #
+  #
+  cd tor-browser
+  mv .mozconfig-mingw .mozconfig
+  grep -v '^pref(\"torbrowser.version\",' browser/app/profile/tor-browser.js > browser/app/profile/tor-browser.js.fixed
+  cat ../torbrowser.version >> browser/app/profile/tor-browser.js.fixed
+  mv browser/app/profile/tor-browser.js.fixed browser/app/profile/tor-browser.js
+  # .git and the src takes up a lot of useless space, and we need the space to build
+  #git archive HEAD | tar -x -C $OUTDIR/src
+  rm -rf .git
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  make -f client.mk configure
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #
+  # The build sometimes randomly fails (faketime issues?) Just restart it until success
+  make $MAKEOPTS -f client.mk build
+  while [ $? -ne 0 ];
+  do
+    make $MAKEOPTS -f client.mk build
+  done
+  #
+  make -C obj-* package INNER_MAKE_PACKAGE=true
+  while [ $? -ne 0 ];
+  do
+    make -C obj-* package INNER_MAKE_PACKAGE=true
+  done
+  cp -a obj-*/dist/firefox/ $OUTDIR/bin/$GBUILD_BITS
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $OUTDIR/bin/$GBUILD_BITS
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $OUTDIR/bin/$GBUILD_BITS
+  cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc*dll $OUTDIR/bin/$GBUILD_BITS
+

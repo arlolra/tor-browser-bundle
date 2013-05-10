@@ -3,7 +3,7 @@ name: "tor-browser"
 suites:
 - "lucid"
 architectures:
-- "i386"
+#- "i386"
 - "amd64"
 packages: 
 - "faketime"
