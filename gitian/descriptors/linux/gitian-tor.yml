@@ -8,6 +8,7 @@ architectures:
 packages: 
 - "git-core"
 - "unzip"
+- "zip"
 - "autoconf"
 - "autoconf2.13"
 - "faketime"
