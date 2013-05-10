@@ -10,13 +10,13 @@ then
   exit 1
 fi
 
-dpkg -s ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl 2>/dev/null >/dev/null
+dpkg -s ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip 2>/dev/null >/dev/null
 
 if [ $? -ne 0 ]; then
-  echo "You are missing one or more virtualization tool dependencies."
+  echo "You are missing one or more Gitian build tool dependencies."
   echo
   echo "Please run:"
-  echo " sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl"
+  echo " sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip"
   exit 1
 fi
 
@@ -38,7 +38,7 @@ then
   echo "You appear to be running in a virtual machine."
   echo "It is recommended you use LXC instead of KVM."
   echo
-  echo "Please run: "
+  echo "Please run this in your shell before each build: "
   echo " export USE_LXC=1"
   exit 1
 fi
