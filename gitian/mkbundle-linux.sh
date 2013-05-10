@@ -57,7 +57,9 @@ zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/
 cd ./Bundle-Data/linux
 zip -rX $GITIAN_DIR/inputs/linux-skeleton.zip ./
 
-if [ ! -f $GITIAN_DIR/inputs/tor-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-linux64-gbuilt.zip];
+cd $GITIAN_DIR
+
+if [ ! -f $GITIAN_DIR/inputs/tor-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-linux64-gbuilt.zip ];
 then
   ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
   while [ $? -ne 0 ];
@@ -69,7 +71,7 @@ then
   cp -a build/out/tor-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
-if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip];
+if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip ];
 then
   ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
   while [ $? -ne 0 ];
