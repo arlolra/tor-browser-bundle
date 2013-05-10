@@ -24,6 +24,7 @@ then
   if [ "z$USE_LXC" = "z1" ];
   then
     ./bin/make-base-vm --lxc --suite precise --arch i386
+    sudo ifconfig lxcbr0 10.0.2.2
   else
     ./bin/make-base-vm --suite precise --arch i386
   fi
