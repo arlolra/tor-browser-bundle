@@ -85,8 +85,8 @@ script: |
   # TODO: There goes FIPS-140.. We could upload these somewhere unique and
   # subsequent builds could test to see if they've been uploaded before...
   # But let's find out if it actually matters first..
-  rm $INSTDIR/App/Firefox/*.chk
-  rm $INSTDIR/App/Firefox/*.chk
+  #rm -f $INSTDIR/App/Firefox/*.chk
+  #rm -f $INSTDIR/App/Firefox/*.chk
   #
   cd $INSTDIR
   zip -rX tor-browser-linux$GBUILD_BITS-gbuilt.zip App/

@@ -44,6 +44,16 @@ script: |
   unzip ~/build/linux-skeleton.zip
   cd ..
   #
+  cp -a tor-browser tor-browser_en-US
+  cd tor-browser_en-US/App/Firefox
+  unzip omni.ja defaults/preferences/000-tor-browser.js
+  echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
+  zip -um omni.ja defaults/preferences/000-tor-browser.js
+  cd ../../../
+  7z a -sfx tor-browser.exe tor-browser_en-US
+  mv tor-browser.exe $OUTDIR/tor-browser-linux-($uname -p)_en-US.7z-selfextract
+  rm -rf tor-browser_en-US
+  #
   unzip linux-langpacks.zip
   cd linux-langpacks
   for i in *.xpi
@@ -51,11 +61,18 @@ script: |
     LANG=`basename $i .xpi`
     cp $i ../tor-browser/Data/profile/extensions/
     cd ..
-    mv tor-browser tor-browser_$LANG
+    cp -a tor-browser tor-browser_$LANG
+
+    cd tor-browser_$LANG/App/Firefox
+    unzip omni.ja defaults/preferences/000-tor-browser.js
+    echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+    zip -um omni.ja defaults/preferences/000-tor-browser.js
+    cd ../../../
+
     7z a -sfx tor-browser.exe tor-browser_$LANG
     mv tor-browser.exe $OUTDIR/tor-browser-linux-($uname -p)_$LANG.7z-selfextract
 
     rm ./tor-browser/FirefoxPortable/Data/profile/extensions/$i
-    mv tor-browser_$LANG tor-browser
+    rm -rf tor-browser_$LANG
     cd linux-langpacks
   done 

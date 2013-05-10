@@ -45,6 +45,13 @@ script: |
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   cd ..
+  #
+  cd "Tor Browser"/FirefoxPortable/App/Firefox
+  unzip omni.ja defaults/preferences/000-tor-browser.js
+  cp defaults/preferences/000-tor-browser.js ~/build/
+  echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
+  zip -um omni.ja defaults/preferences/000-tor-browser.js
+  cd ../../../../
   makensis torbrowser.nsi
   mv torbrowser-install.exe $OUTDIR/torbrowser-install_en-US.exe
   #
@@ -55,6 +62,14 @@ script: |
     LANG=`basename $i .xpi`
     cp $i ../"Tor Browser"/FirefoxPortable/Data/profile/extensions/
     cd ..
+
+    cd "Tor Browser"/FirefoxPortable/App/Firefox
+    mkdir -p defaults/preferences
+    cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
+    echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+    zip -um omni.ja defaults/preferences/000-tor-browser.js
+    cd ../../../../
+
     makensis torbrowser.nsi
     mv torbrowser-install.exe $OUTDIR/torbrowser-install_$LANG.exe
     rm ./"Tor Browser"/FirefoxPortable/Data/profile/extensions/$i
