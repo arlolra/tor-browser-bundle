@@ -62,11 +62,11 @@ cd $GITIAN_DIR
 if [ ! -f $GITIAN_DIR/inputs/tor-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-linux64-gbuilt.zip ];
 then
   ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
-  while [ $? -ne 0 ];
-  do
+  if [ $? -ne 0 ];
+  then
     mv var/build.log ./tor-fail-linux.log.`date +%Y%m%d%H%M%S`
-    ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
-  done
+    exit 1
+  fi
   
   cp -a build/out/tor-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
@@ -74,21 +74,21 @@ fi
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip ];
 then
   ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
-  while [ $? -ne 0 ];
-  do
+  if [ $? -ne 0 ];
+  then
     mv var/build.log ./firefox-fail-linux.log.`date +%Y%m%d%H%M%S`
-    ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
-  done
+    exit 1
+  fi
 
   cp -a build/out/tor-browser-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
 ./bin/gbuild $DESCRIPTOR_DIR/linux/gitian-bundle.yml
-while [ $? -ne 0 ];
-do
+if [ $? -ne 0 ];
+then
   mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`
-  ./bin/gbuild $DESCRIPTOR_DIR/linux/gitian-bundle.yml
-done
+  exit 1
+fi
 
 cp -a build/out/tor-browser-linux*7z* $WRAPPER_DIR
 

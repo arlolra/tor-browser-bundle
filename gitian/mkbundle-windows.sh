@@ -49,11 +49,11 @@ cd $GITIAN_DIR
 if [ ! -f $GITIAN_DIR/inputs/tor-win32-gbuilt.zip ];
 then
   ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
-  while [ $? -ne 0 ];
-  do
+  if [ $? -ne 0 ];
+  then
     mv var/build.log ./tor-fail-win32.log.`date +%Y%m%d%H%M%S`
-    ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
-  done
+    exit 1
+  fi
   
   cp -a build/out/tor-win32-gbuilt.zip $GITIAN_DIR/inputs/
 fi
@@ -61,21 +61,21 @@ fi
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-win32-gbuilt.zip ];
 then
   ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
-  while [ $? -ne 0 ];
-  do
+  if [ $? -ne 0 ];
+  then
     mv var/build.log ./firefox-fail-win32.log.`date +%Y%m%d%H%M%S`
-    ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
-  done
+    exit 1
+  fi
 
   cp -a build/out/tor-browser-win32-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
 ./bin/gbuild --commit tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
-while [ $? -ne 0 ];
-do
+if [ $? -ne 0 ];
+then
   mv var/build.log ./bundle-fail-win32.log.`date +%Y%m%d%H%M%S`
-  ./bin/gbuild --commit tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
-done
+  exit 1
+fi
 
 cp -a build/out/*.exe $WRAPPER_DIR
 
