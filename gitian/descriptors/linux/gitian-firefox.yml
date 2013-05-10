@@ -30,6 +30,10 @@ remotes:
   "dir": "tor-launcher"
 files:
 - "torbrowser.version"
+- "noscript@noscript.net.xpi"
+- "torbutton@torproject.org.xpi"
+- "https-everywhere@eff.org.xpi"
+- "uriloader@pdf.js.xpi"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -44,12 +48,15 @@ script: |
   export PATH=$PATH:$INSTDIR/build/bin
   #
   mkdir -p $INSTDIR/App/Firefox/
+  mkdir -p $INSTDIR/Data/profile/extensions/
   #
   cd tor-launcher
   make clean
   make package
-  cp ./pkg/* $OUTDIR/bin/
+  cp ./pkg/* $INSTDIR/Data/profile/extensions/
   cd ..
+  #
+  cp *.xpi $INSTDIR/Data/profile/extensions/
   #
   cd tor-browser
   grep -v '^pref(\"torbrowser.version\",' browser/app/profile/tor-browser.js > browser/app/profile/tor-browser.js.fixed
