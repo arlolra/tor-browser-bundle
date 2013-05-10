@@ -20,8 +20,8 @@ remotes:
 files:
 # TODO: Can we use an env for this file+version??
 - "libevent-2.0.21-stable.tar.gz"
-- "openssl-1.0.1e.tar.gz"
-- "zlib-1.2.7.tar.gz"
+- "openssl-1.0.0k.tar.gz"
+- "zlib-1.2.8.tar.gz"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"

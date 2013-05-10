@@ -23,7 +23,7 @@ remotes:
   "dir": "tor-browser"
 files:
 # XXX: we need to make this input tarball deterministic :/
-- "mingw-w64-svn-snapshot-r5830.tar.gz"
+- "mingw-w64-svn-snapshot-r5830.zip"
 - "torbrowser.version"
 - "noscript@noscript.net.xpi"
 - "torbutton@torproject.org.xpi"
@@ -58,7 +58,7 @@ script: |
   # 
   mkdir mingw-w64
   cd mingw-w64
-  tar -zxf ../mingw-w64-svn-snapshot-*.tar.gz
+  unzip ../mingw-w64-svn-snapshot-*.zip
   #
   mkdir mingw-w64-headers32 && cd mingw-w64-headers32
   ../mingw-w64-svn/mingw-w64-headers/configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32/ --enable-sdk=all --enable-secure-api --enable-idl
@@ -82,9 +82,9 @@ script: |
   #
   cd tor-browser
   mv .mozconfig-mingw .mozconfig
-  grep -v '^pref(\"torbrowser.version\",' browser/app/profile/tor-browser.js > browser/app/profile/tor-browser.js.fixed
-  cat ../torbrowser.version >> browser/app/profile/tor-browser.js.fixed
-  mv browser/app/profile/tor-browser.js.fixed browser/app/profile/tor-browser.js
+  grep -v '^pref(\"torbrowser.version\",' browser/app/profile/000-tor-browser.js > browser/app/profile/000-tor-browser.js.fixed
+  cat ../torbrowser.version >> browser/app/profile/000-tor-browser.js.fixed
+  mv browser/app/profile/000-tor-browser.js.fixed browser/app/profile/000-tor-browser.js
   # .git and the src takes up a lot of useless space, and we need the space to build
   #git archive HEAD | tar -x -C $OUTDIR/src
   rm -rf .git
