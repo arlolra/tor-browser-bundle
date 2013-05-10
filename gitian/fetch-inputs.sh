@@ -40,9 +40,12 @@ then
   zip -x*/.svn/* -rX mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
 fi
 
+# XXX: Check fingerprints?
+gpg --recv-keys 0x15F271D9 0xF295C759 0x8D29319A 0xDDC6C0AD
+
 # Get+verify sigs that exist
 # XXX: This doesn't cover everything. See #8525
-for i in TORBUTTON LIBEVENT OBFSPROXY OPENSSL
+for i in TORBUTTON LIBEVENT OPENSSL OBFSPROXY
 do
   PACKAGE=${i}"_PACKAGE"
   URL=${MIRROR_URL}${!PACKAGE}
@@ -87,6 +90,8 @@ if [ -d tbb-windows-installer/.git ];
 then
   cd tbb-windows-installer
   git fetch origin
+  git checkout $NSIS_TAG
+  git merge origin/$NSIS_TAG
   cd ..
 else
   git clone https://github.com/moba/tbb-windows-installer.git
@@ -96,6 +101,8 @@ if [ -d tor-launcher/.git ];
 then
   cd tor-launcher
   git fetch origin
+  git checkout $TORLAUNCHER_TAG
+  git merge origin/$TORLAUNCHER_TAG
   cd ..
 else
   git clone https://git.torproject.org/tor-launcher.git
@@ -105,6 +112,8 @@ if [ -d tor/.git ];
 then
   cd tor
   git fetch origin
+  git checkout $TOR_TAG
+  git merge origin/$TOR_TAG
   cd ..
 else
   git clone https://git.torproject.org/tor.git
@@ -115,6 +124,8 @@ if [ -d tor-browser/.git ];
 then
   cd tor-browser
   git fetch origin
+  git checkout $TORBROWSER_TAG
+  git merge origin/$TORBROWSER_TAG
   cd ..
 else
   git clone https://git.torproject.org/tor-browser.git
