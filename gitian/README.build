@@ -1,0 +1,39 @@
+QuickStart:
+
+ Just type 'make'. It will check all of your prerequisites and tell you what
+ you need to do to get started.
+
+ If everything checks out OK, it will begin downloading dependencies, and then
+ start the build process to produce a Linux bundle and then a Windows one.
+
+
+Detailed Explanation:
+
+ This directory is a wrapper around gitian-builder, and has several helper
+ scripts to make things easier.
+ 
+ 1. check-prerequisites.sh - This script checks if your system is capable of
+    running gitian, and if it is not, it tells you what you need to do.
+ 
+ 2. fetch-inputs.sh - This script fetches all of our source dependencies from
+    the Internet and downloads them into ../../gitian-builder/inputs.
+    After you run this script, you should be able to complete the rest of your
+    build offline.
+ 
+ 3. versions - This scriptlet contains version definitions for the source
+    dependencies, the git tags to use, and the Tor Browser release version.
+ 
+ 4. descriptors - In the descriptors directory, you will find the gitian
+    descriptors for Linux and Windows. There are three descriptors for each
+    platform: One to build Tor and its dependencies, one to build Firefox and
+    its dependencies, and one to bundle everything together. Each descriptor is
+    run from a fresh VM.
+ 
+ 5. mkbundle-linux.sh - This script is a wrapper around gitian's gbuild to call
+    the appropriate descriptors to build a Linux bundle. It also will create
+    build VM images for you if you haven't done that before.
+ 
+ 6. mkbundle-windows.sh - This script is a wrapper around gitian's gbuild to
+    call the appropriate descriptors to build a Windows bundle. It also will
+    create build VM images for you if you haven't done that before.
+
