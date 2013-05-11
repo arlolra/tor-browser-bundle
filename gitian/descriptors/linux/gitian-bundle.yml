@@ -51,7 +51,7 @@ script: |
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   cd ../../../
   7z a -sfx tor-browser.exe tor-browser_en-US
-  mv tor-browser.exe $OUTDIR/tor-browser-linux-$(uname -p)_en-US.7z-selfextract
+  mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
   rm -rf tor-browser_en-US
   #
   unzip linux-langpacks.zip
@@ -70,7 +70,7 @@ script: |
     cd ../../../
 
     7z a -sfx tor-browser.exe tor-browser_$LANG
-    mv tor-browser.exe $OUTDIR/tor-browser-linux-$(uname -p)_$LANG.7z-selfextract
+    mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract
 
     rm -rf tor-browser_$LANG
     cd linux-langpacks
