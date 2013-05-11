@@ -109,6 +109,13 @@ script: |
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/Firefox/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc*dll $INSTDIR/App/Firefox/
   #
+  # XXX: What the hell are these three bytes anyways?
+  sed 's/\x94\x0C\xE7\x6A\xB8\x0C\xE7\x6A\x08...\x04\xBA\xCB\x7E/\x94\x0c\xe7\x6a\xb8\x0c\xe7\x6a\x08\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/App/Firefox/xul.dll
+  sed 's/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8...\x04\xba\xcb\x7e/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/App/Firefox/gkmedias.dll
+  # Stripping again updates the PE header checksums to be correct
+  i686-w64-mingw32-strip $INSTDIR/App/Firefox/gkmedias.dll
+  i686-w64-mingw32-strip $INSTDIR/App/Firefox/xul.dll
+  #
   cd $INSTDIR
   cd ..
   zip -rX tor-browser-win32-gbuilt.zip ./FirefoxPortable/
