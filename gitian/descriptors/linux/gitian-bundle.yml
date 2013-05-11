@@ -48,7 +48,7 @@ script: |
   cd tor-browser_en-US/App/Firefox
   unzip omni.ja defaults/preferences/000-tor-browser.js
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
-  zip -um omni.ja defaults/preferences/000-tor-browser.js
+  zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   cd ../../../
   7z a -sfx tor-browser.exe tor-browser_en-US
   mv tor-browser.exe $OUTDIR/tor-browser-linux-($uname -p)_en-US.7z-selfextract
@@ -66,7 +66,7 @@ script: |
     cd tor-browser_$LANG/App/Firefox
     unzip omni.ja defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
-    zip -um omni.ja defaults/preferences/000-tor-browser.js
+    zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     cd ../../../
 
     7z a -sfx tor-browser.exe tor-browser_$LANG
