@@ -54,9 +54,11 @@ fi
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION\");" > $GITIAN_DIR/inputs/torbrowser.version 
 
 cd $WRAPPER_DIR/..
+rm -f $GITIAN_DIR/inputs/relativelink-src.zip
 zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
 cd ./Bundle-Data/linux
+rm -f $GITIAN_DIR/inputs/linux-skeleton.zip
 zip -rX $GITIAN_DIR/inputs/linux-skeleton.zip ./
 
 cd $GITIAN_DIR
@@ -75,7 +77,7 @@ fi
 
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip ];
 then
-  ./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+  ./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./firefox-fail-linux.log.`date +%Y%m%d%H%M%S`
@@ -85,7 +87,7 @@ then
   cp -a build/out/tor-browser-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
-./bin/gbuild $DESCRIPTOR_DIR/linux/gitian-bundle.yml
+./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
 if [ $? -ne 0 ];
 then
   mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`

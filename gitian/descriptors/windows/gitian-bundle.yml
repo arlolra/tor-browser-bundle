@@ -15,6 +15,8 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/moba/tbb-windows-installer.git"
   "dir": "tbb-windows-installer"
+- "url": "https://git.torproject.org/tor-launcher.git"
+  "dir": "tor-launcher"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-win32-gbuilt.zip"
@@ -22,6 +24,10 @@ files:
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
+- "noscript@noscript.net.xpi"
+- "torbutton@torproject.org.xpi"
+- "https-everywhere@eff.org.xpi"
+- "uriloader@pdf.js.xpi"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -30,7 +36,15 @@ script: |
   export TZ=UTC
   # 
   mkdir -p $OUTDIR/
-  mkdir -p tbb-windows-installer/"Tor Browser"
+  mkdir -p tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
+  #
+  cd tor-launcher
+  make clean
+  make package
+  cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/tor-launcher@torproject.org.xpi
+  cd ..
+  #
+  cp *.xpi ./tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
   #
   unzip relativelink-src.zip
   cd RelativeLink

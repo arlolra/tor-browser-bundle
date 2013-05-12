@@ -13,7 +13,9 @@ packages:
 - "p7zip-full"
 - "faketime"
 reference_datetime: "2000-01-01 00:00:00"
-remotes: []
+remotes:
+- "url": "https://git.torproject.org/tor-launcher.git"
+  "dir": "tor-launcher"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-linux32-gbuilt.zip"
@@ -23,6 +25,10 @@ files:
 - "relativelink-src.zip"
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
+- "noscript@noscript.net.xpi"
+- "torbutton@torproject.org.xpi"
+- "https-everywhere@eff.org.xpi"
+- "uriloader@pdf.js.xpi"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -33,6 +39,14 @@ script: |
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Data/profile/extensions/
   #
+  cd tor-launcher
+  make clean
+  make package
+  cp ./pkg/*.xpi ../tor-browser/Data/profile/extensions/tor-launcher@torproject.org.xpi
+  cd ..
+  #
+  cp *.xpi tor-browser/Data/profile/extensions/
+  #
   unzip relativelink-src.zip
   cd RelativeLink
   cp RelativeLink.sh ../tor-browser/start-tor-browser
@@ -42,6 +56,7 @@ script: |
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
+  chmod 700 Data/Tor
   cd ..
   #
   cp -a tor-browser tor-browser_en-US

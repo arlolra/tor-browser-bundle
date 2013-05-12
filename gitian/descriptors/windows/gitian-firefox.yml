@@ -17,18 +17,12 @@ packages:
 - "mingw-w64-tools"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
-- "url": "https://git.torproject.org/tor-launcher.git"
-  "dir": "tor-launcher"
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
 files:
 # XXX: we need to make this input tarball deterministic :/
 - "mingw-w64-svn-snapshot-r5830.zip"
 - "torbrowser.version"
-- "noscript@noscript.net.xpi"
-- "torbutton@torproject.org.xpi"
-- "https-everywhere@eff.org.xpi"
-- "uriloader@pdf.js.xpi"
 script: |
   INSTDIR="$HOME/install/FirefoxPortable/"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
@@ -43,14 +37,6 @@ script: |
   #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
   #sudo apt-get update
   #sudo apt-get install g++-mingw-w64-i686 mingw-w64-tools mingw-w64
-  #
-  cd tor-launcher
-  make clean
-  make package
-  cp ./pkg/* $INSTDIR/Data/profile/extensions/
-  cd ..
-  #
-  cp *.xpi $INSTDIR/Data/profile/extensions/
   #
   # Build the latest MinGW-w64 headers and CRT
   # FIXME: We need sudo for all of this because otherwise
