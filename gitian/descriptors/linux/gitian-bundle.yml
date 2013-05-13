@@ -37,7 +37,7 @@ script: |
   export TZ=UTC
   # 
   mkdir -p $OUTDIR/
-  mkdir -p tor-browser/Data/profile/extensions/
+  mkdir -p tor-browser/Data/profile/extensions/https-everywhere@eff.org
   #
   cd tor-launcher
   make clean
@@ -46,6 +46,11 @@ script: |
   cd ..
   #
   cp *.xpi tor-browser/Data/profile/extensions/
+  mv tor-browser/Data/profile/extensions/noscript@noscript.net.xpi tor-browser/Data/profile/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
+  cd tor-browser/Data/profile/extensions/https-everywhere@eff.org/
+  unzip ../https-everywhere@eff.org.xpi
+  rm ../https-everywhere@eff.org.xpi
+  cd ~/build/
   #
   unzip relativelink-src.zip
   cd RelativeLink

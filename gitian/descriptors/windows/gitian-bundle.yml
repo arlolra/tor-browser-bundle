@@ -36,7 +36,7 @@ script: |
   export TZ=UTC
   # 
   mkdir -p $OUTDIR/
-  mkdir -p tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
+  mkdir -p tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/https-everywhere@eff.org
   #
   cd tor-launcher
   make clean
@@ -45,6 +45,12 @@ script: |
   cd ..
   #
   cp *.xpi ./tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
+  cd ./tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
+  mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
+  cd https-everywhere@eff.org
+  unzip ../https-everywhere@eff.org.xpi
+  rm ../https-everywhere@eff.org.xpi
+  cd ~/build/
   #
   unzip relativelink-src.zip
   cd RelativeLink
