@@ -9,14 +9,53 @@ QuickStart:
  start the build process to produce localized Linux bundles, followed by
  Windows ones.
 
- By default, 'make' will clear out any previous partial builds. See 
- the "Partial Rebuilds" section below for information on performing partial
- rebuilds.
+ By default, 'make' will clear out any previous partial builds. See the
+ "Partial Rebuilds" section for information on performing partial rebuilds
+ without erasing previously built components.
 
  If you would also like to download fresh copies of your inputs before a
  build, run 'make distclean' (note that timestamps and versions of downloaded
- input files are checked every time you run 'make' by default so this should
- not normally be needed).
+ source input files are checked every time you run 'make' by default so
+ distclean should not normally be needed).
+
+
+Detailed Explanation of Scripts:
+
+ This directory is a wrapper around gitian-builder, and has several helper
+ scripts to make things easier.
+
+ 0. Makefile: The main Makefile. It has five main commands:
+    - prep: Check OS prerequisites and download source dependency inputs
+    - build: Build localized bundles for Linux and Windows
+    - clean: Remove prior partial build stages (Tor and Firefox)
+    - distclean: Remove source dependency inputs (and also partial builds)
+    - all: The default. It calls clean, prep, and then build.
+ 
+ 1. check-prerequisites.sh: This script checks if your system is capable of
+    running Gitian, and if it is not, it tells you what you need to do.
+    It is called by 'make prep'.
+ 
+ 2. fetch-inputs.sh: This script fetches all of our source dependencies from
+    the Internet and downloads them into ../../gitian-builder/inputs.
+    After you run this script, you should be able to complete the rest of your
+    build offline.
+ 
+ 3. versions: This scriptlet contains version definitions for the source
+    dependencies, the git tags to use, and the Tor Browser release version.
+ 
+ 4. descriptors: In the descriptors directory, you will find the Gitian
+    descriptors for Linux and Windows. There are three descriptors for each
+    platform: One to build Tor and its dependencies, one to build Firefox and
+    its dependencies, and one to bundle everything together. Each descriptor is
+    run from a fresh VM.
+ 
+ 5. mkbundle-linux.sh: This script is a wrapper around Gitian's gbuild to call
+    the appropriate descriptors to build a Linux bundle. It also will create
+    build VM images for you if you haven't done that before.
+ 
+ 6. mkbundle-windows.sh: This script is a wrapper around Gitian's gbuild to
+    call the appropriate descriptors to build a Windows bundle. It also will
+    create build VM images for you if you haven't done that before.
 
 
 Partial Rebuilds:
@@ -43,43 +82,5 @@ Partial Rebuilds:
 
   This means for official builds, you should always run 'make clean' (which
   is called by the default Makefile target).
-
-
-Detailed Explanation of Scripts:
-
- This directory is a wrapper around gitian-builder, and has several helper
- scripts to make things easier.
-
- 0. Makefile: The main Makefile. It has five main commands:
-    - prep: Check OS prerequisites and download source dependency inputs
-    - build: Build localized bundles for Linux and Windows
-    - clean: Remove prior partial build stages (Tor and Firefox)
-    - distclean: Remove source dependency inputs
-    - all: The default. It calls clean, prep, and then build.
- 
- 1. check-prerequisites.sh: This script checks if your system is capable of
-    running gitian, and if it is not, it tells you what you need to do.
- 
- 2. fetch-inputs.sh: This script fetches all of our source dependencies from
-    the Internet and downloads them into ../../gitian-builder/inputs.
-    After you run this script, you should be able to complete the rest of your
-    build offline.
- 
- 3. versions: This scriptlet contains version definitions for the source
-    dependencies, the git tags to use, and the Tor Browser release version.
- 
- 4. descriptors: In the descriptors directory, you will find the gitian
-    descriptors for Linux and Windows. There are three descriptors for each
-    platform: One to build Tor and its dependencies, one to build Firefox and
-    its dependencies, and one to bundle everything together. Each descriptor is
-    run from a fresh VM.
- 
- 5. mkbundle-linux.sh: This script is a wrapper around gitian's gbuild to call
-    the appropriate descriptors to build a Linux bundle. It also will create
-    build VM images for you if you haven't done that before.
- 
- 6. mkbundle-windows.sh: This script is a wrapper around gitian's gbuild to
-    call the appropriate descriptors to build a Windows bundle. It also will
-    create build VM images for you if you haven't done that before.
 
 
