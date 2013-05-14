@@ -1,4 +1,6 @@
-build: prep
+all: clean prep build
+
+build:
 	./mkbundle-linux.sh
 	./mkbundle-windows.sh
 
@@ -7,10 +9,7 @@ prep:
 	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/
 
 clean:
-	rm ../../gitian-builder/inputs/tor-win32-browser-gbuilt.zip
-	rm ../../gitian-builder/inputs/tor-win32-gbuilt.zip
-	rm ../../gitian-builder/inputs/tor-linux-browser-gbuilt.zip
-	rm ../../gitian-builder/inputs/tor-linux-gbuilt.zip
+	rm ../../gitian-builder/inputs/*gbuilt*.zip
 
 distclean:
 	rm ../../gitian-builder/inputs/*

@@ -1,39 +1,85 @@
 QuickStart:
 
+ $ make
+
  Just type 'make'. It will check all of your prerequisites and tell you what
  you need to do to get started.
 
  If everything checks out OK, it will begin downloading dependencies, and then
- start the build process to produce a Linux bundle and then a Windows one.
+ start the build process to produce localized Linux bundles, followed by
+ Windows ones.
+
+ By default, 'make' will clear out any previous partial builds. See 
+ the "Partial Rebuilds" section below for information on performing partial
+ rebuilds.
+
+ If you would also like to download fresh copies of your inputs before a
+ build, run 'make distclean' (note that timestamps and versions of downloaded
+ input files are checked every time you run 'make' by default so this should
+ not normally be needed).
 
 
-Detailed Explanation:
+Partial Rebuilds:
+
+  The two mkbundle shell scripts each have three Gitian stages.
+
+  First, using their platform's gitian-tor.yml Gitian descriptor, they build
+  tor and the tor dependencies (libevent, zlib, and openssl). Second, using the
+  gitian-firefox.yml descriptor, they build Firefox with the Tor Browser patches
+  and preferences applied. Third, in gitian-bundle.yml, they assemble the
+  bundles using the addons and localization packs.
+
+  The Tor and Firefox stages end up as a *gbuilt*.zip files in
+  ../gitian-builder/inputs/, and those zip files are used as inputs into
+  the final bundling and localization stage. If those files exist in that
+  directory, the corresponding bundle will *not* be built.
+
+  No other dependency checking on build stages is performed.
+
+  This means that if any of the source inputs, or the Ubuntu buildchain tools,
+  or the build tools' dependencies upgrade, your Tor and Firefox inputs will
+  no longer match those produced by someone else's build from a fresher VM
+  that downloaded those newer toolchain packages.
+
+  This means for official builds, you should always run 'make clean' (which
+  is called by the default Makefile target).
+
+
+Detailed Explanation of Scripts:
 
  This directory is a wrapper around gitian-builder, and has several helper
  scripts to make things easier.
+
+ 0. Makefile: The main Makefile. It has five main commands:
+    - prep: Check OS prerequisites and download source dependency inputs
+    - build: Build localized bundles for Linux and Windows
+    - clean: Remove prior partial build stages (Tor and Firefox)
+    - distclean: Remove source dependency inputs
+    - all: The default. It calls clean, prep, and then build.
  
- 1. check-prerequisites.sh - This script checks if your system is capable of
+ 1. check-prerequisites.sh: This script checks if your system is capable of
     running gitian, and if it is not, it tells you what you need to do.
  
- 2. fetch-inputs.sh - This script fetches all of our source dependencies from
+ 2. fetch-inputs.sh: This script fetches all of our source dependencies from
     the Internet and downloads them into ../../gitian-builder/inputs.
     After you run this script, you should be able to complete the rest of your
     build offline.
  
- 3. versions - This scriptlet contains version definitions for the source
+ 3. versions: This scriptlet contains version definitions for the source
     dependencies, the git tags to use, and the Tor Browser release version.
  
- 4. descriptors - In the descriptors directory, you will find the gitian
+ 4. descriptors: In the descriptors directory, you will find the gitian
     descriptors for Linux and Windows. There are three descriptors for each
     platform: One to build Tor and its dependencies, one to build Firefox and
     its dependencies, and one to bundle everything together. Each descriptor is
     run from a fresh VM.
  
- 5. mkbundle-linux.sh - This script is a wrapper around gitian's gbuild to call
+ 5. mkbundle-linux.sh: This script is a wrapper around gitian's gbuild to call
     the appropriate descriptors to build a Linux bundle. It also will create
     build VM images for you if you haven't done that before.
  
- 6. mkbundle-windows.sh - This script is a wrapper around gitian's gbuild to
+ 6. mkbundle-windows.sh: This script is a wrapper around gitian's gbuild to
     call the appropriate descriptors to build a Windows bundle. It also will
     create build VM images for you if you haven't done that before.
+
 
