@@ -1,0 +1,18 @@
+Short Term:
+ - Fix localization bugs
+ - Validate mirror sources during prep stage
+ - Hardening options
+   - http://wiki.debian.org/Hardening
+   - Can we randomize stack canaries each release, etc?
+
+Mid Term:
+ - MacOS cross compilation?
+ - Compile the toolchain, too?
+   - Doing so might allow us to build deterministically
+     using other Linux distributions as our base image
+     - Defense in depth against distribution-wide compromise
+     - Though we may still have issues with linking against
+       OS shared libraries if the versions don't match.
+       - Build them too? Or is it safe to ship reference link
+         stubs?
+
