@@ -40,6 +40,10 @@ then
   echo
   echo "Please run this in your shell before each build: "
   echo " export USE_LXC=1"
+  echo
+  echo "Note that LXC requires a sudo invocation for each Gitian command. "
+  echo "If you require LXC, you may wish to increase your sudo timeout, "
+  echo "or simply run the build directly from a root shell. "
   exit 1
 fi
 
