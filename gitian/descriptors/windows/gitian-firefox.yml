@@ -33,7 +33,7 @@ script: |
   mkdir -p $INSTDIR/Data/profile/extensions
   mkdir -p $INSTDIR/App/Firefox/
   mkdir -p $OUTDIR/
-  # XXX: Do we need this?
+  # If we ever find out that the 12.04 mingw is buggy/insufficient:
   #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
   #sudo apt-get update
   #sudo apt-get install g++-mingw-w64-i686 mingw-w64-tools mingw-w64

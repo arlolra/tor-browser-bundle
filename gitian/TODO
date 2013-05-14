@@ -1,5 +1,11 @@
 Short Term:
  - Fix localization bugs
+ - Fix windows issues:
+   - Link to DirectX via Wine (for WebGL)
+   - Enable accessibility (needs WIDL and other patches)
+     - https://bugzilla.mozilla.org/show_bug.cgi?id=815581
+     - https://bugzilla.mozilla.org/show_bug.cgi?id=858006
+     - https://bugzilla.mozilla.org/show_bug.cgi?id=803084
  - Validate mirror sources during prep stage
  - Hardening options
    - http://wiki.debian.org/Hardening
@@ -7,6 +13,9 @@ Short Term:
 
 Mid Term:
  - MacOS cross compilation?
+   - http://www.tarnyko.net/en/?q=node/9
+   - https://launchpad.net/~flosoft/+archive/cross-apple/+packages
+   - http://wiki.freepascal.org/Cross_compiling_OSX_on_Linux
  - Compile the toolchain, too?
    - Doing so might allow us to build deterministically
      using other Linux distributions as our base image
@@ -15,4 +24,4 @@ Mid Term:
        OS shared libraries if the versions don't match.
        - Build them too? Or is it safe to ship reference link
          stubs?
-
+ - FIPS-140?

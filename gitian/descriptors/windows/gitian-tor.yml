@@ -61,8 +61,6 @@ script: |
   cd tor
   mkdir -p $OUTDIR/src
   git archive HEAD | tar -x -C $OUTDIR/src
-  # FIXME: Do we need to fixup these prefixes? The prefix and the install prefix
-  # will be different for TBB.
   ./autogen.sh
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   ./configure --disable-asciidoc --host=i686-w64-mingw32 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
