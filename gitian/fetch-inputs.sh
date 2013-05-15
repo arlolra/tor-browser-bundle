@@ -119,6 +119,28 @@ else
   git clone https://git.torproject.org/tor.git
 fi
 
+if [ -d torbutton/.git ];
+then
+  cd torbutton
+  git fetch origin
+  git checkout $TORBUTTON_TAG
+  git merge origin/$TORBUTTON_TAG
+  cd ..
+else
+  git clone https://git.torproject.org/torbutton.git
+fi
+
+if [ -d https-everywhere/.git ];
+then
+  cd https-everywhere
+  git fetch origin
+  git checkout $HTTPSE_TAG
+  git merge origin/$HTTPSE_TAG
+  cd ..
+else
+  git clone https://git.torproject.org/https-everywhere.git
+fi
+
 
 if [ -d tor-browser/.git ];
 then
