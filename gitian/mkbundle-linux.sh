@@ -87,7 +87,7 @@ then
   cp -a build/out/tor-browser-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
-./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
+./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
 if [ $? -ne 0 ];
 then
   mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`

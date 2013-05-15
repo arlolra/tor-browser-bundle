@@ -12,10 +12,15 @@ packages:
 - "mingw-w64"
 - "p7zip-full"
 - "faketime"
+- "rnv"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"
   "dir": "tor-launcher"
+- "url": "https://git.torproject.org/torbutton.git"
+  "dir": "torbutton"
+- "url": "https://git.torproject.org/https-everywhere.git"
+  "dir": "https-everywhere"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-linux32-gbuilt.zip"
@@ -26,8 +31,6 @@ files:
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
 - "noscript@noscript.net.xpi"
-- "torbutton@torproject.org.xpi"
-- "https-everywhere@eff.org.xpi"
 - "uriloader@pdf.js.xpi"
 script: |
   INSTDIR="$HOME/install"
@@ -39,13 +42,25 @@ script: |
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Data/profile/extensions/https-everywhere@eff.org
   #
+  cp *.xpi tor-browser/Data/profile/extensions/
+  #
   cd tor-launcher
   make clean
   make package
   cp ./pkg/*.xpi ../tor-browser/Data/profile/extensions/tor-launcher@torproject.org.xpi
   cd ..
   #
-  cp *.xpi tor-browser/Data/profile/extensions/
+  cd torbutton
+  mkdir -p pkg
+  ./makexpi.sh
+  cp ./pkg/*.xpi ../tor-browser/Data/profile/extensions/torbutton@torproject.org.xpi
+  cd ..
+  #
+  cd https-everywhere
+  ./makexpi.sh
+  cp ./pkg/*.xpi ../tor-browser/Data/profile/extensions/https-everywhere@eff.org.xpi
+  cd ..
+  #
   mv tor-browser/Data/profile/extensions/noscript@noscript.net.xpi tor-browser/Data/profile/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd tor-browser/Data/profile/extensions/https-everywhere@eff.org/
   unzip ../https-everywhere@eff.org.xpi

@@ -73,7 +73,7 @@ then
   cp -a build/out/tor-browser-win32-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
-./bin/gbuild --commit tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
+./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
 if [ $? -ne 0 ];
 then
   mv var/build.log ./bundle-fail-win32.log.`date +%Y%m%d%H%M%S`

@@ -17,6 +17,10 @@ remotes:
   "dir": "tbb-windows-installer"
 - "url": "https://git.torproject.org/tor-launcher.git"
   "dir": "tor-launcher"
+- "url": "https://git.torproject.org/torbutton.git"
+  "dir": "torbutton"
+- "url": "https://git.torproject.org/https-everywhere.git"
+  "dir": "https-everywhere"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-win32-gbuilt.zip"
@@ -25,8 +29,6 @@ files:
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
 - "noscript@noscript.net.xpi"
-- "torbutton@torproject.org.xpi"
-- "https-everywhere@eff.org.xpi"
 - "uriloader@pdf.js.xpi"
 script: |
   INSTDIR="$HOME/install"
@@ -42,6 +44,17 @@ script: |
   make clean
   make package
   cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/tor-launcher@torproject.org.xpi
+  cd ..
+  #
+  cd torbutton
+  mkdir -p pkg
+  ./makexpi.sh
+  cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/torbutton@torproject.org.xpi
+  cd ..
+  #
+  cd https-everywhere
+  ./makexpi.sh
+  cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
   cp *.xpi ./tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
