@@ -1,8 +1,10 @@
 TORBROWSER_VERSION=3.0-alpha-1
 
-TORBROWSER_TAG=tor-browser-17.0.5esr-3
+TORBROWSER_TAG=tor-browser-17.0.6esr-1
 TOR_TAG=tor-0.2.4.12-alpha
 TORLAUNCHER_TAG=master
+TORBUTTON_TAG=master
+HTTPSE_TAG=3.2
 NSIS_TAG=master
 
 ZLIB_VER=1.2.8
