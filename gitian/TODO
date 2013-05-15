@@ -1,17 +1,15 @@
 Short Term:
- - Fix localization bugs
+ - Source integrity
+   - Validate mirror sources during prep stage
+   - Store all required gpg keys in repo
+     - Add them during check-prerequisites
+   - Pull more things from git repos (must have signed tags)
  - Fix windows issues:
    - Link to DirectX via Wine (for WebGL)
    - Enable accessibility (needs WIDL and other patches)
      - https://bugzilla.mozilla.org/show_bug.cgi?id=815581
      - https://bugzilla.mozilla.org/show_bug.cgi?id=858006
      - https://bugzilla.mozilla.org/show_bug.cgi?id=803084
- - Source integrity
-   - Validate mirror sources during prep stage
-   - Store all required gpg keys in repo
-     - Add them during check-prerequisites
-   - Pull more things from git repos
-     - HTTPS-Everywhere
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
