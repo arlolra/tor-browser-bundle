@@ -47,11 +47,29 @@ cd ./Bundle-Data/windows
 rm -f $GITIAN_DIR/inputs/windows-skeleton.zip
 zip -rX $GITIAN_DIR/inputs/windows-skeleton.zip ./
 
+cd $WRAPPER_DIR
+
+if [ "z$VERIFY_TAGS" = "z1" ];
+then
+  ./verify-tags.sh $GITIAN_DIR/inputs || exit 1
+  # If we're verifying tags, be explicit to gitian that we
+  # want to build from tags.
+  # XXX: Some things still have no tags
+  # TORBROWSER_TAG=tags/$TORBROWSER_TAG
+  # NSIS_TAG=tags/$NSIS_TAG
+  # TORLAUNCHER_TAG=tags/$TORLAUNCHER_TAG
+  # TORBUTTON_TAG=tags/$TORBUTTON_TAG
+  TOR_TAG=tags/$TOR_TAG
+  HTTPSE_TAG=tags/$HTTPSE_TAG
+  ZLIB_TAG=tags/$ZLIB_TAG
+  LIBEVENT_TAG=tags/$LIBEVENT_TAG
+fi
+
 cd $GITIAN_DIR
 
 if [ ! -f $GITIAN_DIR/inputs/tor-win32-gbuilt.zip ];
 then
-  ./bin/gbuild --commit tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
+  ./bin/gbuild --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./tor-fail-win32.log.`date +%Y%m%d%H%M%S`

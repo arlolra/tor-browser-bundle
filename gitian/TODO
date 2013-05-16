@@ -1,9 +1,4 @@
 Short Term:
- - Source integrity
-   - Validate mirror sources during prep stage
-   - Store all required gpg keys in repo
-     - Add them during check-prerequisites
-   - Pull more things from git repos (must have signed tags)
  - Fix windows issues:
    - Link to DirectX via Wine (for WebGL)
    - Enable accessibility (needs WIDL and other patches)
@@ -13,12 +8,18 @@ Short Term:
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
+ - Source integrity
+   - More git repos need signed tags
 
 Mid Term:
  - MacOS cross compilation?
    - http://www.tarnyko.net/en/?q=node/9
    - https://launchpad.net/~flosoft/+archive/cross-apple/+packages
    - http://wiki.freepascal.org/Cross_compiling_OSX_on_Linux
+
+Long Term:
+ - Offline building
+   - Requires special VM setup.
  - Compile the toolchain, too?
    - Doing so might allow us to build deterministically
      using other Linux distributions as our base image

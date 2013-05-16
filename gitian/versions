@@ -1,4 +1,7 @@
 TORBROWSER_VERSION=3.0-alpha-1
+BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
+
+VERIFY_TAGS=1
 
 TORBROWSER_TAG=tor-browser-17.0.6esr-1
 TOR_TAG=tor-0.2.4.12-alpha
@@ -6,35 +9,19 @@ TORLAUNCHER_TAG=master
 TORBUTTON_TAG=master
 HTTPSE_TAG=3.2
 NSIS_TAG=master
+ZLIB_TAG=v1.2.8
+LIBEVENT_TAG=release-2.0.21-stable
 
-ZLIB_VER=1.2.8
-OPENSSL_VER=1.0.0k
+OPENSSL_VER=1.0.1e
 LIBPNG_VER=1.5.15
-LIBEVENT_VER=2.0.21-stable
-TOR_VER=0.2.3.25
-TOR_ALPHA_VER=0.2.4.12-alpha
-FIREFOX_VER=17.0.5esr
-MOZBUILD_VER=1.5.1
-TORBUTTON_VER=1.5.2
-NOSCRIPT_VER=2.6.5.9 # XXX: Unused :(
-HTTPSE_VER=3.1.4
-HTTPSE_DEV_VER=4.0development.6
-OTR_VER=3.2.0
-OBFSPROXY_VER=0.1.4
+FIREFOX_LANG_VER=17.0.6esr
 
 ## File names for the source packages
-ZLIB_PACKAGE=zlib-${ZLIB_VER}.tar.gz
 OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
 LIBPNG_PACKAGE=libpng-${LIBPNG_VER}.tar.bz2
-LIBEVENT_PACKAGE=libevent-${LIBEVENT_VER}.tar.gz
-TOR_PACKAGE=tor-${TOR_VER}.tar.gz
-TOR_ALPHA_PACKAGE=tor-${TOR_ALPHA_VER}.tar.gz
-FIREFOX_PACKAGE=firefox-${FIREFOX_VER}.source.tar.bz2
-TORBUTTON_PACKAGE=torbutton-${TORBUTTON_VER}.xpi
 NOSCRIPT_PACKAGE=addon-722-latest.xpi
 PDFJS_PACKAGE=addon-352704-latest.xpi
-HTTPSE_PACKAGE=https-everywhere-${HTTPSE_VER}.xpi
-HTTPSE_DEV_PACKAGE=https-everywhere-${HTTPSE_DEV_VER}.xpi
-OBFSPROXY_PACKAGE=obfsproxy-${OBFSPROXY_VER}.tar.gz
 
+OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
+LIBPNG_URL=http://download.sourceforge.net/libpng/${LIBPNG_PACKAGE}
 

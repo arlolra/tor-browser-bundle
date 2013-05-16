@@ -12,15 +12,17 @@ packages:
 - "autoconf2.13"
 - "mingw-w64"
 - "faketime"
+- "libtool"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
   "dir": "tor"
+- "url": "https://github.com/libevent/libevent.git"
+  "dir": "libevent"
+- "url": "https://github.com/madler/zlib.git"
+  "dir": "zlib"
 files:
-# TODO: Can we use an env for this file+version??
-- "libevent-2.0.21-stable.tar.gz"
-- "openssl-1.0.0k.tar.gz"
-- "zlib-1.2.8.tar.gz"
+- "openssl.tar.gz"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -32,16 +34,15 @@ script: |
   mkdir -p $INSTDIR/App/
   mkdir -p $OUTDIR/
   #
-  tar xzf zlib-*.tar.gz
-  cd zlib-*
+  cd zlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 install
   cp $INSTDIR/zlib/lib/*.dll $INSTDIR/App/
   cd ..
   #
-  tar -zxvf libevent-*.tar.gz
-  cd libevent-*
+  cd libevent
+  ./autogen.sh
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   ./configure --disable-static --host=i686-w64-mingw32 --prefix=$INSTDIR/libevent
   make $MAKEOPTS
@@ -49,7 +50,7 @@ script: |
   cp $INSTDIR/libevent/bin/*.dll $INSTDIR/App/
   cd ..
   #
-  tar xzf openssl-*.tar.gz
+  tar xzf openssl.tar.gz
   cd openssl-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
