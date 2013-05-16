@@ -51,6 +51,8 @@ script: |
   #git archive HEAD | tar -x -C $OUTDIR/src
   rm -rf .git
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  rm -f configure
+  rm -f js/src/configure
   make -f client.mk configure
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
