@@ -55,14 +55,14 @@ then
   # If we're verifying tags, be explicit to gitian that we
   # want to build from tags.
   # XXX: Some things still have no tags
-  # TORBROWSER_TAG=tags/$TORBROWSER_TAG
-  # NSIS_TAG=tags/$NSIS_TAG
-  # TORLAUNCHER_TAG=tags/$TORLAUNCHER_TAG
-  # TORBUTTON_TAG=tags/$TORBUTTON_TAG
-  TOR_TAG=tags/$TOR_TAG
-  HTTPSE_TAG=tags/$HTTPSE_TAG
-  ZLIB_TAG=tags/$ZLIB_TAG
-  LIBEVENT_TAG=tags/$LIBEVENT_TAG
+  # TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
+  # NSIS_TAG=refs/tags/$NSIS_TAG
+  # TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
+  # TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG
+  TOR_TAG=refs/tags/$TOR_TAG
+  HTTPSE_TAG=refs/tags/$HTTPSE_TAG
+  ZLIB_TAG=refs/tags/$ZLIB_TAG
+  LIBEVENT_TAG=refs/tags/$LIBEVENT_TAG
 fi
 
 cd $GITIAN_DIR
