@@ -1,10 +1,5 @@
 Short Term:
- - Fix windows issues:
-   - Link to DirectX via Wine (for WebGL)
-   - Enable accessibility (needs WIDL and other patches)
-     - https://bugzilla.mozilla.org/show_bug.cgi?id=815581
-     - https://bugzilla.mozilla.org/show_bug.cgi?id=858006
-     - https://bugzilla.mozilla.org/show_bug.cgi?id=803084
+ - Switch Linux archive to .tar.xz
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
@@ -16,6 +11,13 @@ Mid Term:
    - http://www.tarnyko.net/en/?q=node/9
    - https://launchpad.net/~flosoft/+archive/cross-apple/+packages
    - http://wiki.freepascal.org/Cross_compiling_OSX_on_Linux
+ - Fix windows issues:
+   - Link to DirectX via Wine (for WebGL)
+     - Weird C++ stdext namespace issues remain :/
+   - Accesibility still fails :/
+     - https://bugzilla.mozilla.org/show_bug.cgi?id=815581
+       - Has conflicts with FF17-ESR :/
+       - Can we just pull the whole accessibility dir?
 
 Long Term:
  - Offline building
