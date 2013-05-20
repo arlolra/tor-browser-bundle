@@ -100,6 +100,5 @@ fi
 
 cp -a build/out/*.exe $WRAPPER_DIR
 
-# FIXME: localization
 # FIXME: docs
 
