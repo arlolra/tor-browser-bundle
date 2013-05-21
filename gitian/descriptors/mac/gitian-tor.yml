@@ -12,7 +12,7 @@ packages:
 - "autoconf2.13"
 - "faketime"
 - "libtool"
-- "libssl0.9.8"
+#- "libssl0.9.8"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
@@ -24,8 +24,9 @@ remotes:
 files:
 - "openssl.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
-- "apple-x86-gcc_4.2.1~5646.1flosoft2_i386.deb"
-- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
+- "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
+#- "apple-x86-gcc_4.2.1~5646.1flosoft2_i386.deb"
+#- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -33,19 +34,23 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   #
-  export CFLAGS="-isysroot /usr/lib/apple/SDKs/MacOSX10.6.sdk/"
-  export CXXFLAGS=$CFLAGS
-  export LDFLAGS=$CFLAGS
-  #export CFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I. -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/"
-  #export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/"
+  #export CFLAGS="-isysroot /usr/lib/apple/SDKs/MacOSX10.6.sdk/"
+  #export CXXFLAGS=$CFLAGS
+  #export LDFLAGS=$CFLAGS
+  export PATH="$PATH:/usr/apple-osx/bin/"
+  export CFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I. -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/"
+  export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/"
   #
   mkdir -p $INSTDIR/bin/
   mkdir -p $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
   mkdir -p $OUTDIR/
   #
   sudo dpkg -i *.deb
+  cd /usr
+  sudo tar -Jxvf /home/ubuntu/build/multiarch-darwin*tar.xz
+  cd ~/build
   # For OpenSSL
-  sudo ln -s /usr/bin/i686-apple-darwin10-gcc /usr/bin/i686-apple-darwin10-cc
+  sudo ln -s /usr/apple-osx/bin/apple-osx-gcc /usr/apple-osx/bin/i686-apple-darwin11-cc
   #
   #cd zlib
   #find -type f | xargs touch --date="$REFERENCE_DATETIME"
@@ -54,22 +59,22 @@ script: |
   #cp $INSTDIR/zlib/lib/*.dylib $INSTDIR/App/
   #cd ..
   #
-  cd libevent
-  ./autogen.sh
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --disable-static --host=i686-apple-darwin10 --prefix=$INSTDIR/libevent
-  make $MAKEOPTS
-  make install
-  cp $INSTDIR/libevent/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
-  cd ..
-  #
   tar xzf openssl.tar.gz
   cd openssl-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./Configure --cross-compile-prefix=i686-apple-darwin10- $CFLAGS darwin-i386-cc --prefix=$INSTDIR/openssl
+  ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin-i386-cc --prefix=$INSTDIR/openssl
   make # SHARED_LDFLAGS="-shared -dynamiclib -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/"
   make install
   #cp $INSTDIR/openssl/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  cd ..
+  #
+  cd libevent
+  ./autogen.sh
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --disable-static --host=i686-apple-darwin11 --prefix=$INSTDIR/libevent
+  make $MAKEOPTS
+  make install
+  cp $INSTDIR/libevent/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
   cd ..
   #
   cd tor
@@ -77,7 +82,7 @@ script: |
   git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --enable-static-openssl --disable-asciidoc --host=i686-apple-darwin10 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
+  ./configure --enable-static-openssl --disable-asciidoc --host=i686-apple-darwin11 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
   make $MAKEOPTS
   make install
   cd ..
