@@ -1,0 +1,75 @@
+---
+name: "tor"
+suites:
+- "precise"
+architectures:
+- "i386"
+packages: 
+- "git-core"
+- "unzip"
+- "zip"
+- "autoconf"
+- "autoconf2.13"
+- "mingw-w64"
+- "faketime"
+- "yasm"
+#- "libssl0.9.8"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://git.torproject.org/tor-browser.git"
+  "dir": "tor-browser"
+files:
+- "torbrowser.version"
+- "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
+- "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
+#- "apple-x86-gcc_4.2.1~5646.1flosoft2_i386.deb"
+#- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
+script: |
+  INSTDIR="$HOME/install/"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  export CFLAGS="-isysroot /usr/lib/apple/SDKs/MacOSX10.6.sdk/"
+  export CXXFLAGS=$CFLAGS
+  export LDFLAGS=$CFLAGS
+  export PATH="$PATH:/usr/apple-osx/bin/"
+  #
+  mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/
+  mkdir -p $OUTDIR/
+  #
+  sudo dpkg -i *.deb
+  cd /usr
+  sudo tar -Jxvf /home/ubuntu/build/multiarch-darwin*tar.xz
+  cd ~/build
+  # FIXME: path hacks:
+  sudo mkdir -p /System/Library/
+  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk /usr/lib/apple/SDKs/MacOSX10.5.sdk
+  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/ /System/Library/
+  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/PrivateFrameworks/ /System/Library/
+  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/libstdc++.6.dylib /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/libstdc++.dylib
+  #
+  cd tor-browser
+  mv .mozconfig-mac .mozconfig
+  grep -v '^pref(\"torbrowser.version\",' browser/app/profile/000-tor-browser.js > browser/app/profile/000-tor-browser.js.fixed
+  cat ../torbrowser.version >> browser/app/profile/000-tor-browser.js.fixed
+  mv browser/app/profile/000-tor-browser.js.fixed browser/app/profile/000-tor-browser.js
+  # .git and the src takes up a lot of useless space, and we need the space to build
+  #git archive HEAD | tar -x -C $OUTDIR/src
+  rm -rf .git
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  rm -f configure
+  rm -f js/src/configure
+  make -f client.mk configure
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #
+  # XXX: Probably should fix this some other way than just letting it fail once..
+  make $MAKEOPTS -f client.mk build HOST_CFLAGS="" HOST_CXXFLAGS="" || true
+  make $MAKEOPTS -f client.mk build HOST_CFLAGS="" HOST_CXXFLAGS="" CC="apple-osx-gcc $CFLAGS"
+  #
+  make -C obj-* package INNER_MAKE_PACKAGE=true
+  cp -a obj-*/dist/firefox/* $INSTDIR/TorBrowser.app/Contents/MacOS/
+  #
+  cd $INSTDIR
+  cd ..
+  zip -rX tor-browser-mac$GBUILT_BITS-gbuilt.zip ./TorBrowser.app
+  cp tor-browser-mac$GBUILT_BITS-gbuilt.zip $OUTDIR

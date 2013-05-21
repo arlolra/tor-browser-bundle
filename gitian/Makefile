@@ -3,6 +3,7 @@ all: clean prep build
 build:
 	./mkbundle-linux.sh
 	./mkbundle-windows.sh
+	#./mkbundle-mac.sh
 
 prep:
 	./check-prerequisites.sh

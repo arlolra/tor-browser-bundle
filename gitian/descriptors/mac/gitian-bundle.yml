@@ -1,0 +1,110 @@
+---
+name: "tor"
+suites:
+- "precise"
+architectures:
+- "i386"
+packages: 
+- "git-core"
+- "unzip"
+- "zip"
+- "mingw-w64"
+- "nsis"
+- "faketime"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://github.com/moba/tbb-windows-installer.git"
+  "dir": "tbb-windows-installer"
+- "url": "https://git.torproject.org/tor-launcher.git"
+  "dir": "tor-launcher"
+- "url": "https://git.torproject.org/torbutton.git"
+  "dir": "torbutton"
+- "url": "https://git.torproject.org/https-everywhere.git"
+  "dir": "https-everywhere"
+files:
+# TODO: Can we use an env for this file+version??
+- "tor-browser-mac32-gbuilt.zip"
+- "tor-mac32-gbuilt.zip"
+- "relativelink-src.zip"
+- "mac-skeleton.zip"
+- "mac-langpacks.zip"
+- "noscript@noscript.net.xpi"
+- "uriloader@pdf.js.xpi"
+script: |
+  INSTDIR="$HOME/install"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  # 
+  mkdir -p $OUTDIR/
+  mkdir -p TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org
+  #
+  cd tor-launcher
+  make clean
+  make package
+  cp ./pkg/*.xpi ../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi
+  cd ..
+  #
+  cd torbutton
+  mkdir -p pkg
+  ./makexpi.sh
+  cp ./pkg/*.xpi ../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi
+  cd ..
+  #
+  cd https-everywhere
+  ./makexpi.sh
+  cp ./pkg/*.xpi ../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org.xpi
+  cd ..
+  #
+  cp *.xpi ./TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/
+  cd ./TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/
+  mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
+  cd https-everywhere@eff.org
+  unzip ../https-everywhere@eff.org.xpi
+  rm ../https-everywhere@eff.org.xpi
+  cd ~/build/
+  #
+  unzip relativelink-src.zip
+  cd RelativeLink
+  cp RelativeLinkOSX.sh ../TorBrowserBundle.app/Contents/MacOS/TorBrowserBundle
+  cd ..
+  #
+  cd TorBrowserBundle.app
+  unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
+  unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
+  unzip ~/build/mac-skeleton.zip
+  cd ..
+  #
+  cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+  unzip omni.ja defaults/preferences/000-tor-browser.js
+  cp defaults/preferences/000-tor-browser.js ~/build/
+  echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
+  zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+  cd ../../../../../../
+  # XXX: DMG plz
+  cp -a TorBrowserBundle.app TorBrowserBundle_en-US.app
+  zip -rX $OUTDIR/TorBrowserBundle_en-US.zip TorBrowserBundle_en-US.app
+  rm -rf TorBrowserBundle_en-US.app
+  #
+  unzip ../mac-langpacks.zip
+  cd mac-langpacks
+  for i in *.xpi
+  do
+    LANG=`basename $i .xpi`
+    cd ..
+    cp -a TorBrowserBundle.app TorBrowserBundle_$LANG.app
+    cp $i ./TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/
+
+    cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+    mkdir -p defaults/preferences
+    cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
+    echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+    zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+    cd ../../../../../../
+
+    zip -rX $OUTDIR/TorBrowserBundle_$LANG.zip TorBrowserBundle_$LANG.app
+    rm -rf TorBrowserBundle_$LANG.app
+    cd mac-langpacks
+  done 
+  cd ..
