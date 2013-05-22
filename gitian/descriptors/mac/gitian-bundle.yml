@@ -13,8 +13,6 @@ packages:
 - "faketime"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
-- "url": "https://github.com/moba/tbb-windows-installer.git"
-  "dir": "tbb-windows-installer"
 - "url": "https://git.torproject.org/tor-launcher.git"
   "dir": "tor-launcher"
 - "url": "https://git.torproject.org/torbutton.git"
@@ -30,15 +28,18 @@ files:
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
+- "bare-version"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
+  export TORBROWSER_VERSION=`cat bare-version`
   # 
   mkdir -p $OUTDIR/
   mkdir -p TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org
+  mkdir -p TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
   #
   cd tor-launcher
   make clean
@@ -71,10 +72,11 @@ script: |
   cd ..
   #
   cd TorBrowserBundle.app
-  unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
   unzip ~/build/mac-skeleton.zip
-  cd ..
+  cd Contents/MacOS/
+  unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
+  cd ../../../
   #
   cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
   unzip omni.ja defaults/preferences/000-tor-browser.js
@@ -84,17 +86,17 @@ script: |
   cd ../../../../../../
   # XXX: DMG plz
   cp -a TorBrowserBundle.app TorBrowserBundle_en-US.app
-  zip -rX $OUTDIR/TorBrowserBundle_en-US.zip TorBrowserBundle_en-US.app
+  zip -rX $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip TorBrowserBundle_en-US.app
   rm -rf TorBrowserBundle_en-US.app
   #
-  unzip ../mac-langpacks.zip
+  unzip mac-langpacks.zip
   cd mac-langpacks
   for i in *.xpi
   do
     LANG=`basename $i .xpi`
+    cp -a ../TorBrowserBundle.app ../TorBrowserBundle_$LANG.app
+    cp $i ../TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
-    cp -a TorBrowserBundle.app TorBrowserBundle_$LANG.app
-    cp $i ./TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
 
     cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
     mkdir -p defaults/preferences
@@ -103,7 +105,7 @@ script: |
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     cd ../../../../../../
 
-    zip -rX $OUTDIR/TorBrowserBundle_$LANG.zip TorBrowserBundle_$LANG.app
+    zip -rX $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip TorBrowserBundle_$LANG.app
     rm -rf TorBrowserBundle_$LANG.app
     cd mac-langpacks
   done 
