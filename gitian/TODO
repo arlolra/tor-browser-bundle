@@ -1,4 +1,5 @@
 Short Term:
+ - Missing Firefox version bumping commits (hg->git conversion issue?)
  - Bundle files and about:config need actual version numbers
    - echo $TORBROWSER_VERSION into an input
  - Source integrity
@@ -49,6 +50,9 @@ Mid Term:
      - https://bugzilla.mozilla.org/show_bug.cgi?id=815581
        - Has conflicts with FF17-ESR :/
        - Can we just pull the whole accessibility dir?
+ - If Tor Launcher fails to load, the browser still can launch
+   - Missing/Partial Localization strings can cause this..
+   - I think we don't care? Torbutton's new tor test should fail..
 
 Long Term:
  - Offline building
