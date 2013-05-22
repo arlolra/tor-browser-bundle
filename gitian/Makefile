@@ -10,7 +10,7 @@ prep:
 	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/
 
 clean:
-	rm ../../gitian-builder/inputs/*gbuilt*.zip
+	rm -f ../../gitian-builder/inputs/*gbuilt*.zip
 
 distclean:
-	rm ../../gitian-builder/inputs/*
+	rm -f ../../gitian-builder/inputs/*
