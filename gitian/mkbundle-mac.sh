@@ -37,15 +37,17 @@ then
   stop-target
 fi
 
-echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-MacOS\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
 zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
-cd ./Bundle-Data/mac
-rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
-zip -rX $GITIAN_DIR/inputs/mac-skeleton.zip ./
+# XXX: Need skeleton
+#cd ./Bundle-Data/mac
+#rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
+#zip -rX $GITIAN_DIR/inputs/mac-skeleton.zip ./
 
 cd $WRAPPER_DIR
 
@@ -81,7 +83,8 @@ fi
 
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-mac32-gbuilt.zip ];
 then
-  ./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
+  ./bin/gbuild --commit tor-browser=3857a01c551e796b14d9cda183726113b472fd32 $DESCRIPTOR_DIR/mac/gitian-firefox.yml
+  #./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`

@@ -94,7 +94,7 @@ script: |
     LANG=`basename $i .xpi`
     cd ..
     cp -a TorBrowserBundle.app TorBrowserBundle_$LANG.app
-    cp $i ./TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/
+    cp $i ./TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
 
     cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
     mkdir -p defaults/preferences
