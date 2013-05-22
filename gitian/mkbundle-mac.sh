@@ -40,14 +40,15 @@ fi
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-MacOS\");" > $GITIAN_DIR/inputs/torbrowser.version 
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 
+cp $WRAPPER_DIR/build-helpers/i686* $GITIAN_DIR/inputs/
+
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
 zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
-# XXX: Need skeleton
-#cd ./Bundle-Data/mac
-#rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
-#zip -rX $GITIAN_DIR/inputs/mac-skeleton.zip ./
+cd ./Bundle-Data/mac
+rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
+zip -rX $GITIAN_DIR/inputs/mac-skeleton.zip ./
 
 cd $WRAPPER_DIR
 
