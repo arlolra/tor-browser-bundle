@@ -37,7 +37,8 @@ then
   stop-target
 fi
 
-echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Windows\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip

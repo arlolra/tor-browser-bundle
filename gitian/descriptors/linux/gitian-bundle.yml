@@ -32,12 +32,14 @@ files:
 - "linux-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
+- "bare-version"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
+  export TORBROWSER_VERSION=`cat bare-version`
   # 
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Data/profile/extensions/https-everywhere@eff.org
@@ -88,7 +90,7 @@ script: |
   cd ../../../
   #7z a -sfx tor-browser.exe tor-browser_en-US
   #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
-  tar -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.tar.xz tor-browser_en-US
+  tar -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
   rm -rf tor-browser_en-US
   #
   unzip linux-langpacks.zip
@@ -96,9 +98,9 @@ script: |
   for i in *.xpi
   do
     LANG=`basename $i .xpi`
+    cp -a ../tor-browser ../tor-browser_$LANG
+    cp $i ../tor-browser_$LANG/Data/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
-    cp -a tor-browser tor-browser_$LANG
-    cp $i ./tor-browser_$LANG/Data/profile/extensions/
 
     cd tor-browser_$LANG/App/Firefox
     unzip omni.ja defaults/preferences/000-tor-browser.js
@@ -109,7 +111,7 @@ script: |
 
     #7z a -sfx tor-browser.exe tor-browser_$LANG
     #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract
-    tar -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.tar.xz tor-browser_$LANG
+    tar -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
 
     rm -rf tor-browser_$LANG
     cd linux-langpacks

@@ -51,7 +51,8 @@ then
   stop-target
 fi
 
-echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Linux\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
@@ -112,5 +113,5 @@ then
   exit 1
 fi
 
-cp -a build/out/tor-browser-linux*7z* $WRAPPER_DIR
+cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR
 

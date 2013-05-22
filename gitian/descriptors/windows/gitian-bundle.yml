@@ -30,12 +30,14 @@ files:
 - "win32-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
+- "bare-version"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
+  export TORBROWSER_VERSION=`cat bare-version`
   # 
   mkdir -p $OUTDIR/
   mkdir -p tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/https-everywhere@eff.org
@@ -86,14 +88,14 @@ script: |
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   cd ../../../../
   makensis torbrowser.nsi
-  mv torbrowser-install.exe $OUTDIR/torbrowser-install_en-US.exe
+  mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_en-US.exe
   #
   unzip ../win32-langpacks.zip
   cd win32-langpacks
   for i in *.xpi
   do
     LANG=`basename $i .xpi`
-    cp $i ../"Tor Browser"/FirefoxPortable/Data/profile/extensions/
+    cp $i ../"Tor Browser"/FirefoxPortable/Data/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
     cd "Tor Browser"/FirefoxPortable/App/Firefox
@@ -104,8 +106,8 @@ script: |
     cd ../../../../
 
     makensis torbrowser.nsi
-    mv torbrowser-install.exe $OUTDIR/torbrowser-install_$LANG.exe
-    rm ./"Tor Browser"/FirefoxPortable/Data/profile/extensions/$i
+    mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
+    rm ./"Tor Browser"/FirefoxPortable/Data/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd win32-langpacks
   done 
   cd ..
