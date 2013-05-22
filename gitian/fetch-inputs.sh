@@ -19,7 +19,7 @@ fi
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
 
 # Get package files from mirror
-for i in OPENSSL LIBPNG # OBFSPROXY
+for i in OPENSSL LIBPNG TOOLCHAIN4 OSXSDK # OBFSPROXY
 do
   PACKAGE=${i}"_PACKAGE"
   URL=${MIRROR_URL}${!PACKAGE}
@@ -57,7 +57,7 @@ done
 # (OpenSSL is signed with MD5, and libpng is not signed at all)
 mkdir -p verify
 cd verify
-for i in OPENSSL LIBPNG
+for i in OPENSSL LIBPNG TOOLCHAIN4 OSXSDK
 do
   URL=${i}"_URL"
   PACKAGE=${i}"_PACKAGE"
@@ -91,19 +91,24 @@ fi
 
 mkdir -p linux-langpacks
 mkdir -p win32-langpacks
+mkdir -p mac-langpacks
 
 for i in $BUNDLE_LOCALES
 do
   cd linux-langpacks
-  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi
+  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi
   cd ..
   cd win32-langpacks
-  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi
+  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi
+  cd ..
+  cd mac-langpacks
+  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/mac/xpi/$i.xpi
   cd ..
 done
 
 zip -rX win32-langpacks.zip win32-langpacks
 zip -rX linux-langpacks.zip linux-langpacks
+zip -rX mac-langpacks.zip mac-langpacks
 
 ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
 ln -sf $PDFJS_PACKAGE uriloader@pdf.js.xpi
