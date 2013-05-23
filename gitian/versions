@@ -27,4 +27,4 @@ OSXSDK_PACKAGE=apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb
 OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
 LIBPNG_URL=http://download.sourceforge.net/libpng/${LIBPNG_PACKAGE}
 TOOLCHAIN4_URL=https://mingw-and-ndk.googlecode.com/files/${TOOLCHAIN4_PACKAGE}
-OSXSDK_PACKAGE=https://launchpad.net/~flosoft/+archive/cross-apple/+files/${OSXSDK_PACKAGE}
+OSXSDK_URL=https://launchpad.net/~flosoft/+archive/cross-apple/+files/${OSXSDK_PACKAGE}
