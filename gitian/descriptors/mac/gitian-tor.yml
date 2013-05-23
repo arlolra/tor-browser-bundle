@@ -74,7 +74,8 @@ script: |
   ./configure --disable-static --host=i686-apple-darwin11 --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
-  cp $INSTDIR/libevent/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  cp $INSTDIR/libevent/lib/libevent-*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  LIBEVENT_FILE=`basename $INSTDIR/libevent/lib/libevent-*.dylib`
   cd ..
   #
   cd tor
@@ -87,6 +88,8 @@ script: |
   make install
   cd ..
   cp $INSTDIR/bin/tor $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  cd $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  i686-apple-darwin11-install_name_tool -change /home/ubuntu/install/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
   # XXX: Geoip files..
   #
   #cp -a /usr/lib/gcc/i686-apple-darwin10/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/
