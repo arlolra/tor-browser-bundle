@@ -1,7 +1,6 @@
 Short Term:
  - Missing Firefox version bumping commits (hg->git conversion issue?)
- - Bundle files and about:config need actual version numbers
-   - echo $TORBROWSER_VERSION into an input
+ - Branding is broken on Mac, other platforms?
  - Source integrity
    - More git repos need signed tags
  - Hardening options
@@ -9,40 +8,8 @@ Short Term:
    - Can we randomize stack canaries each release, etc?
 
 Mid Term:
- - MacOS cross compilation?
-   - Need Mac Skeleton and Mac Langpacks
-   - https://launchpad.net/~flosoft/+archive/cross-apple/+packages
-     - GCC 4.2.1 in these packages is too old and crashed during
-       Firefox build. We need 4.5.1+.
-     - GCC 4.7.3 build
-       - ./configure --disable-shared --target=i686-apple-darwin10 \
-         --prefix=/usr --with-sysroot=/usr/lib/apple/SDKs/MacOSX10.6.sdk \
-         --with-slibdir=/usr/i686-apple-darwin10/lib \
-         --mandir=/usr/i686-apple-darwin10/share/man \
-         --infodir=/usr/i686-apple-darwin10/share/info --libexecdir=/usr/lib \
-         --disable-nls --with-gxx-include-dir=/usr/include/c++/4.7.3 \
-         --enable-version-specific-runtime-libs \
-         --with-as=/usr/apple-osx/bin//i686-apple-darwin11-as \
-         --with-ld=/usr/apple-osx/bin//i686-apple-darwin11-ld \
-         --enable-languages=c,c++,objc,obj-c++
-       - http://www.linuxforums.org/forum/applications/172812-solved-gcc-make-error-missing-libgcc-mvars.html
-     - Current Status:
-       - GCC 4.7.3 builds, but the odcctools ld does not support -no_compact_unwind
-       - odcctools can't be recompiled with 64bit gcc:
-         - https://code.google.com/p/iphone-dev/issues/detail?id=14
-         - https://code.google.com/p/iphone-dev/issues/detail?id=37
-   - Fedora route:
-     - Source: https://github.com/mingwandroid/toolchain4
-     - Binaries: https://code.google.com/p/mingw-and-ndk/downloads/list
-     - Info/Discussion:
-       - https://lists.macosforge.org/pipermail/macports-dev/2011-September/016210.html
-       - http://gcc.gnu.org/bugzilla/show_bug.cgi?id=50229
-     - Current Status:
-       - Included GCC does not support -arch (even though it claims to)
-       - GCC 4.7.3 builds using the binutils in the above binary link, but
-         resulting gcc tries to link with -lgcc_ext.10.5, which does not exist.
-   - http://wiki.freepascal.org/Cross_compiling_OSX_on_Linux
-     - Git instead of SVN: https://github.com/mazhe/odcctools
+ - Universal binaries for Mac?
+   - Usability win, but gettor loss (we're at 23M right now)
  - Fix windows issues:
    - Link to DirectX via Wine (for WebGL)
      - Weird C++ stdext namespace issues remain :/
