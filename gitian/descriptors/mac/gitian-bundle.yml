@@ -71,8 +71,8 @@ script: |
   cp RelativeLinkOSX.sh ../TorBrowserBundle.app/Contents/MacOS/TorBrowserBundle
   cd ..
   #
-  cd TorBrowserBundle.app
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
+  cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
   cd Contents/MacOS/
   unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
