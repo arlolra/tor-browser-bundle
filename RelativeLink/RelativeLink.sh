@@ -218,8 +218,8 @@ cd "${HOME}"
 ./App/Firefox/firefox -no-remote -profile Data/profile
 exitcode="$?"
 if [ "$exitcode" -ne 0 ]; then
-	complain "Vidalia exited abnormally.  Exit code: $exitcode"
+	complain "Tor Browser exited abnormally.  Exit code: $exitcode"
 	exit "$exitcode"
 else
-	printf '\nVidalia exited cleanly.\n'
+	printf '\nTor Browser exited cleanly.\n'
 fi

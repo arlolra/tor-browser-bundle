@@ -50,16 +50,15 @@ if [ "$DEBUG_TBB" -eq 1 ]; then
 fi
 
 if [ "$DEBUG_TBB" -eq 1 ]; then
-	printf "\nStarting Vidalia now\n"
+	printf "\nStarting Tor Browser now\n"
 	cd "${HOME}"
-	printf "\nLaunching Vidalia from: `pwd`\n"
-	./Contents/MacOS/Vidalia.app/Contents/MacOS/Vidalia --loglevel debug --logfile vidalia-debug-log \
-	--datadir ./Contents/Resources/Data/Vidalia/
-	printf "\nVidalia exited with the following return code: $?\n"
+	printf "\nLaunching Tor Browser from: `pwd`\n"
+    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox -jsconsole -no-remote -profile $HOME/Library/"Application Support"/Firefox/Profiles/profile
+	printf "\nTor Browser exited with the following return code: $?\n"
 	exit
 fi
 
 # not in debug mode, run proceed normally
 printf "\nLaunching Tor Browser Bundle for OS X in ${HOME}\n"
 cd "${HOME}"
-open "$HOME/Contents/MacOS/Vidalia.app"
+open "$HOME/Contents/MacOS/TorBrowser.app" --args -no-remote -profile $HOME/Library/"Application Support"/Firefox/Profiles/profile
