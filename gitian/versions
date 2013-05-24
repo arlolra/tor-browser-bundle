@@ -13,7 +13,7 @@ ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
 
 OPENSSL_VER=1.0.1e
-LIBPNG_VER=1.5.15
+LIBPNG_VER=1.5.16
 FIREFOX_LANG_VER=17.0.6esr
 
 ## File names for the source packages
