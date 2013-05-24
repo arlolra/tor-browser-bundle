@@ -181,9 +181,13 @@ if [ -d tor-browser/.git ];
 then
   cd tor-browser
   git fetch --tags origin
+  git checkout $TORBROWSER_TAG
   cd ..
 else
   git clone https://git.torproject.org/tor-browser.git
+  cd tor-browser
+  git checkout $TORBROWSER_TAG
+  cd ..
 fi
 
 exit 0
