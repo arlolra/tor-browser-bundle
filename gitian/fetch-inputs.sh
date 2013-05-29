@@ -57,7 +57,7 @@ done
 # (OpenSSL is signed with MD5, and libpng is not signed at all)
 mkdir -p verify
 cd verify
-for i in OPENSSL LIBPNG TOOLCHAIN4 OSXSDK
+for i in OPENSSL LIBPNG OSXSDK
 do
   URL=${i}"_URL"
   PACKAGE=${i}"_PACKAGE"
@@ -68,11 +68,16 @@ do
     exit 1
   fi
 done
-for i in *
+# XXX: Google won't allow wget -N.. We need to re-download the whole
+# TOOLCHAIN4 each time :/
+rm -f $TOOLCHAIN4_PACKAGE
+wget $TOOLCHAIN4_URL
+for i in OPENSSL LIBPNG OSXSDK TOOLCHAIN4
 do
-   diff $i ../$i
+   PACKAGE=${i}"_PACKAGE"
+   diff ${!PACKAGE} ../${!PACKAGE}
    if [ $? -ne 0 ]; then
-     echo "Package $i differs from our mirror's version!"
+     echo "Package ${!PACKAGE} differs from our mirror's version!"
      exit 1
    fi
 done
