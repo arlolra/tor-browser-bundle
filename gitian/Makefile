@@ -13,4 +13,4 @@ clean:
 	rm -f ../../gitian-builder/inputs/*gbuilt*.zip
 
 distclean:
-	rm -f ../../gitian-builder/inputs/*
+	rm -rf ../../gitian-builder/inputs/*
