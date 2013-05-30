@@ -3,14 +3,13 @@
 
 . ./versions
 
-if [ -n $1 -a ! -d $1 ];
-then
-  mkdir $1
+if [ -n $1 ]; then
+  INPUTS_DIR=../../gitian-builder/inputs
+else
+  INPUTS_DIR=$1
 fi
 
-if [ -d $1 ]; then
-  cd $1
-fi
+cd $INPUTS_DIR
 
 # XXX: Not tagged yet
 # cd ttb-windows-installer
