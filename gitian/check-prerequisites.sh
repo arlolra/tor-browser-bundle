@@ -10,13 +10,13 @@ then
   exit 1
 fi
 
-dpkg -s ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip torsocks 2>/dev/null >/dev/null
+dpkg -s ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion torsocks tor 2>/dev/null >/dev/null
 
 if [ $? -ne 0 ]; then
   echo "You are missing one or more Gitian build tool dependencies."
   echo
   echo "Please run:"
-  echo " sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip torsocks"
+  echo " sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion torsocks tor"
   exit 1
 fi
 
