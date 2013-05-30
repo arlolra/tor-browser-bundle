@@ -1,7 +1,7 @@
 Short Term:
+ - Include input hashes in bundle README
  - Source integrity
    - More git repos need signed tags
- - A console window opens for Windows
  - Clean up old paths (requires Tor Launcher commits)
    - Remove FirefoxPortable paths for Windows
    - Relocate torrc to Library/Tor for MacOS
@@ -10,6 +10,8 @@ Short Term:
    - Can we randomize stack canaries each release, etc?
 
 Mid Term:
+ - DMGs for Mac
+   https://trac.torproject.org/projects/tor/ticket/4261
  - Universal binaries for Mac?
    - Usability win, but gettor loss (we're at 23M right now)
    - https://developer.mozilla.org/en-US/docs/Mac_OS_X_Universal_Binaries
