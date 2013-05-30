@@ -90,7 +90,7 @@ wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot-r5830.zip ];
 then
-  svn co -r 5830 https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn
+  svn co -r 5830 https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn || exit 1
   zip -x*/.svn/* -rX mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
 fi
 
@@ -125,7 +125,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://github.com/moba/tbb-windows-installer.git
+  git clone https://github.com/moba/tbb-windows-installer.git || exit 1
 fi
 
 if [ -d zlib/.git ];
@@ -134,7 +134,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://github.com/madler/zlib.git
+  git clone https://github.com/madler/zlib.git || exit 1
 fi
 
 if [ -d libevent/.git ];
@@ -143,7 +143,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://github.com/libevent/libevent.git
+  git clone https://github.com/libevent/libevent.git || exit 1
 fi
 
 if [ -d tor-launcher/.git ];
@@ -152,7 +152,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://git.torproject.org/tor-launcher.git
+  git clone https://git.torproject.org/tor-launcher.git || exit 1
 fi
 
 if [ -d tor/.git ];
@@ -161,7 +161,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://git.torproject.org/tor.git
+  git clone https://git.torproject.org/tor.git || exit 1
 fi
 
 if [ -d torbutton/.git ];
@@ -170,7 +170,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://git.torproject.org/torbutton.git
+  git clone https://git.torproject.org/torbutton.git || exit 1
 fi
 
 if [ -d https-everywhere/.git ];
@@ -179,7 +179,7 @@ then
   git fetch --tags origin
   cd ..
 else
-  git clone https://git.torproject.org/https-everywhere.git
+  git clone https://git.torproject.org/https-everywhere.git || exit 1
 fi
 
 if [ -d tor-browser/.git ];
@@ -189,7 +189,7 @@ then
   git checkout $TORBROWSER_TAG
   cd ..
 else
-  git clone https://git.torproject.org/tor-browser.git
+  git clone https://git.torproject.org/tor-browser.git || exit 1
   cd tor-browser
   git checkout $TORBROWSER_TAG
   cd ..
