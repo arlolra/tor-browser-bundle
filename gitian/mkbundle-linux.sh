@@ -82,6 +82,10 @@ fi
 
 cd $GITIAN_DIR
 
+echo 
+echo "****** Starting Tor Component of Linux Bundle (1/3 for Linux) ******"
+echo 
+
 if [ ! -f $GITIAN_DIR/inputs/tor-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-linux64-gbuilt.zip ];
 then
   ./bin/gbuild --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
@@ -93,6 +97,10 @@ then
   
   cp -a build/out/tor-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
+
+echo 
+echo "****** Starting TorBrowser Component of Linux Bundle (2/3 for Linux) ******"
+echo 
 
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip ];
 then
@@ -106,6 +114,10 @@ then
   cp -a build/out/tor-browser-linux*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
+echo 
+echo "****** Starting Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
+echo 
+
 ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
 if [ $? -ne 0 ];
 then
@@ -113,5 +125,10 @@ then
   exit 1
 fi
 
-cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR
+cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR || exit 1
+
+echo 
+echo "****** Linux Bundle complete ******"
+echo 
+
 

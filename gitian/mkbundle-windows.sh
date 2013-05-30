@@ -68,6 +68,10 @@ fi
 
 cd $GITIAN_DIR
 
+echo 
+echo "****** Starting Tor Component of Windows Bundle (1/3 for Windows) ******"
+echo 
+
 if [ ! -f $GITIAN_DIR/inputs/tor-win32-gbuilt.zip ];
 then
   ./bin/gbuild --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
@@ -92,6 +96,10 @@ then
   cp -a build/out/tor-browser-win32-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
+echo 
+echo "****** Starting Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
+echo 
+
 ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
 if [ $? -ne 0 ];
 then
@@ -99,7 +107,11 @@ then
   exit 1
 fi
 
-cp -a build/out/*.exe $WRAPPER_DIR
+cp -a build/out/*.exe $WRAPPER_DIR || exit 1
+
+echo 
+echo "****** Windows Bundle complete ******"
+echo 
 
 # FIXME: docs
 

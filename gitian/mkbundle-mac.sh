@@ -70,6 +70,10 @@ fi
 
 cd $GITIAN_DIR
 
+echo 
+echo "****** Starting Tor Component of Mac Bundle (1/3 for Mac) ******"
+echo 
+
 if [ ! -f $GITIAN_DIR/inputs/tor-mac32-gbuilt.zip ];
 then
   ./bin/gbuild --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
@@ -81,6 +85,10 @@ then
   
   cp -a build/out/tor-mac*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
+
+echo 
+echo "****** Starting TorBrowser Component of Mac Bundle (2/3 for Mac) ******"
+echo 
 
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-mac32-gbuilt.zip ];
 then
@@ -95,6 +103,10 @@ then
   cp -a build/out/tor-browser-mac*-gbuilt.zip $GITIAN_DIR/inputs/
 fi
 
+echo 
+echo "****** Starting Bundling+Localization Component of Mac Bundle (3/3 for Mac) ******"
+echo 
+
 ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
 if [ $? -ne 0 ];
 then
@@ -102,8 +114,13 @@ then
   exit 1
 fi
 
-cp -a build/out/*.dmg $WRAPPER_DIR
-cp -a build/out/*.zip $WRAPPER_DIR
+#cp -a build/out/*.dmg $WRAPPER_DIR
+cp -a build/out/*.zip $WRAPPER_DIR || exit 1
+
+echo 
+echo "****** Mac Bundle complete ******"
+echo 
+
 
 # FIXME: docs
 
