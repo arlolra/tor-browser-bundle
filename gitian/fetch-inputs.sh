@@ -7,13 +7,20 @@
 
 gpg --import ./gpg/*
 
-if [ -n $1 -a ! -d $1 ];
-then
-  mkdir $1
+
+if [ -n $1 ]; then
+  INPUTS_DIR=../../gitian-builder/inputs
+else
+  INPUTS_DIR=$1
 fi
 
-if [ -n $1 -a -d $1 ]; then
-  cd $1
+if [ -n $INPUTS_DIR -a ! -d $INPUTS_DIR ];
+then
+  mkdir $INPUTS_DIR
+fi
+
+if [ -n $INPUTS_DIR -a -d $INPUTS_DIR ]; then
+  cd $INPUTS_DIR
 fi
 
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
@@ -122,6 +129,7 @@ ln -sf $OPENSSL_PACKAGE openssl.tar.gz
 if [ -d tbb-windows-installer/.git ];
 then
   cd tbb-windows-installer
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -131,6 +139,7 @@ fi
 if [ -d zlib/.git ];
 then
   cd zlib
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -140,6 +149,7 @@ fi
 if [ -d libevent/.git ];
 then
   cd libevent
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -149,6 +159,7 @@ fi
 if [ -d tor-launcher/.git ];
 then
   cd tor-launcher
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -158,6 +169,7 @@ fi
 if [ -d tor/.git ];
 then
   cd tor
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -167,6 +179,7 @@ fi
 if [ -d torbutton/.git ];
 then
   cd torbutton
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -176,6 +189,7 @@ fi
 if [ -d https-everywhere/.git ];
 then
   cd https-everywhere
+  git fetch origin
   git fetch --tags origin
   cd ..
 else
@@ -185,6 +199,7 @@ fi
 if [ -d tor-browser/.git ];
 then
   cd tor-browser
+  git fetch origin
   git fetch --tags origin
   git checkout $TORBROWSER_TAG
   cd ..
