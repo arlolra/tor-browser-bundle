@@ -1,5 +1,5 @@
 ---
-name: "tor"
+name: "bundle-mac"
 suites:
 - "precise"
 architectures:

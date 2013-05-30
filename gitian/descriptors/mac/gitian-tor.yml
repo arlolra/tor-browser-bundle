@@ -1,5 +1,5 @@
 ---
-name: "tor"
+name: "tor-mac"
 suites:
 - "precise"
 architectures:

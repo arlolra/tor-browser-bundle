@@ -1,5 +1,5 @@
 ---
-name: "tor"
+name: "bundle-linux"
 suites:
 - "lucid"
 architectures:

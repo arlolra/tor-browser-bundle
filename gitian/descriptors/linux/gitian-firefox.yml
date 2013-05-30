@@ -1,5 +1,5 @@
 ---
-name: "tor-browser"
+name: "torbrowser-linux"
 suites:
 - "lucid"
 architectures:

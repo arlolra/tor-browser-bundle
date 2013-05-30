@@ -1,5 +1,5 @@
 ---
-name: "tor"
+name: "bundle-windows"
 suites:
 - "precise"
 architectures:
