@@ -1,9 +1,11 @@
 QuickStart:
 
+ On an Ubuntu 12.04+ machine or VM, run:
+
  $ make
 
- Just type 'make'. It will check all of your prerequisites and tell you what
- you need to do to get started.
+ This will check all of your prerequisites and tell you what you need to
+ do to get started.
 
  If everything checks out OK, it will begin downloading dependencies, and then
  start the build process to produce localized Linux bundles, followed by
@@ -39,28 +41,36 @@ Detailed Explanation of Scripts:
     the Internet and downloads them into ../../gitian-builder/inputs.
     After you run this script, you should be able to complete the rest of your
     build offline.
- 
+
  3. versions: This scriptlet contains version definitions for the source
     dependencies, the git tags to use, and the Tor Browser release version.
- 
- 4. descriptors: In the descriptors directory, you will find the Gitian
+
+ 4. verify-tags.sh: This script verifies the signatures on git tags from
+    the versions file. It is only run if VERIFY_TAGS is set in the versions
+    file.
+  
+ 5. descriptors: In the descriptors directory, you will find the Gitian
     descriptors for Linux and Windows. There are three descriptors for each
     platform: One to build Tor and its dependencies, one to build Firefox and
     its dependencies, and one to bundle everything together. Each descriptor is
     run from a fresh VM.
  
- 5. mkbundle-linux.sh: This script is a wrapper around Gitian's gbuild to call
-    the appropriate descriptors to build a Linux bundle. It also will create
-    build VM images for you if you haven't done that before.
+ 6. mkbundle-linux.sh: This script is a wrapper around Gitian's gbuild to call
+    the appropriate descriptors to build 32 and 64 bit Linux bundle. It also will
+    create build VM images for you if you haven't done that before.
  
- 6. mkbundle-windows.sh: This script is a wrapper around Gitian's gbuild to
+ 7. mkbundle-windows.sh: This script is a wrapper around Gitian's gbuild to
     call the appropriate descriptors to build a Windows bundle. It also will
     create build VM images for you if you haven't done that before.
+
+ 8. mkbundle-mac.sh: This script is a wrapper around Gitian's gbuild to
+    call the appropriate descriptors to build a 32bit Mac bundle. It also
+    will create build VM images for you if you haven't done that before.
 
 
 Partial Rebuilds:
 
-  The two mkbundle shell scripts each have three Gitian stages.
+  The mkbundle shell scripts each have three Gitian stages.
 
   First, using their platform's gitian-tor.yml Gitian descriptor, they build
   tor and the tor dependencies (libevent, zlib, and openssl). Second, using the
