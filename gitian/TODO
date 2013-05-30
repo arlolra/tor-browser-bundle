@@ -1,8 +1,10 @@
 Short Term:
- - Missing Firefox version bumping commits (hg->git conversion issue?)
- - Branding is broken on Mac, other platforms?
  - Source integrity
    - More git repos need signed tags
+ - A console window opens for Windows
+ - Clean up old paths (requires Tor Launcher commits)
+   - Remove FirefoxPortable paths for Windows
+   - Relocate torrc to Library/Tor for MacOS
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
@@ -10,6 +12,11 @@ Short Term:
 Mid Term:
  - Universal binaries for Mac?
    - Usability win, but gettor loss (we're at 23M right now)
+   - https://developer.mozilla.org/en-US/docs/Mac_OS_X_Universal_Binaries
+   - "[EXTRA_]{CFLAGS,CXXFLAGS}="-arch i386 -arch x86_64"
+     - http://opensource.apple.com/source/gcc/gcc-5666.3/driverdriver.c
+       calls i686-apple-darwin11-gcc twice (once with -m32 and -m64)
+       and then calls 'lipo' to stich the binaries together
  - Fix windows issues:
    - Link to DirectX via Wine (for WebGL)
      - Weird C++ stdext namespace issues remain :/
@@ -32,4 +39,5 @@ Long Term:
        OS shared libraries if the versions don't match.
        - Build them too? Or is it safe to ship reference link
          stubs?
- - FIPS-140?
+ - FIPS-140 in Firefox build is non-deterministic
+   - Only seems enabled for Linux??
