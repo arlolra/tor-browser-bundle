@@ -11,3 +11,5 @@ Log notice stdout
 SocksListenAddress 127.0.0.1
 SocksPort 9150
 ControlPort 9151
+
+CookieAuthentication 1
