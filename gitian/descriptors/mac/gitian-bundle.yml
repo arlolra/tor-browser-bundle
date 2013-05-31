@@ -85,8 +85,8 @@ script: |
   #
   # Copy reproducibility info
   cp versions TorBrowserBundle.app/sources/
-  cp tor-windows-res.yml TorBrowserBundle.app/sources/
-  cp torbrowser-windows-res.yml TorBrowserBundle.app/sources/
+  cp tor-mac-res.yml TorBrowserBundle.app/sources/
+  cp torbrowser-mac-res.yml TorBrowserBundle.app/sources/
   cp bundle.inputs TorBrowserBundle.app/sources/bundle.inputs
   #
   cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
