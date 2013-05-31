@@ -29,6 +29,10 @@ files:
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
 - "bare-version"
+- "tor-mac-res.yml"
+- "torbrowser-mac-res.yml"
+- "bundle.inputs"
+- "versions"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -40,6 +44,7 @@ script: |
   mkdir -p $OUTDIR/
   mkdir -p TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org
   mkdir -p TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+  mkdir -p TorBrowserBundle.app/sources
   #
   cd tor-launcher
   make clean
@@ -77,6 +82,12 @@ script: |
   cd Contents/MacOS/
   unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
   cd ../../../
+  #
+  # Copy reproducibility info
+  cp versions TorBrowserBundle.app/sources/
+  cp tor-windows-res.yml TorBrowserBundle.app/sources/
+  cp torbrowser-windows-res.yml TorBrowserBundle.app/sources/
+  cp bundle.inputs TorBrowserBundle.app/sources/bundle.inputs
   #
   cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
   unzip omni.ja defaults/preferences/000-tor-browser.js

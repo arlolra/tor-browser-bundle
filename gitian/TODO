@@ -1,5 +1,4 @@
 Short Term:
- - Include input hashes in bundle README
  - Source integrity
    - More git repos need signed tags
  - Clean up old paths (requires Tor Launcher commits)

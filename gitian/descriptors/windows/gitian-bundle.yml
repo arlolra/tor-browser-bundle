@@ -31,6 +31,10 @@ files:
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
 - "bare-version"
+- "tor-windows-res.yml"
+- "torbrowser-windows-res.yml"
+- "bundle.inputs"
+- "versions"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -41,6 +45,7 @@ script: |
   # 
   mkdir -p $OUTDIR/
   mkdir -p tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/https-everywhere@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/sources
   #
   cd tor-launcher
   make clean
@@ -80,6 +85,12 @@ script: |
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   cd ..
+  #
+  # Copy reproducibility info
+  cp ../versions "Tor Browser"/sources/
+  cp ../tor-windows-res.yml "Tor Browser"/sources/
+  cp ../torbrowser-windows-res.yml "Tor Browser"/sources/
+  cp ../bundle.inputs "Tor Browser"/sources/bundle.inputs
   #
   cd "Tor Browser"/FirefoxPortable/App/Firefox
   unzip omni.ja defaults/preferences/000-tor-browser.js

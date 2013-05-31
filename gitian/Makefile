@@ -11,6 +11,9 @@ prep:
 
 clean:
 	rm -f ../../gitian-builder/inputs/*gbuilt*.zip
+	rm -f ../../gitian-builder/inputs/*.yml
+	rm -f ../../gitian-builder/inputs/bundle.inputs
+	rm -f ../../gitian-builder/inputs/versions
 
 distclean:
 	rm -rf ../../gitian-builder/inputs/*

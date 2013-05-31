@@ -33,6 +33,10 @@ files:
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
 - "bare-version"
+- "tor-linux-res.yml"
+- "torbrowser-linux-res.yml"
+- "bundle.inputs"
+- "versions"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -43,6 +47,7 @@ script: |
   # 
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Data/profile/extensions/https-everywhere@eff.org
+  mkdir -p tor-browser/sources/
   #
   cp *.xpi tor-browser/Data/profile/extensions/
   #
@@ -80,6 +85,12 @@ script: |
   unzip ~/build/linux-skeleton.zip
   chmod 700 Data/Tor
   cd ..
+  #
+  # Copy reproducibility info
+  cp versions tor-browser/sources/
+  cp tor-linux-res.yml tor-browser/sources/
+  cp torbrowser-linux-res.yml tor-browser/sources/
+  cp bundle.inputs tor-browser/sources/bundle.inputs
   #
   cp -a tor-browser tor-browser_en-US
   cd tor-browser_en-US/App/Firefox
