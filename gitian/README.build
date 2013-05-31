@@ -9,7 +9,7 @@ QuickStart:
 
  If everything checks out OK, it will begin downloading dependencies, and then
  start the build process to produce localized Linux bundles, followed by
- Windows ones.
+ Windows bundles, followed by Mac bundles.
 
  By default, 'make' will clear out any previous partial builds. See the
  "Partial Rebuilds" section for information on performing partial rebuilds
@@ -28,7 +28,7 @@ Detailed Explanation of Scripts:
 
  0. Makefile: The main Makefile. It has five main commands:
     - prep: Check OS prerequisites and download source dependency inputs
-    - build: Build localized bundles for Linux and Windows
+    - build: Build localized bundles for Linux, Windows, and Mac
     - clean: Remove prior partial build stages (Tor and Firefox)
     - distclean: Remove source dependency inputs (and also partial builds)
     - all: The default. It calls clean, prep, and then build.
@@ -50,7 +50,7 @@ Detailed Explanation of Scripts:
     file.
   
  5. descriptors: In the descriptors directory, you will find the Gitian
-    descriptors for Linux and Windows. There are three descriptors for each
+    descriptors for Linux, Windows, and Mac. There are three descriptors for each
     platform: One to build Tor and its dependencies, one to build Firefox and
     its dependencies, and one to bundle everything together. Each descriptor is
     run from a fresh VM.
