@@ -26,7 +26,7 @@ fi
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
 
 # Get package files from mirror
-for i in OPENSSL LIBPNG TOOLCHAIN4 OSXSDK # OBFSPROXY
+for i in OPENSSL TOOLCHAIN4 OSXSDK # OBFSPROXY
 do
   PACKAGE=${i}"_PACKAGE"
   URL=${MIRROR_URL}${!PACKAGE}
@@ -61,10 +61,10 @@ do
 done
 
 # Verify packages with weak or no signatures via multipath downloads
-# (OpenSSL is signed with MD5, and libpng is not signed at all)
+# (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
 mkdir -p verify
 cd verify
-for i in OPENSSL LIBPNG OSXSDK
+for i in OPENSSL OSXSDK
 do
   URL=${i}"_URL"
   PACKAGE=${i}"_PACKAGE"
@@ -79,7 +79,7 @@ done
 # TOOLCHAIN4 each time :/
 rm -f $TOOLCHAIN4_PACKAGE
 wget $TOOLCHAIN4_URL
-for i in OPENSSL LIBPNG OSXSDK TOOLCHAIN4
+for i in OPENSSL OSXSDK TOOLCHAIN4
 do
    PACKAGE=${i}"_PACKAGE"
    diff ${!PACKAGE} ../${!PACKAGE}
