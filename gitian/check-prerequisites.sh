@@ -26,7 +26,7 @@ then
   echo
   echo "Please run:"
   echo " cd ../../ "
-  echo " git clone https://git.torproject.org/user/mikeperry/gitian-builder.git"
+  echo " torsocks git clone https://git.torproject.org/user/mikeperry/gitian-builder.git"
   echo " cd gitian-builder"
   echo " git checkout tor-browser-builder"
   exit 1
