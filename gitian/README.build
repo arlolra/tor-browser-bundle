@@ -23,14 +23,15 @@ QuickStart:
 
 Detailed Explanation of Scripts:
 
- This directory is a wrapper around gitian-builder, and has several helper
- scripts to make things easier.
+ This directory is a wrapper around our modified version of Gitian, and has
+ several helper scripts to make things easier.
 
- 0. Makefile: The main Makefile. It has five main commands:
+ 0. Makefile: The main Makefile. It has six main commands:
     - prep: Check OS prerequisites and download source dependency inputs
     - build: Build localized bundles for Linux, Windows, and Mac
     - clean: Remove prior partial build stages (Tor and Firefox)
-    - distclean: Remove source dependency inputs (and also partial builds)
+    - vmclean: Remove VM base images
+    - distclean: Remove source dependency inputs, and run clean and vmclean
     - all: The default. It calls clean, prep, and then build.
  
  1. check-prerequisites.sh: This script checks if your system is capable of
@@ -50,10 +51,10 @@ Detailed Explanation of Scripts:
     file.
   
  5. descriptors: In the descriptors directory, you will find the Gitian
-    descriptors for Linux, Windows, and Mac. There are three descriptors for each
-    platform: One to build Tor and its dependencies, one to build Firefox and
-    its dependencies, and one to bundle everything together. Each descriptor is
-    run from a fresh VM.
+    descriptors for Linux, Windows, and Mac. There are three descriptors for
+    each platform: One to build Tor and its dependencies, one to build Firefox
+    and its dependencies, and one to bundle everything together. Each
+    descriptor is run from a fresh VM.
  
  6. mkbundle-linux.sh: This script is a wrapper around Gitian's gbuild to call
     the appropriate descriptors to build 32 and 64 bit Linux bundle. It also will
@@ -73,10 +74,10 @@ Partial Rebuilds:
   The mkbundle shell scripts each have three Gitian stages.
 
   First, using their platform's gitian-tor.yml Gitian descriptor, they build
-  tor and the tor dependencies (libevent, zlib, and openssl). Second, using the
-  gitian-firefox.yml descriptor, they build Firefox with the Tor Browser patches
-  and preferences applied. Third, in gitian-bundle.yml, they assemble the
-  bundles using the addons and localization packs.
+  tor and the tor dependencies (libevent, zlib, and openssl). Second, using
+  the gitian-firefox.yml descriptor, they build Firefox with the Tor Browser
+  patches and preferences applied. Third, in gitian-bundle.yml, they assemble
+  the bundles using the addons and localization packs.
 
   The Tor and Firefox stages end up as a *gbuilt*.zip files in
   ../gitian-builder/inputs/, and those zip files are used as inputs into
