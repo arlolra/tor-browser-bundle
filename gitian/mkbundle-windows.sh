@@ -56,9 +56,9 @@ then
   # If we're verifying tags, be explicit to gitian that we
   # want to build from tags.
   # XXX: Some things still have no tags
-  # TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
   # NSIS_TAG=refs/tags/$NSIS_TAG
   # TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
+  TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
   TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG
   TOR_TAG=refs/tags/$TOR_TAG
   HTTPSE_TAG=refs/tags/$HTTPSE_TAG

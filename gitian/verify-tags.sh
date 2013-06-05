@@ -20,10 +20,10 @@ cd $INPUTS_DIR
 # git tag -v $TORLAUNCHER_TAG || exit 1
 # cd ..
 # 
-# cd tor-browser
-# git tag -v $TORBROWSER_TAG || exit 1
-# cd ..
-#
+cd tor-browser
+git tag -v $TORBROWSER_TAG || exit 1
+cd ..
+
 cd torbutton
 git tag -v $TORBUTTON_TAG || exit 1
 cd ..
