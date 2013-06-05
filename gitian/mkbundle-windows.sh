@@ -59,7 +59,7 @@ then
   # TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
   # NSIS_TAG=refs/tags/$NSIS_TAG
   # TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
-  # TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG
+  TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG
   TOR_TAG=refs/tags/$TOR_TAG
   HTTPSE_TAG=refs/tags/$HTTPSE_TAG
   ZLIB_TAG=refs/tags/$ZLIB_TAG

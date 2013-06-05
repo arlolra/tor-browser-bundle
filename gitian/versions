@@ -3,10 +3,10 @@ BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
 
 VERIFY_TAGS=1
 
-TORBROWSER_TAG=tor-browser-17.0.6esr-3
+TORBROWSER_TAG=tor-browser-17.0.6esr-4
 TOR_TAG=tor-0.2.4.12-alpha
 TORLAUNCHER_TAG=master
-TORBUTTON_TAG=master
+TORBUTTON_TAG=1.6.0
 HTTPSE_TAG=3.2
 NSIS_TAG=master
 ZLIB_TAG=v1.2.8

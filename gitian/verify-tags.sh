@@ -24,9 +24,9 @@ cd $INPUTS_DIR
 # git tag -v $TORBROWSER_TAG || exit 1
 # cd ..
 #
-# cd torbutton
-# git tag -v $TORBUTTON_TAG || exit 1
-# cd ..
+cd torbutton
+git tag -v $TORBUTTON_TAG || exit 1
+cd ..
 
 cd zlib
 git tag -v $ZLIB_TAG || exit 1
