@@ -110,21 +110,29 @@ else
   echo 
 fi
 
-echo 
-echo "****** Starting Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
-echo 
-
-cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
-cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
-
-./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
-if [ $? -ne 0 ];
-then
-  mv var/build.log ./bundle-fail-win32.log.`date +%Y%m%d%H%M%S`
-  exit 1
+if [ ! -f $GITIAN_DIR/inputs/bundle-windows.gbuilt ];
+then 
+  echo 
+  echo "****** Starting Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
+  echo 
+  
+  cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
+  cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
+  
+  ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
+  if [ $? -ne 0 ];
+  then
+    mv var/build.log ./bundle-fail-win32.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+  
+  cp -a build/out/*.exe $WRAPPER_DIR || exit 1
+  touch $GITIAN_DIR/inputs/bundle-windows.gbuilt
+else
+  echo 
+  echo "****** SKIPPING Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
+  echo 
 fi
-
-cp -a build/out/*.exe $WRAPPER_DIR || exit 1
 
 echo 
 echo "****** Windows Bundle complete ******"

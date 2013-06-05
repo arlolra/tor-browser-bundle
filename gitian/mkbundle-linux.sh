@@ -126,24 +126,31 @@ else
   echo 
 fi
 
-echo 
-echo "****** Starting Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
-echo 
-
-cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
-cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
-
-./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
-if [ $? -ne 0 ];
-then
-  mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`
-  exit 1
-fi
-
-cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR || exit 1
+if [ ! -f $GITIAN_DIR/inputs/bundle-linux.gbuilt ];
+then 
+  echo 
+  echo "****** Starting Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
+  echo 
+  
+  cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
+  cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
+  
+  ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
+  if [ $? -ne 0 ];
+  then
+    mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+  
+  cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR || exit 1
+  touch $GITIAN_DIR/inputs/bundle-linux.gbuilt
+else
+  echo 
+  echo "****** SKIPPING already built Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
+  echo 
+fi 
 
 echo 
 echo "****** Linux Bundle complete ******"
-echo 
-
+echo
 

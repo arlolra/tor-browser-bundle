@@ -97,8 +97,7 @@ then
   echo "****** Starting TorBrowser Component of Mac Bundle (2/3 for Mac) ******"
   echo 
 
-  ./bin/gbuild --commit tor-browser=3857a01c551e796b14d9cda183726113b472fd32 $DESCRIPTOR_DIR/mac/gitian-firefox.yml
-  #./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
+  ./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -114,22 +113,30 @@ else
 fi
 
 
-echo 
-echo "****** Starting Bundling+Localization Component of Mac Bundle (3/3 for Mac) ******"
-echo 
-
-cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
-cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
-
-./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
-if [ $? -ne 0 ];
-then
-  mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
-  exit 1
+if [ ! -f $GITIAN_DIR/inputs/bundle-mac.gbuilt ];
+then 
+  echo 
+  echo "****** Starting Bundling+Localization Component of Mac Bundle (3/3 for Mac) ******"
+  echo 
+  
+  cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
+  cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
+  
+  ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
+  if [ $? -ne 0 ];
+  then
+    mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+  
+  #cp -a build/out/*.dmg $WRAPPER_DIR
+  cp -a build/out/*.zip $WRAPPER_DIR || exit 1
+  touch $GITIAN_DIR/inputs/bundle-mac.gbuilt
+else
+  echo 
+  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (3/3 for Mac) ******"
+  echo 
 fi
-
-#cp -a build/out/*.dmg $WRAPPER_DIR
-cp -a build/out/*.zip $WRAPPER_DIR || exit 1
 
 echo 
 echo "****** Mac Bundle complete ******"
