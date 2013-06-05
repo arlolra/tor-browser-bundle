@@ -16,10 +16,10 @@ cd $INPUTS_DIR
 # git tag -v $NSIS_TAG || exit 1
 # cd ..
 # 
-# cd tor-launcher
-# git tag -v $TORLAUNCHER_TAG || exit 1
-# cd ..
-# 
+cd tor-launcher
+git tag -v $TORLAUNCHER_TAG || exit 1
+cd ..
+ 
 cd tor-browser
 git tag -v $TORBROWSER_TAG || exit 1
 cd ..
