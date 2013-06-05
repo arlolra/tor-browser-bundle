@@ -7,6 +7,8 @@ Short Term:
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
+ - Why does KVM setup require sudo?
+   - Can we create an option that doesn't need it?
 
 Mid Term:
  - DMGs for Mac
