@@ -95,3 +95,37 @@ Partial Rebuilds:
   is called by the default Makefile target).
 
 
+Known Issues and Quirks:
+
+  1. One out of every 50 builds or so, 'make' locks up at some point during a
+     build, probably due to timestamp issues inside the Gitian VM. The
+     symptoms of this are a hung build where the VM or LXC container processes
+     are consuming no CPU.
+
+     Simply re-running 'make build' or the appropriate mkbundle script will
+     resume for you. Remember, 'make' by itself runs a clean rule that will
+     wipe your previous builds by default.
+
+  2. If you use git branches for any repos instead of tags (for example, for
+     a development or nightly build), fresh commits will need to be
+     merged manually (or better git-fu is needed in ./fetch-inputs.sh, as
+     it is currently meant to deal with tags only).
+
+  3. Running more than one instance of Gitian at a time is not supported.
+
+  4. Related: If you perform a fresh Gitian checkout for purposes of
+     verification, be sure to kill any stray qemu VM processes before starting
+     the new build (because the new Gitian checkout will not have the PID or
+     SSH keys of the previous instances' VM, and VM startup will either hang
+     or prompt you for an SSH password).
+
+
+Diagnosing Problems:
+
+  During a running build, you can tail logs in real time in
+  ../../gitian-builder/var/*.log 
+
+  Upon failure, logs of any failed component builds are relocated to
+  ../../gitian-builder/*fail*.log. This is to prevent subsequent builds
+  from destroying failure information.
+
