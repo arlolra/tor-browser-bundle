@@ -1,6 +1,8 @@
 Short Term:
  - Intermittant determism issue with toolkit/mozapps/installer/link-manifests.py
    - Manifest inputs can sometimes be reordered?
+   - The specific input manifest was toolkit.manifest, which gets bundled into
+     nonlocalized.manifest.
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
