@@ -109,7 +109,7 @@ script: |
     cp $i ../TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+    cd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
