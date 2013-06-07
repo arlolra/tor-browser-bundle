@@ -108,13 +108,13 @@ mkdir -p mac-langpacks
 for i in $BUNDLE_LOCALES
 do
   cd linux-langpacks
-  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi
+  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi
   cd ..
   cd win32-langpacks
-  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi
+  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi
   cd ..
   cd mac-langpacks
-  torsocks wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/mac/xpi/$i.xpi
+  wget -N https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/mac/xpi/$i.xpi
   cd ..
 done
 
