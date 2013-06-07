@@ -1,4 +1,6 @@
 Short Term:
+ - LXC builds don't match KVM builds
+   - Zipfile and Firefox manifest ordering issues :(
  - Intermittant determism issue with toolkit/mozapps/installer/link-manifests.py
    - Manifest inputs can sometimes be reordered?
    - The specific input manifest was toolkit.manifest, which gets bundled into
