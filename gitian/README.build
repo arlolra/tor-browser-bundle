@@ -11,7 +11,12 @@ QuickStart:
  start the build process to produce localized Linux bundles, followed by
  Windows bundles, followed by Mac bundles.
 
- By default, 'make' will clear out any previous partial builds. See the
+ By default, the Makefile wraps input downloads in 'torsocks'. This is done
+ to allow unofficial secret verifiers to remain secret by default. Removing
+ the 'torsocks' from the 'prep' Makefile rule should be sufficient to avoid
+ using Tor.
+
+ By default, 'make' will also clear out any previous partial builds. See the
  "Partial Rebuilds" section for information on performing partial rebuilds
  without erasing previously built components.
 
