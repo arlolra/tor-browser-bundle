@@ -31,6 +31,17 @@ then
   exit 1
 fi
 
+groups | grep libvirtdd > /dev/null
+if [ $? -ne 0 ];
+then
+  echo "You need to be in the libvirtd group to run Gitian."
+  echo
+  echo "Please run:"
+  echo " sudo adduser $USER libvirtd"
+  echo " newgrp libvirtd"
+  exit 1
+fi
+
 VIRT=`fakeroot virt-what`
 if [ $? -ne 0 -a "z$USE_LXC" != "z1" -a -n "$VIRT" ];
 then
