@@ -1,14 +1,12 @@
 Short Term:
- - Source integrity
-   - More git repos need signed tags
- - Clean up old paths (requires Tor Launcher commits)
-   - Remove FirefoxPortable paths for Windows
-   - Relocate torrc to Library/Tor for MacOS
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
  - Why does KVM setup require sudo?
    - Can we create an option that doesn't need it?
+ - Clean up old paths (requires Tor Launcher commits)
+   - Remove FirefoxPortable paths for Windows
+   - Relocate torrc to Library/Tor for MacOS
 
 Mid Term:
  - DMGs for Mac
