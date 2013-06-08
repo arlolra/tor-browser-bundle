@@ -16,7 +16,8 @@ if [ $? -ne 0 ]; then
   echo "You are missing one or more Gitian build tool dependencies."
   echo
   echo "Please run:"
-  echo " sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion torsocks tor"
+  echo " sudo apt-get install torsocks tor"
+  echo " sudo torsocks apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion"
   exit 1
 fi
 
