@@ -28,6 +28,7 @@ files:
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
+- "dzip.sh"
 - "bare-version"
 - "tor-mac-res.yml"
 - "torbrowser-mac-res.yml"
@@ -49,14 +50,20 @@ script: |
   cd tor-launcher
   make clean
   make package
-  cp ./pkg/*.xpi ../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi
-  cd ..
+  mkdir pkg/tmp
+  cd pkg/tmp
+  unzip ../*.xpi
+  ~/build/dzip.sh ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi .
+  cd ../../../
   #
   cd torbutton
   mkdir -p pkg
   ./makexpi.sh
-  cp ./pkg/*.xpi ../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi
-  cd ..
+  mkdir pkg/tmp
+  cd pkg/tmp
+  unzip ../*.xpi
+  ~/build/dzip.sh ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi .
+  cd ../../../
   #
   cd https-everywhere
   ./makexpi.sh

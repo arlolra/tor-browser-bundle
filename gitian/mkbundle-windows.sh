@@ -40,13 +40,15 @@ fi
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Windows\");" > $GITIAN_DIR/inputs/torbrowser.version 
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 
+cp $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
-zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
 cd ./Bundle-Data/windows
 rm -f $GITIAN_DIR/inputs/windows-skeleton.zip
-zip -rX $GITIAN_DIR/inputs/windows-skeleton.zip ./
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/windows-skeleton.zip .
 
 cd $WRAPPER_DIR
 

@@ -54,13 +54,15 @@ fi
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Linux\");" > $GITIAN_DIR/inputs/torbrowser.version 
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 
+cp $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
-zip -rX $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
 cd ./Bundle-Data/linux
 rm -f $GITIAN_DIR/inputs/linux-skeleton.zip
-zip -rX $GITIAN_DIR/inputs/linux-skeleton.zip ./
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/linux-skeleton.zip .
 
 cd $WRAPPER_DIR
 

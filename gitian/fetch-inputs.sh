@@ -98,7 +98,8 @@ wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-
 if [ ! -f mingw-w64-svn-snapshot-r5830.zip ];
 then
   svn co -r 5830 https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn || exit 1
-  zip -x*/.svn/* -rX mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
+  cd mingw-w64-svn
+  ZIPOPTS="-x*/.svn/*" ./build-helpers/dzip.sh mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
 fi
 
 mkdir -p linux-langpacks
@@ -118,9 +119,9 @@ do
   cd ..
 done
 
-zip -rX win32-langpacks.zip win32-langpacks
-zip -rX linux-langpacks.zip linux-langpacks
-zip -rX mac-langpacks.zip mac-langpacks
+./build-helpers/dzip.sh win32-langpacks.zip win32-langpacks
+./build-helpers/dzip.sh linux-langpacks.zip linux-langpacks
+./build-helpers/dzip.sh mac-langpacks.zip mac-langpacks
 
 ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
 ln -sf $PDFJS_PACKAGE uriloader@pdf.js.xpi
