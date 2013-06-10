@@ -32,11 +32,12 @@ then
   exit 1
 fi
 
-VIRT=`fakeroot virt-what`
-if [ $? -ne 0 -a "z$USE_LXC" != "z1" -a -n "$VIRT" ];
+kvm-ok > /dev/null
+if [ $? -ne 0 -a "z$USE_LXC" != "z1" ];
 then
-  echo "You appear to be running in a virtual machine."
-  echo "It is recommended you use LXC instead of KVM."
+  kvm-ok
+  echo
+  echo "Most likely, this means you will need to use LXC."
   echo
   echo "Please run this in your shell before each build: "
   echo " export USE_LXC=1"
