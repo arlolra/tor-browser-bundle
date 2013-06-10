@@ -98,7 +98,6 @@ wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-
 if [ ! -f mingw-w64-svn-snapshot-r5830.zip ];
 then
   svn co -r 5830 https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn || exit 1
-  cd mingw-w64-svn
   ZIPOPTS="-x*/.svn/*" ./build-helpers/dzip.sh mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
 fi
 
