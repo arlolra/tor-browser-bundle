@@ -1,10 +1,21 @@
 Short Term:
  - LXC builds don't match KVM builds
    - Zipfile and Firefox manifest ordering issues :(
+     - host umask leaks into LXC and gets embedded in file attributes
+   - libxul differs
+     - Filesystem order of object files?
+     - base VM layout differences?
+     - Use cpio or zip to canonicalize libxul linking input order?
+       - Hack: Could just run the build step twice, once on a raw objdir
+         and then canonicalize the objdir and run it again...
+         - Timestamps would have to be reset so that make doesn't rebuild
+           anything but libxul.
  - Intermittant determism issue with toolkit/mozapps/installer/link-manifests.py
-   - Manifest inputs can sometimes be reordered?
-   - The specific input manifest was toolkit.manifest, which gets bundled into
+   - The specific input manifest is toolkit.manifest, which gets bundled into
      nonlocalized.manifest.
+     - Only two lines are ever reordered:
+       override chrome://global/content/nsTransferable.js chrome://global/content/nsDragAndDrop.js
+       skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
@@ -15,6 +26,7 @@ Short Term:
    - Relocate torrc to Library/Tor for MacOS
 
 Mid Term:
+ - Allow people to specify NUMCPUs easier than hacking the gitian src
  - DMGs for Mac
    https://trac.torproject.org/projects/tor/ticket/4261
  - Universal binaries for Mac?

@@ -45,6 +45,7 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export TORBROWSER_VERSION=`cat bare-version`
+  umask 0022
   # 
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Data/profile/extensions/https-everywhere@eff.org
@@ -58,6 +59,9 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
+  # FIXME: is there a better way to fix these input umask permissions??
+  find . -type f -exec chmod 644 {} \;
+  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../../../tor-browser/Data/profile/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
@@ -67,6 +71,9 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
+  # FIXME: is there a better way to fix these input umask permissions??
+  find . -type f -exec chmod 644 {} \;
+  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../../../tor-browser/Data/profile/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #

@@ -23,12 +23,14 @@ remotes:
   "dir": "zlib"
 files:
 - "openssl.tar.gz"
+- "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
+  umask 0022
   #
   mkdir -p $INSTDIR/App
   mkdir -p $INSTDIR/Lib/libz/
@@ -72,5 +74,5 @@ script: |
   install -s $INSTDIR/bin/tor $INSTDIR/App/
   #
   cd $INSTDIR
-  zip -rX tor-linux$GBUILD_BITS-gbuilt.zip App/ Lib/
+  ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip App/ Lib/
   cp tor-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

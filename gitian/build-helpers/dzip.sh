@@ -1,4 +1,7 @@
 #!/bin/sh
 # Crappy determistic zip wrapper
 
-find $2 | sort | zip $ZIPOPTS -X -@ $1
+ZIPFILE=$1
+shift
+
+find $@ | sort | zip $ZIPOPTS -X -@ $ZIPFILE

@@ -41,6 +41,7 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export TORBROWSER_VERSION=`cat bare-version`
+  umask 0022
   # 
   mkdir -p $OUTDIR/
   mkdir -p TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org
@@ -53,6 +54,9 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
+  # FIXME: is there a better way to fix these input umask permissions??
+  find . -type f -exec chmod 644 {} \;
+  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
@@ -62,6 +66,9 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
+  # FIXME: is there a better way to fix these input umask permissions??
+  find . -type f -exec chmod 644 {} \;
+  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
@@ -104,7 +111,7 @@ script: |
   cd ../../../../../../
   # XXX: DMG plz
   cp -a TorBrowserBundle.app TorBrowserBundle_en-US.app
-  zip -rX $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip TorBrowserBundle_en-US.app
+  ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip TorBrowserBundle_en-US.app
   rm -rf TorBrowserBundle_en-US.app
   #
   unzip mac-langpacks.zip
@@ -123,7 +130,7 @@ script: |
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     cd ../../../../../../
 
-    zip -rX $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip TorBrowserBundle_$LANG.app
+    ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip TorBrowserBundle_$LANG.app
     rm -rf TorBrowserBundle_$LANG.app
     cd mac-langpacks
   done 

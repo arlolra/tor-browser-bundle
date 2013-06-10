@@ -28,6 +28,8 @@ remotes:
   "dir": "tor-browser"
 files:
 - "torbrowser.version"
+- "re-dzip.sh"
+- "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -36,6 +38,7 @@ script: |
   export TZ=UTC
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
+  umask 0022
   #
   mkdir -p $INSTDIR/build/bin/
   ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
@@ -75,7 +78,9 @@ script: |
   rm -f $INSTDIR/App/Firefox/*.chk
   #
   cd $INSTDIR
-  zip -rX tor-browser-linux$GBUILD_BITS-gbuilt.zip App/
+  ~/build/re-dzip.sh App/Firefox/omni.ja
+  ~/build/re-dzip.sh App/Firefox/webapprt/omni.ja
+  ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-gbuilt.zip App/
   cp tor-browser-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
   #
   # XXX: Output the exact dpkgs we used to a txt file. Should this be

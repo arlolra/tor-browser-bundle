@@ -24,6 +24,8 @@ files:
 - "i686-apple-darwin11-gcc"
 - "i686-apple-darwin11-g++"
 - "i686-apple-darwin11-ld"
+- "re-dzip.sh"
+- "dzip.sh"
 #- "apple-x86-gcc_4.2.1~5646.1flosoft2_i386.deb"
 #- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
 script: |
@@ -35,6 +37,7 @@ script: |
   export CXXFLAGS=$CFLAGS
   export LDFLAGS=$CFLAGS
   export PATH="$PATH:/usr/apple-osx/bin/"
+  umask 0022
   #
   mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/
   mkdir -p $OUTDIR/
@@ -76,5 +79,7 @@ script: |
   cp -a obj-*/dist/firefox/* $INSTDIR
   #
   cd $INSTDIR
-  zip -rX tor-browser-mac${GBUILD_BITS}-gbuilt.zip ./TorBrowser.app
+  ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
+  ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/webapprt/omni.ja
+  ~/build/dzip.sh tor-browser-mac${GBUILD_BITS}-gbuilt.zip ./TorBrowser.app
   cp tor-browser-mac${GBUILD_BITS}-gbuilt.zip $OUTDIR
