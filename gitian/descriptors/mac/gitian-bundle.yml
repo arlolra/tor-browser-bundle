@@ -54,10 +54,12 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
+  rm ../*.xpi
   # FIXME: is there a better way to fix these input umask permissions??
   find . -type f -exec chmod 644 {} \;
   find . -type d -exec chmod 755 {} \;
-  ~/build/dzip.sh ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi .
+  ~/build/dzip.sh ../tor-launcher@torproject.org.xpi .
+  mv ../tor-launcher@torproject.org.xpi ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi
   cd ../../../
   #
   cd torbutton
@@ -66,10 +68,12 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
+  rm ../*.xpi
   # FIXME: is there a better way to fix these input umask permissions??
   find . -type f -exec chmod 644 {} \;
   find . -type d -exec chmod 755 {} \;
-  ~/build/dzip.sh ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi .
+  ~/build/dzip.sh ../torbutton@torproject.org.xpi .
+  mv ../torbutton@torproject.org.xpi ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi
   cd ../../../
   #
   cd https-everywhere
