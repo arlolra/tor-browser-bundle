@@ -1,21 +1,28 @@
 Short Term:
- - LXC builds don't match KVM builds
-   - Zipfile and Firefox manifest ordering issues :(
-     - host umask leaks into LXC and gets embedded in file attributes
-   - libxul differs
-     - Filesystem order of object files?
-     - base VM layout differences?
-     - Use cpio or zip to canonicalize libxul linking input order?
-       - Hack: Could just run the build step twice, once on a raw objdir
-         and then canonicalize the objdir and run it again...
-         - Timestamps would have to be reset so that make doesn't rebuild
-           anything but libxul.
- - Intermittant determism issue with toolkit/mozapps/installer/link-manifests.py
-   - The specific input manifest is toolkit.manifest, which gets bundled into
-     nonlocalized.manifest.
-     - Only two lines are ever reordered:
-       override chrome://global/content/nsTransferable.js chrome://global/content/nsDragAndDrop.js
-       skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
+ - Determism issues
+   - After a 'make vmclean' libxul differs between builds (with the same VM
+     image, it does not differ)
+     - objdir differences:
+       - obj-x86_64-unknown-linux-gnu/js/src/libjs_static.a
+       - ordering differences in:
+         - obj-x86_64-unknown-linux-gnu/dist/bin/chrome.manifest
+         - obj-x86_64-unknown-linux-gnu/dist/bin/components/interfaces.manifest
+         - obj-x86_64-unknown-linux-gnu/dist/manifests/browser/chrome/toolkit.manifest
+         - obj-x86_64-unknown-linux-gnu/config/final-link-libs
+           - created by config/buildlist.py
+     - Possible causes:
+       - autogen is run on the VM
+       - Filesystem order of object files?
+       - base VM layout differences?
+       - Use cpio or zip to canonicalize libxul linking input order?
+         - Hack: Could just run the build step twice, once on a raw objdir
+           and then canonicalize the objdir and run it again...
+           - Timestamps would have to be reset so that make doesn't rebuild
+             anything but libxul.
+   - toolkit.manifest is reordered, which gets bundled into nonlocalized.manifest.
+       - Only two lines are ever reordered:
+         override chrome://global/content/nsTransferable.js chrome://global/content/nsDragAndDrop.js
+         skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
