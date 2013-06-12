@@ -61,16 +61,8 @@ script: |
   #
   # The build sometimes randomly fails (faketime issues?) Just restart it until success
   make $MAKEOPTS -f client.mk build
-  while [ $? -ne 0 ];
-  do
-    make $MAKEOPTS -f client.mk build
-  done
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
-  while [ $? -ne 0 ];
-  do
-    make -C obj-* package INNER_MAKE_PACKAGE=true
-  done
   cp -a obj-*/dist/firefox/* $INSTDIR/App/Firefox/
   # TODO: There goes FIPS-140.. We could upload these somewhere unique and
   # subsequent builds could test to see if they've been uploaded before...
