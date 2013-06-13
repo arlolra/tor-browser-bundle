@@ -5,11 +5,10 @@
 
 . ./versions
 
-gpg --import ./gpg/*
-
+export WRAPPER_DIR=$PWD
 
 if [ -n $1 ]; then
-  INPUTS_DIR=../../gitian-builder/inputs
+  INPUTS_DIR=$PWD/../../gitian-builder/inputs
 else
   INPUTS_DIR=$1
 fi
@@ -24,6 +23,8 @@ if [ -n $INPUTS_DIR -a -d $INPUTS_DIR ]; then
 fi
 
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
+
+gpg --import ./gpg/*
 
 # Get package files from mirror
 for i in OPENSSL TOOLCHAIN4 OSXSDK # OBFSPROXY
@@ -98,7 +99,8 @@ wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-
 if [ ! -f mingw-w64-svn-snapshot-r5830.zip ];
 then
   svn co -r 5830 https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn || exit 1
-  ZIPOPTS="-x*/.svn/*" ./build-helpers/dzip.sh mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
+  # XXX: Path
+  ZIPOPTS="-x*/.svn/*" $WRAPPER_DIR/build-helpers/dzip.sh mingw-w64-svn-snapshot-r5830.zip mingw-w64-svn
 fi
 
 mkdir -p linux-langpacks
@@ -118,9 +120,9 @@ do
   cd ..
 done
 
-./build-helpers/dzip.sh win32-langpacks.zip win32-langpacks
-./build-helpers/dzip.sh linux-langpacks.zip linux-langpacks
-./build-helpers/dzip.sh mac-langpacks.zip mac-langpacks
+$WRAPPER_DIR/build-helpers/dzip.sh win32-langpacks.zip win32-langpacks
+$WRAPPER_DIR/build-helpers/dzip.sh linux-langpacks.zip linux-langpacks
+$WRAPPER_DIR/build-helpers/dzip.sh mac-langpacks.zip mac-langpacks
 
 ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
 ln -sf $PDFJS_PACKAGE uriloader@pdf.js.xpi
