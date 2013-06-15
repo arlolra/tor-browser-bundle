@@ -1,28 +1,19 @@
 Short Term:
- - Determism issues
-   - After a 'make vmclean' libxul differs between builds (with the same VM
-     image, it does not differ)
-     - objdir differences:
-       - obj-x86_64-unknown-linux-gnu/js/src/libjs_static.a
-       - ordering differences in:
-         - obj-x86_64-unknown-linux-gnu/dist/bin/chrome.manifest
-         - obj-x86_64-unknown-linux-gnu/dist/bin/components/interfaces.manifest
-         - obj-x86_64-unknown-linux-gnu/dist/manifests/browser/chrome/toolkit.manifest
-         - obj-x86_64-unknown-linux-gnu/config/final-link-libs
-           - created by config/buildlist.py
-     - Possible causes:
-       - autogen is run on the VM
-       - Filesystem order of object files?
-       - base VM layout differences?
-       - Use cpio or zip to canonicalize libxul linking input order?
-         - Hack: Could just run the build step twice, once on a raw objdir
-           and then canonicalize the objdir and run it again...
-           - Timestamps would have to be reset so that make doesn't rebuild
-             anything but libxul.
-   - toolkit.manifest is reordered, which gets bundled into nonlocalized.manifest.
+ - Determinism issues
+   - including the res.yml files introduce more issues than they solve
+     (Random Ubuntu package versions change too frequently)
+     - Only include our own source code versions + hashes
+   - One of the builds ended up using old Gitian descriptors somehow..
+     - Refuse to build if `git diff --raw` is non-zero?
+   - omni.ja (which is a zip file) still doesn't always match
+     - toolkit.manifest is sometimes reordered, which gets bundled into nonlocalized.manifest.
        - Only two lines are ever reordered:
          override chrome://global/content/nsTransferable.js chrome://global/content/nsDragAndDrop.js
          skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
+   - webapprt/omni.ja (also a zip file) sometimes doesn't match
+     - Permissions differences inside the zip file
+
+Mid Term:
  - Hardening options
    - http://wiki.debian.org/Hardening
    - Can we randomize stack canaries each release, etc?
@@ -31,8 +22,6 @@ Short Term:
  - Clean up old paths (requires Tor Launcher commits)
    - Remove FirefoxPortable paths for Windows
    - Relocate torrc to Library/Tor for MacOS
-
-Mid Term:
  - Allow people to specify NUMCPUs easier than hacking the gitian src
  - DMGs for Mac
    https://trac.torproject.org/projects/tor/ticket/4261
