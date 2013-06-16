@@ -24,7 +24,7 @@ fi
 
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
 
-gpg --import ./gpg/*
+gpg --import $WRAPPER_DIR/gpg/*
 
 # Get package files from mirror
 for i in OPENSSL TOOLCHAIN4 OSXSDK # OBFSPROXY
