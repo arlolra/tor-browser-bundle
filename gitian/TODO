@@ -12,7 +12,6 @@ Short Term:
          skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
    - webapprt/omni.ja (also a zip file) sometimes doesn't match
      - Permissions differences inside the zip file
- - Windows TBB crashes if there's a system tor installed?
  - Hardening options
    - Validation Tools:
      - http://www.microsoft.com/en-us/download/details.aspx?id=11910.
@@ -24,12 +23,16 @@ Short Term:
      - https://developer.pidgin.im/ticket/15290
      - http://stackoverflow.com/questions/13276692/safeseh-gs-on-g
    - Can we randomize stack canaries each release, etc?
+ - Custom EntryNodes issues?
+   - Due to missing geoip file
+ - Windows TBB crashes if there's a system tor installed?
+   - And/or if you install to c:\Program Files and run as non-Admin
+ - Detect arch on Linux
+   - https://trac.torproject.org/projects/tor/ticket/3841
 
 Mid Term:
  - Docs are missing
    - Are they even still valid for the Vidalia-less TBB?
- - Detect arch on Linux
-   - https://trac.torproject.org/projects/tor/ticket/3841
  - Add browser code to detect missing addons?
  - Why does KVM setup require sudo?
    - Can we create an option that doesn't need it?
@@ -39,7 +42,6 @@ Mid Term:
  - Allow people to specify NUMCPUs easier than hacking the gitian src
  - DMGs for Mac
    https://trac.torproject.org/projects/tor/ticket/4261
- - Custom EntryNodes issues?
  - Universal binaries for Mac?
    - Usability win, but gettor loss (we're at 23M right now)
    - https://developer.mozilla.org/en-US/docs/Mac_OS_X_Universal_Binaries
