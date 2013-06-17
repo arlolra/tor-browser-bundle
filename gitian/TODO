@@ -3,6 +3,7 @@ Short Term:
    - including the res.yml files introduce more issues than they solve
      (Random Ubuntu package versions change too frequently)
      - Only include our own source code versions + hashes
+     - Don't forget gitian-builder!
    - One of the builds ended up using old Gitian descriptors somehow..
      - Refuse to build if `git diff --raw` is non-zero?
    - omni.ja (which is a zip file) still doesn't always match
@@ -23,23 +24,22 @@ Short Term:
      - https://developer.pidgin.im/ticket/15290
      - http://stackoverflow.com/questions/13276692/safeseh-gs-on-g
    - Can we randomize stack canaries each release, etc?
- - Custom EntryNodes issues?
+ - Custom EntryNodes issues
    - Due to missing geoip file
  - Windows TBB crashes if there's a system tor installed?
    - And/or if you install to c:\Program Files and run as non-Admin
  - Detect arch on Linux
    - https://trac.torproject.org/projects/tor/ticket/3841
+ - Allow people to specify NUMCPUs easier than hacking the gitian src
 
 Mid Term:
  - Docs are missing
    - Are they even still valid for the Vidalia-less TBB?
- - Add browser code to detect missing addons?
  - Why does KVM setup require sudo?
    - Can we create an option that doesn't need it?
  - Clean up old paths (requires Tor Launcher commits)
    - Remove FirefoxPortable paths for Windows
    - Relocate torrc to Library/Tor for MacOS
- - Allow people to specify NUMCPUs easier than hacking the gitian src
  - DMGs for Mac
    https://trac.torproject.org/projects/tor/ticket/4261
  - Universal binaries for Mac?
@@ -57,6 +57,7 @@ Mid Term:
        - Has conflicts with FF17-ESR :/
        - Can we just pull the whole accessibility dir?
  - If Tor Launcher fails to load, the browser still can launch
+   - Add browser code to detect missing addons?
    - Missing/Partial Localization strings can cause this..
    - I think we don't care? Torbutton's new tor test should fail..
 
