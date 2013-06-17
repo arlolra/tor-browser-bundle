@@ -19,7 +19,7 @@ cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
 # TODO: Make a super-fresh option that kills the base vms
-if [ ! -f ./base-lucid-amd64.qcow2 -a ! -f ./base-lucid-amd64.qcow2 ];
+if [ ! -f ./base-lucid-i386.qcow2 ];
 then
   if [ "z$USE_LXC" = "z1" ];
   then
@@ -35,7 +35,10 @@ then
       exit 1
   fi
   stop-target
+fi
 
+if [ ! -f ./base-lucid-amd64.qcow2 ];
+then
   if [ "z$USE_LXC" = "z1" ];
   then
     ./bin/make-base-vm --lxc --arch amd64
@@ -45,7 +48,7 @@ then
   fi
   if [ $? -ne 0 ];
   then
-      echo "i386 VM creation failed"
+      echo "amd64 VM creation failed"
       exit 1
   fi
   stop-target
