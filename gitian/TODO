@@ -7,8 +7,6 @@ Short Term:
        - Only two lines are ever reordered:
          override chrome://global/content/nsTransferable.js chrome://global/content/nsDragAndDrop.js
          skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
-   - webapprt/omni.ja (also a zip file) sometimes doesn't match
-     - Permissions differences inside the zip file
  - Hardening options
    - Validation Tools:
      - http://www.microsoft.com/en-us/download/details.aspx?id=11910.
