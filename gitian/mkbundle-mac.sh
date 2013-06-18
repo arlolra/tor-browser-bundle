@@ -84,7 +84,7 @@ then
   fi
   
   cp -a build/out/tor-mac*-gbuilt.zip $GITIAN_DIR/inputs/
-  cp -a result/tor-mac-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/tor-mac-res.yml $GITIAN_DIR/inputs/
 else
   echo 
   echo "****** SKIPPING already built Tor Component of Mac Bundle (1/3 for Mac) ******"
@@ -105,7 +105,7 @@ then
   fi
 
   cp -a build/out/tor-browser-mac*-gbuilt.zip $GITIAN_DIR/inputs/
-  cp -a result/torbrowser-mac-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/torbrowser-mac-res.yml $GITIAN_DIR/inputs/
 else
   echo 
   echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (2/3 for Mac) ******"

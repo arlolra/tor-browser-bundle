@@ -84,7 +84,7 @@ then
   fi
   
   cp -a build/out/tor-win32-gbuilt.zip $GITIAN_DIR/inputs/
-  cp -a result/tor-windows-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/tor-windows-res.yml $GITIAN_DIR/inputs/
 else
   echo 
   echo "****** SKIPPING already built Tor Component of Windows Bundle (1/3 for Windows) ******"
@@ -105,7 +105,7 @@ then
   fi
 
   cp -a build/out/tor-browser-win32-gbuilt.zip $GITIAN_DIR/inputs/
-  cp -a result/torbrowser-windows-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/torbrowser-windows-res.yml $GITIAN_DIR/inputs/
 else
   echo 
   echo "****** SKIPPING already built Torbrowser Component of Windows Bundle (2/3 for Windows) ******"

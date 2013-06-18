@@ -1,9 +1,5 @@
 Short Term:
  - Determinism issues
-   - including the res.yml files introduce more issues than they solve
-     (Random Ubuntu package versions change too frequently)
-     - Only include our own source code versions + hashes
-     - Don't forget gitian-builder!
    - One of the builds ended up using old Gitian descriptors somehow..
      - Refuse to build if `git diff --raw` is non-zero?
    - omni.ja (which is a zip file) still doesn't always match

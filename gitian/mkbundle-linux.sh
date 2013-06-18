@@ -101,7 +101,7 @@ then
   fi
   
   cp -a build/out/tor-linux*-gbuilt.zip $GITIAN_DIR/inputs/
-  cp -a result/tor-linux-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/tor-linux-res.yml $GITIAN_DIR/inputs/
 else
   echo 
   echo "****** SKIPPING already built Tor Component of Linux Bundle (1/3 for Linux) ******"
@@ -124,7 +124,7 @@ then
   fi
 
   cp -a build/out/tor-browser-linux*-gbuilt.zip $GITIAN_DIR/inputs/
-  cp -a result/torbrowser-linux-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/torbrowser-linux-res.yml $GITIAN_DIR/inputs/
 else
   echo 
   echo "****** SKIPPING already built TorBrowser Component of Linux Bundle (2/3 for Linux) ******"
