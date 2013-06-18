@@ -5,6 +5,8 @@
 
 . ./versions
 
+umask 0022
+
 export WRAPPER_DIR=$PWD
 
 if [ -n $1 ]; then
