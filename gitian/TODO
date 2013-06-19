@@ -17,16 +17,22 @@ Short Term:
    - Windows
      - https://developer.pidgin.im/ticket/15290
      - http://stackoverflow.com/questions/13276692/safeseh-gs-on-g
+     - OpenSSL+zlib don't take cflags??
    - Can we randomize stack canaries each release, etc?
+ - Windows crashes in D2D1.dll
+   - Maybe we're missing the driver blacklist from
+     https://bugzilla.mozilla.org/show_bug.cgi?id=595364
+   - Workaround: set gfx.direct2d.disabled to true for windows.
  - Custom EntryNodes issues
    - Due to missing geoip file
- - Windows TBB crashes if there's a system tor installed?
-   - And/or if you install to c:\Program Files and run as non-Admin
  - Detect arch on Linux
    - https://trac.torproject.org/projects/tor/ticket/3841
  - Allow people to specify NUMCPUs easier than hacking the gitian src
+ - Too many libevent libs are included.. Only need a couple
 
 Mid Term:
+ - Windows TBB crashes if there's a system tor installed?
+   - And/or if you install to c:\Program Files and run as non-Admin
  - Docs are missing
    - Are they even still valid for the Vidalia-less TBB?
  - Why does KVM setup require sudo?
