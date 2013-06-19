@@ -10,9 +10,9 @@ packages:
 - "zip"
 - "autoconf"
 - "autoconf2.13"
-- "mingw-w64"
 - "faketime"
 - "yasm"
+- "mingw-w64"
 - "g++-mingw-w64-i686"
 - "mingw-w64-tools"
 reference_datetime: "2000-01-01 00:00:00"
@@ -25,6 +25,9 @@ files:
 - "torbrowser.version"
 - "re-dzip.sh"
 - "dzip.sh"
+- "i686-w64-mingw32-gcc"
+- "i686-w64-mingw32-g++"
+- "i686-w64-mingw32-ld"
 script: |
   INSTDIR="$HOME/install/FirefoxPortable/"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
@@ -39,7 +42,7 @@ script: |
   # If we ever find out that the 12.04 mingw is buggy/insufficient:
   #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
   #sudo apt-get update
-  #sudo apt-get install g++-mingw-w64-i686 mingw-w64-tools mingw-w64
+  #sudo apt-get install -y g++-mingw-w64-i686 mingw-w64-tools mingw-w64
   #
   # Build the latest MinGW-w64 headers and CRT
   # FIXME: We need sudo for all of this because otherwise
@@ -83,18 +86,20 @@ script: |
   make -f client.mk configure
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
-  # The build sometimes randomly fails (faketime issues?) Just restart it until success
+  # FIXME: MinGW doens't like being built with hardening, and Firefox doesn't
+  # like being configured with it
+  # XXX: These changes cause the exes to crash on launch.
+  #mkdir -p ~/build/bin/
+  #cp ~/build/i686* ~/build/bin/
+  #export PATH=~/build/bin:$PATH
+  # XXX: the path to ld is hardcoded in mingw.. This forces gcc's linking to
+  # use our flags:
+  #sudo mv /usr/bin/i686-w64-mingw32-ld /usr/bin/i686-w64-mingw32-ld.orig
+  #sudo cp ~/build/bin/i686-w64-mingw32-ld /usr/bin/
+  #
   make $MAKEOPTS -f client.mk build
-  while [ $? -ne 0 ];
-  do
-    make $MAKEOPTS -f client.mk build
-  done
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
-  while [ $? -ne 0 ];
-  do
-    make -C obj-* package INNER_MAKE_PACKAGE=true
-  done
   cp -a obj-*/dist/firefox/* $INSTDIR/App/Firefox/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/Firefox/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/Firefox/

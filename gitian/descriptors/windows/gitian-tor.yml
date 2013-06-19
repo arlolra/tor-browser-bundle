@@ -32,6 +32,9 @@ script: |
   export TZ=UTC
   export CFLAGS="-mwindows"
   export LDFLAGS="-mwindows"
+  # XXX: Hardening options cause the exe's to crash.. not sure why
+  #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
+  #export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/"
   umask 0022
   # 
   mkdir -p $INSTDIR/bin/
