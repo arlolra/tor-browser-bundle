@@ -29,7 +29,6 @@ then
   if [ "z$USE_LXC" = "z1" ];
   then
     ./bin/make-base-vm --lxc --arch i386
-    sudo ifconfig lxcbr0 10.0.2.2
   else
     ./bin/make-base-vm --arch i386
   fi
@@ -47,7 +46,6 @@ then
   if [ "z$USE_LXC" = "z1" ];
   then
     ./bin/make-base-vm --lxc --arch amd64
-    sudo ifconfig lxcbr0 10.0.2.2
   else
     ./bin/make-base-vm --arch amd64
   fi
