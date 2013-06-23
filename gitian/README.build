@@ -90,7 +90,7 @@ Partial Rebuilds:
   the bundles using the addons and localization packs.
 
   The Tor and Firefox stages end up as a *gbuilt*.zip files in
-  ../gitian-builder/inputs/, and those zip files are used as inputs into
+  ../../gitian-builder/inputs/, and those zip files are used as inputs into
   the final bundling and localization stage. If those files exist in that
   directory, the corresponding bundle will *not* be built.
 
