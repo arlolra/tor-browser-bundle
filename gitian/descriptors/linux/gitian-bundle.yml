@@ -34,8 +34,6 @@ files:
 - "uriloader@pdf.js.xpi"
 - "dzip.sh"
 - "bare-version"
-- "tor-linux-res.yml"
-- "torbrowser-linux-res.yml"
 - "bundle.inputs"
 - "versions"
 script: |
@@ -102,8 +100,6 @@ script: |
   #
   # Copy reproducibility info
   cp versions tor-browser/sources/
-  cp tor-linux-res.yml tor-browser/sources/
-  cp torbrowser-linux-res.yml tor-browser/sources/
   cp bundle.inputs tor-browser/sources/bundle.inputs
   #
   cp -a tor-browser tor-browser_en-US

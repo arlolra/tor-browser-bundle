@@ -30,8 +30,6 @@ files:
 - "uriloader@pdf.js.xpi"
 - "dzip.sh"
 - "bare-version"
-- "tor-mac-res.yml"
-- "torbrowser-mac-res.yml"
 - "bundle.inputs"
 - "versions"
 script: |
@@ -103,8 +101,6 @@ script: |
   #
   # Copy reproducibility info
   cp versions TorBrowserBundle.app/sources/
-  cp tor-mac-res.yml TorBrowserBundle.app/sources/
-  cp torbrowser-mac-res.yml TorBrowserBundle.app/sources/
   cp bundle.inputs TorBrowserBundle.app/sources/bundle.inputs
   #
   cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
