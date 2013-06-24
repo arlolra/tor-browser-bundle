@@ -13,6 +13,7 @@ packages:
 - "autoconf2.13"
 - "faketime"
 - "libtool"
+- "hardening-wrapper"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
@@ -31,6 +32,13 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   umask 0022
+  #
+  # Config options for hardening-wrapper
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
   #
   mkdir -p $INSTDIR/App
   mkdir -p $INSTDIR/Lib/libz/

@@ -22,6 +22,7 @@ packages:
 - "autoconf2.13"
 - "libtool"
 - "libiw-dev"
+- "hardening-wrapper"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
@@ -39,6 +40,13 @@ script: |
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   umask 0022
+  #
+  # Config options for hardening-wrapper
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
   #
   mkdir -p $INSTDIR/build/bin/
   ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
