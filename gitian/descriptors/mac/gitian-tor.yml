@@ -45,6 +45,7 @@ script: |
   #
   mkdir -p $INSTDIR/bin/
   mkdir -p $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Contents/Resources/Data/Tor/
   mkdir -p $OUTDIR/
   #
   sudo dpkg -i *.deb
@@ -90,6 +91,7 @@ script: |
   make install
   cd ..
   cp $INSTDIR/bin/tor $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  cp $INSTDIR/share/tor/geoip $INSTDIR/TorBrowserBundle.app/Contents/Resources/Data/Tor/
   cd $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
   i686-apple-darwin11-install_name_tool -change /home/ubuntu/install/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
   # XXX: Geoip files..

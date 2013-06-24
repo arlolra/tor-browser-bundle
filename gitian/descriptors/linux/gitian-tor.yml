@@ -41,6 +41,7 @@ script: |
   export DEB_BUILD_HARDENING_PIE=1
   #
   mkdir -p $INSTDIR/App
+  mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $INSTDIR/Lib/libz/
   #
   cd zlib
@@ -80,7 +81,8 @@ script: |
   make install
   cd ..
   install -s $INSTDIR/bin/tor $INSTDIR/App/
+  cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
   #
   cd $INSTDIR
-  ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip App/ Lib/
+  ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip Data/ App/ Lib/
   cp tor-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

@@ -39,6 +39,7 @@ script: |
   # 
   mkdir -p $INSTDIR/bin/
   mkdir -p $INSTDIR/App/
+  mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $OUTDIR/
   #
   cd zlib
@@ -76,11 +77,12 @@ script: |
   make install
   cd ..
   install -s $INSTDIR/bin/tor.exe $INSTDIR/App/
+  cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
   # XXX: Geoip files..
   #
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/
   #
   cd $INSTDIR
-  ~/build/dzip.sh tor-win32-gbuilt.zip App/
+  ~/build/dzip.sh tor-win32-gbuilt.zip App/ Data/
   cp tor-win32-gbuilt.zip $OUTDIR/
