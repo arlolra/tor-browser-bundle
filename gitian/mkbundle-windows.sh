@@ -15,6 +15,11 @@ then
   exit 1
 fi
 
+if [ -z "$NUM_PROCS" ];
+then
+  export NUM_PROCS=2
+fi
+
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
@@ -76,7 +81,7 @@ then
   echo "****** Starting Tor Component of Windows Bundle (1/3 for Windows) ******"
   echo 
 
-  ./bin/gbuild --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
+  ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./tor-fail-win32.log.`date +%Y%m%d%H%M%S`
@@ -97,7 +102,7 @@ then
   echo "****** Starting Torbrowser Component of Windows Bundle (2/3 for Windows) ******"
   echo 
 
-  ./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
+  ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./firefox-fail-win32.log.`date +%Y%m%d%H%M%S`
@@ -121,7 +126,7 @@ then
   cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
   cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
   
-  ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
+  ./bin/gbuild -j $NUM_PROCS --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./bundle-fail-win32.log.`date +%Y%m%d%H%M%S`

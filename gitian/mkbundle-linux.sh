@@ -15,6 +15,11 @@ then
   exit 1
 fi
 
+if [ -z "$NUM_PROCS" ];
+then
+  export NUM_PROCS=2
+fi
+
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
@@ -93,7 +98,7 @@ then
   echo "****** Starting Tor Component of Linux Bundle (1/3 for Linux) ******"
   echo 
 
-  ./bin/gbuild --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
+  ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./tor-fail-linux.log.`date +%Y%m%d%H%M%S`
@@ -116,7 +121,7 @@ then
   echo "****** Starting TorBrowser Component of Linux Bundle (2/3 for Linux) ******"
   echo 
 
-  ./bin/gbuild --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+  ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./firefox-fail-linux.log.`date +%Y%m%d%H%M%S`
@@ -140,7 +145,7 @@ then
   cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
   cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
   
-  ./bin/gbuild --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
+  ./bin/gbuild -j $NUM_PROCS --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     mv var/build.log ./bundle-fail-linux.log.`date +%Y%m%d%H%M%S`

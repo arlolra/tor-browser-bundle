@@ -25,6 +25,11 @@ QuickStart:
  source input files are checked every time you run 'make' by default so
  distclean should not normally be needed).
 
+ To set the number of make processes and virtual CPUs to use inside the VMs
+ to four (the default is two), use:
+ 
+ $ export NUM_PROCS=4
+
 
 Detailed Explanation of Scripts:
 
