@@ -1,36 +1,29 @@
 Short Term:
- - Determinism issues
-   - One of the builds ended up using old Gitian descriptors somehow..
-     - Refuse to build if `git diff --raw` is non-zero?
-   - omni.ja (which is a zip file) still doesn't always match
-     - toolkit.manifest is sometimes reordered, which gets bundled into nonlocalized.manifest.
-       - Only two lines are ever reordered:
-         override chrome://global/content/nsTransferable.js chrome://global/content/nsDragAndDrop.js
-         skin mozapps classic/1.0 toolkit/skin/classic/mozapps/ os=WINNT osversion<6
  - Hardening options
+   - Linux:
+     - hardening-wrapper is an ubuntu package!
+       - Still misses BIND_NOW relro protection...
+     - http://wiki.debian.org/Hardening
    - Validation Tools:
      - http://www.microsoft.com/en-us/download/details.aspx?id=11910.
      - http://www.trapkit.de/tools/checksec.html
      - https://www.microsoft.com/en-us/download/details.aspx?id=29851
-   - Linux+Mac:
-     - http://wiki.debian.org/Hardening
    - Windows
      - https://developer.pidgin.im/ticket/15290
      - http://stackoverflow.com/questions/13276692/safeseh-gs-on-g
      - OpenSSL+zlib don't take cflags??
    - Can we randomize stack canaries each release, etc?
- - Windows crashes in D2D1.dll
-   - Maybe we're missing the driver blacklist from
-     https://bugzilla.mozilla.org/show_bug.cgi?id=595364
-   - Workaround: set gfx.direct2d.disabled to true for windows.
- - Custom EntryNodes issues
-   - Due to missing geoip file
+ - Determinism issues
+   - One of the builds ended up using old Gitian descriptors somehow..
+     - Refuse to build if `git diff --raw` is non-zero?
  - Detect arch on Linux
    - https://trac.torproject.org/projects/tor/ticket/3841
- - Allow people to specify NUMCPUs easier than hacking the gitian src
  - Too many libevent libs are included.. Only need a couple
 
 Mid Term:
+ - Linux:
+   - Verify nothing critical is due to expire from 'ubuntu-support-status'
+     - For now, looks like just faketime and rcv.. 
  - Windows TBB crashes if there's a system tor installed?
    - And/or if you install to c:\Program Files and run as non-Admin
  - Docs are missing
