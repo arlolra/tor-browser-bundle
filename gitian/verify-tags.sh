@@ -3,8 +3,8 @@
 
 . ./versions
 
-if [ -n $1 ]; then
-  INPUTS_DIR=../../gitian-builder/inputs
+if [ -z "$1" ]; then
+  INPUTS_DIR=$PWD/../../gitian-builder/inputs
 else
   INPUTS_DIR=$1
 fi
@@ -40,10 +40,15 @@ cd tor
 git tag -v $TOR_TAG || exit 1
 cd ..
 
-
 cd https-everywhere
 git tag -v $HTTPSE_TAG || exit 1
 cd ..
+
+# Finally, verify gitian-builder itself
+cd ..
+git tag -v $GITIAN_TAG || exit 1
+git checkout $GITIAN_TAG || exit 1
+cd $INPUTS_DIR
 
 
 exit 0

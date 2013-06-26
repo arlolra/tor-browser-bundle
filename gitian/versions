@@ -12,6 +12,8 @@ NSIS_TAG=master
 ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
 
+GITIAN_TAG=tor-browser-builder-3.0-1
+
 OPENSSL_VER=1.0.1e
 FIREFOX_LANG_VER=17.0.7esr
 

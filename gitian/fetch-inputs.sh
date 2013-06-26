@@ -130,6 +130,12 @@ ln -sf $NOSCRIPT_PACKAGE noscript@noscript.net.xpi
 ln -sf $PDFJS_PACKAGE uriloader@pdf.js.xpi
 ln -sf $OPENSSL_PACKAGE openssl.tar.gz
 
+# Fetch latest gitian-builder itself
+cd ..
+git fetch origin
+git fetch --tags origin
+cd inputs
+
 if [ -d tbb-windows-installer/.git ];
 then
   cd tbb-windows-installer
