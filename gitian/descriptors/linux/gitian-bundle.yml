@@ -36,6 +36,7 @@ files:
 - "bare-version"
 - "bundle.inputs"
 - "versions"
+- "tbb-docs.zip"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -95,6 +96,7 @@ script: |
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
+  unzip ~/build/tbb-docs.zip
   chmod 700 Data/Tor
   cd ..
   #

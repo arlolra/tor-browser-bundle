@@ -68,7 +68,11 @@ cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
 
-cd ./Bundle-Data/linux
+cd ./Bundle-Data/
+rm -f $GITIAN_DIR/inputs/tbb-docs.zip
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+
+cd linux
 rm -f $GITIAN_DIR/inputs/linux-skeleton.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/linux-skeleton.zip .
 

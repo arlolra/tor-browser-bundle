@@ -32,6 +32,7 @@ files:
 - "bare-version"
 - "bundle.inputs"
 - "versions"
+- "tbb-docs.zip"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -95,6 +96,7 @@ script: |
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
+  unzip ~/build/tbb-docs.zip
   cd Contents/MacOS/
   unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
   cd ../../../

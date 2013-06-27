@@ -34,6 +34,7 @@ files:
 - "bare-version"
 - "bundle.inputs"
 - "versions"
+- "tbb-docs.zip"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -99,6 +100,7 @@ script: |
   unzip ~/build/tor-browser-win32-gbuilt.zip
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
+  unzip ~/build/tbb-docs.zip
   cd ..
   #
   # Copy reproducibility info

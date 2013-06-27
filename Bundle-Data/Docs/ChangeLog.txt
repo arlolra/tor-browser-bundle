@@ -1,0 +1,40 @@
+Tor Browser Bundle 3.0alpha2 -- June 27 2013
+ * All Platforms:
+   * Update Firefox to 17.0.7esr
+   * Update Tor to 0.2.4.14-alpha
+   * Include Tor's GeoIP file
+     * This should fix custom torrc issues with country-based node
+       restrictions
+   * Fix several build determinism issues
+   * Include ChangeLog in bundles.
+ * Linux:
+   * Use Ubuntu's 'hardening-wrapper' to build our Linux binaries
+ * Windows:
+   * Fix many crash issues by disabling Direct2D support for now.
+ * Mac:
+   * Bug 8987: Disable TBB's 'Saved Application State' disk records on OSX 10.7+
+
+Tor Browser Bundle 3.0alpha1 -- June 17 2013
+ * All Platforms:
+   * Remove Vidalia; Use the new Tor Launcher Firefox Addon instead
+   * Update Torbutton to 1.6.0
+     * bug 7494: Create a local home page for TBB as about:tor
+     * misc: Perform a control port test of proper Tor configuration by default.
+             Only use https://check.torproject.org if the control port is
+             unavailable.
+     * misc: Add an icon menu option for Tor Launcher's Network Settings
+     * misc: Add branding string overrides (primarily controls browser name and
+             homepage)
+   * Update HTTPS-Everywhere to 3.2.2
+   * Update NoScript to 2.6.6.6
+   * Update PDF.JS to 0.8.1
+ * Windows:
+   * Use MinGW-w64 (via Gitian) to cross-compile the bundles from Ubuntu
+   * Use TBB-Windows-Installer to guide Windows users through TBB extraction
+   * Temporarily disable WebGL and Accessibility support due to minor MinGW
+     issues
+ * Mac:
+   * Use 'Toolchain4' fork by Ray Donnelley to cross-compile the bundles from
+     Ubuntu
+
+
