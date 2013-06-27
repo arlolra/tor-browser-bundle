@@ -21,9 +21,10 @@ Short Term:
  - Too many libevent libs are included.. Only need a couple
 
 Mid Term:
- - Linux:
-   - Verify nothing critical is due to expire from 'ubuntu-support-status'
-     - For now, looks like just faketime and rcv.. 
+ - Write a VM test+rebuild script
+   - Sometimes VM creation produces a base image that won't boot, especially
+     for the 'Precise' images used by windows.
+   - We should test boot it and if it fails, blow it away and try again.
  - Windows TBB crashes if there's a system tor installed?
    - And/or if you install to c:\Program Files and run as non-Admin
  - Docs are missing
@@ -55,6 +56,9 @@ Mid Term:
    - I think we don't care? Torbutton's new tor test should fail..
 
 Long Term:
+ - Linux:
+   - Verify nothing critical is due to expire from 'ubuntu-support-status'
+     - For now, looks like just faketime and rcv.. 
  - Offline building
    - Requires special VM setup.
  - Compile the toolchain, too?

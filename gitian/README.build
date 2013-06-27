@@ -123,6 +123,11 @@ Known Issues and Quirks:
      You probably want to make sure you have no stray qemu processes before
      rebuilding the VMs or starting a new build, too.
 
+     Once you get a working set of base VMs (in ../../gitian-builder/base-*),
+     you should probably copy them somewhere safe if you want to avoid VM
+     creation hangs in the future (or help us write a wrapper script that
+     tests VMs and re-runs the VM creation step if they don't boot).
+
   2. One out of every 50 builds or so, 'make' locks up at some point during a
      build, probably due to timestamp issues inside the Gitian VM. The
      symptoms of this are a hung build where the VM or LXC container processes
