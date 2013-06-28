@@ -29,8 +29,8 @@ if [ "z$VERIFY_TAGS" = "z1" ];
 then
   # If we're verifying tags, be explicit to gitian that we
   # want to build from tags.
-  # XXX: Some things still have no tags
-  # NSIS_TAG=refs/tags/$NSIS_TAG
+  NSIS_TAG=refs/tags/$NSIS_TAG
+  GITIAN_TAG=refs/tags/$GITIAN_TAG
   TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
   TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
   TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG

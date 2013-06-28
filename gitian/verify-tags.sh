@@ -11,11 +11,10 @@ fi
 
 cd $INPUTS_DIR
 
-# XXX: Not tagged yet
-# cd ttb-windows-installer
-# git tag -v $NSIS_TAG || exit 1
-# cd ..
-# 
+cd tbb-windows-installer
+git tag -v $NSIS_TAG || exit 1
+cd ..
+
 cd tor-launcher
 git tag -v $TORLAUNCHER_TAG || exit 1
 cd ..
