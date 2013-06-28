@@ -132,6 +132,7 @@ ln -sf $OPENSSL_PACKAGE openssl.tar.gz
 
 # Fetch latest gitian-builder itself
 cd ..
+git remote set-url origin https://git.torproject.org/builders/gitian-builder.git
 git fetch origin
 git fetch --tags origin
 cd inputs
