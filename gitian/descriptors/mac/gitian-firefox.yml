@@ -37,6 +37,7 @@ script: |
   export CXXFLAGS=$CFLAGS
   export LDFLAGS=$CFLAGS
   export PATH="$PATH:/usr/apple-osx/bin/"
+  export LC_ALL=C
   umask 0022
   #
   mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/

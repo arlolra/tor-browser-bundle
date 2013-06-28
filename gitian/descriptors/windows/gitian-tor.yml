@@ -30,6 +30,7 @@ script: |
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
+  export LC_ALL=C
   export CFLAGS="-mwindows"
   export LDFLAGS="-mwindows"
   # XXX: Hardening options cause the exe's to crash.. not sure why

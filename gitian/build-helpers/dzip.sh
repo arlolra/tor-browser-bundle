@@ -1,5 +1,6 @@
 #!/bin/sh
-# Crappy determistic zip wrapper
+# Crappy deterministic zip wrapper
+export LC_ALL=C
 
 ZIPFILE=$1
 shift

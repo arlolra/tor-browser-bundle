@@ -40,6 +40,7 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export TORBROWSER_VERSION=`cat bare-version`
+  export LC_ALL=C
   umask 0022
   # 
   mkdir -p $OUTDIR/

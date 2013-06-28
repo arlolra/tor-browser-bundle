@@ -1,5 +1,6 @@
 #!/bin/sh
-# Crappy determistic zip repackager
+# Crappy deterministic zip repackager
+export LC_ALL=C
 
 ZIPFILE=`basename $1`
 

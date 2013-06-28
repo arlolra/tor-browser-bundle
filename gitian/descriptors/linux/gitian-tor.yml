@@ -31,6 +31,7 @@ script: |
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
+  export LC_ALL=C
   umask 0022
   #
   # Config options for hardening-wrapper
