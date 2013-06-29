@@ -4,6 +4,7 @@ build:
 	./mkbundle-linux.sh
 	./mkbundle-windows.sh
 	./mkbundle-mac.sh
+	./hash-bundles.sh
 
 prep:
 	./check-prerequisites.sh

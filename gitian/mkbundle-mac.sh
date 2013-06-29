@@ -139,7 +139,8 @@ then
   fi
   
   #cp -a build/out/*.dmg $WRAPPER_DIR
-  cp -a build/out/*.zip $WRAPPER_DIR || exit 1
+  mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
+  cp -a build/out/*.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch $GITIAN_DIR/inputs/bundle-mac.gbuilt
 else
   echo 

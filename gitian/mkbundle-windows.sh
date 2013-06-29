@@ -137,7 +137,8 @@ then
     exit 1
   fi
   
-  cp -a build/out/*.exe $WRAPPER_DIR || exit 1
+  mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
+  cp -a build/out/*.exe $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch $GITIAN_DIR/inputs/bundle-windows.gbuilt
 else
   echo 

@@ -156,7 +156,8 @@ then
     exit 1
   fi
   
-  cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR || exit 1
+  mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
+  cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch $GITIAN_DIR/inputs/bundle-linux.gbuilt
 else
   echo 
