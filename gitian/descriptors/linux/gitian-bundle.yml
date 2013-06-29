@@ -114,7 +114,7 @@ script: |
   cd ../../../
   #7z a -sfx tor-browser.exe tor-browser_en-US
   #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
-  tar -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
+  tar --no-recursion -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz `find tor-browser_en-US | sort`
   rm -rf tor-browser_en-US
   #
   unzip linux-langpacks.zip
@@ -135,7 +135,7 @@ script: |
 
     #7z a -sfx tor-browser.exe tor-browser_$LANG
     #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract
-    tar -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
+    tar --no-recursion -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz `find tor-browser_$LANG | sort`
 
     rm -rf tor-browser_$LANG
     cd linux-langpacks
