@@ -53,7 +53,7 @@ if [ "$DEBUG_TBB" -eq 1 ]; then
 	printf "\nStarting Tor Browser now\n"
 	cd "${HOME}"
 	printf "\nLaunching Tor Browser from: `pwd`\n"
-    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox -jsconsole -no-remote -profile "${HOME}/Library/Application Support/Firefox/Profiles/profile"
+    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox-bin -jsconsole -no-remote -profile "${HOME}/Library/Application Support/Firefox/Profiles/profile"
 	printf "\nTor Browser exited with the following return code: $?\n"
 	exit
 fi
@@ -61,4 +61,4 @@ fi
 # not in debug mode, run proceed normally
 printf "\nLaunching Tor Browser Bundle for OS X in ${HOME}\n"
 cd "${HOME}"
-open "${HOME}/Contents/MacOS/TorBrowser.app" --args -no-remote -profile "${HOME}/Library/Application Support/Firefox/Profiles/profile"
+"${HOME}/Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox-bin" --args -no-remote -profile "${HOME}/Library/Application Support/Firefox/Profiles/profile"
