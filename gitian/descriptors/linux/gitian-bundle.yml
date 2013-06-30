@@ -33,6 +33,7 @@ files:
 - "noscript@noscript.net.xpi"
 - "uriloader@pdf.js.xpi"
 - "dzip.sh"
+- "dtar.sh"
 - "bare-version"
 - "bundle.inputs"
 - "versions"
@@ -56,24 +57,20 @@ script: |
   cd tor-launcher
   make clean
   make package
+  # FIXME: Switch to re-dzip.sh here?
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  # FIXME: is there a better way to fix these input umask permissions??
-  find . -type f -exec chmod 644 {} \;
-  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../../../tor-browser/Data/profile/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
   mkdir -p pkg
   ./makexpi.sh
+  # FIXME: Switch to re-dzip.sh here?
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  # FIXME: is there a better way to fix these input umask permissions??
-  find . -type f -exec chmod 644 {} \;
-  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../../../tor-browser/Data/profile/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
@@ -114,7 +111,7 @@ script: |
   cd ../../../
   #7z a -sfx tor-browser.exe tor-browser_en-US
   #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
-  tar --no-recursion -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz `find tor-browser_en-US | sort`
+  ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
   rm -rf tor-browser_en-US
   #
   unzip linux-langpacks.zip
@@ -135,7 +132,7 @@ script: |
 
     #7z a -sfx tor-browser.exe tor-browser_$LANG
     #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract
-    tar --no-recursion -Jcvf $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz `find tor-browser_$LANG | sort`
+    ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
 
     rm -rf tor-browser_$LANG
     cd linux-langpacks

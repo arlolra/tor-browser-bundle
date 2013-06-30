@@ -52,13 +52,11 @@ script: |
   cd tor-launcher
   make clean
   make package
+  # FIXME: Switch to re-dzip.sh here?
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
   rm ../*.xpi
-  # FIXME: is there a better way to fix these input umask permissions??
-  find . -type f -exec chmod 644 {} \;
-  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../tor-launcher@torproject.org.xpi .
   mv ../tor-launcher@torproject.org.xpi ../../../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/tor-launcher@torproject.org.xpi
   cd ../../../
@@ -66,12 +64,10 @@ script: |
   cd torbutton
   mkdir -p pkg/tmp
   ./makexpi.sh
+  # FIXME: Switch to re-dzip.sh here?
   cd pkg/tmp
   unzip ../*.xpi
   rm ../*.xpi
-  # FIXME: is there a better way to fix these input umask permissions??
-  find . -type f -exec chmod 644 {} \;
-  find . -type d -exec chmod 755 {} \;
   ~/build/dzip.sh ../torbutton@torproject.org.xpi .
   mv ../torbutton@torproject.org.xpi ../../../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/torbutton@torproject.org.xpi
   cd ../../../
