@@ -13,6 +13,8 @@ Short Term:
      - http://stackoverflow.com/questions/13276692/safeseh-gs-on-g
      - OpenSSL+zlib don't take cflags??
    - Can we randomize stack canaries each release, etc?
+ - Record results + package hashes in git
+   - Consolidate all packages down to a single list
  - Determinism issues
    - One of the builds ended up using old Gitian descriptors somehow..
      - Refuse to build if `git diff --raw` is non-zero?
