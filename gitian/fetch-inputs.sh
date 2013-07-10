@@ -135,6 +135,7 @@ cd ..
 git remote set-url origin https://git.torproject.org/builders/gitian-builder.git
 git fetch origin
 git fetch --tags origin
+git checkout tor-browser-builder-2
 cd inputs
 
 if [ -d tbb-windows-installer/.git ];
