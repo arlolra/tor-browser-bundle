@@ -1,54 +1,66 @@
 #!/bin/bash
 #
 
-. ./versions
+set -e
+set -u
 
-if [ -z "$1" ]; then
-  INPUTS_DIR=$PWD/../../gitian-builder/inputs
-else
-  INPUTS_DIR=$1
+if ! [ -e ./versions ]; then
+  echo >&2 "Error: ./versions file does not exist"
+  exit 1
 fi
 
-cd $INPUTS_DIR
+. ./versions
 
-cd tbb-windows-installer
-git tag -v $NSIS_TAG || exit 1
-cd ..
+WRAPPER_DIR=$(dirname "$0")
+WRAPPER_DIR=$(readlink -f "$WRAPPER_DIR")
 
-cd tor-launcher
-git tag -v $TORLAUNCHER_TAG || exit 1
-cd ..
- 
-cd tor-browser
-git tag -v $TORBROWSER_TAG || exit 1
-cd ..
+if [ "$#" -gt 1 ]; then
+  echo >&2 "Usage: $0 [<inputsdir>]"
+  exit 1
+elif [ "$#" = 1 ]; then
+  INPUTS_DIR="$1"
+else
+  INPUTS_DIR="$PWD/../../gitian-builder/inputs"
+fi
 
-cd torbutton
-git tag -v $TORBUTTON_TAG || exit 1
-cd ..
+cd "$INPUTS_DIR"
 
-cd zlib
-git tag -v $ZLIB_TAG || exit 1
-cd ..
+CLEANUP=$(tempfile)
+trap "bash '$CLEANUP'; rm -f '$CLEANUP'" EXIT
 
-cd libevent
-git tag -v $LIBEVENT_TAG || exit 1
-cd ..
+verify_git() {
+  local dir="$1"; shift
+  local keyring="$1"; shift
+  local tag="$1"; shift
 
-cd tor
-git tag -v $TOR_TAG || exit 1
-cd ..
+  local gpghome=$(mktemp -d)
+  echo "rm -rf '$gpghome'" >> "$CLEANUP"
+  GNUPGHOME="$gpghome" gpg --import "$keyring"
 
-cd https-everywhere
-git tag -v $HTTPSE_TAG || exit 1
-cd ..
-
-# Finally, verify gitian-builder itself
-cd ..
-git tag -v $GITIAN_TAG || exit 1
-git checkout $GITIAN_TAG || exit 1
-cd $INPUTS_DIR
+  pushd .
+  cd "$dir"
+  if ! GNUPGHOME="$gpghome" git tag -v "$tag"; then
+    echo >&2 "$dir: verification of tag $tag against $keyring failed!"
+    exit 1
+  fi
+  popd
+}
 
 
-exit 0
+while read dir keyring tag; do
+  verify_git "$dir" "$WRAPPER_DIR/gpg/$keyring" "$tag"
+done << EOF
+tbb-windows-installer tbb-windows-installer.gpg $NSIS_TAG
+tor-launcher          torbutton.gpg             $TORLAUNCHER_TAG
+tor-browser           torbutton.gpg             $TORBROWSER_TAG
+torbutton             torbutton.gpg             $TORBUTTON_TAG
+zlib                  zlib.gpg                  $ZLIB_TAG
+libevent              libevent.gpg              $LIBEVENT_TAG
+tor                   tor.gpg                   $TOR_TAG
+https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
+EOF
+
+cd "$WRAPPER_DIR"
+verify_git "." "gpg/torbutton.gpg" "$GITIAN_TAG"
+git checkout "$GITIAN_TAG"
 
