@@ -4,7 +4,7 @@
 
 WRAPPER_DIR=$PWD
 
-if [ -n $1 ]; then
+if [ -z "$1" ]; then
   INPUTS_DIR=$PWD/../../gitian-builder/inputs
 else
   INPUTS_DIR=$1
