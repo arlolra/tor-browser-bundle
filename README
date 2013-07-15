@@ -1,1 +1,6 @@
-Please see gitian/README.build
+There are currently two ways to use the Tor Browser Bundle builder.
+
+If you are already on an Ubuntu 12.04+ machine or VM, please see
+./gitian/README.build.
+
+Otherwise, see ./vagrant/README.md.
