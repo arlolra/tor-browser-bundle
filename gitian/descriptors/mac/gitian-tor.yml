@@ -10,6 +10,7 @@ packages:
 - "zip"
 - "autoconf"
 - "autoconf2.13"
+- "automake"
 - "faketime"
 - "libtool"
 #- "libssl0.9.8"

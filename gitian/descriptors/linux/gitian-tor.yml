@@ -11,6 +11,7 @@ packages:
 - "zip"
 - "autoconf"
 - "autoconf2.13"
+- "automake"
 - "faketime"
 - "libtool"
 - "hardening-wrapper"

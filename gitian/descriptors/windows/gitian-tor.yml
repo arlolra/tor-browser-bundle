@@ -9,6 +9,7 @@ packages:
 - "unzip"
 - "zip"
 - "autoconf"
+- "automake"
 - "autoconf2.13"
 - "mingw-w64"
 - "faketime"
