@@ -60,7 +60,7 @@ tor                   tor.gpg                   $TOR_TAG
 https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
 EOF
 
-cd "$WRAPPER_DIR"
-verify_git "." "gpg/torbutton.gpg" "$GITIAN_TAG"
+cd "$INPUTS_DIR"
+verify_git "." "$WRAPPER_DIR/gpg/torbutton.gpg" "$GITIAN_TAG"
 git checkout "$GITIAN_TAG"
 
