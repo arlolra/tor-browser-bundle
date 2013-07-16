@@ -8,4 +8,4 @@ shift
 find $@ -executable -exec chmod 700 {} \;
 find $@ ! -executable -exec chmod 600 {} \;
 
-tar --no-recursion -Jcvf $TARFILE `find $@ | sort`
+find $@ | sort | tar --no-recursion -Jcvf $TARFILE -T -
