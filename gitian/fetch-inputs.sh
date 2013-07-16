@@ -64,7 +64,7 @@ get() {
   local file="$1"; shift
   local url="$1"; shift
 
-  if ! wget -N "$url" >& /dev/null; then
+  if ! wget -N "$url"; then
     echo >&2 "Error: Cannot download $url"
     mv "${file}" "${file}.DLFAILED"
     exit 1
