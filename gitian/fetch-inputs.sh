@@ -109,17 +109,17 @@ do
   fi
 done
 
-# XXX: This doesn't cover everything. See #8525
 for i in TOOLCHAIN4 OSXSDK
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL}${!PACKAGE}"
   get "${!PACKAGE}" "${MIRROR_URL}${!PACKAGE}"
-  echo >&2 "Warning, not verifying signature for $i"
 done
 
 # Verify packages with weak or no signatures via multipath downloads
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
+# XXX: Google won't allow wget -N.. We need to re-download the whole
+# TOOLCHAIN4 each time. Rely only on SHA256 for now..
 mkdir -p verify
 cd verify
 for i in OPENSSL OSXSDK
@@ -131,24 +131,28 @@ do
     mv "${!PACKAGE}" "${!PACKAGE}.removed"
     exit 1
   fi
-done
-# XXX: Google won't allow wget -N.. We need to re-download the whole
-# TOOLCHAIN4 each time :/
-rm -f "$TOOLCHAIN4_PACKAGE"
-wget "$TOOLCHAIN4_URL"
-for i in OPENSSL OSXSDK TOOLCHAIN4
-do
-   PACKAGE="${i}_PACKAGE"
-   if ! diff "${!PACKAGE}" "../${!PACKAGE}"; then
-     echo "Package ${!PACKAGE} differs from our mirror's version!"
-     exit 1
-   fi
+  if ! diff "${!PACKAGE}" "../${!PACKAGE}"; then
+    echo "Package ${!PACKAGE} differs from our mirror's version!"
+    exit 1
+  fi
 done
 cd ..
 
 # Noscript and PDF.JS are magikal and special:
 wget -N https://addons.mozilla.org/firefox/downloads/latest/722/addon-722-latest.xpi
 wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-latest.xpi
+
+# Verify packages with weak or no signatures via direct sha256 check
+# (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
+for i in OPENSSL OSXSDK TOOLCHAIN4 NOSCRIPT PDFJS
+do
+   PACKAGE="${i}_PACKAGE"
+   HASH="${i}_HASH"
+   if ! echo "${!HASH}  ${!PACKAGE}" | sha256sum -c -; then
+     echo "Package hash for ${!PACKAGE} differs from our locally stored sha256!"
+     exit 1
+   fi
+done
 
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot-r5830.zip ];
