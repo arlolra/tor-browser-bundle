@@ -16,7 +16,7 @@ rm -f bundle.inputs
 
 sha256sum apple* >> bundle.inputs
 sha256sum multiarch-darwin* >> bundle.inputs
-#sha256sum mingw*.zip >> bundle.inputs
+sha256sum mingw*.zip >> bundle.inputs
 echo >> bundle.inputs
 #sha256sum relativelink-src.zip >> bundle.inputs
 #sha256sum *-langpacks.zip >> bundle.inputs

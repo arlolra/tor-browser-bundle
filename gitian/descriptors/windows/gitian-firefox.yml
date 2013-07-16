@@ -21,7 +21,7 @@ remotes:
   "dir": "tor-browser"
 files:
 # XXX: we need to make this input tarball deterministic :/
-- "mingw-w64-svn-snapshot-r5830.zip"
+- "mingw-w64-svn-snapshot.zip"
 - "torbrowser.version"
 - "re-dzip.sh"
 - "dzip.sh"
