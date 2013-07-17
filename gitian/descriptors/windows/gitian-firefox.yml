@@ -51,7 +51,7 @@ script: |
   # 
   mkdir mingw-w64
   cd mingw-w64
-  unzip ../mingw-w64-svn-snapshot-*.zip
+  unzip ../mingw-w64-svn-snapshot.zip
   #
   mkdir mingw-w64-headers32 && cd mingw-w64-headers32
   ../mingw-w64-svn/mingw-w64-headers/configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32/ --enable-sdk=all --enable-secure-api --enable-idl
