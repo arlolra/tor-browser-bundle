@@ -140,7 +140,8 @@ cd ..
 
 # Noscript and PDF.JS are magikal and special:
 wget -N https://addons.mozilla.org/firefox/downloads/latest/722/addon-722-latest.xpi
-wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-latest.xpi
+#wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-latest.xpi
+wget -N https://addons.mozilla.org/firefox/downloads/file/201180/pdf_viewer-0.8.1-sm+fx+an.xpi
 
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot.zip ];
