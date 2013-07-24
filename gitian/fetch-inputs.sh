@@ -109,7 +109,7 @@ do
   fi
 done
 
-for i in TOOLCHAIN4 OSXSDK
+for i in TOOLCHAIN4 OSXSDK MSVCR100
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL}${!PACKAGE}"
@@ -152,7 +152,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OPENSSL OSXSDK TOOLCHAIN4 NOSCRIPT PDFJS MINGW
+for i in OPENSSL OSXSDK TOOLCHAIN4 NOSCRIPT PDFJS MINGW MSVCR100
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"

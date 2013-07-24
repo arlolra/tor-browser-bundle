@@ -28,6 +28,7 @@ files:
 - "i686-w64-mingw32-gcc"
 - "i686-w64-mingw32-g++"
 - "i686-w64-mingw32-ld"
+- "msvcr100.dll"
 script: |
   INSTDIR="$HOME/install/FirefoxPortable/"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
@@ -98,6 +99,8 @@ script: |
   #sudo mv /usr/bin/i686-w64-mingw32-ld /usr/bin/i686-w64-mingw32-ld.orig
   #sudo cp ~/build/bin/i686-w64-mingw32-ld /usr/bin/
   #
+  export HOST_LDFLAGS=" "
+  export LDFLAGS="-lmsvcr100 -L/home/ubuntu/build/"
   make $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
@@ -105,6 +108,7 @@ script: |
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/Firefox/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/App/Firefox/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libstdc*dll $INSTDIR/App/Firefox/
+  cp -a ~/build/msvcr100.dll $INSTDIR/App/Firefox/
   #
   # XXX: What the hell are these three bytes anyways?
   sed 's/\x94\x0C\xE7\x6A\xB8\x0C\xE7\x6A\x08...\x04\xBA\xCB\x7E/\x94\x0c\xe7\x6a\xb8\x0c\xe7\x6a\x08\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/App/Firefox/xul.dll
