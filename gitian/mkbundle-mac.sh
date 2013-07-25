@@ -87,7 +87,7 @@ then
   ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
   if [ $? -ne 0 ];
   then
-    mv var/build.log ./tor-fail-mac.log.`date +%Y%m%d%H%M%S`
+    #mv var/build.log ./tor-fail-mac.log.`date +%Y%m%d%H%M%S`
     exit 1
   fi
   
@@ -108,7 +108,7 @@ then
   ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
-    mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
+    #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
     exit 1
   fi
 
@@ -133,7 +133,7 @@ then
   ./bin/gbuild -j $NUM_PROCS --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
-    mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
+    #mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
     exit 1
   fi
   
