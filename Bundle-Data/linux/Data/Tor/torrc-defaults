@@ -1,8 +1,5 @@
 # If non-zero, try to write to disk less frequently than we would otherwise.
 AvoidDiskWrites 1
-# Store working data, state, keys, and caches here.
-DataDirectory ../../Contents/Resources/Data/Tor
-GeoIPFile ../../Contents/Resources/Data/Tor/geoip
 # Where to send logging messages.  Format is minSeverity[-maxSeverity]
 # (stderr|stdout|syslog|file FILENAME).
 Log notice stdout
@@ -11,5 +8,4 @@ Log notice stdout
 SocksListenAddress 127.0.0.1
 SocksPort 9150
 ControlPort 9151
-
 CookieAuthentication 1

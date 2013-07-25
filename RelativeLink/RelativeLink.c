@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ZeroMemory ( &pi, sizeof(pi) );
 
     TCHAR *ProgramToStart;
-    ProgramToStart = TEXT ("FirefoxPortable\\App\\Firefox\\firefox.exe -no-remote -profile .\\FirefoxPortable\\Data\\profile\\");
+    ProgramToStart = TEXT ("Browser\\firefox.exe -no-remote -profile .\\Data\\Browser\\profile.default\\");
 
     if( !CreateProcess( 
         NULL, ProgramToStart, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ))

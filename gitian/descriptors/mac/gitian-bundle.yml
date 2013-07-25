@@ -44,9 +44,9 @@ script: |
   umask 0022
   # 
   mkdir -p $OUTDIR/
-  mkdir -p TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org
+  mkdir -p TorBrowserBundle.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org
   mkdir -p TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
-  mkdir -p TorBrowserBundle.app/sources
+  mkdir -p TorBrowserBundle.app/Docs/sources
   #
   cd tor-launcher
   make clean
@@ -57,7 +57,7 @@ script: |
   unzip ../*.xpi
   rm ../*.xpi
   ~/build/dzip.sh ../tor-launcher@torproject.org.xpi .
-  mv ../tor-launcher@torproject.org.xpi ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/tor-launcher@torproject.org.xpi
+  mv ../tor-launcher@torproject.org.xpi ../../../TorBrowserBundle.app/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi
   cd ../../../
   #
   cd torbutton
@@ -69,16 +69,16 @@ script: |
   unzip ../*.xpi
   rm ../*.xpi
   ~/build/dzip.sh ../torbutton@torproject.org.xpi .
-  mv ../torbutton@torproject.org.xpi ../../../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/torbutton@torproject.org.xpi
+  mv ../torbutton@torproject.org.xpi ../../../TorBrowserBundle.app/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
   cd ../../../
   #
   cd https-everywhere
   ./makexpi.sh
-  cp ./pkg/*.xpi ../TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/https-everywhere@eff.org.xpi
+  cp ./pkg/*.xpi ../TorBrowserBundle.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
-  cp *.xpi ./TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/
-  cd ./TorBrowserBundle.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/
+  cp *.xpi ./TorBrowserBundle.app/Data/Browser/profile.default/extensions/
+  cd ./TorBrowserBundle.app/Data/Browser/profile.default/extensions/
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere@eff.org
   unzip ../https-everywhere@eff.org.xpi
@@ -99,8 +99,8 @@ script: |
   cd ../../../
   #
   # Copy reproducibility info
-  cp versions TorBrowserBundle.app/sources/
-  cp bundle.inputs TorBrowserBundle.app/sources/bundle.inputs
+  cp versions TorBrowserBundle.app/Docs/sources/
+  cp bundle.inputs TorBrowserBundle.app/Docs/sources/bundle.inputs
   #
   cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
   unzip omni.ja defaults/preferences/000-tor-browser.js
@@ -119,7 +119,7 @@ script: |
   do
     LANG=`basename $i .xpi`
     cp -a ../TorBrowserBundle.app ../TorBrowserBundle_$LANG.app
-    cp $i ../TorBrowserBundle_$LANG.app/Library/"Application Support"/Firefox/Profiles/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    cp $i ../TorBrowserBundle_$LANG.app/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
     cd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/

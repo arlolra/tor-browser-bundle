@@ -46,8 +46,8 @@ script: |
   export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
   #
   mkdir -p $INSTDIR/bin/
-  mkdir -p $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
-  mkdir -p $INSTDIR/TorBrowserBundle.app/Contents/Resources/Data/Tor/
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Tor/
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Data/Tor/
   mkdir -p $OUTDIR/
   #
   sudo dpkg -i *.deb
@@ -61,7 +61,7 @@ script: |
   #find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib PREFIX=i686-apple-darwin10- $MAKEOPTS SHARED_MODE=1
   #make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib PREFIX=i686-apple-darwin10- $MAKEOPTS SHARED_MODE=1 install
-  #cp $INSTDIR/zlib/lib/*.dylib $INSTDIR/App/
+  #cp $INSTDIR/zlib/lib/*.dylib $INSTDIR/Tor/
   #cd ..
   #
   tar xzf openssl.tar.gz
@@ -70,7 +70,7 @@ script: |
   ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin-i386-cc --prefix=$INSTDIR/openssl
   make # SHARED_LDFLAGS="-shared -dynamiclib -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/"
   make install
-  #cp $INSTDIR/openssl/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  #cp $INSTDIR/openssl/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Tor/
   cd ..
   #
   cd libevent
@@ -79,7 +79,7 @@ script: |
   ./configure --disable-static --host=i686-apple-darwin11 --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
-  cp $INSTDIR/libevent/lib/libevent-*.dylib $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  cp $INSTDIR/libevent/lib/libevent-*.dylib $INSTDIR/TorBrowserBundle.app/Tor/
   LIBEVENT_FILE=`basename $INSTDIR/libevent/lib/libevent-*.dylib`
   cd ..
   #
@@ -92,14 +92,14 @@ script: |
   make $MAKEOPTS
   make install
   cd ..
-  cp $INSTDIR/bin/tor $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
-  cp $INSTDIR/share/tor/geoip $INSTDIR/TorBrowserBundle.app/Contents/Resources/Data/Tor/
-  cd $INSTDIR/TorBrowserBundle.app/Contents/MacOS/
+  cp $INSTDIR/bin/tor $INSTDIR/TorBrowserBundle.app/Tor/
+  cp $INSTDIR/share/tor/geoip $INSTDIR/TorBrowserBundle.app/Data/Tor/
+  cd $INSTDIR/TorBrowserBundle.app/Tor/
   i686-apple-darwin11-install_name_tool -change /home/ubuntu/install/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
   # XXX: Geoip files..
   #
-  #cp -a /usr/lib/gcc/i686-apple-darwin10/4.6/libgcc_s_sjlj-1.dll $INSTDIR/App/
-  #cp -a /usr/lib/gcc/i686-apple-darwin10/4.6/libssp*.dll $INSTDIR/App/
+  #cp -a /usr/lib/gcc/i686-apple-darwin10/4.6/libgcc_s_sjlj-1.dll $INSTDIR/Tor/
+  #cp -a /usr/lib/gcc/i686-apple-darwin10/4.6/libssp*.dll $INSTDIR/Tor/
   #
   cd $INSTDIR
   ~/build/dzip.sh tor-mac$GBUILD_BITS-gbuilt.zip TorBrowserBundle.app

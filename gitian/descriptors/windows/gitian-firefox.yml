@@ -33,16 +33,14 @@ files:
 - "i686-w64-mingw32-ld"
 - "msvcr100.dll"
 script: |
-  INSTDIR="$HOME/install/FirefoxPortable/"
+  INSTDIR="$HOME/install"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
   #
-  mkdir -p $INSTDIR/Data/profile/preferences 
-  mkdir -p $INSTDIR/Data/profile/extensions
-  mkdir -p $INSTDIR/App/Firefox/
+  mkdir -p $INSTDIR/Browser/
   mkdir -p $OUTDIR/
   # If we ever find out that the 12.04 mingw is buggy/insufficient:
   #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
@@ -162,21 +160,22 @@ script: |
   make $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
-  cp -a obj-*/dist/firefox/* $INSTDIR/App/Firefox/
-  cp -a /usr/i686-w64-mingw32/lib/libgcc_s_sjlj-1.dll $INSTDIR/App/Firefox/
-  cp -a /usr/i686-w64-mingw32/lib/libstdc*dll $INSTDIR/App/Firefox/
-  cp -a ~/build/msvcr100.dll $INSTDIR/App/Firefox/
+  cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
+  cp -a /usr/i686-w64-mingw32/lib/libgcc_s_sjlj-1.dll $INSTDIR/Browser/
+  cp -a /usr/i686-w64-mingw32/lib/libstdc*dll $INSTDIR/Browser/
+  cp -a ~/build/msvcr100.dll $INSTDIR/Browser/
   #
   # XXX: What the hell are these three bytes anyways?
-  sed 's/\x94\x0C\xE7\x6A\xB8\x0C\xE7\x6A\x08...\x04\xBA\xCB\x7E/\x94\x0c\xe7\x6a\xb8\x0c\xe7\x6a\x08\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/App/Firefox/xul.dll
-  sed 's/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8...\x04\xba\xcb\x7e/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/App/Firefox/gkmedias.dll
+  sed 's/\x94\x0C\xE7\x6A\xB8\x0C\xE7\x6A\x08...\x04\xBA\xCB\x7E/\x94\x0c\xe7\x6a\xb8\x0c\xe7\x6a\x08\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/Browser/xul.dll
+  sed 's/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8...\x04\xba\xcb\x7e/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/Browser/gkmedias.dll
   # Stripping again updates the PE header checksums to be correct
-  i686-w64-mingw32-strip $INSTDIR/App/Firefox/gkmedias.dll
-  i686-w64-mingw32-strip $INSTDIR/App/Firefox/xul.dll
+  i686-w64-mingw32-strip $INSTDIR/Browser/gkmedias.dll
+  i686-w64-mingw32-strip $INSTDIR/Browser/xul.dll
   #
   cd $INSTDIR
-  ~/build/re-dzip.sh App/Firefox/omni.ja
-  ~/build/re-dzip.sh App/Firefox/webapprt/omni.ja
-  cd ..
-  ~/build/dzip.sh tor-browser-win32-gbuilt.zip ./FirefoxPortable/
+  ~/build/re-dzip.sh Browser/omni.ja
+  if [ -f Browser/webapprt/omni.ja ]; then
+    ~/build/re-dzip.sh Browser/webapprt/omni.ja
+  fi
+  ~/build/dzip.sh tor-browser-win32-gbuilt.zip Browser
   cp tor-browser-win32-gbuilt.zip $OUTDIR

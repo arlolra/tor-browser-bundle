@@ -117,7 +117,7 @@ if [ "`id -u`" -eq 0 ]; then
 fi
 
 SYSARCHITECTURE=$(getconf LONG_BIT)
-TORARCHITECTURE=$(expr "$(file App/tor)" : '.*ELF \([[:digit:]]*\)')
+TORARCHITECTURE=$(expr "$(file Tor/tor)" : '.*ELF \([[:digit:]]*\)')
 
 if [ $SYSARCHITECTURE -ne $TORARCHITECTURE ]; then
    complain "Wrong architecture? 32-bit vs. 64-bit."
@@ -135,7 +135,7 @@ elif [ "$#" -eq 1 -a \( "x$1" = "x--help" -o "x$1" = "x-help" \) ]; then
 fi
 
 # If the user hasn't requested 'debug mode', close whichever of stdout
-# and stderr are not ttys, to keep Vidalia and the stuff loaded by/for
+# and stderr are not ttys, to keep Firefox and the stuff loaded by/for
 # it (including the system's shared-library loader) from printing
 # messages to $HOME/.xsession-errors .  (Users wouldn't have seen
 # messages there anyway.)
@@ -206,13 +206,13 @@ else
 	export HOME
 fi
 
-if ldd ./App/Firefox/firefox-bin | grep -q "libz\.so\.1.*not found"; then
-	LD_LIBRARY_PATH="${HOME}/Lib:${HOME}/Lib/libz"
+if ldd ./Browser/firefox-bin | grep -q "libz\.so\.1.*not found"; then
+	LD_LIBRARY_PATH="${HOME}/Tor:${HOME}/Tor/libz"
 else
-	LD_LIBRARY_PATH="${HOME}/Lib"
+	LD_LIBRARY_PATH="${HOME}/Tor"
 fi
 
-LDPATH="${HOME}/Lib/"
+LDPATH="${HOME}/Tor/"
 export LDPATH
 export LD_LIBRARY_PATH
 
@@ -223,7 +223,7 @@ printf "\nLaunching Tor Browser Bundle for Linux in ${HOME}\n"
 cd "${HOME}"
 # XXX Someday we should pass whatever command-line arguments we got
 # (probably filenames or URLs) to Firefox.
-./App/Firefox/firefox -no-remote -profile Data/profile
+./Browser/firefox -no-remote -profile Data/Browser/profile.default
 exitcode="$?"
 if [ "$exitcode" -ne 0 ]; then
 	complain "Tor Browser exited abnormally.  Exit code: $exitcode"

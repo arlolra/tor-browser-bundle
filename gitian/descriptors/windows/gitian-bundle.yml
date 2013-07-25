@@ -46,8 +46,8 @@ script: |
   umask 0022
   # 
   mkdir -p $OUTDIR/
-  mkdir -p tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/https-everywhere@eff.org
-  mkdir -p tbb-windows-installer/"Tor Browser"/sources
+  mkdir -p tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/Docs/sources
   #
   cd tor-launcher
   make clean
@@ -58,7 +58,7 @@ script: |
   unzip ../*.xpi
   rm ../*.xpi
   ~/build/dzip.sh ../tor-launcher@torproject.org.xpi .
-  mv ../tor-launcher@torproject.org.xpi ../../../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/tor-launcher@torproject.org.xpi
+  mv ../tor-launcher@torproject.org.xpi ../../../tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi
   cd ../../../
   #
   cd torbutton
@@ -69,16 +69,16 @@ script: |
   unzip ../*.xpi
   rm ../*.xpi
   ~/build/dzip.sh ../torbutton@torproject.org.xpi .
-  mv ../torbutton@torproject.org.xpi ../../../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/torbutton@torproject.org.xpi
+  mv ../torbutton@torproject.org.xpi ../../../tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
   cd ../../../
   #
   cd https-everywhere
   ./makexpi.sh
-  cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions/https-everywhere@eff.org.xpi
+  cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
-  cp *.xpi ./tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
-  cd ./tbb-windows-installer/"Tor Browser"/FirefoxPortable/Data/profile/extensions
+  cp *.xpi ./tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions
+  cd ./tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere@eff.org
   unzip ../https-everywhere@eff.org.xpi
@@ -101,15 +101,15 @@ script: |
   cd ..
   #
   # Copy reproducibility info
-  cp ../versions "Tor Browser"/sources/
-  cp ../bundle.inputs "Tor Browser"/sources/bundle.inputs
+  cp ../versions "Tor Browser"/Docs/sources/
+  cp ../bundle.inputs "Tor Browser"/Docs/sources/
   #
-  cd "Tor Browser"/FirefoxPortable/App/Firefox
+  cd "Tor Browser"/Browser
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-  cd ../../../../
+  cd ../../
   makensis torbrowser.nsi
   mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_en-US.exe
   #
@@ -118,19 +118,19 @@ script: |
   for i in *.xpi
   do
     LANG=`basename $i .xpi`
-    cp $i ../"Tor Browser"/FirefoxPortable/Data/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    cp $i ../"Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    cd "Tor Browser"/FirefoxPortable/App/Firefox
+    cd "Tor Browser"/Browser
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    cd ../../../../
+    cd ../../
 
     makensis torbrowser.nsi
     mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
-    rm ./"Tor Browser"/FirefoxPortable/Data/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    rm ./"Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd win32-langpacks
   done 
   cd ..

@@ -49,10 +49,10 @@ script: |
   umask 0022
   # 
   mkdir -p $OUTDIR/
-  mkdir -p tor-browser/Data/profile/extensions/https-everywhere@eff.org
-  mkdir -p tor-browser/sources/
+  mkdir -p tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tor-browser/Docs/sources/
   #
-  cp *.xpi tor-browser/Data/profile/extensions/
+  cp *.xpi tor-browser/Data/Browser/profile.default/extensions/
   #
   cd tor-launcher
   make clean
@@ -61,7 +61,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tor-browser/Data/profile/extensions/tor-launcher@torproject.org.xpi .
+  ~/build/dzip.sh ../../../tor-browser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
@@ -71,16 +71,16 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tor-browser/Data/profile/extensions/torbutton@torproject.org.xpi .
+  ~/build/dzip.sh ../../../tor-browser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
   cd https-everywhere
   ./makexpi.sh
-  cp ./pkg/*.xpi ../tor-browser/Data/profile/extensions/https-everywhere@eff.org.xpi
+  cp ./pkg/*.xpi ../tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
-  mv tor-browser/Data/profile/extensions/noscript@noscript.net.xpi tor-browser/Data/profile/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
-  cd tor-browser/Data/profile/extensions/https-everywhere@eff.org/
+  mv tor-browser/Data/Browser/profile.default/extensions/noscript@noscript.net.xpi tor-browser/Data/Browser/profile.default/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
+  cd tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org/
   unzip ../https-everywhere@eff.org.xpi
   rm ../https-everywhere@eff.org.xpi
   cd ~/build/
@@ -95,20 +95,21 @@ script: |
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  chmod 700 Data/Browser
   chmod 700 Data/Tor
   cd ..
   #
   # Copy reproducibility info
-  cp versions tor-browser/sources/
-  cp bundle.inputs tor-browser/sources/bundle.inputs
+  cp versions tor-browser/Docs/sources/
+  cp bundle.inputs tor-browser/Docs/sources/bundle.inputs
   #
   cp -a tor-browser tor-browser_en-US
-  cd tor-browser_en-US/App/Firefox
+  cd tor-browser_en-US/Browser
   unzip omni.ja defaults/preferences/000-tor-browser.js
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xd omni.ja defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-  cd ../../../
+  cd ../../
   #7z a -sfx tor-browser.exe tor-browser_en-US
   #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
   ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
@@ -120,15 +121,15 @@ script: |
   do
     LANG=`basename $i .xpi`
     cp -a ../tor-browser ../tor-browser_$LANG
-    cp $i ../tor-browser_$LANG/Data/profile/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    cp $i ../tor-browser_$LANG/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    cd tor-browser_$LANG/App/Firefox
+    cd tor-browser_$LANG/Browser
     unzip omni.ja defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xd omni.ja defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    cd ../../../
+    cd ../../
 
     #7z a -sfx tor-browser.exe tor-browser_$LANG
     #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract

@@ -20,7 +20,7 @@ if [ "x$1" = "x--debug" -o "x$1" = "x-debug" ]; then
 fi
 
 # If the user hasn't requested 'debug mode', close whichever of stdout
-# and stderr are not ttys, to keep Vidalia and the stuff loaded by/for
+# and stderr are not ttys, to keep Firefox and the stuff loaded by/for
 # it (including the system's shared-library loader) from printing
 # messages to be logged in /var/log/system.log .  (Users wouldn't have
 # seen messages there anyway.)
@@ -53,7 +53,7 @@ if [ "$DEBUG_TBB" -eq 1 ]; then
 	printf "\nStarting Tor Browser now\n"
 	cd "${HOME}"
 	printf "\nLaunching Tor Browser from: `pwd`\n"
-    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox-bin -jsconsole -no-remote -profile "${HOME}/Library/Application Support/Firefox/Profiles/profile"
+    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox-bin -jsconsole -no-remote -profile "${HOME}/Data/Browser/profile.default"
 	printf "\nTor Browser exited with the following return code: $?\n"
 	exit
 fi
@@ -61,4 +61,4 @@ fi
 # not in debug mode, run proceed normally
 printf "\nLaunching Tor Browser Bundle for OS X in ${HOME}\n"
 cd "${HOME}"
-"${HOME}/Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox-bin" --args -no-remote -profile "${HOME}/Library/Application Support/Firefox/Profiles/profile"
+open "${HOME}/Contents/MacOS/TorBrowser.app" --args -no-remote -profile "${HOME}/Data/Browser/profile.default"

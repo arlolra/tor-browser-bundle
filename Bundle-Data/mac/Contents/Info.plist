@@ -11,7 +11,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>Tor Browser Bundle 1.0 Copyright 2010 The Tor Project</string>
 	<key>CFBundleIconFile</key>
-	<string>vidalia.icns</string>
+	<string>firefox.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.torproject.TorBrowserBundle</string>
 	<key>CFBundleInfoDictionaryVersion</key>
