@@ -37,9 +37,7 @@ pref("noscript.showAllowPage", false);
 pref("noscript.showBaseDomain", false);
 pref("noscript.showDistrust", false);
 pref("noscript.showRecentlyBlocked", false);
-pref("noscript.showRevokeTemp", false);
 pref("noscript.showTemp", false);
-pref("noscript.showTempAllowPage", false);
 pref("noscript.showTempToPerm", false);
 pref("noscript.showUntrusted", false);
 pref("noscript.STS.enabled", false);
@@ -52,3 +50,8 @@ pref("noscript.forbidFlash", false);
 pref("noscript.forbidSilverlight", false);
 pref("noscript.forbidJava", false);
 pref("noscript.forbidPlugins", false);
+// Usability tweaks
+pref("noscript.showPermanent", false);
+pref("noscript.showTempAllowPage", true);
+pref("noscript.showRevokeTemp", true);
+pref("noscript.notify", false);
