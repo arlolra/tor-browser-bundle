@@ -100,7 +100,7 @@ script: |
   #sudo cp ~/build/bin/i686-w64-mingw32-ld /usr/bin/
   #
   export HOST_LDFLAGS=" "
-  export LDFLAGS="-lmsvcr100 -L/home/ubuntu/build/"
+  export LDFLAGS="-nostdlib -lgcc -lmsvcr100 -L/home/ubuntu/build/"
   make $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
