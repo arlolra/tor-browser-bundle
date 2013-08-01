@@ -1,3 +1,26 @@
+Tor Browser Bundle 3.0alpha3 -- Aug 01 2013
+ * All Platforms:
+   * Update Firefox to 17.0.8esr
+   * Update Tor to 0.2.4.15-rc
+   * Update HTTPS-Everywhere to 3.3.1
+   * Update NoScript to 2.6.6.9
+   * Improve build input fetching and authentication
+   * Bug #9283: Update NoScript prefs for usability.
+   * Bug #6152 (partial): Disable JSCtypes support at compile time
+   * Update Torbutton to 1.6.1
+     * Bug 8478: Change when window resize code fires to avoid rounding errors
+     * Bug 9331: Hack an update URL for the next TBB release
+     * Bug 9144: Change an aboutTor.dtd string so transifex will accept it
+   * Update Tor-Launcher to 0.2.1-alpha
+     * Bug #9128: Remove dependency on JSCtypes
+ * Windows
+   * Bug #9195: Disable download manager AV scanning (to prevent cloud
+     reporting+scanning of downloaded files)
+ * Mac:
+   * Bug #9173 (partial): Launch firefox-bin on MacOS instead of TorBrowser.app
+     (improves dock behavior).
+
+
 Tor Browser Bundle 3.0alpha2 -- June 27 2013
  * All Platforms:
    * Update Firefox to 17.0.7esr
