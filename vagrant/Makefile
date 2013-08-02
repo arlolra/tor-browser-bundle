@@ -4,7 +4,10 @@ REQS = git apache2 python-vm-builder ruby debootstrap lxc apt-cacher-ng \
 # remove torsocks to speed up testing
 TORSOCKS = torsocks
 
-.PHONY: hostvm
+.PHONY: all hostvm tbb
+
+all: hostvm tbb
+
 hostvm:
 	vagrant destroy --force
 	vagrant up
@@ -19,7 +22,6 @@ hostvm:
 	vagrant ssh --command "sudo $(TORSOCKS) apt-get install -y $(REQS)"
 	vagrant halt
 
-.PHONY: tbb
 tbb:
 	vagrant up
 	vagrant ssh --command "\
@@ -46,5 +48,3 @@ tbb:
 		cp -R 3.* /vagrant/"
 	
 	vagrant halt
-
-all: hostvm tbb
