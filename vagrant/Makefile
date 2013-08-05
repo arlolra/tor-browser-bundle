@@ -39,7 +39,7 @@ tbb:
 		fi"
 	
 	vagrant ssh --command "\
-		rsync -r --exclude=.git --exclude=.vagrant \
+		rsync -r --exclude=.vagrant \
 		/tor-browser-bundle/ ~/tor-browser-bundle"
 	
 	vagrant ssh --command "cd ~/tor-browser-bundle/gitian && USE_LXC=1 make"
