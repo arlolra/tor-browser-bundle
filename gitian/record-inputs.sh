@@ -14,15 +14,15 @@ cd $INPUTS_DIR
 
 rm -f bundle.inputs
 
-sha256sum apple* >> bundle.inputs
-sha256sum multiarch-darwin* >> bundle.inputs
-sha256sum mingw*.zip >> bundle.inputs
+sha256sum $OSXSDK_PACKAGE >> bundle.inputs
+sha256sum $TOOLCHAIN4_PACKAGE >> bundle.inputs
+sha256sum mingw-w64-svn-snapshot.zip >> bundle.inputs
 echo >> bundle.inputs
 #sha256sum relativelink-src.zip >> bundle.inputs
 #sha256sum *-langpacks.zip >> bundle.inputs
 sha256sum noscript@noscript.net.xpi >> bundle.inputs
 sha256sum uriloader@pdf.js.xpi >> bundle.inputs
-sha256sum openssl-*gz >> bundle.inputs
+sha256sum $OPENSSL_PACKAGE >> bundle.inputs
 echo >> bundle.inputs
 
 if [ "z$VERIFY_TAGS" = "z1" ];
