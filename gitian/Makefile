@@ -18,6 +18,8 @@ clean:
 
 vmclean:
 	rm -rf ../../gitian-builder/*.qcow2
+	rm -rf ../../gitian-builder/base-*
+	rm -rf ../../gitian-builder/target-*
 
 distclean: vmclean
 	rm -rf ../../gitian-builder/inputs/*

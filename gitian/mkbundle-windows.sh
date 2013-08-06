@@ -20,26 +20,10 @@ then
   export NUM_PROCS=2
 fi
 
+./make-vms.sh
+
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
-
-# TODO: Make a super-fresh option that kills the base vms
-if [ ! -f base-precise-i386.qcow2 ];
-then
-  if [ "z$USE_LXC" = "z1" ];
-  then
-    ./bin/make-base-vm --lxc --suite precise --arch i386
-  else
-    ./bin/make-base-vm --suite precise --arch i386
-  fi
-
-  if [ $? -ne 0 ];
-  then
-      echo "i386 VM creation failed"
-      exit 1
-  fi
-  stop-target
-fi
 
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Windows\");" > $GITIAN_DIR/inputs/torbrowser.version 
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
