@@ -57,8 +57,7 @@ build_and_test_vm() {
 while ! build_and_test_vm lucid i386 32
 do
   stop-target 32 lucid
-  exit 1
-  #rm ./base-lucid-i386*
+  rm ./base-lucid-i386*
   echo
   echo "Lucid i386 VM build failed... Trying again"
   echo
