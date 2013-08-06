@@ -45,9 +45,6 @@ then
   echo "Note that LXC requires a sudo invocation for each Gitian command. "
   echo "If you require LXC, you may wish to increase your sudo timeout, "
   echo "or simply run the build directly from a root shell. "
-  echo
-  echo "XXX: Issues with file ordering in zip files currently prevent"
-  echo "LXC bundles from matching the SHA hashes of bundles made by KVM..."
   exit 1
 fi
 
