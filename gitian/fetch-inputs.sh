@@ -139,14 +139,13 @@ done
 cd ..
 
 # Noscript and PDF.JS are magikal and special:
-wget -N https://addons.mozilla.org/firefox/downloads/latest/722/addon-722-latest.xpi
-#wget -N https://addons.mozilla.org/firefox/downloads/latest/352704/addon-352704-latest.xpi
-wget -N https://addons.mozilla.org/firefox/downloads/file/201180/pdf_viewer-0.8.1-sm+fx+an.xpi
+wget -N https://addons.mozilla.org/firefox/downloads/file/224880/${NOSCRIPT_PACKAGE}
+wget -N https://addons.mozilla.org/firefox/downloads/file/201180/${PDFJS_PACKAGE}
 
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot.zip ];
 then
-  svn co -r $MINGW_REV https://mingw-w64.svn.sourceforge.net/svnroot/mingw-w64/trunk mingw-w64-svn || exit 1
+  svn co -r $MINGW_REV https://svn.code.sf.net/p/mingw-w64/code/trunk/ mingw-w64-svn || exit 1
   # XXX: Path
   ZIPOPTS="-x*/.svn/*" faketime -f "2000-01-01 00:00:00" "$WRAPPER_DIR/build-helpers/dzip.sh" mingw-w64-svn-snapshot.zip mingw-w64-svn
 fi
