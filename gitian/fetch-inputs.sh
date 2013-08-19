@@ -193,8 +193,9 @@ ln -sf "$OPENSSL_PACKAGE" openssl.tar.gz
 cd ..
 git remote set-url origin https://git.torproject.org/builders/gitian-builder.git
 git fetch origin
-git fetch --tags origin
+git fetch --tags origin # XXX - why do we fetch tags specifically?
 git checkout tor-browser-builder-2
+git merge origin/tor-browser-builder-2
 cd inputs
 
 while read dir url tag; do
