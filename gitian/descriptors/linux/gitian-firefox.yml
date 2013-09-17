@@ -54,6 +54,7 @@ script: |
   export PATH=$PATH:$INSTDIR/build/bin
   #
   mkdir -p $INSTDIR/App/Firefox/
+  mkdir -p $INSTDIR/Debug/App/Firefox/
   #
   cd tor-browser
   grep -v '^pref(\"torbrowser.version\",' browser/app/profile/000-tor-browser.js > browser/app/profile/000-tor-browser.js.fixed
@@ -68,9 +69,7 @@ script: |
   make -f client.mk configure
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
-  # The build sometimes randomly fails (faketime issues?) Just restart it until success
   make $MAKEOPTS -f client.mk build
-  #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/App/Firefox/
   # TODO: There goes FIPS-140.. We could upload these somewhere unique and
@@ -79,10 +78,23 @@ script: |
   rm -f $INSTDIR/App/Firefox/*.chk
   #
   cd $INSTDIR
+  # Strip and generate debuginfo for libs
+  objcopy --only-keep-debug $INSTDIR/App/Firefox/firefox $INSTDIR/Debug/App/Firefox/firefox
+  strip $INSTDIR/App/Firefox/firefox
+  objcopy --add-gnu-debuglink=./Debug/App/Firefox/firefox $INSTDIR/App/Firefox/firefox
+  for i in $INSTDIR/App/Firefox/*.so
+  do
+    LIB=`basename $i`
+    objcopy --only-keep-debug $INSTDIR/App/Firefox/$LIB $INSTDIR/Debug/App/Firefox/$LIB
+    strip $INSTDIR/App/Firefox/$LIB
+    objcopy --add-gnu-debuglink=./Debug/App/Firefox/$LIB $INSTDIR/App/Firefox/$LIB
+  done
   ~/build/re-dzip.sh App/Firefox/omni.ja
   ~/build/re-dzip.sh App/Firefox/webapprt/omni.ja
   ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-gbuilt.zip App/
+  ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-browser-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
+  cp tor-browser-linux$GBUILD_BITS-debug.zip $OUTDIR/
   #
   # XXX: Output the exact dpkgs we used to a txt file. Should this be
   # part of gitian?

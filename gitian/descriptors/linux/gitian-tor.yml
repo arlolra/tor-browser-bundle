@@ -43,6 +43,8 @@ script: |
   export DEB_BUILD_HARDENING_PIE=1
   #
   mkdir -p $INSTDIR/App
+  mkdir -p $INSTDIR/Debug/Lib/libz
+  mkdir -p $INSTDIR/Debug/App
   mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $INSTDIR/Lib/libz/
   #
@@ -51,7 +53,7 @@ script: |
   ./configure --prefix=$INSTDIR/zlib
   make $MAKEOPTS SHARED_MODE=1
   make $MAKEOPTS SHARED_MODE=1 install
-  cp $INSTDIR/zlib/lib/libz*so* $INSTDIR/Lib/libz/
+  cp $INSTDIR/zlib/lib/libz.so.1 $INSTDIR/Lib/libz/
   cd ..
   #
   cd libevent
@@ -60,7 +62,7 @@ script: |
   ./configure --disable-static --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
-  cp $INSTDIR/libevent/lib/lib*so* $INSTDIR/Lib/
+  cp $INSTDIR/libevent/lib/libevent-2.0.so.5 $INSTDIR/Lib/
   cd ..
   #
   tar xzf openssl.tar.gz
@@ -70,8 +72,12 @@ script: |
   ./config -shared --prefix=$INSTDIR/openssl
   make
   make install
-  cp $INSTDIR/openssl/lib/lib*so* $INSTDIR/Lib/
+  cp $INSTDIR/openssl/lib/libssl.so.1.0.0 $INSTDIR/Lib/
+  cp $INSTDIR/openssl/lib/libcrypto.so.1.0.0 $INSTDIR/Lib/
   cd ..
+  #
+  chmod 700 $INSTDIR/Lib/*so*
+  chmod 700 $INSTDIR/Lib/libz/*so*
   #
   cd tor
   mkdir -p $OUTDIR/src
@@ -81,10 +87,28 @@ script: |
   ./configure --disable-asciidoc --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
   make $MAKEOPTS
   make install
-  cd ..
-  install -s $INSTDIR/bin/tor $INSTDIR/App/
   cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
-  #
+  # Strip and generate debuginfo for libs
   cd $INSTDIR
+  objcopy --only-keep-debug $INSTDIR/bin/tor $INSTDIR/Debug/App/tor
+  install -s $INSTDIR/bin/tor $INSTDIR/App/
+  objcopy --add-gnu-debuglink=./Debug/App/tor $INSTDIR/App/tor
+  for i in $INSTDIR/Lib/*so*
+  do
+    LIB=`basename $i`
+    objcopy --only-keep-debug $INSTDIR/Lib/$LIB $INSTDIR/Debug/Lib/$LIB
+    strip $INSTDIR/Lib/$LIB
+    objcopy --add-gnu-debuglink=./Debug/Lib/$LIB $INSTDIR/Lib/$LIB
+  done
+  for i in $INSTDIR/Lib/libz/*so*
+  do
+    LIB=`basename $i`
+    objcopy --only-keep-debug $INSTDIR/Lib/libz/$LIB $INSTDIR/Debug/Lib/libz/$LIB
+    strip $INSTDIR/Lib/libz/$LIB
+    objcopy --add-gnu-debuglink=./Debug/Lib/libz/$LIB $INSTDIR/Lib/libz/$LIB
+  done
+  #
   ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip Data/ App/ Lib/
+  ~/build/dzip.sh tor-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
+  cp tor-linux$GBUILD_BITS-debug.zip $OUTDIR/
