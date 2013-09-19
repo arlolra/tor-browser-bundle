@@ -1,12 +1,12 @@
-TORBROWSER_VERSION=3.0-alpha-3
+TORBROWSER_VERSION=3.0-alpha-4
 BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
 
 VERIFY_TAGS=1
 
-TORBROWSER_TAG=tor-browser-17.0.8esr-3.0alpha3-build3
-TOR_TAG=tor-0.2.4.15-rc
-TORLAUNCHER_TAG=0.2.1-alpha
-TORBUTTON_TAG=1.6.1
+TORBROWSER_TAG=tor-browser-17.0.9esr-3.0alpha4-build1
+TOR_TAG=tor-0.2.4.17-rc
+TORLAUNCHER_TAG=0.2.2-alpha
+TORBUTTON_TAG=1.6.2
 HTTPSE_TAG=3.3.1
 NSIS_TAG=v0.1
 ZLIB_TAG=v1.2.8
@@ -16,7 +16,7 @@ MINGW_REV=5830
 GITIAN_TAG=tor-browser-builder-3.0-4
 
 OPENSSL_VER=1.0.1e
-FIREFOX_LANG_VER=17.0.8esr
+FIREFOX_LANG_VER=17.0.9esr
 
 ## File names for the source packages
 OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz

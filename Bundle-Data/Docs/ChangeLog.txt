@@ -1,3 +1,19 @@
+Tor Browser Bundle 3.0alpha4 -- Sep 20 2013
+ * All Platforms:
+   * Bug #8751: Randomize TLS HELLO timestamp in HTTPS connections
+   * Update Firefox to 17.0.9esr
+   * Update Tor to 0.2.4.17-rc
+   * Update NoScript to 2.6.7.1
+   * Update Tor-Launcher to 0.2.2-alpha
+     * Bug #9675: Provide feedback mechanism for clock-skew and other early 
+                  startup issues
+     * Bug #9445: Allow user to enter bridges with or without 'bridge' keyword
+     * Bug #9593: Use UTF16 for Tor process launch to handle unicode paths.
+     * misc: Detect when Tor exits and display appropriate notification
+   * Update Torbutton to 1.6.2
+     * Bug 9492: Fix Torbutton logo on OSX and Windows (and related
+                 initialization code)
+
 Tor Browser Bundle 3.0alpha3 -- Aug 01 2013
  * All Platforms:
    * Update Firefox to 17.0.8esr
