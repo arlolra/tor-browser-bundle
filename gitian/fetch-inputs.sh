@@ -38,9 +38,10 @@ trap "bash '$CLEANUP'; rm -f '$CLEANUP'" EXIT
 verify() {
   local file="$1"; shift
   local keyring="$1"; shift
+  local suffix="$1"; shift
 
   local f
-  for f in "$file" "$file.asc" "$keyring"; do
+  for f in "$file" "$file.$suffix" "$keyring"; do
     if ! [ -e "$f" ]; then
       echo >&2 "Error: Required file $f does not exist."; exit 1
     fi
@@ -52,7 +53,7 @@ verify() {
   echo "rm -rf '$gpghome'" >> "$CLEANUP"
   exec 3> "$tmpfile"
 
-  GNUPGHOME="$gpghome" gpg --no-options --no-default-keyring --trust-model=always --keyring="$keyring" --status-fd=3 --verify "$file.asc" "$file" >/dev/null 2>&1
+  GNUPGHOME="$gpghome" gpg --no-options --no-default-keyring --trust-model=always --keyring="$keyring" --status-fd=3 --verify "$file.$suffix" "$file" >/dev/null 2>&1
   if grep -q '^\[GNUPG:\] GOODSIG ' "$tmpfile"; then
     return 0
   else
@@ -99,15 +100,32 @@ for i in OPENSSL # OBFSPROXY
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL}${!PACKAGE}"
+  SUFFIX="asc"
   get "${!PACKAGE}" "$URL"
-  get "${!PACKAGE}.asc" "$URL.asc"
+  get "${!PACKAGE}.$SUFFIX" "$URL.$SUFFIX"
 
-  if ! verify "${!PACKAGE}" "$WRAPPER_DIR/gpg/$i.gpg"; then
+  if ! verify "${!PACKAGE}" "$WRAPPER_DIR/gpg/$i.gpg" $SUFFIX; then
     echo "$i: GPG signature is broken for ${URL}"
     mv "${!PACKAGE}" "${!PACKAGE}.badgpg"
     exit 1
   fi
 done
+
+for i in BINUTILS GCC
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${i}_URL" 
+  SUFFIX="sig"
+  get "${!PACKAGE}" "${!URL}"
+  get "${!PACKAGE}.$SUFFIX" "${!URL}.$SUFFIX"
+
+  if ! verify "${!PACKAGE}" "$WRAPPER_DIR/gpg/$i.gpg" $SUFFIX; then
+    echo "$i: GPG signature is broken for ${!URL}"
+    mv "${!PACKAGE}" "${!PACKAGE}.badgpg"
+    exit 1
+  fi
+done
+
 
 for i in TOOLCHAIN4 OSXSDK MSVCR100
 do
@@ -186,6 +204,9 @@ done
 ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
 ln -sf "$PDFJS_PACKAGE" uriloader@pdf.js.xpi
 ln -sf "$OPENSSL_PACKAGE" openssl.tar.gz
+ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
+ln -sf "$GCC_PACKAGE" gcc.tar.bz2
+ 
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
