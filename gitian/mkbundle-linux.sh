@@ -126,7 +126,7 @@ then
   
   mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
   cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
-  cp -a build/out/*debug.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
+  cp -a $GITIAN_DIR/inputs/*debug.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch $GITIAN_DIR/inputs/bundle-linux.gbuilt
 else
   echo 
