@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 #
 # This is a simple wrapper script to call out to gitian and assemble
 # a bundle based on gitian's output.
