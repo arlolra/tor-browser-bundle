@@ -156,8 +156,8 @@ do
 done
 cd ..
 
-# Noscript and PDF.JS are magikal and special:
-wget -N https://addons.mozilla.org/firefox/downloads/file/224880/${NOSCRIPT_PACKAGE}
+# NoScript and PDF.JS are magikal and special:
+wget -N ${NOSCRIPT_URL}
 wget -N https://addons.mozilla.org/firefox/downloads/file/201180/${PDFJS_PACKAGE}
 
 # So is mingw:
