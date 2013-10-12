@@ -45,6 +45,7 @@ script: |
   # 
   mkdir -p $OUTDIR/
   mkdir -p TorBrowserBundle.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p TorBrowserBundle.app/Data/Browser/Caches
   mkdir -p TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
   mkdir -p TorBrowserBundle.app/Docs/sources
   #

@@ -49,6 +49,7 @@ script: |
   umask 0022
   # 
   mkdir -p $OUTDIR/
+  mkdir -p tor-browser/Data/Browser/Caches
   mkdir -p tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
   mkdir -p tor-browser/Docs/sources/
   #

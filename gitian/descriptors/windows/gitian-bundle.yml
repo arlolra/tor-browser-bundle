@@ -47,6 +47,7 @@ script: |
   # 
   mkdir -p $OUTDIR/
   mkdir -p tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/Data/Browser/Caches
   mkdir -p tbb-windows-installer/"Tor Browser"/Docs/sources
   #
   cd tor-launcher
