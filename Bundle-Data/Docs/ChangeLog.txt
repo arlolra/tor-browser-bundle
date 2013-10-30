@@ -5,7 +5,9 @@ Tor Browser Bundle 3.0beta1 -- Oct 31 2013
    * Update HTTPS-Everywhere to 3.4.2
    * Bug #9114: Reorganize the bundle directory structure to ease future
                 autoupdates
-   * Bug #9012: Hide infobar for missing plugins.
+   * Bug #9173: Patch Tor Browser to auto-detect profile directory if
+                launched without the wrapper script.
+   * Bug #9012: Hide Tor Browser infobar for missing plugins.
    * Bug #8364: Change the default entry page for the addons tab to the 
                 installed addons page.
    * Bug #9867: Make flash objects really be click-to-play if flash is enabled.
@@ -18,10 +20,14 @@ Tor Browser Bundle 3.0beta1 -- Oct 31 2013
      * Bug #9114: Handle new directory structure
      * misc: Tor Launcher now supports Thunderbird
    * Update Torbutton to 1.6.4
-     * Bug 9224: Support multiple Tor socks ports for about:tor status check
-     * Bug 9587: Add TBB version number to about:tor
-     * Bug 9144: Workaround to handle missing translation properties
-
+     * Bug #9224: Support multiple Tor socks ports for about:tor status check
+     * Bug #9587: Add TBB version number to about:tor
+     * Bug #9144: Workaround to handle missing translation properties
+ * Windows:
+   * Bug #9084: Fix startup crash on Windows XP.
+ * Linux:
+   * Bug #9487: Create detached debuginfo files for Linux Tor and Tor
+                Browser binaries.
 
 Tor Browser Bundle 3.0alpha4 -- Sep 24 2013
  * All Platforms:
