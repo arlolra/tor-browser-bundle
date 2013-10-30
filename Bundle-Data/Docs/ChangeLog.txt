@@ -1,3 +1,28 @@
+Tor Browser Bundle 3.0beta1 -- Oct 31 2013
+ * All Platforms:
+   * Update Firefox to 17.0.10esr
+   * Update NoScript to 2.6.8.2
+   * Update HTTPS-Everywhere to 3.4.2
+   * Bug #9114: Reorganize the bundle directory structure to ease future
+                autoupdates
+   * Bug #9012: Hide infobar for missing plugins.
+   * Bug #8364: Change the default entry page for the addons tab to the 
+                installed addons page.
+   * Bug #9867: Make flash objects really be click-to-play if flash is enabled.
+   * Bug #8292: Make getFirstPartyURI log+handle errors internally to simplify
+                caller usage of the API
+   * Bug #3661: Remove polipo and privoxy from the banned ports list.
+   * misc: Fix a potential memory leak in the Image Cache isolation
+   * misc: Fix a potential crash if OS theme information is ever absent
+   * Update Tor-Launcher to 0.2.3.1-beta
+     * Bug #9114: Handle new directory structure
+     * misc: Tor Launcher now supports Thunderbird
+   * Update Torbutton to 1.6.4
+     * Bug 9224: Support multiple Tor socks ports for about:tor status check
+     * Bug 9587: Add TBB version number to about:tor
+     * Bug 9144: Workaround to handle missing translation properties
+
+
 Tor Browser Bundle 3.0alpha4 -- Sep 24 2013
  * All Platforms:
    * Bug #8751: Randomize TLS HELLO timestamp in HTTPS connections
