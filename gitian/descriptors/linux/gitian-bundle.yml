@@ -76,6 +76,9 @@ script: |
   cd ../../../
   #
   cd https-everywhere
+  # XXX: Bloody hack to workaround a bug in HTTPS_E's git hash extraction in
+  # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
+  rm -f .git/refs/heads/master
   ./makexpi.sh
   cp ./pkg/*.xpi ../tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
