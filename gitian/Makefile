@@ -15,6 +15,7 @@ clean:
 	rm -f ../../gitian-builder/inputs/*.yml
 	rm -f ../../gitian-builder/inputs/bundle.inputs
 	rm -f ../../gitian-builder/inputs/versions
+	rm -f ../../gitian-builder/inputs/*debug.zip
 
 vmclean:
 	rm -rf ../../gitian-builder/*.qcow2
