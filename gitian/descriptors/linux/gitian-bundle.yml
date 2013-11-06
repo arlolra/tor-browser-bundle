@@ -27,6 +27,8 @@ files:
 - "tor-browser-linux64-gbuilt.zip"
 - "tor-linux32-gbuilt.zip"
 - "tor-linux64-gbuilt.zip"
+- "pluggable-transports-linux32-gbuilt.zip"
+- "pluggable-transports-linux64-gbuilt.zip"
 - "relativelink-src.zip"
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
@@ -96,6 +98,7 @@ script: |
   cd tor-browser
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
+  unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
   chmod 700 Data/Browser
