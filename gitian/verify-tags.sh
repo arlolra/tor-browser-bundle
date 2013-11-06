@@ -61,6 +61,7 @@ libevent              libevent.gpg              $LIBEVENT_TAG
 tor                   tor.gpg                   $TOR_TAG
 https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
 openssl               tor.gpg                   $OPENSSL_TAG
+pyptlib               pyptlib.gpg               $PYPTLIB_TAG
 EOF
 
 cd "$INPUTS_DIR"

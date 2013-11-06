@@ -13,6 +13,7 @@ NSIS_TAG=v0.1
 ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
 MINGW_REV=6184
+PYPTLIB_TAG=pyptlib-0.0.4
 
 GITIAN_TAG=tor-browser-builder-3.0-4
 

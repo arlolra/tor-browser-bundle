@@ -262,6 +262,7 @@ https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TA
 torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
 tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
+pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git
 EOF
 
 exit 0
