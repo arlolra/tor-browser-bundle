@@ -22,6 +22,7 @@ FIREFOX_LANG_VER=24.2.0esr
 BINUTILS_VER=2.22
 GCC_VER=4.6.3
 PYTHON_VER=2.7.5
+PYCRYPTO_VER=2.6.1
 
 ## File names for the source packages
 # OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -33,6 +34,7 @@ MSVCR100_PACKAGE=msvcr100.dll
 BINUTILS_PACKAGE=binutils-${BINUTILS_VER}.tar.bz2
 GCC_PACKAGE=gcc-${GCC_VER}.tar.bz2
 PYTHON_PACKAGE=Python-${PYTHON_VER}.tar.bz2
+PYCRYPTO_PACKAGE=pycrypto-${PYCRYPTO_VER}.tar.gz
 
 # Hashes for packages with weak sigs or no sigs
 # OPENSSL_HASH=f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3
@@ -41,6 +43,7 @@ TOOLCHAIN4_HASH=7b71bfe02820409b994c5c33a7eab81a81c72550f5da85ff7af70da3da244645
 NOSCRIPT_HASH=5ac1a5c727a5101fd7673ba48179a52ca1804149ed1b67e6172724606355440e
 MINGW_HASH=a5b03d0448a309341be4cf34c6ad3016d04c89952dca5243254b4d6c738b164f
 MSVCR100_HASH=1221a09484964a6f38af5e34ee292b9afefccb3dc6e55435fd3aaf7c235d9067
+PYCRYPTO_HASH=f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c
 
 ## Non-git package URLs
 # OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -50,3 +53,4 @@ BINUTILS_URL=https://ftp.gnu.org/gnu/binutils/${BINUTILS_PACKAGE}
 GCC_URL=https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/${GCC_PACKAGE}
 NOSCRIPT_URL=https://addons.cdn.mozilla.net/storage/public-staging/722/${NOSCRIPT_PACKAGE}
 PYTHON_URL=http://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_PACKAGE}
+PYCRYPTO_URL=https://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/${PYCRYPTO_PACKAGE}

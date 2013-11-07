@@ -131,11 +131,11 @@ checkout_mingw() {
 #  fi
 #done
 
-for i in BINUTILS GCC PYTHON
+for i in BINUTILS GCC PYTHON PYCRYPTO
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -200,7 +200,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 # OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO # OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -239,6 +239,7 @@ ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2
+ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
