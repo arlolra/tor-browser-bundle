@@ -4,6 +4,7 @@
 #
 
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
+MIRROR_URL_DCF=https://people.torproject.org/~dcf/mirrors/sources/
 set -e
 set -u
 umask 0022
@@ -158,6 +159,15 @@ do
   get "${!PACKAGE}" "${MIRROR_URL}${!PACKAGE}"
 done
 
+# XXX: Omit ARGPARSE because Google won't allow wget -N and because the
+# download seems to 404 about 50% of the time.
+for i in ARGPARSE
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${MIRROR_URL_DCF}${!PACKAGE}"
+  get "${!PACKAGE}" "${MIRROR_URL_DCF}${!PACKAGE}"
+done
+
 # Verify packages with weak or no signatures via multipath downloads
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
 # XXX: Google won't allow wget -N.. We need to re-download the whole
@@ -200,7 +210,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO # OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE # OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -240,6 +250,7 @@ ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2
 ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
+ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
