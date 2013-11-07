@@ -7,6 +7,7 @@ architectures:
 - "amd64"
 packages: 
 - "git-core"
+- "unzip"
 - "zip"
 - "python-setuptools"
 - "python-dev"
@@ -21,6 +22,7 @@ remotes:
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
+- "zope.interface.zip"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -60,6 +62,13 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/argparse.py $PTDIR/
+  cd ..
+  #
+  unzip zope.interface.zip
+  cd zope.interface-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/zope $PTDIR/
   cd ..
   #
   cd openssl
