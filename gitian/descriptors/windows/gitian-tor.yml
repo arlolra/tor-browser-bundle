@@ -22,8 +22,9 @@ remotes:
   "dir": "libevent"
 - "url": "https://github.com/madler/zlib.git"
   "dir": "zlib"
+- "url": "https://github.com/nmathewson/openssl.git"
+  "dir": "openssl"
 files:
-- "openssl.tar.gz"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -60,8 +61,7 @@ script: |
   cp $INSTDIR/libevent/bin/*.dll $INSTDIR/Tor/
   cd ..
   #
-  tar xzf openssl.tar.gz
-  cd openssl-*
+  cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
   make
