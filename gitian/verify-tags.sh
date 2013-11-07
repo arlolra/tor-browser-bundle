@@ -4,24 +4,26 @@
 set -e
 set -u
 
-if ! [ -e ./versions ]; then
-  echo >&2 "Error: ./versions file does not exist"
-  exit 1
-fi
-
-. ./versions
-
 WRAPPER_DIR=$(dirname "$0")
 WRAPPER_DIR=$(readlink -f "$WRAPPER_DIR")
 
-if [ "$#" -gt 1 ]; then
-  echo >&2 "Usage: $0 [<inputsdir>]"
-  exit 1
-elif [ "$#" = 1 ]; then
+if [ "$#" = 1 ]; then
   INPUTS_DIR="$1"
+  VERSIONS_FILE=./versions
+elif [ "$#" = 2 ]; then
+  INPUTS_DIR="$1"
+  VERSIONS_FILE=$2
 else
-  INPUTS_DIR="$PWD/../../gitian-builder/inputs"
+  echo >&2 "Usage: $0 [<inputsdir> <versions>]"
+  exit 1
 fi
+
+if ! [ -e $VERSIONS_FILE ]; then
+  echo >&2 "Error: $VERSIONS_FILE file does not exist"
+  exit 1
+fi
+
+. $VERSIONS_FILE
 
 cd "$INPUTS_DIR"
 

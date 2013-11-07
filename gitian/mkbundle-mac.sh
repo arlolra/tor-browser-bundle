@@ -5,10 +5,17 @@
 
 if [ -z "$1" ];
 then
-  . ./versions
+  VERSIONS_FILE=./versions
 else
-  . $1
+  VERSIONS_FILE=$1
 fi
+
+if ! [ -e $VERSIONS_FILE ]; then
+  echo >&2 "Error: $VERSIONS_FILE file does not exist"
+  exit 1
+fi
+
+. $VERSIONS_FILE
 
 WRAPPER_DIR=$PWD
 GITIAN_DIR=$PWD/../../gitian-builder
@@ -51,7 +58,7 @@ cd $WRAPPER_DIR
 
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
-  ./verify-tags.sh $GITIAN_DIR/inputs || exit 1
+  ./verify-tags.sh $GITIAN_DIR/inputs $VERSIONS_FILE || exit 1
   # If we're verifying tags, be explicit to gitian that we
   # want to build from tags.
   NSIS_TAG=refs/tags/$NSIS_TAG

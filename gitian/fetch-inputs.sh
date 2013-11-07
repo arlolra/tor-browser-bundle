@@ -18,14 +18,21 @@ WRAPPER_DIR=$(readlink -f "$WRAPPER_DIR")
 
 if [ "$#" = 1 ]; then
   INPUTS_DIR="$1"
-  . ./versions
+  VERSIONS_FILE=./versions
 elif [ "$#" = 2 ]; then
-  INPUTS_DIR="$PWD/../../gitian-builder/inputs"
-  . $2
+  INPUTS_DIR="$1"
+  VERSIONS_FILE=$2
 else
   echo >&2 "Usage: $0 [<inputsdir> <versions>]"
   exit 1
 fi
+
+if ! [ -e $VERSIONS_FILE ]; then
+  echo >&2 "Error: $VERSIONS_FILE file does not exist"
+  exit 1
+fi
+
+. $VERSIONS_FILE
 
 mkdir -p "$INPUTS_DIR"
 cd "$INPUTS_DIR"
