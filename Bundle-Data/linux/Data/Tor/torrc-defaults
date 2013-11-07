@@ -8,3 +8,36 @@ Log notice stdout
 SocksPort 9150
 ControlPort 9151
 CookieAuthentication 1
+
+
+## obfsproxy configuration
+#
+# Bridge obfs3 83.212.101.2:42782
+# Bridge obfs3 83.212.101.2:443
+# Bridge obfs3 169.229.59.75:46328
+# Bridge obfs3 169.229.59.74:31493
+#
+# Bridge obfs2 83.212.100.216:47870
+# Bridge obfs2 83.212.96.182:46602
+# Bridge obfs2 109.105.109.163:46924
+# Bridge obfs2 70.182.182.109:54542
+# Bridge obfs2 209.141.36.236:60783
+# Bridge obfs2 208.79.90.242:55564
+# Bridge obfs2 128.31.0.34:1051
+# Bridge obfs2 83.212.101.2:45235
+
+ClientTransportPlugin obfs2,obfs3 exec ./Tor/PluggableTransports/obfsproxy.bin managed
+
+
+## flash proxy configuration
+#
+# LearnCircuitBuildTimeout 0
+# CircuitBuildTimeout 60
+#
+# # The flashproxy bridge address and port are ignored.
+# Bridge flashproxy 0.0.1.0:1
+
+# Change the second number here (9000) to the number of a port that can
+# receive connections from the Internet (the port for which you
+# configured port forwarding).
+ClientTransportPlugin flashproxy exec ./Tor/PluggableTransports/flashproxy-client --register :0 :9000
