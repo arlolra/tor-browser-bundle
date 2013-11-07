@@ -13,18 +13,18 @@ if ! [ -e ./versions ]; then
   exit 1
 fi
 
-. ./versions
-
 WRAPPER_DIR=$(dirname "$0")
 WRAPPER_DIR=$(readlink -f "$WRAPPER_DIR")
 
-if [ "$#" -gt 1 ]; then
-  echo >&2 "Usage: $0 [<inputsdir>]"
-  exit 1
-elif [ "$#" = 1 ]; then
+if [ "$#" = 1 ]; then
   INPUTS_DIR="$1"
-else
+  . ./versions
+elif [ "$#" = 2 ]; then
   INPUTS_DIR="$PWD/../../gitian-builder/inputs"
+  . $2
+else
+  echo >&2 "Usage: $0 [<inputsdir> <versions>]"
+  exit 1
 fi
 
 mkdir -p "$INPUTS_DIR"
@@ -180,9 +180,11 @@ do
    fi
 done
 
-mkdir -p linux-langpacks
-mkdir -p win32-langpacks
-mkdir -p mac-langpacks
+mkdir -p langpacks-$FIREFOX_LANG_VER/linux-langpacks
+mkdir -p langpacks-$FIREFOX_LANG_VER/win32-langpacks
+mkdir -p langpacks-$FIREFOX_LANG_VER/mac-langpacks
+
+cd langpacks-$FIREFOX_LANG_VER
 
 for i in $BUNDLE_LOCALES
 do
@@ -197,9 +199,11 @@ do
   cd ..
 done
 
-"$WRAPPER_DIR/build-helpers/dzip.sh" win32-langpacks.zip win32-langpacks
-"$WRAPPER_DIR/build-helpers/dzip.sh" linux-langpacks.zip linux-langpacks
-"$WRAPPER_DIR/build-helpers/dzip.sh" mac-langpacks.zip mac-langpacks
+"$WRAPPER_DIR/build-helpers/dzip.sh" ../win32-langpacks.zip win32-langpacks
+"$WRAPPER_DIR/build-helpers/dzip.sh" ../linux-langpacks.zip linux-langpacks
+"$WRAPPER_DIR/build-helpers/dzip.sh" ../mac-langpacks.zip mac-langpacks
+
+cd ..
 
 ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
 ln -sf "$PDFJS_PACKAGE" uriloader@pdf.js.xpi

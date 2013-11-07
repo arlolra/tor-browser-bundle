@@ -5,7 +5,7 @@ QuickStart:
  $ make
 
  This will check all of your prerequisites and tell you what you need to
- do to get started.
+ do to get started to build the stable TBB.
 
  If everything checks out OK, it will begin downloading dependencies, and then
  start the build process to produce localized Linux bundles, followed by
@@ -37,12 +37,16 @@ Detailed Explanation of Scripts:
  several helper scripts to make things easier.
 
  0. Makefile: The main Makefile. It has six main commands:
-    - prep: Check OS prerequisites and download source dependency inputs
-    - build: Build localized bundles for Linux, Windows, and Mac
-    - clean: Remove prior partial build stages (Tor and Firefox)
-    - vmclean: Remove VM base images
-    - distclean: Remove source dependency inputs, and run clean and vmclean
-    - all: The default. It calls clean, prep, and then build.
+     - prep: Check OS prerequisites and download source dependency inputs
+     - build: Build localized bundles for Linux, Windows, and Mac
+     - clean: Remove prior partial build stages (Tor and Firefox)
+     - vmclean: Remove VM base images
+     - distclean: Remove source dependency inputs, and run clean and vmclean
+     - all: The default. It calls clean, prep, and then build.
+    To build alpha bundles, alternate targets are provided:
+     - alpha: The equivalent to the 'all' rule for alpha packages
+     - build-alpha: The equivalent to the 'build' rule for alpha packages
+     - prep-alpha: The equivalent to the 'prep' rule for alpha packages
  
  1. check-prerequisites.sh: This script checks if your system is capable of
     running Gitian, and if it is not, it tells you what you need to do.

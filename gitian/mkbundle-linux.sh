@@ -3,7 +3,12 @@
 # This is a simple wrapper script to call out to gitian and assemble
 # a bundle based on gitian's output.
 
-. ./versions
+if [ -z "$1" ];
+then
+  . ./versions
+else
+  . $1
+fi
 
 WRAPPER_DIR=$PWD
 GITIAN_DIR=$PWD/../../gitian-builder
