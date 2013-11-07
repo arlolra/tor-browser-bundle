@@ -284,6 +284,7 @@ torbutton             https://git.torproject.org/torbutton.git            $TORBU
 tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git
+obfsproxy             https://git.torproject.org/pluggable-transports/obfsproxy.git
 EOF
 
 exit 0
