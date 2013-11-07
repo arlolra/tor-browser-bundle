@@ -23,6 +23,7 @@ files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
 - "zope.interface.zip"
+- "twisted.tar.bz2"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -69,6 +70,13 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/zope $PTDIR/
+  cd ..
+  #
+  tar xjf twisted.tar.bz2
+  cd Twisted-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/twisted $PTDIR/
   cd ..
   #
   cd openssl
