@@ -20,6 +20,7 @@ remotes:
   "dir": "pyptlib"
 files:
 - "pycrypto.tar.gz"
+- "argparse.tar.gz"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -52,6 +53,13 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/Crypto $PTDIR/
+  cd ..
+  #
+  tar xzf argparse.tar.gz
+  cd argparse-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/argparse.py $PTDIR/
   cd ..
   #
   cd openssl
