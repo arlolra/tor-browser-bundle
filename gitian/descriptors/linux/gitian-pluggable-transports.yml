@@ -19,6 +19,8 @@ remotes:
   "dir": "openssl"
 - "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
   "dir": "pyptlib"
+- "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
+  "dir": "obfsproxy"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -79,6 +81,15 @@ script: |
   cp -a build/twisted $PTDIR/
   cd ..
   #
+  cd obfsproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/obfsproxy $PTDIR/
+  cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
+  mkdir -p $INSTDIR/Docs/Obfsproxy
+  cp -a {LICENSE,README} $INSTDIR/Docs/Obfsproxy
+  cd ..
+  #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
@@ -89,7 +100,7 @@ script: |
   #
   cd $INSTDIR
   #
-  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/
+  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/ Docs/
   ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-debug.zip Debug/
   cp pluggable-transports-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
   cp pluggable-transports-linux$GBUILD_BITS-debug.zip $OUTDIR/
