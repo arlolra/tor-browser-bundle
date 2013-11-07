@@ -24,6 +24,7 @@ GCC_VER=4.6.3
 PYTHON_VER=2.7.5
 PYCRYPTO_VER=2.6.1
 ARGPARSE_VER=1.2.1
+ZOPEINTERFACE_VER=4.0.5
 
 ## File names for the source packages
 # OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -37,6 +38,7 @@ GCC_PACKAGE=gcc-${GCC_VER}.tar.bz2
 PYTHON_PACKAGE=Python-${PYTHON_VER}.tar.bz2
 PYCRYPTO_PACKAGE=pycrypto-${PYCRYPTO_VER}.tar.gz
 ARGPARSE_PACKAGE=argparse-${ARGPARSE_VER}.tar.gz
+ZOPEINTERFACE_PACKAGE=zope.interface-${ZOPEINTERFACE_VER}.zip
 
 # Hashes for packages with weak sigs or no sigs
 # OPENSSL_HASH=f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3
@@ -47,6 +49,7 @@ MINGW_HASH=a5b03d0448a309341be4cf34c6ad3016d04c89952dca5243254b4d6c738b164f
 MSVCR100_HASH=1221a09484964a6f38af5e34ee292b9afefccb3dc6e55435fd3aaf7c235d9067
 PYCRYPTO_HASH=f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c
 ARGPARSE_HASH=ddaf4b0a618335a32b6664d4ae038a1de8fbada3b25033f9021510ed2b3941a4
+ZOPEINTERFACE_HASH=1a7c84716bbd9981915b64a81d8a3f076a5934a8c8df4224655469b3564940cc
 
 ## Non-git package URLs
 # OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -58,3 +61,4 @@ NOSCRIPT_URL=https://addons.cdn.mozilla.net/storage/public-staging/722/${NOSCRIP
 PYTHON_URL=http://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_PACKAGE}
 PYCRYPTO_URL=https://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/${PYCRYPTO_PACKAGE}
 ARGPARSE_URL=https://argparse.googlecode.com/files/${ARGPARSE_PACKAGE}
+ZOPEINTERFACE_URL=https://pypi.python.org/packages/source/z/zope.interface/${ZOPEINTERFACE_PACKAGE}

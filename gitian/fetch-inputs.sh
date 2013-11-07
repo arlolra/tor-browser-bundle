@@ -168,6 +168,13 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_DCF}${!PACKAGE}"
 done
 
+for i in ZOPEINTERFACE
+do
+  URL="${i}_URL"
+  PACKAGE="${i}_PACKAGE"
+  get "${!PACKAGE}" "${!URL}"
+done
+
 # Verify packages with weak or no signatures via multipath downloads
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
 # XXX: Google won't allow wget -N.. We need to re-download the whole
@@ -210,7 +217,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE # OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE # OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -251,6 +258,7 @@ ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2
 ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
 ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
+ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
