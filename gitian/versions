@@ -27,6 +27,7 @@ PYCRYPTO_VER=2.6.1
 ARGPARSE_VER=1.2.1
 ZOPEINTERFACE_VER=4.0.5
 TWISTED_VER=13.1.0
+M2CRYPTO_VER=0.21.1
 
 ## File names for the source packages
 # OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -42,6 +43,7 @@ PYCRYPTO_PACKAGE=pycrypto-${PYCRYPTO_VER}.tar.gz
 ARGPARSE_PACKAGE=argparse-${ARGPARSE_VER}.tar.gz
 ZOPEINTERFACE_PACKAGE=zope.interface-${ZOPEINTERFACE_VER}.zip
 TWISTED_PACKAGE=Twisted-${TWISTED_VER}.tar.bz2
+M2CRYPTO_PACKAGE=M2Crypto-${M2CRYPTO_VER}.tar.gz
 
 # Hashes for packages with weak sigs or no sigs
 # OPENSSL_HASH=f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3
@@ -54,6 +56,7 @@ PYCRYPTO_HASH=f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c
 ARGPARSE_HASH=ddaf4b0a618335a32b6664d4ae038a1de8fbada3b25033f9021510ed2b3941a4
 ZOPEINTERFACE_HASH=1a7c84716bbd9981915b64a81d8a3f076a5934a8c8df4224655469b3564940cc
 TWISTED_HASH=110e957dd8fc4c6eaba8abe4f0477e60b2873e3cf1c260325863fd2ef69341c6
+M2CRYPTO_HASH=25b94498505c2d800ee465db0cc1aff097b1615adc3ac042a1c85ceca264fc0a
 
 ## Non-git package URLs
 # OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -68,3 +71,4 @@ ARGPARSE_URL=https://argparse.googlecode.com/files/${ARGPARSE_PACKAGE}
 ZOPEINTERFACE_URL=https://pypi.python.org/packages/source/z/zope.interface/${ZOPEINTERFACE_PACKAGE}
 TWISTED_URL=https://pypi.python.org/packages/source/T/Twisted/${TWISTED_PACKAGE}
 # TWISTED_URL=https://twistedmatrix.com/Releases/Twisted/$(echo ${TWISTED_VER} | awk -F. '{print $1"."$2}')/${TWISTED_PACKAGE}
+M2CRYPTO_URL=https://pypi.python.org/packages/source/M/M2Crypto/${M2CRYPTO_PACKAGE}

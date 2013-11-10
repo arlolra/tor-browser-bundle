@@ -132,11 +132,11 @@ checkout_mingw() {
 #  fi
 #done
 
-for i in BINUTILS GCC PYTHON PYCRYPTO
+for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -217,7 +217,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE TWISTED # OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE TWISTED M2CRYPTO # OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -260,6 +260,7 @@ ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
 ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
 ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
 ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
+ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
