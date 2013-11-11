@@ -23,6 +23,7 @@ files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-mac32-gbuilt.zip"
 - "tor-mac32-gbuilt.zip"
+- "pluggable-transports-mac32-gbuilt.zip"
 - "relativelink-src.zip"
 - "mac-skeleton.zip"
 - "mac-langpacks.zip"
@@ -94,6 +95,7 @@ script: |
   cd ..
   #
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
+  unzip ~/build/pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
   unzip ~/build/tbb-docs.zip
