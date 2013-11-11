@@ -9,6 +9,7 @@ packages:
 - "git-core"
 - "unzip"
 - "zip"
+- "swig"
 - "python-setuptools"
 - "python-dev"
 - "faketime"
@@ -26,6 +27,7 @@ files:
 - "argparse.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
+- "m2crypto.tar.gz"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -96,6 +98,14 @@ script: |
   ./config -shared --prefix=$INSTDIR/openssl
   make
   make install
+  cd ..
+  #
+  tar xzf m2crypto.tar.gz
+  cd M2Crypto-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build_ext --build-lib build --openssl $INSTDIR/openssl
+  python setup.py build --build-lib build
+  cp -a build/M2Crypto $PTDIR/
   cd ..
   #
   cd $INSTDIR
