@@ -79,7 +79,7 @@ cd $GITIAN_DIR
 if [ ! -f $GITIAN_DIR/inputs/tor-mac32-gbuilt.zip ];
 then
   echo 
-  echo "****** Starting Tor Component of Mac Bundle (1/3 for Mac) ******"
+  echo "****** Starting Tor Component of Mac Bundle (1/4 for Mac) ******"
   echo 
 
   ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG,zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
@@ -93,14 +93,14 @@ then
   #cp -a result/tor-mac-res.yml $GITIAN_DIR/inputs/
 else
   echo 
-  echo "****** SKIPPING already built Tor Component of Mac Bundle (1/3 for Mac) ******"
+  echo "****** SKIPPING already built Tor Component of Mac Bundle (1/4 for Mac) ******"
   echo 
 fi
 
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-mac32-gbuilt.zip ];
 then
   echo 
-  echo "****** Starting TorBrowser Component of Mac Bundle (2/3 for Mac) ******"
+  echo "****** Starting TorBrowser Component of Mac Bundle (2/4 for Mac) ******"
   echo 
 
   ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
@@ -114,7 +114,28 @@ then
   #cp -a result/torbrowser-mac-res.yml $GITIAN_DIR/inputs/
 else
   echo 
-  echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (2/3 for Mac) ******"
+  echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (2/4 for Mac) ******"
+  echo 
+fi
+
+if [ ! -f $GITIAN_DIR/inputs/pluggable-transports-mac32-gbuilt.zip ];
+then
+  echo 
+  echo "****** Starting Pluggable Transports Component of Mac Bundle (3/4 for Mac) ******"
+  echo 
+
+  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
+  if [ $? -ne 0 ];
+  then
+    #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+
+  cp -a build/out/pluggable-transports-mac*-gbuilt.zip $GITIAN_DIR/inputs/
+  #cp -a result/pluggable-transports-mac-res.yml $GITIAN_DIR/inputs/
+else
+  echo 
+  echo "****** SKIPPING already built Pluggable Transports Component of Mac Bundle (3/4 for Mac) ******"
   echo 
 fi
 
@@ -122,7 +143,7 @@ fi
 if [ ! -f $GITIAN_DIR/inputs/bundle-mac.gbuilt ];
 then 
   echo 
-  echo "****** Starting Bundling+Localization Component of Mac Bundle (3/3 for Mac) ******"
+  echo "****** Starting Bundling+Localization Component of Mac Bundle (4/4 for Mac) ******"
   echo 
   
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
@@ -140,7 +161,7 @@ then
   touch $GITIAN_DIR/inputs/bundle-mac.gbuilt
 else
   echo 
-  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (3/3 for Mac) ******"
+  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (4/4 for Mac) ******"
   echo 
 fi
 
