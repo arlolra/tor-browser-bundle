@@ -8,6 +8,7 @@ packages:
 - "git-core"
 - "unzip"
 - "zip"
+- "swig"
 - "python-setuptools"
 - "faketime"
 - "libtool"
@@ -25,6 +26,7 @@ files:
 - "argparse.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
+- "m2crypto.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
@@ -113,6 +115,20 @@ script: |
   make # SHARED_LDFLAGS="-shared -dynamiclib -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/"
   make install
   #cp $INSTDIR/openssl/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Tor/
+  cd ..
+  #
+  tar xzf m2crypto.tar.gz
+  cd M2Crypto-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  # We have to put $INSTDIR/openssl at the beginning of the header and library
+  # search paths (build_ext otherwise puts it at the end, after CFLAGS and
+  # LDFLAGS). The reason for this is that /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr
+  # (part of CFLAGS and LDFLAGS) has its own openssl headers and library files.
+  # It also has necessary headers like stdio.h, so we can't remove it
+  # completely, but our locally built openssl must take precedence.
+  CFLAGS="-I$INSTDIR/openssl/include $CFLAGS" LDFLAGS="-L$INSTDIR/openssl/lib $LDFLAGS" LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build --openssl $INSTDIR/openssl -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers $SDK_INCLUDES
+  python setup.py build --build-lib build
+  cp -a build/M2Crypto $PTDIR/
   cd ..
   #
   cd $INSTDIR
