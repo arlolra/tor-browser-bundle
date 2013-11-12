@@ -12,7 +12,7 @@ build-alpha:
 	./mkbundle-linux.sh versions.alpha
 	./mkbundle-windows.sh versions.alpha
 	./mkbundle-mac.sh versions.alpha
-	./hash-bundles.sh
+	./hash-bundles.sh versions.alpha
 
 prep:
 	./check-prerequisites.sh

@@ -127,8 +127,8 @@ then
   echo "****** Starting Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
   echo 
   
-  cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
-  cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
+  cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
+  cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
   
   ./bin/gbuild -j $NUM_PROCS --commit https-everywhere=$HTTPSE_TAG,tor-launcher=$TORLAUNCHER_TAG,torbutton=$TORBUTTON_TAG $DESCRIPTOR_DIR/linux/gitian-bundle.yml
   if [ $? -ne 0 ];

@@ -124,8 +124,8 @@ then
   echo "****** Starting Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
   echo 
   
-  cp -a $WRAPPER_DIR/versions $GITIAN_DIR/inputs/
-  cd $WRAPPER_DIR && ./record-inputs.sh && cd $GITIAN_DIR
+  cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
+  cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
   
   ./bin/gbuild -j $NUM_PROCS --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,tbb-windows-installer=$NSIS_TAG $DESCRIPTOR_DIR/windows/gitian-bundle.yml
   if [ $? -ne 0 ];

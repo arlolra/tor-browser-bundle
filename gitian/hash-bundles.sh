@@ -1,7 +1,19 @@
 #!/bin/bash
 #
 
-. ./versions
+if [ -z "$1" ];
+then
+  VERSIONS_FILE=./versions
+else
+  VERSIONS_FILE=$1
+fi
+
+if ! [ -e $VERSIONS_FILE ]; then
+  echo >&2 "Error: $VERSIONS_FILE file does not exist"
+  exit 1
+fi
+
+. $VERSIONS_FILE
 
 export LC_ALL=C
 
