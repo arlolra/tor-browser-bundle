@@ -7,6 +7,7 @@ architectures:
 packages: 
 - "git-core"
 - "zip"
+- "python-setuptools"
 - "faketime"
 - "libtool"
 #- "libssl0.9.8"
@@ -14,6 +15,8 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
+- "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
+  "dir": "pyptlib"
 files:
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
@@ -46,6 +49,12 @@ script: |
   cd ~/build
   # For OpenSSL
   sudo ln -s /usr/apple-osx/bin/apple-osx-gcc /usr/apple-osx/bin/i686-apple-darwin11-cc
+  #
+  cd pyptlib
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/pyptlib $PTDIR/
+  cd ..
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"

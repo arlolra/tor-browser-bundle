@@ -124,7 +124,7 @@ then
   echo "****** Starting Pluggable Transports Component of Mac Bundle (3/4 for Mac) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG,pyptlib=$PYPTLIB_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
