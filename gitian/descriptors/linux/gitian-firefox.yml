@@ -84,22 +84,21 @@ script: |
   make $MAKEOPTS -f client.mk build
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
+  # Remove firefox-bin (we don't use it, see ticket #10126)
+  rm -f $INSTDIR/Browser/firefox-bin
   # TODO: There goes FIPS-140.. We could upload these somewhere unique and
   # subsequent builds could test to see if they've been uploaded before...
   # But let's find out if it actually matters first..
   rm -f $INSTDIR/Browser/*.chk
   #
+  # Strip and generate debuginfo for the firefix binary that we keep, all *.so
+  # files, and the plugin-container (see ticket #10126)
   cd $INSTDIR
-  # Strip and generate debuginfo for libs
-  objcopy --only-keep-debug $INSTDIR/Browser/firefox $INSTDIR/Debug/Browser/firefox
-  strip $INSTDIR/Browser/firefox
-  objcopy --add-gnu-debuglink=./Debug/Browser/firefox $INSTDIR/Browser/firefox
-  for i in $INSTDIR/Browser/*.so
+  for LIB in Browser/*.so Browser/firefox Browser/plugin-container Browser/components/*.so
   do
-    LIB=`basename $i`
-    objcopy --only-keep-debug $INSTDIR/Browser/$LIB $INSTDIR/Debug/Browser/$LIB
-    strip $INSTDIR/Browser/$LIB
-    objcopy --add-gnu-debuglink=./Debug/Browser/$LIB $INSTDIR/Browser/$LIB
+    objcopy --only-keep-debug $LIB Debug/$LIB
+    strip $LIB
+    objcopy --add-gnu-debuglink=./Debug/$LIB $LIB
   done
   ~/build/re-dzip.sh Browser/omni.ja
   ~/build/re-dzip.sh Browser/webapprt/omni.ja
