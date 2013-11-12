@@ -21,6 +21,8 @@ remotes:
   "dir": "pyptlib"
 - "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
   "dir": "obfsproxy"
+- "url": "https://git.torproject.org/flashproxy.git"
+  "dir": "flashproxy"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -129,6 +131,14 @@ script: |
   CFLAGS="-I$INSTDIR/openssl/include $CFLAGS" LDFLAGS="-L$INSTDIR/openssl/lib $LDFLAGS" LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build --openssl $INSTDIR/openssl -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers $SDK_INCLUDES
   python setup.py build --build-lib build
   cp -a build/M2Crypto $PTDIR/
+  cd ..
+  #
+  cd flashproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  make dist DISTNAME=flashproxy-client
+  cp -a dist/flashproxy-client/{flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/FlashProxy
+  cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/TorBrowserBundle.app/Docs/FlashProxy
   cd ..
   #
   cd $INSTDIR
