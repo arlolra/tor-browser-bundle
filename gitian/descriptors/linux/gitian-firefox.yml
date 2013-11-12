@@ -56,7 +56,7 @@ script: |
   export PATH=$PATH:$INSTDIR/build/bin
   #
   mkdir -p $INSTDIR/Browser/
-  mkdir -p $INSTDIR/Debug/Browser/
+  mkdir -p $INSTDIR/Debug/Browser/components
   #
   # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
   # with Python 2.6. Thus, we compile 2.7 ourselves...
@@ -91,10 +91,10 @@ script: |
   # But let's find out if it actually matters first..
   rm -f $INSTDIR/Browser/*.chk
   #
-  # Strip and generate debuginfo for the firefix binary that we keep, all *.so
+  # Strip and generate debuginfo for the firefox binary that we keep, all *.so
   # files, and the plugin-container (see ticket #10126)
   cd $INSTDIR
-  for LIB in Browser/*.so Browser/firefox Browser/plugin-container Browser/components/*.so
+  for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/updater Browser/firefox Browser/plugin-container Browser/components/*.so
   do
     objcopy --only-keep-debug $LIB Debug/$LIB
     strip $LIB
