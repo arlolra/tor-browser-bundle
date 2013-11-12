@@ -108,12 +108,17 @@ script: |
   cp bundle.inputs tor-browser/Docs/sources/bundle.inputs
   #
   cp -a tor-browser tor-browser_en-US
-  cd tor-browser_en-US/Browser
+  # FF24 puts the prefs in a different jar:
+  if [ -f tor-browser_en-US/Browser/browser/omni.ja ]; then
+     pushd tor-browser_en-US/Browser/browser/
+  else
+     pushd tor-browser_en-US/Browser/
+  fi
   unzip omni.ja defaults/preferences/000-tor-browser.js
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xd omni.ja defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-  cd ../../
+  popd
   #7z a -sfx tor-browser.exe tor-browser_en-US
   #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
   ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
@@ -128,12 +133,18 @@ script: |
     cp $i ../tor-browser_$LANG/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    cd tor-browser_$LANG/Browser
+    # FF24 puts the prefs in a different jar:
+    if [ -f tor-browser_$LANG/Browser/browser/omni.ja ]; then
+       pushd tor-browser_$LANG/Browser/browser/
+    else
+       pushd tor-browser_$LANG/Browser/
+    fi
+
     unzip omni.ja defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xd omni.ja defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    cd ../../
+    popd
 
     #7z a -sfx tor-browser.exe tor-browser_$LANG
     #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract

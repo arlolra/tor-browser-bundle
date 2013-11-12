@@ -20,6 +20,7 @@ GITIAN_TAG=tor-browser-builder-3.0-4
 FIREFOX_LANG_VER=17.0.10esr
 BINUTILS_VER=2.22
 GCC_VER=4.6.3
+PYTHON_VER=2.7.5
 
 ## File names for the source packages
 # OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -31,6 +32,7 @@ MINGW_PACKAGE=mingw-w64-svn-snapshot.zip
 MSVCR100_PACKAGE=msvcr100.dll
 BINUTILS_PACKAGE=binutils-${BINUTILS_VER}.tar.bz2
 GCC_PACKAGE=gcc-${GCC_VER}.tar.bz2
+PYTHON_PACKAGE=Python-${PYTHON_VER}.tar.bz2
 
 # Hashes for packages with weak sigs or no sigs
 # OPENSSL_HASH=f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3
@@ -48,3 +50,4 @@ OSXSDK_URL=https://launchpad.net/~flosoft/+archive/cross-apple/+files/${OSXSDK_P
 BINUTILS_URL=https://ftp.gnu.org/gnu/binutils/${BINUTILS_PACKAGE}
 GCC_URL=https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/${GCC_PACKAGE}
 NOSCRIPT_URL=https://addons.cdn.mozilla.net/storage/public-staging/722/${NOSCRIPT_PACKAGE}
+PYTHON_URL=http://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_PACKAGE}

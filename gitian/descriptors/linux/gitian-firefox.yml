@@ -23,6 +23,7 @@ packages:
 - "libtool"
 - "libiw-dev"
 - "hardening-wrapper"
+- "libgstreamer-plugins-base0.10-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
@@ -31,6 +32,7 @@ files:
 - "torbrowser.version"
 - "re-dzip.sh"
 - "dzip.sh"
+- "python.tar.bz2"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -55,6 +57,16 @@ script: |
   #
   mkdir -p $INSTDIR/Browser/
   mkdir -p $INSTDIR/Debug/Browser/
+  #
+  # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
+  # with Python 2.6. Thus, we compile 2.7 ourselves...
+  mkdir python
+  cd python
+  tar -xjvf ../python.tar.bz2
+  Python-*/configure
+  make
+  sudo make install
+  cd ..
   #
   cd tor-browser
   grep -v '^pref(\"torbrowser.version\",' browser/app/profile/000-tor-browser.js > browser/app/profile/000-tor-browser.js.fixed
@@ -91,6 +103,9 @@ script: |
   done
   ~/build/re-dzip.sh Browser/omni.ja
   ~/build/re-dzip.sh Browser/webapprt/omni.ja
+  if [ -f Browser/browser/omni.ja ]; then # FF24 includes a third .ja
+    ~/build/re-dzip.sh Browser/browser/omni.ja
+  fi
   ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-gbuilt.zip Browser/
   ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-browser-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
