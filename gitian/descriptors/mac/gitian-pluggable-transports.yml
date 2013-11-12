@@ -18,6 +18,8 @@ remotes:
   "dir": "openssl"
 - "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
   "dir": "pyptlib"
+- "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
+  "dir": "obfsproxy"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -94,6 +96,15 @@ script: |
   LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers
   python setup.py build --build-lib build
   cp -a build/twisted $PTDIR/
+  cd ..
+  #
+  cd obfsproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/obfsproxy $PTDIR/
+  cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/Obfsproxy
+  cp -a {LICENSE,README} $INSTDIR/TorBrowserBundle.app/Docs/Obfsproxy
   cd ..
   #
   cd openssl
