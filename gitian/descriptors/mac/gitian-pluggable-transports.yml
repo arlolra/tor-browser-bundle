@@ -6,6 +6,7 @@ architectures:
 - "i386"
 packages: 
 - "git-core"
+- "unzip"
 - "zip"
 - "python-setuptools"
 - "faketime"
@@ -20,6 +21,7 @@ remotes:
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
+- "zope.interface.zip"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
@@ -76,6 +78,13 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/argparse.py $PTDIR/
+  cd ..
+  #
+  unzip zope.interface.zip
+  cd zope.interface-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/zope $PTDIR/
   cd ..
   #
   cd openssl
