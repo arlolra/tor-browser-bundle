@@ -15,14 +15,13 @@ packages:
 - "faketime"
 - "libtool"
 - "hardening-wrapper"
+- "zlib1g-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
   "dir": "tor"
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
-- "url": "https://github.com/madler/zlib.git"
-  "dir": "zlib"
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
 files:
@@ -44,16 +43,6 @@ script: |
   export DEB_BUILD_HARDENING_PIE=1
   #
   mkdir -p $INSTDIR/Data/Tor/
-  mkdir -p $INSTDIR/Tor/libz/
-  mkdir -p $INSTDIR/Debug/Tor/libz/
-  #
-  cd zlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --prefix=$INSTDIR/zlib
-  make $MAKEOPTS SHARED_MODE=1
-  make $MAKEOPTS SHARED_MODE=1 install
-  cp $INSTDIR/zlib/lib/libz.so.1 $INSTDIR/Tor/libz/
-  cd ..
   #
   cd libevent
   ./autogen.sh
@@ -75,14 +64,13 @@ script: |
   cd ..
   #
   chmod 700 $INSTDIR/Tor/*so*
-  chmod 700 $INSTDIR/Tor/libz/*so*
   #
   cd tor
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --disable-asciidoc --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
+  ./configure --disable-asciidoc --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR
   make $MAKEOPTS
   make install
   cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
@@ -97,13 +85,6 @@ script: |
     objcopy --only-keep-debug $INSTDIR/Tor/$LIB $INSTDIR/Debug/Tor/$LIB
     strip $INSTDIR/Tor/$LIB
     objcopy --add-gnu-debuglink=./Debug/Tor/$LIB $INSTDIR/Tor/$LIB
-  done
-  for i in $INSTDIR/Tor/libz/*so*
-  do
-    LIB=`basename $i`
-    objcopy --only-keep-debug $INSTDIR/Tor/libz/$LIB $INSTDIR/Debug/Tor/libz/$LIB
-    strip $INSTDIR/Tor/libz/$LIB
-    objcopy --add-gnu-debuglink=./Debug/Tor/libz/$LIB $INSTDIR/Tor/libz/$LIB
   done
   #
   ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip Data/ Tor/
