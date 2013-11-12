@@ -206,15 +206,8 @@ else
 	export HOME
 fi
 
-if ldd ./Browser/firefox-bin | grep -q "libz\.so\.1.*not found"; then
-	LD_LIBRARY_PATH="${HOME}/Tor:${HOME}/Tor/libz"
-else
-	LD_LIBRARY_PATH="${HOME}/Tor"
-fi
-
 LDPATH="${HOME}/Tor/"
 export LDPATH
-export LD_LIBRARY_PATH
 
 # XXX: Debug mode for Firefox??
 
