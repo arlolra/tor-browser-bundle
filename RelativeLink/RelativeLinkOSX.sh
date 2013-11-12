@@ -53,7 +53,7 @@ if [ "$DEBUG_TBB" -eq 1 ]; then
 	printf "\nStarting Tor Browser now\n"
 	cd "${HOME}"
 	printf "\nLaunching Tor Browser from: `pwd`\n"
-    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox-bin -jsconsole -no-remote -profile "${HOME}/Data/Browser/profile.default"
+    ./Contents/MacOS/TorBrowser.app/Contents/MacOS/firefox -jsconsole -no-remote -profile "${HOME}/Data/Browser/profile.default"
 	printf "\nTor Browser exited with the following return code: $?\n"
 	exit
 fi

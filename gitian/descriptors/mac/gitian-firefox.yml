@@ -78,6 +78,8 @@ script: |
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR
+  # Remove firefox-bin (we don't use it, see ticket #10126)
+  rm -f $INSTDIR/Browser/firefox-bin
   #
   cd $INSTDIR
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
