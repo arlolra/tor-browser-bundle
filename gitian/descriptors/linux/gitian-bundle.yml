@@ -31,7 +31,6 @@ files:
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
 - "noscript@noscript.net.xpi"
-- "uriloader@pdf.js.xpi"
 - "dzip.sh"
 - "dtar.sh"
 - "bare-version"

@@ -169,7 +169,6 @@ cd ..
 
 # NoScript and PDF.JS are magikal and special:
 wget -N ${NOSCRIPT_URL}
-wget -N https://addons.mozilla.org/firefox/downloads/file/201180/${PDFJS_PACKAGE}
 
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot.zip ];
@@ -181,7 +180,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT PDFJS MINGW MSVCR100 # OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 # OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -217,7 +216,6 @@ done
 cd ..
 
 ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
-ln -sf "$PDFJS_PACKAGE" uriloader@pdf.js.xpi
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2

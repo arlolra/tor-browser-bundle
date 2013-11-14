@@ -27,7 +27,6 @@ files:
 - "mac-skeleton.zip"
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
-- "uriloader@pdf.js.xpi"
 - "dzip.sh"
 - "bare-version"
 - "bundle.inputs"
