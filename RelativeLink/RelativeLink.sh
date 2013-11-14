@@ -116,14 +116,6 @@ if [ "`id -u`" -eq 0 ]; then
 	exit 1
 fi
 
-SYSARCHITECTURE=$(getconf LONG_BIT)
-TORARCHITECTURE=$(expr "$(file Tor/tor)" : '.*ELF \([[:digit:]]*\)')
-
-if [ $SYSARCHITECTURE -ne $TORARCHITECTURE ]; then
-   complain "Wrong architecture? 32-bit vs. 64-bit."
-   exit 1
-fi
-
 debug=0
 usage_message="usage: $0 [--debug]"
 if [ "$#" -eq 1 -a \( "x$1" = "x--debug" -o "x$1" = "x-debug" \) ]; then
@@ -204,6 +196,14 @@ if [ ! "${PWD}" ]; then
 else
 	HOME="${PWD}"
 	export HOME
+fi
+
+SYSARCHITECTURE=$(getconf LONG_BIT)
+TORARCHITECTURE=$(expr "$(file Tor/tor)" : '.*ELF \([[:digit:]]*\)')
+
+if [ $SYSARCHITECTURE -ne $TORARCHITECTURE ]; then
+   complain "Wrong architecture? 32-bit vs. 64-bit."
+   exit 1
 fi
 
 LDPATH="${HOME}/Tor/"
