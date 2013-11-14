@@ -43,6 +43,8 @@ script: |
   export DEB_BUILD_HARDENING_PIE=1
   #
   mkdir -p $INSTDIR/Data/Tor/
+  mkdir -p $INSTDIR/Tor/
+  mkdir -p $INSTDIR/Debug/Tor/
   #
   cd libevent
   ./autogen.sh
