@@ -50,6 +50,7 @@ $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./Rel
 cd ./Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+cp mac-tor.sh $GITIAN_DIR/inputs/
 
 cd mac
 rm -f $GITIAN_DIR/inputs/mac-skeleton.zip

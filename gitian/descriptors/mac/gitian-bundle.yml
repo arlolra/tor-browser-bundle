@@ -33,6 +33,7 @@ files:
 - "bundle.inputs"
 - "versions"
 - "tbb-docs.zip"
+- "mac-tor.sh"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -99,6 +100,9 @@ script: |
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  # Install a "tor" shim that sets the working directory. See #10030.
+  mv Tor/tor Tor/tor.real
+  cp ~/build/mac-tor.sh Tor/tor
   cd Contents/MacOS/
   unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
   cd ../../../
