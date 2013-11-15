@@ -1,8 +1,11 @@
 #!/bin/bash
 
+WRAPPER_DIR=$(dirname "$0")
+WRAPPER_DIR=$(readlink -f "$WRAPPER_DIR")
+
 if [ -z "$1" ];
 then
-  VERSIONS_FILE=./versions
+  VERSIONS_FILE=$WRAPPER_DIR/versions
 else
   VERSIONS_FILE=$1
 fi
@@ -14,13 +17,7 @@ fi
 
 . $VERSIONS_FILE
 
-WRAPPER_DIR=$PWD
-
-if [ -z "$1" ]; then
-  INPUTS_DIR=$PWD/../../gitian-builder/inputs
-else
-  INPUTS_DIR=$1
-fi
+INPUTS_DIR=$WRAPPER_DIR/../../gitian-builder/inputs
 
 cd $INPUTS_DIR
 
