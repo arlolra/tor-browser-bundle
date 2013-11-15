@@ -40,6 +40,7 @@ export PATH=$PATH:$PWD/libexec
 
 echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Windows\");" > $GITIAN_DIR/inputs/torbrowser.version 
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
+cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
 cp $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
 
