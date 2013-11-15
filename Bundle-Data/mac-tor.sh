@@ -1,4 +1,7 @@
 #!/bin/sh
+# Compiled Python modules require a compatible Python, which means 32-bit 2.6.
+export VERSIONER_PYTHON_VERSION=2.6
+export VERSIONER_PYTHON_PREFER_32_BIT=yes
 # Set the current working directory to the directory containing this executable,
 # so that pluggable transport executables can be given with relative paths. This
 # works around a change in OS X 10.9, where the current working directory is
