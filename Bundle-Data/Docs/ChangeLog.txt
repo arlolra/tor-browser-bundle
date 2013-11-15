@@ -1,3 +1,14 @@
+Tor Browser Bundle 3.0rc1 -- Nov 15 2013
+ * All Platforms:
+   * Bug #7277: TBB's Tor client will now omit its timestamp in the TLS handshake.
+   * Provide Japanese bundles
+   * Remove unsupported PDF.JS addon from the bundle 
+   * Update Torbutton to 1.6.4.1
+     * Bug #10002: Make the TBB3.0 blog tag our update download URL for now
+ * Linux
+   * Bug #10049: Fix architecture check to work from outside TBB's directory
+   * Bug #10126: Remove libz and firefox-bin, and strip unstripped binaries
+
 Tor Browser Bundle 3.0beta1 -- Oct 31 2013
  * All Platforms:
    * Update Firefox to 17.0.10esr
