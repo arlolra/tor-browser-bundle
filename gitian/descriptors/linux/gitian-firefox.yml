@@ -24,7 +24,6 @@ packages:
 - "libiw-dev"
 - "hardening-wrapper"
 - "libgstreamer-plugins-base0.10-dev"
-- "versions"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
@@ -34,6 +33,7 @@ files:
 - "re-dzip.sh"
 - "dzip.sh"
 - "python.tar.bz2"
+- "versions"
 script: |
   source versions
   INSTDIR="$HOME/install"
