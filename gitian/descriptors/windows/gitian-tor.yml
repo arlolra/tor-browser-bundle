@@ -25,6 +25,7 @@ remotes:
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
 files:
+- "binutils.tar.bz2"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -33,8 +34,6 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
-  export CFLAGS="-mwindows"
-  export LDFLAGS="-mwindows"
   # XXX: Hardening options cause the exe's to crash.. not sure why
   #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
   #export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/"
@@ -45,6 +44,17 @@ script: |
   mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $OUTDIR/
   #
+  mkdir binutils
+  cd binutils
+  tar -xjvf ../binutils.tar.bz2
+  sed 's/= extern_rt_rel_d;/= extern_rt_rel_d;\n  memset (extern_rt_rel_d, 0, PE_IDATA5_SIZE);/' -i binutils-*/ld/pe-dll.c
+  binutils-*/configure --prefix=/usr --target=i686-w64-mingw32 --disable-multilib
+  make
+  sudo make install
+  cd ..
+  #
+  export CFLAGS="-mwindows"
+  export LDFLAGS="-mwindows"
   cd zlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1

@@ -65,6 +65,7 @@ script: |
   mkdir binutils
   cd binutils
   tar -xjvf ../binutils.tar.bz2
+  sed 's/= extern_rt_rel_d;/= extern_rt_rel_d;\n  memset (extern_rt_rel_d, 0, PE_IDATA5_SIZE);/' -i binutils-*/ld/pe-dll.c
   binutils-*/configure --prefix=/usr --target=i686-w64-mingw32 --disable-multilib
   make
   sudo make install
