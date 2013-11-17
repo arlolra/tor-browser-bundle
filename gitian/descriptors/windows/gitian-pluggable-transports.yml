@@ -19,6 +19,7 @@ remotes:
   "dir": "pyptlib"
 files:
 - "setuptools.tar.gz"
+- "pycrypto.tar.gz"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
 - "python.msi"
@@ -91,6 +92,16 @@ script: |
   cd pyptlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
+  cd ..
+  #
+  tar xzf pycrypto.tar.gz
+  cd pycrypto-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  # This is bogus, that we run the configure script in the build environment, but it seems to work.
+  # https://bugs.launchpad.net/pycrypto/+bug/1096207 for ac_cv_func_malloc_0_nonnull.
+  ac_cv_func_malloc_0_nonnull=yes sh configure --host=i686-w64-mingw32
+  LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32
+  LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
   #
   cd openssl
