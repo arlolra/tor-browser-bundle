@@ -25,6 +25,7 @@ files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-win32-gbuilt.zip"
 - "tor-win32-gbuilt.zip"
+- "pluggable-transports-win32-gbuilt.zip"
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
@@ -99,6 +100,7 @@ script: |
   cd "Tor Browser"
   unzip ~/build/tor-browser-win32-gbuilt.zip
   unzip ~/build/tor-win32-gbuilt.zip
+  unzip ~/build/pluggable-transports-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   unzip ~/build/tbb-docs.zip
   cd ..
