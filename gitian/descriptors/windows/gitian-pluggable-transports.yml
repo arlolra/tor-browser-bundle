@@ -6,6 +6,7 @@ architectures:
 - "i386"
 packages: 
 - "git-core"
+- "unzip"
 - "zip"
 - "p7zip-full"
 - "mingw-w64"
@@ -20,6 +21,7 @@ remotes:
 files:
 - "setuptools.tar.gz"
 - "pycrypto.tar.gz"
+- "zope.interface.zip"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
 - "python.msi"
@@ -102,6 +104,15 @@ script: |
   ac_cv_func_malloc_0_nonnull=yes sh configure --host=i686-w64-mingw32
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32
   LD_PRELOAD= $INSTPYTHON setup.py install
+  cd ..
+  #
+  unzip zope.interface.zip
+  cd zope.interface-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32
+  LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
+  # Must create this file in order for py2exe to find the package.
+  touch $INSTDIR/python/Lib/site-packages/zope/__init__.py
   cd ..
   #
   cd openssl
