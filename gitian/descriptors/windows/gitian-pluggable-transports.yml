@@ -22,6 +22,7 @@ files:
 - "setuptools.tar.gz"
 - "pycrypto.tar.gz"
 - "zope.interface.zip"
+- "twisted.tar.bz2"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
 - "python.msi"
@@ -113,6 +114,20 @@ script: |
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   # Must create this file in order for py2exe to find the package.
   touch $INSTDIR/python/Lib/site-packages/zope/__init__.py
+  cd ..
+  #
+  tar xjf twisted.tar.bz2
+  cd Twisted-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  # twisted/internet/iocpreactor/iocpsupport/iocpsupport.c includes "python.h" rather than "Python.h".
+  ln -sf Python.h $INSTDIR/python/include/python.h
+  # We need to set the "mingw32" compiler to avoid an error in build_ext, but
+  # Twisted's "install" command calls build_ext unconditionally, whether the
+  # extensions have been built already or not, so we can't just call build_ext
+  # separately as with other packages. The "install" command doesn't recognize
+  # the -c option, so we set the compiler in a configuration file.
+  echo $'[build_ext]\ncompiler=mingw32' > setup.cfg
+  LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
   #
   cd openssl
