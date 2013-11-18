@@ -132,11 +132,11 @@ checkout_mingw() {
 #  fi
 #done
 
-for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO
+for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o "${i}" == "PYTHON_MSI" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -256,6 +256,7 @@ ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2
+ln -sf "$PYTHON_MSI_PACKAGE" python.msi
 ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
 ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
 ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
