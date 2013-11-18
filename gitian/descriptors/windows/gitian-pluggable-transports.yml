@@ -16,6 +16,7 @@ remotes:
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
 files:
+- "setuptools.tar.gz"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
 - "python.msi"
@@ -77,6 +78,12 @@ script: |
   cp -a $INSTDIR/python/python27.dll build/bdist.win32/winexe/bundle-2.7/
   LD_PRELOAD= $INSTPYTHON setup.py py2exe
   cp -a dist/gcc.exe dist/dllwrap.exe dist/swig.exe $WINEROOT/windows/
+  cd ..
+  #
+  tar xzf setuptools.tar.gz
+  cd setuptools-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
   #
   cd openssl
