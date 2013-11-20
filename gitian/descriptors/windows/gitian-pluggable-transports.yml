@@ -166,6 +166,9 @@ script: |
   cp {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
   #
+  # http://bugs.winehq.org/show_bug.cgi?id=3591
+  cp -a $INSTDIR/python/python27.dll $PTDIR/
+  #
   cd $INSTDIR
   ~/build/dzip.sh pluggable-transports-win32-gbuilt.zip Tor/ Data/
   cp pluggable-transports-win32-gbuilt.zip $OUTDIR/
