@@ -98,7 +98,7 @@ script: |
   # Strip and generate debuginfo for the firefox binary that we keep, all *.so
   # files, and the plugin-container (see ticket #10126)
   cd $INSTDIR
-  for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/updater Browser/firefox Browser/plugin-container Browser/components/*.so
+  for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/firefox Browser/plugin-container Browser/components/*.so # Browser/updater 
   do
     objcopy --only-keep-debug $LIB Debug/$LIB
     strip $LIB
