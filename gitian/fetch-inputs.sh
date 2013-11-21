@@ -72,7 +72,7 @@ get() {
   local file="$1"; shift
   local url="$1"; shift
 
-  if ! wget -N "$url"; then
+  if ! wget -U "" -N "$url"; then
     echo >&2 "Error: Cannot download $url"
     mv "${file}" "${file}.DLFAILED"
     exit 1
@@ -155,7 +155,7 @@ for i in OSXSDK #OPENSSL
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
-  if ! wget -N --no-remove-listing "${!URL}"; then
+  if ! wget -U "" -N --no-remove-listing "${!URL}"; then
     echo "$i url ${!URL} is broken!"
     mv "${!PACKAGE}" "${!PACKAGE}.removed"
     exit 1
@@ -168,7 +168,7 @@ done
 cd ..
 
 # NoScript and PDF.JS are magikal and special:
-wget -N ${NOSCRIPT_URL}
+wget -U "" -N ${NOSCRIPT_URL}
 
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot.zip ];
@@ -199,13 +199,13 @@ cd langpacks-$FIREFOX_LANG_VER
 for i in $BUNDLE_LOCALES
 do
   cd linux-langpacks
-  wget -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi"
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi"
   cd ..
   cd win32-langpacks
-  wget -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi"
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi"
   cd ..
   cd mac-langpacks
-  wget -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/mac/xpi/$i.xpi"
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/mac/xpi/$i.xpi"
   cd ..
 done
 
