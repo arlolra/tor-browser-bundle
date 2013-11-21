@@ -22,10 +22,12 @@ fi
 
 . $VERSIONS_FILE
 
-if [ ! -f $TORBROWSER_VERSION/sha256sums.txt ];
+if [ ! -f $TORBROWSER_VERSION/sha256sums.txt.asc ];
 then
-  cd $TORBROWSER_VERSION && gpg -abs sha256sums.txt
+  pushd $TORBROWSER_VERSION && gpg -abs sha256sums.txt 
+  popd
 fi
+
 
 ssh $HOST "mkdir -p $BASE_DIR/$TORBROWSER_VERSION" 
 scp $TORBROWSER_VERSION/sha256sums.txt* $HOST:$BASE_DIR/$TORBROWSER_VERSION/ 

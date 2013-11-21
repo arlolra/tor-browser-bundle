@@ -23,4 +23,7 @@ sha256sum `ls -1 | sort` > sha256sums.txt
 
 echo
 echo "If this is an official build, you should now sign your result with: "
-echo "  cd $TORBROWSER_VERSION && gpg -abs sha256sums.txt"
+echo "  make sign"
+echo
+echo "In either case, you can check against any official builds with: "
+echo "  make match"
