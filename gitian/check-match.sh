@@ -35,8 +35,8 @@ do
   mkdir -p $TORBROWSER_VERSION/$u
   cd $TORBROWSER_VERSION/$u
 
-  wget https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.txt || continue
-  wget https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.txt.asc || continue
+  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.txt || continue
+  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.txt.asc || continue
 
   keyring="../../gpg/$u.gpg"
 
@@ -50,7 +50,7 @@ do
   VALID="$u $VALID"
 done
 
-if [ -z $VALID ];
+if [ -z "$VALID" ];
 then
   echo "No bundle hashes or sigs published for $TORBROWSER_VERSION."
   echo
