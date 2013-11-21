@@ -14,6 +14,18 @@ build-alpha:
 	./mkbundle-mac.sh versions.alpha
 	./hash-bundles.sh versions.alpha
 
+sign:
+	torsocks ./upload-signature.sh versions
+
+sign-alpha:
+	torsocks ./upload-signature.sh versions.alpha
+
+match:
+	torsocks ./check-match.sh versions
+
+match-alpha:
+	torsocks ./check-match.sh versions.alpha
+
 prep:
 	./check-prerequisites.sh
 	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions

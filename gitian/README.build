@@ -11,6 +11,10 @@ QuickStart:
  start the build process to produce localized Linux bundles, followed by
  Windows bundles, followed by Mac bundles.
 
+ To check your build results against the official builders, run:
+
+ $ make match
+
  By default, the Makefile wraps input downloads in 'torsocks'. This is done
  to allow unofficial secret verifiers to remain secret by default. Removing
  the 'torsocks' from the 'prep' Makefile rule should be sufficient to avoid
@@ -43,10 +47,14 @@ Detailed Explanation of Scripts:
      - vmclean: Remove VM base images
      - distclean: Remove source dependency inputs, and run clean and vmclean
      - all: The default. It calls clean, prep, and then build.
+     - sign: Signs your build output and uplodas it to people.torproject.org
+     - match: Checks your build output against public signed hashes
     To build alpha bundles, alternate targets are provided:
      - alpha: The equivalent to the 'all' rule for alpha packages
      - build-alpha: The equivalent to the 'build' rule for alpha packages
      - prep-alpha: The equivalent to the 'prep' rule for alpha packages
+     - sign-alpha: Signs your build output and uplodas it to people.torproject.org
+     - match-alpha: Checks your build output against public signed hashes
  
  1. check-prerequisites.sh: This script checks if your system is capable of
     running Gitian, and if it is not, it tells you what you need to do.
