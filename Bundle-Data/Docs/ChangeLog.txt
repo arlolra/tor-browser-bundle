@@ -1,12 +1,17 @@
-Tor Browser Bundle 3.0rc1 -- Nov 15 2013
+Tor Browser Bundle 3.0rc1 -- Nov 21 2013
  * All Platforms:
-   * Bug #7277: TBB's Tor client will now omit its timestamp in the TLS handshake.
+   * Update Firefox to 17.0.11esr
+   * Update Tor to 0.2.4.18-rc
    * Remove unsupported PDF.JS addon from the bundle 
+   * Bug #7277: TBB's Tor client will now omit its timestamp in the TLS handshake.
    * Update Torbutton to 1.6.4.1
      * Bug #10002: Make the TBB3.0 blog tag our update download URL for now
+ * Windows
+   * Bug #10102: Patch binutils to remove nondeterministic bytes in compiled binaries
  * Linux
    * Bug #10049: Fix architecture check to work from outside TBB's directory
    * Bug #10126: Remove libz and firefox-bin, and strip unstripped binaries
+   * Misc: Disable Firefox updater during compile time (in addition to pref)
 
 Tor Browser Bundle 3.0beta1 -- Oct 31 2013
  * All Platforms:
