@@ -7,6 +7,7 @@ architectures:
 packages: 
 - "git-core"
 - "zip"
+- "p7zip-full"
 - "mingw-w64"
 - "faketime"
 - "libtool"
@@ -17,6 +18,7 @@ remotes:
 files:
 - "ubuntu-wine.gpg"
 - "python.msi"
+- "py2exe.exe"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -59,6 +61,9 @@ script: |
   # /qn disables user interface; /i installs.
   LD_PRELOAD= msiexec /qn /i python.msi TARGETDIR=$INSTDIR/python
   INSTPYTHON="wine $INSTDIR/python/python.exe"
+  #
+  7z x py2exe.exe
+  cp -a PLATLIB/* $INSTDIR/python/Lib/site-packages/
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
