@@ -8,6 +8,7 @@ packages:
 - "git-core"
 - "unzip"
 - "zip"
+- "swig"
 - "p7zip-full"
 - "mingw-w64"
 - "faketime"
@@ -25,6 +26,7 @@ files:
 - "pycrypto.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
+- "m2crypto.tar.gz"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
 - "python.msi"
@@ -145,6 +147,13 @@ script: |
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
   make
   make install
+  cd ..
+  #
+  tar xzf m2crypto.tar.gz
+  cd M2Crypto-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --openssl $INSTDIR/openssl/ -lssl.dll,crypto.dll
+  LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
   #
   cd $INSTDIR
