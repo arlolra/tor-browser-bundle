@@ -168,7 +168,7 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_DCF}${!PACKAGE}"
 done
 
-for i in ZOPEINTERFACE TWISTED
+for i in ZOPEINTERFACE TWISTED PY2EXE
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
@@ -262,6 +262,7 @@ ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
 ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
 ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
 ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz
+ln -sf "$PY2EXE_PACKAGE" py2exe.exe
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
