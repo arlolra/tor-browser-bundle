@@ -16,6 +16,7 @@ remotes:
   "dir": "openssl"
 files:
 - "ubuntu-wine.gpg"
+- "python.msi"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -53,6 +54,11 @@ script: |
   # libfaketime causes all Wine commands to crash; remove it from LD_PRELOAD.
   # http://bugs.winehq.org/show_bug.cgi?id=31237
   LD_PRELOAD= wineboot -i
+  #
+  # http://wiki.winehq.org/msiexec
+  # /qn disables user interface; /i installs.
+  LD_PRELOAD= msiexec /qn /i python.msi TARGETDIR=$INSTDIR/python
+  INSTPYTHON="wine $INSTDIR/python/python.exe"
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
