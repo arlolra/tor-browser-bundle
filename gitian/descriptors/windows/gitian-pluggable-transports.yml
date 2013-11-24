@@ -15,6 +15,7 @@ remotes:
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
 files:
+- "ubuntu-wine.gpg"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -26,6 +27,8 @@ script: |
   export LC_ALL=C
   export CFLAGS="-mwindows"
   export LDFLAGS="-mwindows"
+  # This is correct only for kvm.
+  MIRROR_HOST=10.0.2.2
   # XXX: Hardening options cause the exe's to crash.. not sure why
   #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
   #export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/"
@@ -35,6 +38,21 @@ script: |
   mkdir -p $PTDIR/
   mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $OUTDIR/
+  #
+  # Install a Wine new enough to have a fix for http://bugs.winehq.org/show_bug.cgi?id=29764;
+  # otherwise Python run under Wine constantly crashes in _PyVerify_fd, which is
+  # called by such common operations as io.open and os.fstat (anything involving
+  # a file descriptor number). Ubuntu's main repository only has wine1.4, and
+  # the issue was fixed in 1.5.29.
+  sudo -s sh -c "echo deb http://$MIRROR_HOST:3142/ppa.launchpad.net/ubuntu-wine/ppa/ubuntu precise main >> /etc/apt/sources.list"
+  # This key is from https://launchpad.net/~ubuntu-wine/+archive/ppa and
+  # http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x5A9A06AEF9CB8DB0.
+  sudo apt-key add ubuntu-wine.gpg
+  sudo apt-get update
+  sudo apt-get --no-install-recommends -y install wine
+  # libfaketime causes all Wine commands to crash; remove it from LD_PRELOAD.
+  # http://bugs.winehq.org/show_bug.cgi?id=31237
+  LD_PRELOAD= wineboot -i
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
