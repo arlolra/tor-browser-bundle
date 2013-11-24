@@ -21,6 +21,8 @@ remotes:
   "dir": "pyptlib"
 - "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
   "dir": "obfsproxy"
+- "url": "https://git.torproject.org/flashproxy.git"
+  "dir": "flashproxy"
 files:
 - "setuptools.tar.gz"
 - "pycrypto.tar.gz"
@@ -154,6 +156,14 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --openssl $INSTDIR/openssl/ -lssl.dll,crypto.dll
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
+  cd ..
+  #
+  cd flashproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  make dist-exe DISTNAME=flashproxy-client PYTHON="LD_PRELOAD= $INSTPYTHON"
+  cp -an dist/flashproxy-client/{*.pyd,*.exe,*.zip} $PTDIR/
+  mkdir -p $INSTDIR/Docs/FlashProxy
+  cp {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
   #
   cd $INSTDIR
