@@ -99,6 +99,12 @@ update_git() {
   fi
 }
 
+checkout_mingw() {
+  svn co -r $MINGW_REV https://svn.code.sf.net/p/mingw-w64/code/trunk/ mingw-w64-svn || exit 1
+  # XXX: Path
+  ZIPOPTS="-x*/.svn/*" faketime -f "2000-01-01 00:00:00" "$WRAPPER_DIR/build-helpers/dzip.sh" mingw-w64-svn-snapshot.zip mingw-w64-svn
+}
+
 ##############################################################################
 # Get package files from mirror
 
@@ -173,9 +179,16 @@ wget -U "" -N ${NOSCRIPT_URL}
 # So is mingw:
 if [ ! -f mingw-w64-svn-snapshot.zip ];
 then
-  svn co -r $MINGW_REV https://svn.code.sf.net/p/mingw-w64/code/trunk/ mingw-w64-svn || exit 1
-  # XXX: Path
-  ZIPOPTS="-x*/.svn/*" faketime -f "2000-01-01 00:00:00" "$WRAPPER_DIR/build-helpers/dzip.sh" mingw-w64-svn-snapshot.zip mingw-w64-svn
+  checkout_mingw
+else
+  # We do have mingw-w64 already but is it the correct revision? We check the
+  # hash of the zip archive as it has to be changed as well if a new revision
+  # should be used.
+   if ! echo "${MINGW_HASH}  ${MINGW_PACKAGE}" | sha256sum -c -; then
+     # We need to update the local mingw-w64 copy
+     rm -rf mingw-w64-svn*
+     checkout_mingw
+   fi
 fi
 
 # Verify packages with weak or no signatures via direct sha256 check
