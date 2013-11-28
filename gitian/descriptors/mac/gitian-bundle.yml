@@ -105,12 +105,17 @@ script: |
   cp versions TorBrowserBundle.app/Docs/sources/
   cp bundle.inputs TorBrowserBundle.app/Docs/sources/bundle.inputs
   #
-  cd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+  # FF24 puts the prefs in a different jar:
+  if [ -f TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/omni.ja ]; then
+     pushd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
+  else
+     pushd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+  fi
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-  cd ../../../../../../
+  popd
   # XXX: DMG plz
   cp -a TorBrowserBundle.app TorBrowserBundle_en-US.app
   ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip TorBrowserBundle_en-US.app

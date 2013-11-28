@@ -26,10 +26,13 @@ files:
 - "i686-apple-darwin11-ld"
 - "re-dzip.sh"
 - "dzip.sh"
+- "python.tar.bz2"
+- "versions"
 #- "apple-x86-gcc_4.2.1~5646.1flosoft2_i386.deb"
 #- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
 script: |
   INSTDIR="$HOME/install/"
+  source versions
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
@@ -42,6 +45,19 @@ script: |
   #
   mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/
   mkdir -p $OUTDIR/
+  #
+  # XXX: Refactor this out into a separate descriptor
+  # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
+  # with Python 2.6. Thus, we compile 2.7 ourselves...
+  if [ ${TORBROWSER_VERSION::3} != "3.0" ]; then
+    mkdir python
+    cd python
+    tar -xjvf ../python.tar.bz2
+    Python-*/configure
+    make
+    sudo make install
+    cd ..
+  fi
   #
   sudo dpkg -i *.deb
   chmod 755 i686*
@@ -84,5 +100,8 @@ script: |
   cd $INSTDIR
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/webapprt/omni.ja
+  if [ -f TorBrowser.app/Contents/MacOS/browser/omni.ja  ]; then # FF24 includes a third .ja
+    ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/browser/omni.ja
+  fi
   ~/build/dzip.sh tor-browser-mac${GBUILD_BITS}-gbuilt.zip ./TorBrowser.app
   cp tor-browser-mac${GBUILD_BITS}-gbuilt.zip $OUTDIR

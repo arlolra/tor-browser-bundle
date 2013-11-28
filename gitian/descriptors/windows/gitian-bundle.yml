@@ -107,12 +107,17 @@ script: |
   cp ../versions "Tor Browser"/Docs/sources/
   cp ../bundle.inputs "Tor Browser"/Docs/sources/
   #
-  cd "Tor Browser"/Browser
+  # FF24 puts the prefs in a different jar:
+  if [ -f "Tor Browser"/Browser/browser/omni.ja ]; then
+     pushd "Tor Browser"/Browser/browser/
+  else
+     pushd "Tor Browser"/Browser/
+  fi
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-  cd ../../
+  popd
   makensis torbrowser.nsi
   mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_en-US.exe
   #

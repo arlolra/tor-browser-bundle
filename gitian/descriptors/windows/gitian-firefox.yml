@@ -32,8 +32,11 @@ files:
 - "i686-w64-mingw32-g++"
 - "i686-w64-mingw32-ld"
 - "msvcr100.dll"
+- "python.tar.bz2"
+- "versions"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
@@ -54,6 +57,21 @@ script: |
   # necessary to re-compile the mingw-w64 runtime libraries as well as they are
   # linked against msvcrt by default. See bug 9084 for a more detailed
   # discussion.
+
+  #
+  # XXX: Refactor this out into a separate descriptor
+  # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
+  # with Python 2.6. Thus, we compile 2.7 ourselves...
+  if [ ${TORBROWSER_VERSION::3} != "3.0" ]; then
+    mkdir python
+    cd python
+    tar -xjvf ../python.tar.bz2
+    Python-*/configure
+    make
+    sudo make install
+    cd ..
+  fi
+  #
 
   # FIXME: We need sudo for all of this because otherwise
   # the toolchain can't find the alternate prefix for the CRT headers :/ 
@@ -179,6 +197,9 @@ script: |
   ~/build/re-dzip.sh Browser/omni.ja
   if [ -f Browser/webapprt/omni.ja ]; then
     ~/build/re-dzip.sh Browser/webapprt/omni.ja
+  fi
+  if [ -f Browser/browser/omni.ja ]; then
+    ~/build/re-dzip.sh Browser/browser/omni.ja
   fi
   ~/build/dzip.sh tor-browser-win32-gbuilt.zip Browser
   cp tor-browser-win32-gbuilt.zip $OUTDIR
