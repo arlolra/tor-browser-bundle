@@ -136,6 +136,9 @@ script: |
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
   #
+  # py2exe byte-compiles to .pyc files, which embed the mtime of the parent .py file.
+  find $INSTDIR/python -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #
   cd obfsproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_py2exe.py py2exe
@@ -157,6 +160,8 @@ script: |
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --openssl $INSTDIR/openssl/ -lssl.dll,crypto.dll
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
+  #
+  find $INSTDIR/python -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
   cd flashproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
