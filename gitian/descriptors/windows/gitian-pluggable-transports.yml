@@ -34,6 +34,7 @@ files:
 - "python.msi"
 - "py2exe.exe"
 - "dzip.sh"
+- "pyc-timestamp.sh"
 script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
@@ -56,6 +57,20 @@ script: |
   mkdir -p $PTDIR/
   mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $OUTDIR/
+  #
+  # Set the timestamp on every .pyc file in a zip file, and re-dzip the zip file.
+  function py2exe_zip_timestomp {
+    ZIPFILE="$1"
+    local tmpdir="$(mktemp -d)"
+    local tmpzip="$(mktemp -u)"
+    unzip -d "$tmpdir" "$ZIPFILE"
+    cd "$tmpdir"
+    find . -name '*.pyc' -print0 | xargs -0 ~/build/pyc-timestamp.sh "$REFERENCE_DATETIME"
+    ~/build/dzip.sh "$tmpzip" .
+    cd -
+    mv -f "$tmpzip" "$ZIPFILE"
+    rm -rf "$tmpdir"
+  }
   #
   # Install a Wine new enough to have a fix for http://bugs.winehq.org/show_bug.cgi?id=29764;
   # otherwise Python run under Wine constantly crashes in _PyVerify_fd, which is
@@ -142,6 +157,7 @@ script: |
   cd obfsproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_py2exe.py py2exe
+  py2exe_zip_timestomp py2exe_bundle/dist/obfsproxy.zip
   cp -an py2exe_bundle/dist/{*.pyd,*.exe,*.zip} $PTDIR/
   mkdir -p $INSTDIR/Docs/Obfsproxy
   cp {LICENSE,README} $INSTDIR/Docs/Obfsproxy
@@ -166,6 +182,7 @@ script: |
   cd flashproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make dist-exe DISTNAME=flashproxy-client PYTHON="LD_PRELOAD= $INSTPYTHON"
+  py2exe_zip_timestomp dist/flashproxy-client/py2exe-flashproxy.zip
   cp -an dist/flashproxy-client/{*.pyd,*.exe,*.zip} $PTDIR/
   mkdir -p $INSTDIR/Docs/FlashProxy
   cp {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
