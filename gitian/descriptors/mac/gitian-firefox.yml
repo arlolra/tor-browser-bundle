@@ -3,8 +3,8 @@ name: "torbrowser-mac"
 suites:
 - "precise"
 architectures:
-- "i386"
-packages: 
+- "amd64"
+packages:
 - "git-core"
 - "unzip"
 - "zip"
@@ -12,7 +12,7 @@ packages:
 - "autoconf2.13"
 - "faketime"
 - "yasm"
-#- "libssl0.9.8"
+- "zlib1g-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
@@ -20,26 +20,17 @@ remotes:
 files:
 - "torbrowser.version"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
-- "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
-- "i686-apple-darwin11-gcc"
-- "i686-apple-darwin11-g++"
-- "i686-apple-darwin11-ld"
+- "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
 - "dzip.sh"
 - "python.tar.bz2"
 - "versions"
-#- "apple-x86-gcc_4.2.1~5646.1flosoft2_i386.deb"
-#- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
 script: |
   INSTDIR="$HOME/install/"
   source versions
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
-  export CFLAGS="-isysroot /usr/lib/apple/SDKs/MacOSX10.6.sdk/"
-  export CXXFLAGS=$CFLAGS
-  export LDFLAGS=$CFLAGS
-  export PATH="$PATH:/usr/apple-osx/bin/"
   export LC_ALL=C
   umask 0022
   #
@@ -60,14 +51,13 @@ script: |
   fi
   #
   sudo dpkg -i *.deb
-  chmod 755 i686*
-  sudo cp i686* /usr/bin/
-  cd /usr
-  sudo tar -Jxvf /home/ubuntu/build/multiarch-darwin*tar.xz
-  cd ~/build
+  tar -xavf x86_64-apple-darwin10.tar.xz
+  # XXX: Needed for the otool patch. But we should replace that one with a
+  # better solution. See: comment 15 in
+  # https://bugzilla.mozilla.org/show_bug.cgi?id=936115
+  export PATH=$PATH:/home/ubuntu/build/x-tools/x86_64-apple-darwin10/bin
   # FIXME: path hacks:
   sudo mkdir -p /System/Library/
-  sudo ln -s /usr/apple-osx/bin/i686-apple-darwin11-otool /usr/bin/otool
   sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk /usr/lib/apple/SDKs/MacOSX10.5.sdk
   sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk /usr/lib/apple/SDKs/MacOSX10.5.sdk
   sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/ /System/Library/
@@ -88,16 +78,16 @@ script: |
   make -f client.mk configure
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
-  # XXX: Probably should fix this some other way than just letting it fail once..
-  make $MAKEOPTS -f client.mk build HOST_CFLAGS="" HOST_CXXFLAGS="" # || true
-  #make $MAKEOPTS -f client.mk build HOST_CFLAGS="" HOST_CXXFLAGS="" CC="apple-osx-gcc $CFLAGS"
+  make $MAKEOPTS -f client.mk build
   #
-  make -C obj-* package INNER_MAKE_PACKAGE=true
-  cp -a obj-*/dist/firefox/* $INSTDIR
+  make -C obj-macos package INNER_MAKE_PACKAGE=true
+  cp -a obj-macos/dist/firefox/* $INSTDIR
   # Remove firefox-bin (we don't use it, see ticket #10126)
   rm -f $INSTDIR/Browser/firefox-bin
   #
   cd $INSTDIR
+  # XXX: Find a better way to tell that we are having a 32bit build
+  GBUILD_BITS=32
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/webapprt/omni.ja
   if [ -f TorBrowser.app/Contents/MacOS/browser/omni.ja  ]; then # FF24 includes a third .ja
