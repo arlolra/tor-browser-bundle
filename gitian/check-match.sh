@@ -3,7 +3,7 @@
 # XXX: Args?
 HOST=people.torproject.org
 BASE_DIR=public_html/builds/
-USERS="ln5 mikeperry erinn gk"
+USERS="linus mikeperry erinn gk"
 
 set -e
 set -u
