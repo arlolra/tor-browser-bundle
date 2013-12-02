@@ -206,8 +206,8 @@ if [ $SYSARCHITECTURE -ne $TORARCHITECTURE ]; then
    exit 1
 fi
 
-LDPATH="${HOME}/Tor/"
-export LDPATH
+LD_LIBRARY_PATH="${HOME}/Tor/"
+export LD_LIBRARY_PATH
 
 # XXX: Debug mode for Firefox??
 
