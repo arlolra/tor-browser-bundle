@@ -12,7 +12,6 @@ packages:
 - "autoconf2.13"
 - "faketime"
 - "yasm"
-- "zlib1g-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
@@ -23,7 +22,6 @@ files:
 - "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
 - "dzip.sh"
-- "python.tar.bz2"
 - "versions"
 script: |
   INSTDIR="$HOME/install/"
@@ -36,19 +34,6 @@ script: |
   #
   mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/
   mkdir -p $OUTDIR/
-  #
-  # XXX: Refactor this out into a separate descriptor
-  # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
-  # with Python 2.6. Thus, we compile 2.7 ourselves...
-  if [ ${TORBROWSER_VERSION::3} != "3.0" ]; then
-    mkdir python
-    cd python
-    tar -xjvf ../python.tar.bz2
-    Python-*/configure
-    make
-    sudo make install
-    cd ..
-  fi
   #
   sudo dpkg -i *.deb
   tar -xavf x86_64-apple-darwin10.tar.xz
