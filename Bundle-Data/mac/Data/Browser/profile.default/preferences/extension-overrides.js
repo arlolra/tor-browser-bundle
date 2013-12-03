@@ -13,6 +13,7 @@ pref("extensions.torbutton.tz_string", "UTC+00:00");
 
 # HTTPS Everywhere Preferences:
 pref("extensions.https_everywhere._observatory.popup_shown", true);
+pref("extensions.https_everywhere.toolbar_hint_shown", true);
 
 # NoScript Preferences:
 pref("capability.policy.maonoscript.javascript.enabled", "allAccess");
