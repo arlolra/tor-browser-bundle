@@ -97,6 +97,13 @@ update_git() {
   if [ -n "$tag" ]; then
     (cd "$dir" && git checkout "$tag")
   fi
+
+  # If we're not verifying tags, then some of the tags
+  # may actually be branch names that require an update
+  if [ $VERIFY_TAGS -eq 0 -a -n "$tag" ];
+  then
+    (cd "$dir" && git pull || true )
+  fi
 }
 
 checkout_mingw() {
@@ -246,14 +253,14 @@ cd inputs
 while read dir url tag; do
   update_git "$dir" "$url" "$tag"
 done << EOF
-tbb-windows-installer https://github.com/moba/tbb-windows-installer.git
-openssl               https://github.com/nmathewson/openssl.git
-zlib                  https://github.com/madler/zlib.git
-libevent              https://github.com/libevent/libevent.git
-tor-launcher          https://git.torproject.org/tor-launcher.git
-tor                   https://git.torproject.org/tor.git
-torbutton             https://git.torproject.org/torbutton.git
-https-everywhere      https://git.torproject.org/https-everywhere.git
+tbb-windows-installer https://github.com/moba/tbb-windows-installer.git $NSIS_TAG
+openssl               https://github.com/nmathewson/openssl.git $OPENSSL_TAG
+zlib                  https://github.com/madler/zlib.git       $ZLIB_TAG
+libevent              https://github.com/libevent/libevent.git $LIBEVENT_TAG
+tor                   https://git.torproject.org/tor.git              $TOR_TAG
+https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TAG
+torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
+tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
 EOF
 
