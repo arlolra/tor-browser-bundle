@@ -1,13 +1,13 @@
-TORBROWSER_VERSION=3.5-alpha-1pre
+TORBROWSER_VERSION=3.5-rc-1
 BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
 
-VERIFY_TAGS=0
+VERIFY_TAGS=1
 
-TORBROWSER_TAG=tor-browser-24.1.1esr-1
+TORBROWSER_TAG=tor-browser-24.2.0esr-3.5rc1-build1
 TOR_TAG=tor-0.2.4.18-rc
 OPENSSL_TAG=openssl-101e-no-gmt-time-v1
-TORLAUNCHER_TAG=master
-TORBUTTON_TAG=master
+TORLAUNCHER_TAG=0.2.4
+TORBUTTON_TAG=1.6.5
 HTTPSE_TAG=3.4.4tbb
 NSIS_TAG=v0.1
 ZLIB_TAG=v1.2.8
