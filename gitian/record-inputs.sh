@@ -48,6 +48,7 @@ fi
 
 echo "`cd zlib && git log --format=%H -1 $ZLIB_TAG` zlib.git" >> bundle.inputs
 echo "`cd tor && git log --format=%H -1 $TOR_TAG` tor.git" >> bundle.inputs
+echo "`cd tor-browser && git log --format=%H -1 $TORBROWSER_TAG` tor-browser.git" >> bundle.inputs
 echo "`cd torbutton && git log --format=%H -1 $TORBUTTON_TAG` torbutton.git" >> bundle.inputs
 echo "`cd tor-launcher && git log --format=%H -1 $TORLAUNCHER_TAG` tor-launcher.git" >> bundle.inputs
 echo "`cd https-everywhere && git log --format=%H -1 $HTTPSE_TAG` https-everywhere.git" >> bundle.inputs
