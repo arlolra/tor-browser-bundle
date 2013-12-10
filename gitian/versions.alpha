@@ -3,10 +3,10 @@ BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
 
 VERIFY_TAGS=1
 
-TORBROWSER_TAG=tor-browser-24.2.0esr-3.5rc1-build1
+TORBROWSER_TAG=tor-browser-24.2.0esr-3.5rc1-build2
 TOR_TAG=tor-0.2.4.18-rc
 OPENSSL_TAG=openssl-101e-no-gmt-time-v1
-TORLAUNCHER_TAG=0.2.4
+TORLAUNCHER_TAG=0.2.4.1
 TORBUTTON_TAG=1.6.5
 HTTPSE_TAG=3.4.4tbb
 NSIS_TAG=v0.1
@@ -17,7 +17,7 @@ MINGW_REV=6184
 GITIAN_TAG=tor-browser-builder-3.0-4
 
 # OPENSSL_VER=1.0.1e
-FIREFOX_LANG_VER=24.1.1esr
+FIREFOX_LANG_VER=24.2.0esr
 BINUTILS_VER=2.22
 GCC_VER=4.6.3
 PYTHON_VER=2.7.5
