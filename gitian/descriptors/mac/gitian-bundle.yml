@@ -131,13 +131,12 @@ script: |
     cd ..
 
     # FF24 puts the prefs in a different jar:
-    if [ -f TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/omni.ja ]; then
-       pushd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
+    if [ -f TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/omni.ja ]; then
+       pushd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
     else
-       pushd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+       pushd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
     fi
 
-    cd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
