@@ -1,15 +1,17 @@
-Tor Browser Bundle 3.5rc1 -- Dec 9 2013
+Tor Browser Bundle 3.5rc1 -- Dec 11 2013
  * All Platforms
    * Update Firefox to 24.2.0esr
    * Update NoScript to 2.6.8.7
    * Update HTTPS-Everywhere to 3.4.4tbb (special TBB tag)
      * Tag includes a patch to handle enabling/disabling Mixed Content Blocking
    * Misc: Disable HTTPS-Everywhere first-run tooltips
-   * Update Tor Launcher to 0.2.4
+   * Update Tor Launcher to 0.2.4.1
+     * Bug 10147: Adblock Plus interferes w/Tor Launcher dialog
      * Bug 10201: FF ESR 24 hangs during exit on Mac OS
      * Bug 9984: Support running Tor Launcher from InstantBird
      * Misc: Support browser directory location API changes in Firefox 24
-   * Update Torbutton to 1.6.5
+   * Update Torbutton to 1.6.5.1
+     * Bug 10352: Clear FF24 Private Browsing Mode data during New Identity
      * Bug 8167: Update cache isolation for FF24 API changes
      * Bug 10201: FF ESR 24 hangs during exit on Mac OS
      * Bug 10078: Properly clear crypto tokens during New Identity on FF24
