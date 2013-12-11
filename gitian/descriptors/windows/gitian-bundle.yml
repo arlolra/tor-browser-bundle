@@ -129,12 +129,18 @@ script: |
     cp $i ../"Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    cd "Tor Browser"/Browser
+    # FF24 puts the prefs in a different jar:
+    if [ -f "Tor Browser"/Browser/browser/omni.ja ]; then
+       pushd "Tor Browser"/Browser/browser/
+    else
+       pushd "Tor Browser"/Browser/
+    fi
+
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    cd ../../
+    popd
 
     makensis torbrowser.nsi
     mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
