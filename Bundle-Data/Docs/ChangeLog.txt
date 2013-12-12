@@ -1,10 +1,14 @@
-Tor Browser Bundle 3.5rc1 -- Dec 11 2013
+Tor Browser Bundle 3.5rc1 -- Dec 12 2013
  * All Platforms
    * Update Firefox to 24.2.0esr
    * Update NoScript to 2.6.8.7
    * Update HTTPS-Everywhere to 3.4.4tbb (special TBB tag)
      * Tag includes a patch to handle enabling/disabling Mixed Content Blocking
-   * Misc: Disable HTTPS-Everywhere first-run tooltips
+   * Bug 5060: Disable health report service
+   * Bug 10367: Disable prompting about health report and Mozilla Sync
+   * Misc Prefs: Disable HTTPS-Everywhere first-run tooltips
+   * Misc Prefs: Disable layer acceleration to avoid crashes on Windows
+   * Misc Prefs: Disable Mixed Content Blocker pending backport of Mozilla Bug 878890
    * Update Tor Launcher to 0.2.4.1
      * Bug 10147: Adblock Plus interferes w/Tor Launcher dialog
      * Bug 10201: FF ESR 24 hangs during exit on Mac OS
