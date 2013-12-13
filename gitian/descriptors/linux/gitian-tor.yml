@@ -58,7 +58,7 @@ script: |
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
-  ./config -shared --prefix=$INSTDIR/openssl
+  ./config -shared --prefix=$INSTDIR/openssl --enable-ec_nistp_64_gcc_128
   make
   make install
   cp $INSTDIR/openssl/lib/libssl.so.1.0.0 $INSTDIR/Tor/

@@ -67,7 +67,7 @@ script: |
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin-i386-cc --prefix=$INSTDIR/openssl
+  ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin-i386-cc --prefix=$INSTDIR/openssl --enable-ec_nistp_64_gcc_128
   make # SHARED_LDFLAGS="-shared -dynamiclib -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/"
   make install
   #cp $INSTDIR/openssl/lib/*.dylib $INSTDIR/TorBrowserBundle.app/Tor/

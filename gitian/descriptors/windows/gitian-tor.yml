@@ -73,7 +73,7 @@ script: |
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
+  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl --enable-ec_nistp_64_gcc_128
   make
   make install
   cp $INSTDIR/openssl/bin/*.dll $INSTDIR/Tor/
