@@ -11,6 +11,7 @@ packages:
 - "zip"
 - "mingw-w64"
 - "faketime"
+- "python"
 - "rnv"
 - "xz-utils"
 reference_datetime: "2000-01-01 00:00:00"
