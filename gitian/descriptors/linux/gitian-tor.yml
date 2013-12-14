@@ -68,6 +68,7 @@ script: |
   chmod 700 $INSTDIR/Tor/*so*
   #
   cd tor
+  git update-index --refresh -q
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
