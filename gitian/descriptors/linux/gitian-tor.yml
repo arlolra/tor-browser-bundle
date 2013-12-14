@@ -25,6 +25,7 @@ remotes:
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
 files:
+- "bug10297.patch"
 - "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
@@ -72,6 +73,7 @@ script: |
   export GIT_COMMITTER_NAME="nobody"
   export GIT_COMMITTER_EMAIL="nobody@localhost"
   export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
+  git am ~/build/bug10297.patch
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
