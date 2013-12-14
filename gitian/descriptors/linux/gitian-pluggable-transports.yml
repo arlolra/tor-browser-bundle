@@ -8,12 +8,15 @@ architectures:
 packages: 
 - "git-core"
 - "zip"
+- "python-setuptools"
 - "faketime"
 - "hardening-wrapper"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/nmathewson/openssl.git"
   "dir": "openssl"
+- "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
+  "dir": "pyptlib"
 files:
 - "dzip.sh"
 script: |
@@ -33,8 +36,14 @@ script: |
   export DEB_BUILD_HARDENING_FORMAT=1
   export DEB_BUILD_HARDENING_PIE=1
   #
-  mkdir -p $PTDIR/
+  mkdir -p $PTDIR
   mkdir -p $INSTDIR/Debug/
+  #
+  cd pyptlib
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/pyptlib $PTDIR/
+  cd ..
   #
   cd openssl
   find -type f | xargs touch --date="$REFERENCE_DATETIME"

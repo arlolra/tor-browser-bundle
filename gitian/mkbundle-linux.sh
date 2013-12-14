@@ -128,7 +128,7 @@ then
   echo "****** Starting Pluggable Transports Component of Linux Bundle (3/4 for Linux) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG $DESCRIPTOR_DIR/linux/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG,pyptlib=$PYPTLIB_TAG $DESCRIPTOR_DIR/linux/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./pluggable-transports-fail-linux.log.`date +%Y%m%d%H%M%S`
