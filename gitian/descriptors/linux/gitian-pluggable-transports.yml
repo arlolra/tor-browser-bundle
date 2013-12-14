@@ -1,0 +1,52 @@
+---
+name: "pluggable-transports-linux"
+suites:
+- "lucid"
+architectures:
+- "i386"
+- "amd64"
+packages: 
+- "git-core"
+- "zip"
+- "faketime"
+- "hardening-wrapper"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://github.com/nmathewson/openssl.git"
+  "dir": "openssl"
+files:
+- "dzip.sh"
+script: |
+  INSTDIR="$HOME/install"
+  PTDIR="$INSTDIR/Tor/PluggableTransports"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  export LC_ALL=C
+  umask 0022
+  #
+  # Config options for hardening-wrapper
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
+  #
+  mkdir -p $PTDIR/
+  mkdir -p $INSTDIR/Debug/
+  #
+  cd openssl
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
+  ./config -shared --prefix=$INSTDIR/openssl
+  make
+  make install
+  cd ..
+  #
+  cd $INSTDIR
+  #
+  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/
+  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-debug.zip Debug/
+  cp pluggable-transports-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
+  cp pluggable-transports-linux$GBUILD_BITS-debug.zip $OUTDIR/
