@@ -42,6 +42,7 @@ echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
 cp -r $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
