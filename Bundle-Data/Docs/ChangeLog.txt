@@ -3,6 +3,8 @@ Tor Browser Bundle 3.5 -- Dec 17 2013
    * Update Tor to 0.2.4.19
    * Update Tor Launcher to 0.2.4.2
      * Bug 10382: Fix a Tor Launcher hang on TBB exit
+   * Update Torbutton to 1.6.5.2
+     * Misc: Switch update download URL back to download-easy
 
 Tor Browser Bundle 3.5rc1 -- Dec 12 2013
  * All Platforms
