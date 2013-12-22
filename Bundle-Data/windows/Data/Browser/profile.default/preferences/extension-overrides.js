@@ -17,14 +17,14 @@ pref("extensions.https_everywhere.toolbar_hint_shown", true);
 
 # NoScript Preferences:
 pref("capability.policy.maonoscript.javascript.enabled", "allAccess");
-pref("capability.policy.maonoscript.sites", "addons.mozilla.org about: about:addons about:blank about:blocked about:certerror about:config about:crashes about:credits about:home about:neterror about:plugins about:privatebrowsing about:sessionrestore chrome: resource:");
+pref("capability.policy.maonoscript.sites", "about: chrome: resource:");
 pref("noscript.ABE.enabled", false);
 pref("noscript.ABE.notify", false);
 pref("noscript.ABE.wanIpAsLocal", false);
 pref("noscript.autoReload", false);
 pref("noscript.confirmUnblock", false);
 pref("noscript.contentBlocker", true);
-pref("noscript.default", "about:blank about:credits addons.mozilla.org flashgot.net google.com gstatic.com googlesyndication.com informaction.com yahoo.com yimg.com maone.net noscript.net hotmail.com msn.com passport.com passport.net passportimages.com live.com");
+pref("noscript.default", "about: chrome: resource:");
 pref("noscript.firstRunRedirection", false);
 pref("noscript.global", true);
 pref("noscript.gtemp", "");
