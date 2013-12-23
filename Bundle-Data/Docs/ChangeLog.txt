@@ -1,3 +1,13 @@
+Tor Browser Bundle 3.5.1 -- Dec 27 2013
+ * All Platforms
+   * Bug 10447: Remove SocksListenAddress to allow multiple socks ports.
+   * Bug 10464: Remove addons.mozilla.org from NoScript whitelist
+   * Update Torbutton to 1.6.5.3
+     * Bug 9486: Clear NoScript Temporary Permissions on New Identity
+   * Update Tor to 0.2.4.20
+ * Windows
+   * Bug 9259: Enable Accessibility support in Firefox build
+
 Tor Browser Bundle 3.5 -- Dec 17 2013
  * All Platforms
    * Update Tor to 0.2.4.19
