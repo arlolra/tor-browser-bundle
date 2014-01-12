@@ -27,6 +27,7 @@ files:
 - "tor-browser-win32-gbuilt.zip"
 - "tor-win32-gbuilt.zip"
 - "pluggable-transports-win32-gbuilt.zip"
+- "torrc-defaults-appendix-windows"
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
@@ -105,6 +106,7 @@ script: |
   unzip ~/build/pluggable-transports-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
   cd ..
   #
   # Copy reproducibility info

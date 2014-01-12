@@ -30,6 +30,7 @@ files:
 - "tor-linux64-gbuilt.zip"
 - "pluggable-transports-linux32-gbuilt.zip"
 - "pluggable-transports-linux64-gbuilt.zip"
+- "torrc-defaults-appendix-linux"
 - "relativelink-src.zip"
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
@@ -103,6 +104,7 @@ script: |
   unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  cat ~/build/torrc-defaults-appendix-linux >> Data/Tor/torrc-defaults
   chmod 700 Data/Browser
   chmod 700 Data/Tor
   cd ..

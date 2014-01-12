@@ -25,6 +25,7 @@ files:
 - "tor-browser-mac32-gbuilt.zip"
 - "tor-mac32-gbuilt.zip"
 - "pluggable-transports-mac32-gbuilt.zip"
+- "torrc-defaults-appendix-mac"
 - "relativelink-src.zip"
 - "mac-skeleton.zip"
 - "mac-langpacks.zip"
@@ -102,6 +103,7 @@ script: |
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
   # Install a "tor" shim that sets the working directory. See #10030.
   mv Tor/tor Tor/tor.real
   cp ~/build/mac-tor.sh Tor/tor

@@ -53,6 +53,7 @@ $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./Rel
 cd ./Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+cp beta/windows/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-windows
 
 cd windows
 rm -f $GITIAN_DIR/inputs/windows-skeleton.zip

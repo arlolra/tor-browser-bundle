@@ -51,6 +51,7 @@ $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./Rel
 cd ./Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+cp beta/linux/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-linux
 
 cd linux
 rm -f $GITIAN_DIR/inputs/linux-skeleton.zip
