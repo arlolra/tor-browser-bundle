@@ -38,6 +38,7 @@ files:
 - "tbb-docs.zip"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
