@@ -101,10 +101,12 @@ script: |
   cd tor-browser
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
-  unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
-  cat ~/build/torrc-defaults-appendix-linux >> Data/Tor/torrc-defaults
+  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+    unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
+    cat ~/build/torrc-defaults-appendix-linux >> Data/Tor/torrc-defaults
+  fi
   chmod 700 Data/Browser
   chmod 700 Data/Tor
   cd ..

@@ -1,4 +1,5 @@
 TORBROWSER_VERSION=3.6-beta-1
+TORBROWSER_VERSION_SPECIAL=beta
 BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
 
 VERIFY_TAGS=1
