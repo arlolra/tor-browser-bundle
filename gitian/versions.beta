@@ -1,0 +1,85 @@
+TORBROWSER_VERSION=3.5.1
+BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
+
+VERIFY_TAGS=1
+
+TORBROWSER_TAG=tor-browser-24.2.0esr-3.5.1-build1
+TOR_TAG=tor-0.2.4.20
+OPENSSL_TAG=openssl-101e-no-gmt-time-v1
+TORLAUNCHER_TAG=0.2.4.2
+TORBUTTON_TAG=1.6.5.3
+HTTPSE_TAG=3.4.4tbb
+NSIS_TAG=v0.1
+ZLIB_TAG=v1.2.8
+LIBEVENT_TAG=release-2.0.21-stable
+MINGW_REV=6184
+PYPTLIB_TAG=pyptlib-0.0.4
+OBFSPROXY_TAG=obfsproxy-0.2.3
+FLASHPROXY_TAG=1.4
+
+GITIAN_TAG=tor-browser-builder-3.0-4
+
+# OPENSSL_VER=1.0.1e
+FIREFOX_LANG_VER=24.2.0esr
+BINUTILS_VER=2.22
+GCC_VER=4.6.3
+PYTHON_VER=2.7.5
+PYCRYPTO_VER=2.6.1
+ARGPARSE_VER=1.2.1
+ZOPEINTERFACE_VER=4.0.5
+TWISTED_VER=13.1.0
+M2CRYPTO_VER=0.21.1
+PY2EXE_VER=0.6.9
+SETUPTOOLS_VER=1.4
+
+## File names for the source packages
+# OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
+NOSCRIPT_PACKAGE=noscript_security_suite-2.6.8.7-sm+fx+fn.xpi
+TOOLCHAIN4_PACKAGE=x86_64-apple-darwin10.tar.xz
+OSXSDK_PACKAGE=apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb
+MINGW_PACKAGE=mingw-w64-svn-snapshot.zip
+MSVCR100_PACKAGE=msvcr100.dll
+BINUTILS_PACKAGE=binutils-${BINUTILS_VER}.tar.bz2
+GCC_PACKAGE=gcc-${GCC_VER}.tar.bz2
+PYTHON_PACKAGE=Python-${PYTHON_VER}.tar.bz2
+PYTHON_MSI_PACKAGE=python-${PYTHON_VER}.msi
+PYCRYPTO_PACKAGE=pycrypto-${PYCRYPTO_VER}.tar.gz
+ARGPARSE_PACKAGE=argparse-${ARGPARSE_VER}.tar.gz
+ZOPEINTERFACE_PACKAGE=zope.interface-${ZOPEINTERFACE_VER}.zip
+TWISTED_PACKAGE=Twisted-${TWISTED_VER}.tar.bz2
+M2CRYPTO_PACKAGE=M2Crypto-${M2CRYPTO_VER}.tar.gz
+PY2EXE_PACKAGE=py2exe-${PY2EXE_VER}.win32-py2.7.exe
+SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
+
+# Hashes for packages with weak sigs or no sigs
+# OPENSSL_HASH=f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3
+OSXSDK_HASH=6602d8d5ddb371fbc02e2a5967d9bd0cd7358d46f9417753c8234b923f2ea6fc
+TOOLCHAIN4_HASH=7b71bfe02820409b994c5c33a7eab81a81c72550f5da85ff7af70da3da244645
+NOSCRIPT_HASH=5ac1a5c727a5101fd7673ba48179a52ca1804149ed1b67e6172724606355440e
+MINGW_HASH=a5b03d0448a309341be4cf34c6ad3016d04c89952dca5243254b4d6c738b164f
+MSVCR100_HASH=1221a09484964a6f38af5e34ee292b9afefccb3dc6e55435fd3aaf7c235d9067
+PYCRYPTO_HASH=f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c
+ARGPARSE_HASH=ddaf4b0a618335a32b6664d4ae038a1de8fbada3b25033f9021510ed2b3941a4
+ZOPEINTERFACE_HASH=1a7c84716bbd9981915b64a81d8a3f076a5934a8c8df4224655469b3564940cc
+TWISTED_HASH=110e957dd8fc4c6eaba8abe4f0477e60b2873e3cf1c260325863fd2ef69341c6
+M2CRYPTO_HASH=25b94498505c2d800ee465db0cc1aff097b1615adc3ac042a1c85ceca264fc0a
+PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
+SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
+
+## Non-git package URLs
+# OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
+TOOLCHAIN4_URL=https://people.torproject.org/~mikeperry/mirrors/sources/${TOOLCHAIN4_PACKAGE}
+OSXSDK_URL=https://launchpad.net/~flosoft/+archive/cross-apple/+files/${OSXSDK_PACKAGE}
+BINUTILS_URL=https://ftp.gnu.org/gnu/binutils/${BINUTILS_PACKAGE}
+GCC_URL=https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/${GCC_PACKAGE}
+NOSCRIPT_URL=https://addons.cdn.mozilla.net/storage/public-staging/722/${NOSCRIPT_PACKAGE}
+PYTHON_URL=http://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_PACKAGE}
+PYTHON_MSI_URL=http://www.python.org/ftp/python/${PYTHON_VER}/${PYTHON_MSI_PACKAGE}
+PYCRYPTO_URL=https://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/${PYCRYPTO_PACKAGE}
+ARGPARSE_URL=https://argparse.googlecode.com/files/${ARGPARSE_PACKAGE}
+ZOPEINTERFACE_URL=https://pypi.python.org/packages/source/z/zope.interface/${ZOPEINTERFACE_PACKAGE}
+TWISTED_URL=https://pypi.python.org/packages/source/T/Twisted/${TWISTED_PACKAGE}
+# TWISTED_URL=https://twistedmatrix.com/Releases/Twisted/$(echo ${TWISTED_VER} | awk -F. '{print $1"."$2}')/${TWISTED_PACKAGE}
+M2CRYPTO_URL=https://pypi.python.org/packages/source/M/M2Crypto/${M2CRYPTO_PACKAGE}
+PY2EXE_URL=http://downloads.sourceforge.net/project/py2exe/py2exe/${PY2EXE_VER}/${PY2EXE_PACKAGE}
+SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS_PACKAGE}
