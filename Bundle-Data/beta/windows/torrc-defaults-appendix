@@ -21,9 +21,6 @@ ClientTransportPlugin obfs2,obfs3 exec Tor\PluggableTransports\obfsproxy managed
 
 ## flash proxy configuration
 #
-# LearnCircuitBuildTimeout 0
-# CircuitBuildTimeout 60
-#
 # # The flashproxy bridge address and port are ignored.
 # Bridge flashproxy 0.0.1.0:1
 
