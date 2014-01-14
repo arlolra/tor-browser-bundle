@@ -116,20 +116,20 @@ checkout_mingw() {
 # Get package files from mirror
 
 # Get+verify sigs that exist
-#for i in OPENSSL # OBFSPROXY
-#do
-#  PACKAGE="${i}_PACKAGE"
-#  URL="${MIRROR_URL}${!PACKAGE}"
-#  SUFFIX="asc"
-#  get "${!PACKAGE}" "$URL"
-#  get "${!PACKAGE}.$SUFFIX" "$URL.$SUFFIX"
-#
-#  if ! verify "${!PACKAGE}" "$WRAPPER_DIR/gpg/$i.gpg" $SUFFIX; then
-#    echo "$i: GPG signature is broken for ${URL}"
-#    mv "${!PACKAGE}" "${!PACKAGE}.badgpg"
-#    exit 1
-#  fi
-#done
+for i in OPENSSL # OBFSPROXY
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${MIRROR_URL}${!PACKAGE}"
+  SUFFIX="asc"
+  get "${!PACKAGE}" "$URL"
+  get "${!PACKAGE}.$SUFFIX" "$URL.$SUFFIX"
+
+  if ! verify "${!PACKAGE}" "$WRAPPER_DIR/gpg/$i.gpg" $SUFFIX; then
+    echo "$i: GPG signature is broken for ${URL}"
+    mv "${!PACKAGE}" "${!PACKAGE}.badgpg"
+    exit 1
+  fi
+done
 
 for i in BINUTILS GCC PYTHON
 do
@@ -164,7 +164,7 @@ done
 # TOOLCHAIN4 each time. Rely only on SHA256 for now..
 mkdir -p verify
 cd verify
-for i in OSXSDK #OPENSSL
+for i in OPENSSL OSXSDK
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
@@ -200,7 +200,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 # OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -236,6 +236,7 @@ done
 cd ..
 
 ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
+ln -sf "$OPENSSL_PACKAGE" openssl.tar.gz
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2
@@ -254,7 +255,6 @@ while read dir url tag; do
   update_git "$dir" "$url" "$tag"
 done << EOF
 tbb-windows-installer https://github.com/moba/tbb-windows-installer.git $NSIS_TAG
-openssl               https://github.com/nmathewson/openssl.git $OPENSSL_TAG
 zlib                  https://github.com/madler/zlib.git       $ZLIB_TAG
 libevent              https://github.com/libevent/libevent.git $LIBEVENT_TAG
 tor                   https://git.torproject.org/tor.git              $TOR_TAG

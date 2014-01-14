@@ -67,7 +67,6 @@ then
   GITIAN_TAG=refs/tags/$GITIAN_TAG
   TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
   TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
-  OPENSSL_TAG=refs/tags/$OPENSSL_TAG
   TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG
   TOR_TAG=refs/tags/$TOR_TAG
   HTTPSE_TAG=refs/tags/$HTTPSE_TAG
@@ -83,7 +82,7 @@ then
   echo "****** Starting Tor Component of Windows Bundle (1/3 for Windows) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG,zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
+  ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./tor-fail-win32.log.`date +%Y%m%d%H%M%S`

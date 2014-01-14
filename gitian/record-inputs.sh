@@ -24,6 +24,7 @@ cd $INPUTS_DIR
 rm -f bundle.inputs
 
 sha256sum $OSXSDK_PACKAGE >> bundle.inputs
+sha256sum $OPENSSL_PACKAGE >> bundle.inputs
 sha256sum $TOOLCHAIN4_PACKAGE >> bundle.inputs
 sha256sum mingw-w64-svn-snapshot.zip >> bundle.inputs
 echo >> bundle.inputs
@@ -43,7 +44,6 @@ then
   HTTPSE_TAG=refs/tags/$HTTPSE_TAG
   ZLIB_TAG=refs/tags/$ZLIB_TAG
   LIBEVENT_TAG=refs/tags/$LIBEVENT_TAG
-  OPENSSL_TAG=refs/tags/$OPENSSL_TAG
 fi
 
 echo "`cd zlib && git log --format=%H -1 $ZLIB_TAG` zlib.git" >> bundle.inputs
@@ -53,7 +53,6 @@ echo "`cd torbutton && git log --format=%H -1 $TORBUTTON_TAG` torbutton.git" >> 
 echo "`cd tor-launcher && git log --format=%H -1 $TORLAUNCHER_TAG` tor-launcher.git" >> bundle.inputs
 echo "`cd https-everywhere && git log --format=%H -1 $HTTPSE_TAG` https-everywhere.git" >> bundle.inputs
 echo "`cd tbb-windows-installer && git log --format=%H -1 $NSIS_TAG` tbb-windows-installer.git" >> bundle.inputs
-echo "`cd openssl && git log --format=%H -1 $OPENSSL_TAG` openssl.git" >> bundle.inputs
 echo "`cd $INPUTS_DIR && git log --format=%H -1` gitian-builder.git" >> bundle.inputs
 echo "`cd $WRAPPER_DIR && git log --format=%H -1` tor-browser-bundle.git" >> bundle.inputs
 

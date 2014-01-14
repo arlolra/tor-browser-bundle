@@ -22,10 +22,9 @@ remotes:
   "dir": "tor"
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
-- "url": "https://github.com/nmathewson/openssl.git"
-  "dir": "openssl"
 files:
 - "dzip.sh"
+- "openssl.tar.gz"
 script: |
   INSTDIR="$HOME/install"
   export LIBRARY_PATH="$INSTDIR/lib"
@@ -55,7 +54,8 @@ script: |
   cp $INSTDIR/libevent/lib/libevent-2.0.so.5 $INSTDIR/Tor/
   cd ..
   #
-  cd openssl
+  tar xzf openssl.tar.gz
+  cd openssl-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
   ./config -shared --prefix=$INSTDIR/openssl
