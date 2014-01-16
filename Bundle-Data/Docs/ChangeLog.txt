@@ -2,7 +2,6 @@ Tor Browser Bundle 3.5.1 -- Jan 14 2014
  * All Platforms
    * Bug 10447: Remove SocksListenAddress to allow multiple socks ports.
    * Bug 10464: Remove addons.mozilla.org from NoScript whitelist
-   * Bug 10383: Use accelerated NIST P224 and P256 curves from OpenSSL.
    * Update Torbutton to 1.6.5.4
      * Bug 9486: Clear NoScript Temporary Permissions on New Identity
      * Bug 10403: Include Arabic translations
