@@ -1,15 +1,14 @@
 TORBROWSER_VERSION=3.6-beta-1
-TORBROWSER_VERSION_SPECIAL=beta
-BUNDLE_LOCALES="de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
+BUNDLE_LOCALES="ar de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
+BUILD_PT_BUNDLES=1
 
 VERIFY_TAGS=1
 
 TORBROWSER_TAG=tor-browser-24.2.0esr-3.5.1-build1
 TOR_TAG=tor-0.2.4.20
-OPENSSL_TAG=openssl-101e-no-gmt-time-v1
-TORLAUNCHER_TAG=0.2.4.2
-TORBUTTON_TAG=1.6.5.3
-HTTPSE_TAG=3.4.4tbb
+TORLAUNCHER_TAG=0.2.4.3
+TORBUTTON_TAG=1.6.5.4
+HTTPSE_TAG=3.4.5
 NSIS_TAG=v0.1
 ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
@@ -20,7 +19,7 @@ FLASHPROXY_TAG=1.4
 
 GITIAN_TAG=tor-browser-builder-3.0-4
 
-# OPENSSL_VER=1.0.1e
+OPENSSL_VER=1.0.1f
 FIREFOX_LANG_VER=24.2.0esr
 BINUTILS_VER=2.22
 GCC_VER=4.6.3
@@ -34,8 +33,8 @@ PY2EXE_VER=0.6.9
 SETUPTOOLS_VER=1.4
 
 ## File names for the source packages
-# OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
-NOSCRIPT_PACKAGE=noscript_security_suite-2.6.8.7-sm+fx+fn.xpi
+OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
+NOSCRIPT_PACKAGE=noscript_security_suite-2.6.8.12-fn+sm+fx.xpi
 TOOLCHAIN4_PACKAGE=x86_64-apple-darwin10.tar.xz
 OSXSDK_PACKAGE=apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb
 MINGW_PACKAGE=mingw-w64-svn-snapshot.zip
@@ -53,10 +52,10 @@ PY2EXE_PACKAGE=py2exe-${PY2EXE_VER}.win32-py2.7.exe
 SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 
 # Hashes for packages with weak sigs or no sigs
-# OPENSSL_HASH=f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3
+OPENSSL_HASH=6cc2a80b17d64de6b7bac985745fdaba971d54ffd7d38d3556f998d7c0c9cb5a
 OSXSDK_HASH=6602d8d5ddb371fbc02e2a5967d9bd0cd7358d46f9417753c8234b923f2ea6fc
 TOOLCHAIN4_HASH=7b71bfe02820409b994c5c33a7eab81a81c72550f5da85ff7af70da3da244645
-NOSCRIPT_HASH=5ac1a5c727a5101fd7673ba48179a52ca1804149ed1b67e6172724606355440e
+NOSCRIPT_HASH=5a1a501dae3f1c6e82d9328ee7dea6d6b12552989199dc2d1b49a0d7001ad779
 MINGW_HASH=a5b03d0448a309341be4cf34c6ad3016d04c89952dca5243254b4d6c738b164f
 MSVCR100_HASH=1221a09484964a6f38af5e34ee292b9afefccb3dc6e55435fd3aaf7c235d9067
 PYCRYPTO_HASH=f2ce1e989b272cfcb677616763e0a2e7ec659effa67a88aa92b3a65528f60a3c
@@ -68,7 +67,7 @@ PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
 SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 
 ## Non-git package URLs
-# OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
+OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
 TOOLCHAIN4_URL=https://people.torproject.org/~mikeperry/mirrors/sources/${TOOLCHAIN4_PACKAGE}
 OSXSDK_URL=https://launchpad.net/~flosoft/+archive/cross-apple/+files/${OSXSDK_PACKAGE}
 BINUTILS_URL=https://ftp.gnu.org/gnu/binutils/${BINUTILS_PACKAGE}

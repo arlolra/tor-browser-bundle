@@ -99,13 +99,13 @@ script: |
   cd ..
   #
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
-  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+  if [ $BUILD_PT_BUNDLES ]; then
     unzip ~/build/pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
   fi
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
   unzip ~/build/tbb-docs.zip
-  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+  if [ $BUILD_PT_BUNDLES ]; then
     cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
   fi
   # Install a "tor" shim that sets the working directory. See #10030.

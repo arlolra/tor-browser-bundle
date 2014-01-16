@@ -103,7 +103,7 @@ script: |
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
-  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+  if [ $BUILD_PT_BUNDLES ]; then
     unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
     cat ~/build/torrc-defaults-appendix-linux >> Data/Tor/torrc-defaults
   fi

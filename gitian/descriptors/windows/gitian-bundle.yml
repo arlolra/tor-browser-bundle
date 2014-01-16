@@ -105,7 +105,7 @@ script: |
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   unzip ~/build/tbb-docs.zip
-  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+  if [ $BUILD_PT_BUNDLES ]; then
     unzip ~/build/pluggable-transports-win32-gbuilt.zip
     cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
   fi
