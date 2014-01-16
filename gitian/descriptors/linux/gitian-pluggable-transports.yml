@@ -1,0 +1,126 @@
+---
+name: "pluggable-transports-linux"
+suites:
+- "lucid"
+architectures:
+- "i386"
+- "amd64"
+packages: 
+- "git-core"
+- "unzip"
+- "zip"
+- "swig"
+- "python-setuptools"
+- "python-dev"
+- "faketime"
+- "hardening-wrapper"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://github.com/nmathewson/openssl.git"
+  "dir": "openssl"
+- "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
+  "dir": "pyptlib"
+- "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
+  "dir": "obfsproxy"
+- "url": "https://git.torproject.org/flashproxy.git"
+  "dir": "flashproxy"
+files:
+- "pycrypto.tar.gz"
+- "argparse.tar.gz"
+- "zope.interface.zip"
+- "twisted.tar.bz2"
+- "m2crypto.tar.gz"
+- "dzip.sh"
+script: |
+  INSTDIR="$HOME/install"
+  PTDIR="$INSTDIR/Tor/PluggableTransports"
+  export LIBRARY_PATH="$INSTDIR/lib"
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  export LC_ALL=C
+  umask 0022
+  #
+  # Config options for hardening-wrapper
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
+  #
+  mkdir -p $PTDIR
+  mkdir -p $INSTDIR/Debug/
+  #
+  cd pyptlib
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/pyptlib $PTDIR/
+  cd ..
+  #
+  tar xzf pycrypto.tar.gz
+  cd pycrypto-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/Crypto $PTDIR/
+  cd ..
+  #
+  tar xzf argparse.tar.gz
+  cd argparse-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/argparse.py $PTDIR/
+  cd ..
+  #
+  unzip zope.interface.zip
+  cd zope.interface-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/zope $PTDIR/
+  cd ..
+  #
+  tar xjf twisted.tar.bz2
+  cd Twisted-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/twisted $PTDIR/
+  cd ..
+  #
+  cd obfsproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/obfsproxy $PTDIR/
+  cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
+  mkdir -p $INSTDIR/Docs/Obfsproxy
+  cp -a {LICENSE,README} $INSTDIR/Docs/Obfsproxy
+  cd ..
+  #
+  cd openssl
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
+  ./config -shared --prefix=$INSTDIR/openssl
+  make
+  make install
+  cd ..
+  #
+  tar xzf m2crypto.tar.gz
+  cd M2Crypto-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build_ext --build-lib build --openssl $INSTDIR/openssl
+  python setup.py build --build-lib build
+  cp -a build/M2Crypto $PTDIR/
+  cd ..
+  #
+  cd flashproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  make dist DISTNAME=flashproxy-client
+  cp -a dist/flashproxy-client/{flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
+  mkdir -p $INSTDIR/Docs/FlashProxy
+  cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
+  cd ..
+  #
+  cd $INSTDIR
+  #
+  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/ Docs/
+  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-debug.zip Debug/
+  cp pluggable-transports-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
+  cp pluggable-transports-linux$GBUILD_BITS-debug.zip $OUTDIR/

@@ -11,6 +11,7 @@ packages:
 - "mingw-w64"
 - "nsis"
 - "faketime"
+- "python"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"
@@ -23,6 +24,8 @@ files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-mac32-gbuilt.zip"
 - "tor-mac32-gbuilt.zip"
+- "pluggable-transports-mac32-gbuilt.zip"
+- "torrc-defaults-appendix-mac"
 - "relativelink-src.zip"
 - "mac-skeleton.zip"
 - "mac-langpacks.zip"
@@ -32,8 +35,10 @@ files:
 - "bundle.inputs"
 - "versions"
 - "tbb-docs.zip"
+- "mac-tor.sh"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -94,9 +99,18 @@ script: |
   cd ..
   #
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
+  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+    unzip ~/build/pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
+  fi
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+    cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
+  fi
+  # Install a "tor" shim that sets the working directory. See #10030.
+  mv Tor/tor Tor/tor.real
+  cp ~/build/mac-tor.sh Tor/tor
   cd Contents/MacOS/
   unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
   cd ../../../

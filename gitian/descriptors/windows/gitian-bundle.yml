@@ -11,6 +11,7 @@ packages:
 - "mingw-w64"
 - "nsis"
 - "faketime"
+- "python"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/moba/tbb-windows-installer.git"
@@ -25,6 +26,8 @@ files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-win32-gbuilt.zip"
 - "tor-win32-gbuilt.zip"
+- "pluggable-transports-win32-gbuilt.zip"
+- "torrc-defaults-appendix-windows"
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
@@ -36,6 +39,7 @@ files:
 - "tbb-docs.zip"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -101,6 +105,10 @@ script: |
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+    unzip ~/build/pluggable-transports-win32-gbuilt.zip
+    cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
+  fi
   cd ..
   #
   # Copy reproducibility info

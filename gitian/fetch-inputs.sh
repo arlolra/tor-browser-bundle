@@ -4,6 +4,7 @@
 #
 
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
+MIRROR_URL_DCF=https://people.torproject.org/~dcf/mirrors/sources/
 set -e
 set -u
 umask 0022
@@ -131,11 +132,11 @@ do
   fi
 done
 
-for i in BINUTILS GCC PYTHON
+for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o "${i}" == "PYTHON_MSI" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -156,6 +157,22 @@ do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL}${!PACKAGE}"
   get "${!PACKAGE}" "${MIRROR_URL}${!PACKAGE}"
+done
+
+# XXX: Omit ARGPARSE because Google won't allow wget -N and because the
+# download seems to 404 about 50% of the time.
+for i in ARGPARSE
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${MIRROR_URL_DCF}${!PACKAGE}"
+  get "${!PACKAGE}" "${MIRROR_URL_DCF}${!PACKAGE}"
+done
+
+for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS
+do
+  URL="${i}_URL"
+  PACKAGE="${i}_PACKAGE"
+  get "${!PACKAGE}" "${!URL}"
 done
 
 # Verify packages with weak or no signatures via multipath downloads
@@ -200,7 +217,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -240,6 +257,14 @@ ln -sf "$OPENSSL_PACKAGE" openssl.tar.gz
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
 ln -sf "$PYTHON_PACKAGE" python.tar.bz2
+ln -sf "$PYTHON_MSI_PACKAGE" python.msi
+ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
+ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
+ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
+ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
+ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz
+ln -sf "$PY2EXE_PACKAGE" py2exe.exe
+ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
@@ -262,6 +287,9 @@ https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TA
 torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
 tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
+pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git
+obfsproxy             https://git.torproject.org/pluggable-transports/obfsproxy.git
+flashproxy            https://git.torproject.org/flashproxy.git
 EOF
 
 exit 0

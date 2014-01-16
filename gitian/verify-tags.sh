@@ -60,6 +60,9 @@ zlib                  zlib.gpg                  $ZLIB_TAG
 libevent              libevent.gpg              $LIBEVENT_TAG
 tor                   tor.gpg                   $TOR_TAG
 https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
+pyptlib               pyptlib.gpg               $PYPTLIB_TAG
+obfsproxy             obfsproxy.gpg             $OBFSPROXY_TAG
+flashproxy            flashproxy.gpg            $FLASHPROXY_TAG
 EOF
 
 cd "$INPUTS_DIR"

@@ -42,7 +42,9 @@ echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Windows\");" > $GITIAN_
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
-cp $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+cp -r $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
+cp $WRAPPER_DIR/gpg/ubuntu-wine.gpg $GITIAN_DIR/inputs/
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
@@ -51,6 +53,7 @@ $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./Rel
 cd ./Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+cp beta/windows/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-windows
 
 cd windows
 rm -f $GITIAN_DIR/inputs/windows-skeleton.zip
@@ -79,7 +82,7 @@ cd $GITIAN_DIR
 if [ ! -f $GITIAN_DIR/inputs/tor-win32-gbuilt.zip ];
 then
   echo 
-  echo "****** Starting Tor Component of Windows Bundle (1/3 for Windows) ******"
+  echo "****** Starting Tor Component of Windows Bundle (1/4 for Windows) ******"
   echo 
 
   ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/windows/gitian-tor.yml
@@ -93,14 +96,14 @@ then
   #cp -a result/tor-windows-res.yml $GITIAN_DIR/inputs/
 else
   echo 
-  echo "****** SKIPPING already built Tor Component of Windows Bundle (1/3 for Windows) ******"
+  echo "****** SKIPPING already built Tor Component of Windows Bundle (1/4 for Windows) ******"
   echo 
 fi
 
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-win32-gbuilt.zip ];
 then
   echo 
-  echo "****** Starting Torbrowser Component of Windows Bundle (2/3 for Windows) ******"
+  echo "****** Starting Torbrowser Component of Windows Bundle (2/4 for Windows) ******"
   echo 
 
   ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
@@ -114,14 +117,35 @@ then
   #cp -a result/torbrowser-windows-res.yml $GITIAN_DIR/inputs/
 else
   echo 
-  echo "****** SKIPPING already built Torbrowser Component of Windows Bundle (2/3 for Windows) ******"
+  echo "****** SKIPPING already built Torbrowser Component of Windows Bundle (2/4 for Windows) ******"
+  echo 
+fi
+
+if [ ! -f $GITIAN_DIR/inputs/pluggable-transports-win32-gbuilt.zip ];
+then
+  echo 
+  echo "****** Starting Pluggable Transports Component of Windows Bundle (3/4 for Windows) ******"
+  echo 
+
+  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG,pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG $DESCRIPTOR_DIR/windows/gitian-pluggable-transports.yml
+  if [ $? -ne 0 ];
+  then
+    #mv var/build.log ./pluggable-transports-fail-win32.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+
+  cp -a build/out/pluggable-transports-win32-gbuilt.zip $GITIAN_DIR/inputs/
+  #cp -a result/pluggable-transports-windows-res.yml $GITIAN_DIR/inputs/
+else
+  echo 
+  echo "****** SKIPPING already built Pluggable Transports Component of Windows Bundle (3/4 for Windows) ******"
   echo 
 fi
 
 if [ ! -f $GITIAN_DIR/inputs/bundle-windows.gbuilt ];
 then 
   echo 
-  echo "****** Starting Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
+  echo "****** Starting Bundling+Localization of Windows Bundle (4/4 for Windows) ******"
   echo 
   
   cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
@@ -139,7 +163,7 @@ then
   touch $GITIAN_DIR/inputs/bundle-windows.gbuilt
 else
   echo 
-  echo "****** SKIPPING Bundling+Localization of Windows Bundle (3/3 for Windows) ******"
+  echo "****** SKIPPING Bundling+Localization of Windows Bundle (4/4 for Windows) ******"
   echo 
 fi
 

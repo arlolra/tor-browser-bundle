@@ -2,6 +2,8 @@ all: clean prep build
 
 alpha: clean prep-alpha build-alpha
 
+beta: clean prep-beta build-beta
+
 build:
 	./mkbundle-linux.sh
 	./mkbundle-windows.sh
@@ -14,17 +16,29 @@ build-alpha:
 	./mkbundle-mac.sh versions.alpha
 	./hash-bundles.sh versions.alpha
 
+build-beta:
+	./mkbundle-linux.sh versions.beta
+	./mkbundle-windows.sh versions.beta
+	./mkbundle-mac.sh versions.beta
+	./hash-bundles.sh versions.beta
+
 sign:
 	torsocks ./upload-signature.sh versions
 
 sign-alpha:
 	torsocks ./upload-signature.sh versions.alpha
 
+sign-beta:
+	torsocks ./upload-signature.sh versions.beta
+
 match:
 	torsocks ./check-match.sh versions
 
 match-alpha:
 	torsocks ./check-match.sh versions.alpha
+
+match-beta:
+	torsocks ./check-match.sh versions.beta
 
 prep:
 	./check-prerequisites.sh
@@ -33,6 +47,10 @@ prep:
 prep-alpha:
 	./check-prerequisites.sh
 	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.alpha
+
+prep-beta:
+	./check-prerequisites.sh
+	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.beta
 
 clean:
 	rm -f ../../gitian-builder/inputs/*gbuilt*

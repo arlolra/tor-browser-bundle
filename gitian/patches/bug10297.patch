@@ -1,0 +1,55 @@
+From ad47e1a52072c2a4528e421a6a3bf9c7029f4501 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Thu, 5 Dec 2013 04:56:28 +0000
+Subject: [PATCH] Set CREATE_NO_WINDOW in tor_spawn_background.
+
+This flag prevents the creation of a console window popup on Windows. We
+need it for pluggable transport executables--otherwise you get blank
+console windows when you launch the 3.x browser bundle with transports
+enabled.
+
+http://msdn.microsoft.com/en-us/library/ms684863.aspx#CREATE_NO_WINDOW
+
+The browser bundles that used Vidalia used to set this flag when
+launching tor itself; it was apparently inherited by the pluggable
+transports launched by tor. In the 3.x bundles, tor is launched by some
+JavaScript code, which doesn't have the ability to set CREATE_NO_WINDOW.
+tor itself is now being compiled with the -mwindows option, so that it
+is a GUI application, not a console application, and doesn't show a
+console window in any case. This workaround doesn't work for pluggable
+transports, because they need to be able to write control messages to
+stdout.
+
+https://trac.torproject.org/projects/tor/ticket/9444#comment:30
+---
+ changes/bug10297  |    4 ++++
+ src/common/util.c |    2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+ create mode 100644 changes/bug10297
+
+diff --git a/changes/bug10297 b/changes/bug10297
+new file mode 100644
+index 0000000..4cdd80f
+--- /dev/null
++++ b/changes/bug10297
+@@ -0,0 +1,4 @@
++  o Minor features:
++    - Spawn background processes using the CREATE_NO_WINDOW flag on
++      Windows, in order to prevent a console window from appearing.
++      Resolves ticket 10297.
+diff --git a/src/common/util.c b/src/common/util.c
+index 5eb0f9a..252f6af 100644
+--- a/src/common/util.c
++++ b/src/common/util.c
+@@ -3685,7 +3685,7 @@ tor_spawn_background(const char *const filename, const char **argv,
+                  TRUE,          // handles are inherited
+   /*(TODO: set CREATE_NEW CONSOLE/PROCESS_GROUP to make GetExitCodeProcess()
+    * work?) */
+-                 0,             // creation flags
++                 CREATE_NO_WINDOW,             // creation flags
+                  (env==NULL) ? NULL : env->windows_environment_block,
+                  NULL,          // use parent's current directory
+                  &siStartInfo,  // STARTUPINFO pointer
+-- 
+1.7.9.5
+

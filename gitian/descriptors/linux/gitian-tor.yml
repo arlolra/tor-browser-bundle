@@ -23,6 +23,8 @@ remotes:
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
 files:
+- "bug10297.patch"
+- "bug5018.patch"
 - "dzip.sh"
 - "openssl.tar.gz"
 script: |
@@ -68,6 +70,12 @@ script: |
   chmod 700 $INSTDIR/Tor/*so*
   #
   cd tor
+  git update-index --refresh -q
+  export GIT_COMMITTER_NAME="nobody"
+  export GIT_COMMITTER_EMAIL="nobody@localhost"
+  export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
+  git am ~/build/bug10297.patch
+  git am ~/build/bug5018.patch
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh

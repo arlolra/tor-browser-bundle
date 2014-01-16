@@ -41,7 +41,8 @@ echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Linux\");" > $GITIAN_DI
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
-cp $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+cp -r $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
+cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
@@ -50,6 +51,7 @@ $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./Rel
 cd ./Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+cp beta/linux/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-linux
 
 cd linux
 rm -f $GITIAN_DIR/inputs/linux-skeleton.zip
@@ -78,7 +80,7 @@ cd $GITIAN_DIR
 if [ ! -f $GITIAN_DIR/inputs/tor-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-linux64-gbuilt.zip ];
 then
   echo 
-  echo "****** Starting Tor Component of Linux Bundle (1/3 for Linux) ******"
+  echo "****** Starting Tor Component of Linux Bundle (1/4 for Linux) ******"
   echo 
 
   ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
@@ -93,7 +95,7 @@ then
   #cp -a result/tor-linux-res.yml $GITIAN_DIR/inputs/
 else
   echo 
-  echo "****** SKIPPING already built Tor Component of Linux Bundle (1/3 for Linux) ******"
+  echo "****** SKIPPING already built Tor Component of Linux Bundle (1/4 for Linux) ******"
   echo 
 
 fi
@@ -102,7 +104,7 @@ fi
 if [ ! -f $GITIAN_DIR/inputs/tor-browser-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/tor-browser-linux64-gbuilt.zip ];
 then
   echo 
-  echo "****** Starting TorBrowser Component of Linux Bundle (2/3 for Linux) ******"
+  echo "****** Starting TorBrowser Component of Linux Bundle (2/4 for Linux) ******"
   echo 
 
   ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
@@ -117,14 +119,36 @@ then
   #cp -a result/torbrowser-linux-res.yml $GITIAN_DIR/inputs/
 else
   echo 
-  echo "****** SKIPPING already built TorBrowser Component of Linux Bundle (2/3 for Linux) ******"
+  echo "****** SKIPPING already built TorBrowser Component of Linux Bundle (2/4 for Linux) ******"
+  echo 
+fi
+
+if [ ! -f $GITIAN_DIR/inputs/pluggable-transports-linux32-gbuilt.zip -o ! -f $GITIAN_DIR/inputs/pluggable-transports-linux64-gbuilt.zip ];
+then
+  echo 
+  echo "****** Starting Pluggable Transports Component of Linux Bundle (3/4 for Linux) ******"
+  echo 
+
+  ./bin/gbuild -j $NUM_PROCS --commit openssl=$OPENSSL_TAG,pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG $DESCRIPTOR_DIR/linux/gitian-pluggable-transports.yml
+  if [ $? -ne 0 ];
+  then
+    #mv var/build.log ./pluggable-transports-fail-linux.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+  
+  cp -a build/out/pluggable-transports-linux*-gbuilt.zip $GITIAN_DIR/inputs/
+  cp -a build/out/pluggable-transports-linux*-debug.zip $GITIAN_DIR/inputs/
+  #cp -a result/pluggable-transports-linux-res.yml $GITIAN_DIR/inputs/
+else
+  echo 
+  echo "****** SKIPPING already built Pluggable Transports Component of Linux Bundle (3/4 for Linux) ******"
   echo 
 fi
 
 if [ ! -f $GITIAN_DIR/inputs/bundle-linux.gbuilt ];
 then 
   echo 
-  echo "****** Starting Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
+  echo "****** Starting Bundling+Localization of Linux Bundle (4/4 for Linux) ******"
   echo 
   
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
@@ -142,7 +166,7 @@ then
   touch $GITIAN_DIR/inputs/bundle-linux.gbuilt
 else
   echo 
-  echo "****** SKIPPING already built Bundling+Localization of Linux Bundle (3/3 for Linux) ******"
+  echo "****** SKIPPING already built Bundling+Localization of Linux Bundle (4/4 for Linux) ******"
   echo 
 fi 
 

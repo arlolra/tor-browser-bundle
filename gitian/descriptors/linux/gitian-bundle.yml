@@ -11,6 +11,7 @@ packages:
 - "zip"
 - "mingw-w64"
 - "faketime"
+- "python"
 - "rnv"
 - "xz-utils"
 reference_datetime: "2000-01-01 00:00:00"
@@ -27,6 +28,9 @@ files:
 - "tor-browser-linux64-gbuilt.zip"
 - "tor-linux32-gbuilt.zip"
 - "tor-linux64-gbuilt.zip"
+- "pluggable-transports-linux32-gbuilt.zip"
+- "pluggable-transports-linux64-gbuilt.zip"
+- "torrc-defaults-appendix-linux"
 - "relativelink-src.zip"
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
@@ -39,6 +43,7 @@ files:
 - "tbb-docs.zip"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -98,6 +103,10 @@ script: |
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  if [ "$TORBROWSER_VERSION_SPECIAL" == "beta" ]; then
+    unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
+    cat ~/build/torrc-defaults-appendix-linux >> Data/Tor/torrc-defaults
+  fi
   chmod 700 Data/Browser
   chmod 700 Data/Tor
   cd ..
