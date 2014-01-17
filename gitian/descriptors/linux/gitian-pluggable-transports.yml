@@ -16,8 +16,6 @@ packages:
 - "hardening-wrapper"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
-- "url": "https://github.com/nmathewson/openssl.git"
-  "dir": "openssl"
 - "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
   "dir": "pyptlib"
 - "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
@@ -25,6 +23,7 @@ remotes:
 - "url": "https://git.torproject.org/flashproxy.git"
   "dir": "flashproxy"
 files:
+- "openssl.tar.gz"
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
 - "zope.interface.zip"
@@ -94,7 +93,8 @@ script: |
   cp -a {LICENSE,README} $INSTDIR/Docs/Obfsproxy
   cd ..
   #
-  cd openssl
+  tar xzf openssl.tar.gz
+  cd openssl-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
   ./config -shared --prefix=$INSTDIR/openssl
