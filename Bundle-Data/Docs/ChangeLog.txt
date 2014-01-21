@@ -1,11 +1,11 @@
-Tor Browser Bundle 3.5.1 -- Jan 14 2014
+Tor Browser Bundle 3.5.1 -- Jan 22 2014
  * All Platforms
    * Bug 10447: Remove SocksListenAddress to allow multiple socks ports.
    * Bug 10464: Remove addons.mozilla.org from NoScript whitelist
-   * Update Torbutton to 1.6.5.4
+   * Update Torbutton to 1.6.5.5
      * Bug 9486: Clear NoScript Temporary Permissions on New Identity
      * Bug 10403: Include Arabic translations
-   * Update Tor Launcher to 0.2.4.2
+   * Update Tor Launcher to 0.2.4.3
      * Bug 10403: Include Arabic translations
    * Update Tor to 0.2.4.20
    * Update OpenSSL to 1.0.1f
