@@ -3,7 +3,7 @@ BUNDLE_LOCALES="ar de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
 
 VERIFY_TAGS=1
 
-TORBROWSER_TAG=tor-browser-24.3.0esr-3.5.2-build1
+TORBROWSER_TAG=tor-browser-24.3.0esr-3.5.2-build2
 TOR_TAG=tor-0.2.5.1-alpha
 TORLAUNCHER_TAG=0.2.4.4
 TORBUTTON_TAG=1.6.6.0
