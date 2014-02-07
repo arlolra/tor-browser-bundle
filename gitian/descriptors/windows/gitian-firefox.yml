@@ -164,6 +164,8 @@ script: |
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
+  cp -a /usr/i686-w64-mingw32/lib/libgcc_s_sjlj-1.dll $INSTDIR/Browser/
+  cp -a /usr/i686-w64-mingw32/lib/libstdc*dll $INSTDIR/Browser/
   cp -a ~/build/msvcr100.dll $INSTDIR/Browser/
   #
   # What the hell are these three bytes anyways?
