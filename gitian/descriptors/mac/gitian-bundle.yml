@@ -104,6 +104,7 @@ script: |
   fi
   cd TorBrowserBundle.app
   unzip ~/build/mac-skeleton.zip
+  sed -i -e "s/TORBROWSER_VERSION/$TORBROWSER_VERSION/" Contents/Info.plist
   unzip ~/build/tbb-docs.zip
   if [ $BUILD_PT_BUNDLES ]; then
     cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
