@@ -10,7 +10,10 @@ packages:
 - "zip"
 - "swig"
 - "p7zip-full"
+- "m4"
 - "mingw-w64"
+- "g++-mingw-w64"
+- "python-dev"
 - "faketime"
 - "libtool"
 reference_datetime: "2000-01-01 00:00:00"
@@ -21,8 +24,11 @@ remotes:
   "dir": "obfsproxy"
 - "url": "https://git.torproject.org/flashproxy.git"
   "dir": "flashproxy"
+- "url": "https://github.com/kpdyer/fteproxy.git"
+  "dir": "fteproxy"
 files:
 - "openssl.tar.gz"
+- "gmp.tar.bz2"
 - "setuptools.tar.gz"
 - "pycrypto.tar.gz"
 - "zope.interface.zip"
@@ -71,6 +77,18 @@ script: |
     rm -rf "$tmpdir"
   }
   #
+  #
+  tar xvf gmp.tar.bz2
+  cd gmp-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --prefix=$INSTDIR/gmp --host=i686-w64-mingw32 --enable-cxx --disable-static --enable-shared
+  make
+  make install
+  cp -an $INSTDIR/gmp/bin/*dll* $INSTDIR/Tor
+  cp -an $INSTDIR/gmp/lib/*dll* $INSTDIR/Tor
+  cd ..
+  #
+  #
   # Install a Wine new enough to have a fix for http://bugs.winehq.org/show_bug.cgi?id=29764;
   # otherwise Python run under Wine constantly crashes in _PyVerify_fd, which is
   # called by such common operations as io.open and os.fstat (anything involving
@@ -103,7 +121,7 @@ script: |
   mkdir -p build/bdist.win32/winexe/bundle-2.7/
   cp -a $INSTDIR/python/python27.dll build/bdist.win32/winexe/bundle-2.7/
   LD_PRELOAD= $INSTPYTHON setup.py py2exe
-  cp -a dist/gcc.exe dist/dllwrap.exe dist/swig.exe $WINEROOT/windows/
+  cp -a dist/gcc.exe dist/g++.exe dist/dllwrap.exe dist/swig.exe $WINEROOT/windows/
   cd ..
   #
   tar xzf setuptools.tar.gz
@@ -156,6 +174,7 @@ script: |
   cd obfsproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_py2exe.py py2exe
+  LD_PRELOAD= $INSTPYTHON setup.py install
   py2exe_zip_timestomp py2exe_bundle/dist/obfsproxy.zip
   cp -an py2exe_bundle/dist/{*.pyd,*.exe,*.zip} $PTDIR/
   mkdir -p $INSTDIR/Docs/Obfsproxy
@@ -186,6 +205,26 @@ script: |
   cp -an dist/flashproxy-client/{*.pyd,*.exe,*.zip} $PTDIR/
   mkdir -p $INSTDIR/Docs/FlashProxy
   cp {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
+  cd ..
+  #
+  cd fteproxy
+  cp $INSTDIR/gmp/bin/*dll* .
+  cp $INSTDIR/gmp/lib/*dll* .
+  ln -s $INSTDIR/gmp thirdparty/gmp
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  make win32
+  make thirdparty/re2/obj/libre2.a
+  LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --inplace
+  LD_PRELOAD= $INSTPYTHON setup.py py2exe
+  mkdir -p $PTDIR/fte
+  mkdir -p $PTDIR/fte/tests
+  cp -an dist/{*.pyd,*.exe,*.zip} $PTDIR/
+  cp -an fte/VERSION $PTDIR/fte
+  cp -ran fte/defs $PTDIR/fte
+  cp -ran fte/tests/dfas $PTDIR/fte/tests
+  cp -an thirdparty/gmp/bin/*.dll $PTDIR/
+  mkdir -p $INSTDIR/Docs/fteproxy
+  cp -an {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..
   #
   # http://bugs.winehq.org/show_bug.cgi?id=3591

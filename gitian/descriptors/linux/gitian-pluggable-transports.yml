@@ -10,6 +10,7 @@ packages:
 - "unzip"
 - "zip"
 - "swig"
+- "m4"
 - "python-setuptools"
 - "python-dev"
 - "faketime"
@@ -22,8 +23,11 @@ remotes:
   "dir": "obfsproxy"
 - "url": "https://git.torproject.org/flashproxy.git"
   "dir": "flashproxy"
+- "url": "https://github.com/kpdyer/fteproxy.git"
+  "dir": "fteproxy"
 files:
 - "openssl.tar.gz"
+- "gmp.tar.bz2"
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
 - "zope.interface.zip"
@@ -49,6 +53,15 @@ script: |
   #
   mkdir -p $PTDIR
   mkdir -p $INSTDIR/Debug/
+  #
+  tar xvf gmp.tar.bz2
+  cd gmp-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+  make
+  make install
+  cp -an $INSTDIR/gmp/lib/*.so* $INSTDIR/Tor
+  cd ..
   #
   cd pyptlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
@@ -116,6 +129,15 @@ script: |
   cp -a dist/flashproxy-client/{flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
   mkdir -p $INSTDIR/Docs/FlashProxy
   cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
+  cd ..
+  #
+  cd fteproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include" make
+  cp -a bin/fteproxy $PTDIR/
+  cp -ra fte $PTDIR/
+  mkdir -p $INSTDIR/Docs/fteproxy
+  cp -a {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..
   #
   cd $INSTDIR
