@@ -1,4 +1,9 @@
 
+## fteproxy configuration
+# Bridge fte bridges.fteproxy.org:8080
+
+ClientTransportPlugin fte exec PluggableTransports/fteproxy --managed
+
 ## obfsproxy configuration
 #
 # Bridge obfs3 83.212.101.2:42782 2ADFE7AA8D272C520D1FBFBF4E413F3A1B26313D
