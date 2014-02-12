@@ -1,3 +1,9 @@
+Tor Browser Bundle 3.5.2.1 -- Feb 14 2014
+ * All Platforms
+   * Bug 10895: Fix broken localized bundles
+ * Windows:
+   * Bug 10323: Remove unneeded gcc/libstdc++ libraries from dist
+
 Tor Browser Bundle 3.5.2 -- Feb 8 2014
  * All Platforms
    * Rebase Tor Browser to Firefox 24.3.0ESR
