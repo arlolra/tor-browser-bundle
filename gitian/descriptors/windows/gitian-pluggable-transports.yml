@@ -216,13 +216,13 @@ script: |
   make thirdparty/re2/obj/libre2.a
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --inplace
   LD_PRELOAD= $INSTPYTHON setup.py py2exe
+  py2exe_zip_timestomp dist/fteproxy.zip
   mkdir -p $PTDIR/fte
   mkdir -p $PTDIR/fte/tests
   cp -an dist/{*.pyd,*.exe,*.zip} $PTDIR/
   cp -an fte/VERSION $PTDIR/fte
   cp -ran fte/defs $PTDIR/fte
   cp -ran fte/tests/dfas $PTDIR/fte/tests
-  cp -an thirdparty/gmp/bin/*.dll $PTDIR/
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -an {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..
