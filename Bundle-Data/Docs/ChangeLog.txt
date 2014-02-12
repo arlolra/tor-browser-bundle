@@ -2,7 +2,7 @@ Tor Browser Bundle 3.5.2 -- Feb 8 2014
  * All Platforms
    * Rebase Tor Browser to Firefox 24.3.0ESR
    * Bug 10419: Block content window connections to localhost
-   * Update Torbutton to 1.6.0
+   * Update Torbutton to 1.6.6.0
      * Bug 10800: Prevent findbox exception and popup in New Identity
      * Bug 10640: Fix about:tor's update pointer position for RTL languages.
      * Bug 10095: Fix some cases where resolution is not a multiple of 200x100
