@@ -1,5 +1,7 @@
 all: clean prep build
 
+nightly: clean prep-nightly build-nightly
+
 alpha: clean prep-alpha build-alpha
 
 beta: clean prep-beta build-beta
@@ -9,6 +11,12 @@ build:
 	./mkbundle-windows.sh
 	./mkbundle-mac.sh
 	./hash-bundles.sh
+
+build-nightly:
+	./mkbundle-linux.sh versions.nightly
+	./mkbundle-windows.sh versions.nightly
+	./mkbundle-mac.sh versions.nightly
+	./hash-bundles.sh versions.nightly
 
 build-alpha:
 	./mkbundle-linux.sh versions.alpha
@@ -28,11 +36,17 @@ sign:
 sign-alpha:
 	torsocks ./upload-signature.sh versions.alpha
 
+sign-nightly:
+	./upload-signature.sh versions.nightly
+
 sign-beta:
 	torsocks ./upload-signature.sh versions.beta
 
 match:
 	torsocks ./check-match.sh versions
+
+match-nightly:
+	./check-match.sh versions.nightly
 
 match-alpha:
 	torsocks ./check-match.sh versions.alpha
@@ -44,9 +58,9 @@ prep:
 	./check-prerequisites.sh
 	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions
 
-prep-alpha:
+prep-nightly:
 	./check-prerequisites.sh
-	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.alpha
+	./fetch-inputs.sh ../../gitian-builder/inputs/ versions.nightly
 
 prep-beta:
 	./check-prerequisites.sh
