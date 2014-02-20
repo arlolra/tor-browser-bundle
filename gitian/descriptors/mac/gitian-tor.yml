@@ -23,6 +23,7 @@ remotes:
 - "url": "https://github.com/madler/zlib.git"
   "dir": "zlib"
 files:
+- "versions"
 - "openssl.tar.gz"
 - "bug10297.patch"
 - "bug5018.patch"
@@ -33,6 +34,7 @@ files:
 #- "apple-x86-odcctools_758.159-0flosoft11_i386.deb"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -90,8 +92,11 @@ script: |
   export GIT_COMMITTER_NAME="nobody"
   export GIT_COMMITTER_EMAIL="nobody@localhost"
   export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
-  git am ~/build/bug10297.patch
-  git am ~/build/bug5018.patch
+  if [ ${TOR_TAG:9} == "tor-0.2.4" ];
+  then
+    git am ~/build/bug10297.patch
+    git am ~/build/bug5018.patch
+  fi
   mkdir -p $OUTDIR/src
   git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh

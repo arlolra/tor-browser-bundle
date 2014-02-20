@@ -23,12 +23,14 @@ remotes:
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
 files:
+- "versions"
 - "bug10297.patch"
 - "bug5018.patch"
 - "dzip.sh"
 - "openssl.tar.gz"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -74,8 +76,11 @@ script: |
   export GIT_COMMITTER_NAME="nobody"
   export GIT_COMMITTER_EMAIL="nobody@localhost"
   export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
-  git am ~/build/bug10297.patch
-  git am ~/build/bug5018.patch
+  if [ ${TOR_TAG:9} == "tor-0.2.4" ];
+  then
+    git am ~/build/bug10297.patch
+    git am ~/build/bug5018.patch
+  fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
