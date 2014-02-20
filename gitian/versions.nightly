@@ -7,14 +7,14 @@ TORBROWSER_TAG=tor-browser-24.3.0esr-2
 TOR_TAG=master
 TORLAUNCHER_TAG=master
 TORBUTTON_TAG=master
-HTTPSE_TAG=master
+HTTPSE_TAG=3.0 # XXX: Master and 4.0 require python2.7
 NSIS_TAG=master
 ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
 MINGW_REV=6184
 PYPTLIB_TAG=master
 OBFSPROXY_TAG=master
-FLASHPROXY_TAG=1.4
+FLASHPROXY_TAG=1.4 # XXX: Archive and make targets changed in master...
 
 GITIAN_TAG=tor-browser-builder-3.0-4
 
