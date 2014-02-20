@@ -62,6 +62,10 @@ prep-nightly:
 	./check-prerequisites.sh
 	./fetch-inputs.sh ../../gitian-builder/inputs/ versions.nightly
 
+prep-alpha:
+	./check-prerequisites.sh
+	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.alpha
+
 prep-beta:
 	./check-prerequisites.sh
 	torsocks ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.beta
