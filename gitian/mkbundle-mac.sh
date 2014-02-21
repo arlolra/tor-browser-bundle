@@ -32,6 +32,11 @@ then
   export NUM_PROCS=2
 fi
 
+if [ -z "$VM_MEMORY" ];
+then
+  export VM_MEMORY=2000
+fi
+
 ./make-vms.sh
 
 cd $GITIAN_DIR
@@ -84,7 +89,7 @@ then
   echo "****** Starting Tor Component of Mac Bundle (1/4 for Mac) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./tor-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -105,7 +110,7 @@ then
   echo "****** Starting TorBrowser Component of Mac Bundle (2/4 for Mac) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -126,7 +131,7 @@ then
   echo "****** Starting Pluggable Transports Component of Mac Bundle (3/4 for Mac) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -150,7 +155,7 @@ then
   
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
   
-  ./bin/gbuild -j $NUM_PROCS --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`

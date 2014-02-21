@@ -31,9 +31,13 @@ QuickStart:
 
  To set the number of make processes and virtual CPUs to use inside the VMs
  to four (the default is two), use:
- 
+
  $ export NUM_PROCS=4
 
+ To set the amount of RAM to use inside the VMs to 4000 MiB (the default is
+ 2000 MiB), use:
+
+ $ export VM_MEMORY=4000
 
 Detailed Explanation of Scripts:
 
