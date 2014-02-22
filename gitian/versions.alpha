@@ -14,7 +14,7 @@ LIBEVENT_TAG=release-2.0.21-stable
 MINGW_REV=6184
 PYPTLIB_TAG=pyptlib-0.0.4
 OBFSPROXY_TAG=obfsproxy-0.2.3
-FLASHPROXY_TAG=1.4
+FLASHPROXY_TAG=1.6
 
 GITIAN_TAG=tor-browser-builder-3.0-4
 

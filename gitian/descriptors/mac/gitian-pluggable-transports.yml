@@ -136,7 +136,7 @@ script: |
   cd flashproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make dist DISTNAME=flashproxy-client
-  cp -a dist/flashproxy-client/{flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
+  cp -a dist/flashproxy-client/{flashproxy,flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
   mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/FlashProxy
   cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/TorBrowserBundle.app/Docs/FlashProxy
   cd ..

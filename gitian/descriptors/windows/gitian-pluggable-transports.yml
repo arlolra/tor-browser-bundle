@@ -182,10 +182,10 @@ script: |
   cd flashproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make dist-exe DISTNAME=flashproxy-client PYTHON="LD_PRELOAD= $INSTPYTHON"
-  py2exe_zip_timestomp dist/flashproxy-client/py2exe-flashproxy.zip
-  cp -an dist/flashproxy-client/{*.pyd,*.exe,*.zip} $PTDIR/
+  py2exe_zip_timestomp dist/flashproxy-client-win32/py2exe-flashproxy.zip
+  cp -an dist/flashproxy-client-win32/{*.pyd,*.exe,*.zip} $PTDIR/
   mkdir -p $INSTDIR/Docs/FlashProxy
-  cp {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
+  cp dist/flashproxy-client-win32/{doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
   #
   # http://bugs.winehq.org/show_bug.cgi?id=3591

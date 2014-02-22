@@ -14,7 +14,7 @@ LIBEVENT_TAG=release-2.0.21-stable
 MINGW_REV=6184
 PYPTLIB_TAG=master
 OBFSPROXY_TAG=master
-FLASHPROXY_TAG=1.4 # XXX: Archive and make targets changed in master...
+FLASHPROXY_TAG=master
 
 GITIAN_TAG=tor-browser-builder-3.0-4
 
