@@ -44,8 +44,19 @@ script: |
   export LC_ALL=C
   export CFLAGS="-mwindows"
   export LDFLAGS="-mwindows"
-  # This is correct only for kvm.
-  MIRROR_HOST=10.0.2.2
+
+  # We need at least Wine 1.5.29 which is not in Ubuntu's main repository (see
+  # below). Thus, we resort to a PPA and need therefore to determine the correct
+  # network interface depending on the virtualization we use.
+  ip=`hostname --all-ip-addresses | cut -d ' ' -f1 | cut -d. -f1-3`
+  if [ $ip = "10.0.3" ]; then
+    # LXC
+    MIRROR_HOST=10.0.3.1
+  else
+    # KVM
+    MIRROR_HOST=10.0.2.2
+  fi
+
   WINEROOT=$HOME/.wine/drive_c
   # XXX: Hardening options cause the exe's to crash.. not sure why
   #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
