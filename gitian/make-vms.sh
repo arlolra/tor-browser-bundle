@@ -29,11 +29,13 @@ build_and_test_vm() {
   then
     if [ "z$USE_LXC" = "z1" ];
     then
+      export LXC_SUITE=$dist
+      export LXC_ARCH=$arch
       ./bin/make-base-vm --suite $dist --lxc --arch $arch
     else
       ./bin/make-base-vm --suite $dist --arch $arch
     fi
-  
+
     make-clean-vm --suite $dist --arch $arch
     if [ $? -ne 0 ];
     then
