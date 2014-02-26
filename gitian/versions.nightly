@@ -17,7 +17,7 @@ OBFSPROXY_TAG=master
 FLASHPROXY_TAG=master
 LIBDMG_TAG=dfd5e5cc3dc1191e37d3c3a6118975afdd1d7014
 
-GITIAN_TAG=tor-browser-builder-3.0-4
+GITIAN_TAG=tor-browser-builder-3.x-5
 
 OPENSSL_VER=1.0.1f
 GMP_VER=5.1.3
