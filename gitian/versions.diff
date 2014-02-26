@@ -1,0 +1,45 @@
+diff --git a/gitian/versions.nightly b/gitian/versions.nightly
+index b9b5835..f3dfe9d 100755
+--- a/gitian/versions.nightly
++++ b/gitian/versions.nightly
+@@ -12,13 +12,14 @@ NSIS_TAG=v0.1
+ ZLIB_TAG=v1.2.8
+ LIBEVENT_TAG=release-2.0.21-stable
+ MINGW_REV=6184
+-PYPTLIB_TAG=pyptlib-0.0.4
+-OBFSPROXY_TAG=obfsproxy-0.2.3
++PYPTLIB_TAG=pyptlib-0.0.5
++OBFSPROXY_TAG=obfsproxy-0.2.4
+ FLASHPROXY_TAG=1.6
+ 
+ GITIAN_TAG=tor-browser-builder-3.0-4
+ 
+ OPENSSL_VER=1.0.1f
++GMP_VER=5.1.3
+ FIREFOX_LANG_VER=24.3.0esr
+ BINUTILS_VER=2.22
+ GCC_VER=4.6.3
+@@ -33,6 +34,7 @@ SETUPTOOLS_VER=1.4
+ 
+ ## File names for the source packages
+ OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
++GMP_PACKAGE=gmp-${GMP_VER}.tar.bz2
+ NOSCRIPT_PACKAGE=noscript_security_suite-2.6.8.13-fn+sm+fx.xpi
+ TOOLCHAIN4_PACKAGE=x86_64-apple-darwin10.tar.xz
+ OSXSDK_PACKAGE=apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb
+@@ -52,6 +54,7 @@ SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
+ 
+ # Hashes for packages with weak sigs or no sigs
+ OPENSSL_HASH=6cc2a80b17d64de6b7bac985745fdaba971d54ffd7d38d3556f998d7c0c9cb5a
++GMP_HASH=752079520b4690531171d0f4532e40f08600215feefede70b24fabdc6f1ab160
+ OSXSDK_HASH=6602d8d5ddb371fbc02e2a5967d9bd0cd7358d46f9417753c8234b923f2ea6fc
+ TOOLCHAIN4_HASH=7b71bfe02820409b994c5c33a7eab81a81c72550f5da85ff7af70da3da244645
+ NOSCRIPT_HASH=0d90f283ee9e3be5bb1ebc315fab12994ff5a15380bd3a2fdff62750286b4ea1
+@@ -67,6 +70,7 @@ SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
+ 
+ ## Non-git package URLs
+ OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
++GMP_URL=https://ftp.gnu.org/gnu/gmp/${GMP_PACKAGE}
+ TOOLCHAIN4_URL=https://people.torproject.org/~mikeperry/mirrors/sources/${TOOLCHAIN4_PACKAGE}
+ OSXSDK_URL=https://launchpad.net/~flosoft/+archive/cross-apple/+files/${OSXSDK_PACKAGE}
+ BINUTILS_URL=https://ftp.gnu.org/gnu/binutils/${BINUTILS_PACKAGE}

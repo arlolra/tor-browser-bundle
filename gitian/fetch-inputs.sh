@@ -292,6 +292,7 @@ pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.gi
 obfsproxy             https://git.torproject.org/pluggable-transports/obfsproxy.git
 flashproxy            https://git.torproject.org/flashproxy.git
 fteproxy              https://github.com/kpdyer/fteproxy.git
+libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG
 EOF
 
 exit 0

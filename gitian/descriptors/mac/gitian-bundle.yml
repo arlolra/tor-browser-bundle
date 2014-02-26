@@ -12,6 +12,11 @@ packages:
 - "nsis"
 - "faketime"
 - "python"
+- "hfsprogs"
+- "genisoimage"
+- "cmake"
+- "zlib1g-dev"
+- "libbz2-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"
@@ -20,6 +25,8 @@ remotes:
   "dir": "torbutton"
 - "url": "https://git.torproject.org/https-everywhere.git"
   "dir": "https-everywhere"
+- "url": "https://github.com/vasi/libdmg-hfsplus.git"
+  "dir": "libdmg-hfsplus"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-mac32-gbuilt.zip"
@@ -28,9 +35,11 @@ files:
 - "torrc-defaults-appendix-mac"
 - "relativelink-src.zip"
 - "mac-skeleton.zip"
+- "mac-dmg.zip"
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "dzip.sh"
+- "ddmg.sh"
 - "bare-version"
 - "bundle.inputs"
 - "versions"
@@ -46,12 +55,20 @@ script: |
   export TORBROWSER_VERSION=`cat bare-version`
   export LC_ALL=C
   umask 0022
+  if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
+    export TORBROWSER_APP="TorBrowserBundle"
+    export TORBROWSER_NAME="TorBrowserBundle"
+  else
+    export TORBROWSER_APP="TorBrowser"
+    export TORBROWSER_NAME="TorBrowserBundle"
+  fi
   # 
   mkdir -p $OUTDIR/
-  mkdir -p TorBrowserBundle.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org
-  mkdir -p TorBrowserBundle.app/Data/Browser/Caches
-  mkdir -p TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
-  mkdir -p TorBrowserBundle.app/Docs/sources
+  mkdir -p dmg
+  mkdir -p $TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p $TORBROWSER_NAME.app/Data/Browser/Caches
+  mkdir -p $TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+  mkdir -p $TORBROWSER_NAME.app/Docs/sources
   #
   cd tor-launcher
   make clean
@@ -62,7 +79,7 @@ script: |
   unzip ../*.xpi
   rm ../*.xpi
   ~/build/dzip.sh ../tor-launcher@torproject.org.xpi .
-  mv ../tor-launcher@torproject.org.xpi ../../../TorBrowserBundle.app/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi
+  mv ../tor-launcher@torproject.org.xpi ../../../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi
   cd ../../../
   #
   cd torbutton
@@ -74,7 +91,7 @@ script: |
   unzip ../*.xpi
   rm ../*.xpi
   ~/build/dzip.sh ../torbutton@torproject.org.xpi .
-  mv ../torbutton@torproject.org.xpi ../../../TorBrowserBundle.app/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
+  mv ../torbutton@torproject.org.xpi ../../../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
   cd ../../../
   #
   cd https-everywhere
@@ -82,11 +99,11 @@ script: |
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   rm -f .git/refs/heads/master
   ./makexpi.sh
-  cp ./pkg/*.xpi ../TorBrowserBundle.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cp ./pkg/*.xpi ../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
-  cp *.xpi ./TorBrowserBundle.app/Data/Browser/profile.default/extensions/
-  cd ./TorBrowserBundle.app/Data/Browser/profile.default/extensions/
+  cp *.xpi ./$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/
+  cd ./$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere@eff.org
   unzip ../https-everywhere@eff.org.xpi
@@ -95,14 +112,14 @@ script: |
   #
   unzip relativelink-src.zip
   cd RelativeLink
-  cp RelativeLinkOSX.sh ../TorBrowserBundle.app/Contents/MacOS/TorBrowserBundle
+  cp RelativeLinkOSX.sh ../$TORBROWSER_NAME.app/Contents/MacOS/TorBrowserBundle
   cd ..
   #
   unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
   if [ $BUILD_PT_BUNDLES ]; then
     unzip ~/build/pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
   fi
-  cd TorBrowserBundle.app
+  cd $TORBROWSER_NAME.app
   unzip ~/build/mac-skeleton.zip
   sed -i -e "s/TORBROWSER_VERSION/$TORBROWSER_VERSION/" Contents/Info.plist
   unzip ~/build/tbb-docs.zip
@@ -117,40 +134,54 @@ script: |
   cd ../../../
   #
   # Copy reproducibility info
-  cp versions TorBrowserBundle.app/Docs/sources/
-  cp bundle.inputs TorBrowserBundle.app/Docs/sources/bundle.inputs
+  cp versions $TORBROWSER_NAME.app/Docs/sources/
+  cp bundle.inputs $TORBROWSER_NAME.app/Docs/sources/bundle.inputs
   #
-  # FF24 puts the prefs in a different jar:
-  if [ -f TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/omni.ja ]; then
-     pushd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
-  else
-     pushd TorBrowserBundle.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
-  fi
+  # Set up DMG skeleton
+  cd libdmg-hfsplus
+  cmake CMakeLists.txt
+  cd dmg
+  make
+  cd ../../
+  cd dmg
+  unzip ~/build/mac-dmg.zip
+  cd ..
+  #
+  # FF24 puts the prefs in the browser jar:
+  pushd $TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   popd
-  # XXX: DMG plz
-  cp -a TorBrowserBundle.app TorBrowserBundle_en-US.app
-  ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip TorBrowserBundle_en-US.app
-  rm -rf TorBrowserBundle_en-US.app
+  #
+  if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
+   cp -a ~/build/$TORBROWSER_NAME.app ~/build/${TORBROWSER_NAME}_en-US.app
+    ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip ${TORBROWSER_NAME}_en-US.app
+   rm -rf ~/build/${TORBROWSER_NAME}_en-US.app
+  else
+   cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
+    ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.dmg ~/build/dmg
+   rm -rf ~/build/dmg/$TORBROWSER_APP.app
+  fi
+  mv $TORBROWSER_NAME.app ${TORBROWSER_NAME}_plain.app
   #
   unzip mac-langpacks.zip
   cd mac-langpacks
-  for i in *.xpi
+  for LANG in $BUNDLE_LOCALES
   do
-    LANG=`basename $i .xpi`
-    cp -a ../TorBrowserBundle.app ../TorBrowserBundle_$LANG.app
-    cp $i ../TorBrowserBundle_$LANG.app/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    xpi=$LANG.xpi
+    if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
+      DEST=${TORBROWSER_APP}_$LANG
+    else
+      DEST=$TORBROWSER_APP
+    fi
+    cp -a ../${TORBROWSER_NAME}_plain.app ~/build/dmg/$DEST.app
+    cp $xpi ~/build/dmg/$DEST.app/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    # FF24 puts the prefs in a different jar:
-    if [ -f TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/omni.ja ]; then
-       pushd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
-    else
-       pushd TorBrowserBundle_$LANG.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
-    fi
+    # FF24 puts the prefs in the browser jar:
+    pushd ~/build/dmg/$DEST.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
 
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
@@ -158,8 +189,15 @@ script: |
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     popd
 
-    ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip TorBrowserBundle_$LANG.app
-    rm -rf TorBrowserBundle_$LANG.app
+    if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
+       pushd ~/build/dmg/
+       ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip $DEST.app
+       rm -rf TorBrowserBundle_$LANG.app
+       popd
+    else
+       ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.dmg ~/build/dmg/
+       rm -rf ~/build/dmg/$DEST.app
+    fi
     cd mac-langpacks
   done 
   cd ..

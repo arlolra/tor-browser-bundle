@@ -62,6 +62,9 @@ cp mac-tor.sh $GITIAN_DIR/inputs/
 cd mac
 rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-skeleton.zip .
+cd ../mac.dmg
+rm -f $GITIAN_DIR/inputs/mac-dmg.zip
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-dmg.zip .
 
 cd $WRAPPER_DIR
 
@@ -155,7 +158,7 @@ then
   
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
   
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libdmg-hfsplus=$LIBDMG_TAG,https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -164,7 +167,7 @@ then
   
   #cp -a build/out/*.dmg $WRAPPER_DIR
   mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
-  cp -a build/out/*.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
+  cp -a build/out/* $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch $GITIAN_DIR/inputs/bundle-mac.gbuilt
 else
   echo 
