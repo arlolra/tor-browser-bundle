@@ -1,3 +1,7 @@
+## fteproxy configuration
+# Bridge fte bridges.fteproxy.org:8080
+
+ClientTransportPlugin fte exec Tor\PluggableTransports\fteproxy --managed
 
 ## obfsproxy configuration
 #

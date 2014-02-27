@@ -132,7 +132,7 @@ do
   fi
 done
 
-for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI
+for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
@@ -150,7 +150,6 @@ do
     exit 1
   fi
 done
-
 
 for i in TOOLCHAIN4 OSXSDK MSVCR100
 do
@@ -195,6 +194,7 @@ do
     exit 1
   fi
 done
+
 cd ..
 
 # NoScript and PDF.JS are magikal and special:
@@ -217,7 +217,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL
+for i in OSXSDK TOOLCHAIN4 NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -265,6 +265,7 @@ ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
 ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz
 ln -sf "$PY2EXE_PACKAGE" py2exe.exe
 ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
+ln -sf "$GMP_PACKAGE" gmp.tar.bz2
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
@@ -290,6 +291,7 @@ tor-browser           https://git.torproject.org/tor-browser.git          $TORBR
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git
 obfsproxy             https://git.torproject.org/pluggable-transports/obfsproxy.git
 flashproxy            https://git.torproject.org/flashproxy.git
+fteproxy              https://github.com/kpdyer/fteproxy.git
 EOF
 
 exit 0
