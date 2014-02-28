@@ -33,6 +33,7 @@ files:
 - "tor-mac32-gbuilt.zip"
 - "pluggable-transports-mac32-gbuilt.zip"
 - "torrc-defaults-appendix-mac"
+- "bridge_prefs.js"
 - "relativelink-src.zip"
 - "mac-skeleton.zip"
 - "mac-dmg.zip"
@@ -125,6 +126,7 @@ script: |
   unzip ~/build/tbb-docs.zip
   if [ $BUILD_PT_BUNDLES ]; then
     cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
+    cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
   fi
   # Install a "tor" shim that sets the working directory. See #10030.
   mv Tor/tor Tor/tor.real

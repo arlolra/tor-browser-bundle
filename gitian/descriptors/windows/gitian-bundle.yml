@@ -28,6 +28,7 @@ files:
 - "tor-win32-gbuilt.zip"
 - "pluggable-transports-win32-gbuilt.zip"
 - "torrc-defaults-appendix-windows"
+- "bridge_prefs.js"
 - "relativelink-src.zip"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
@@ -108,6 +109,7 @@ script: |
   if [ $BUILD_PT_BUNDLES ]; then
     unzip ~/build/pluggable-transports-win32-gbuilt.zip
     cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
+    cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
   fi
   cd ..
   #
