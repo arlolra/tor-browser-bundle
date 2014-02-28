@@ -189,6 +189,13 @@ fi
 mydir="`dirname "$myname"`"
 test -d "$mydir" && cd "$mydir"
 
+# This is a fix for an ibus issue on some Linux systems. See #9353 for more
+# details. The symlink needs to be created before we change HOME.
+if [ ! -d ".config/ibus" ]; then
+  mkdir -p .config/ibus
+  ln -nsf ~/.config/ibus/bus .config/ibus
+fi
+
 # If ${PWD} results in a zero length HOME, we can try something else...
 if [ ! "${PWD}" ]; then
 	# "hacking around some braindamage"
