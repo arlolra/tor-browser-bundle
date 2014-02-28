@@ -118,10 +118,12 @@ fi
 
 debug=0
 usage_message="usage: $0 [--debug]"
-if [ "$#" -eq 1 -a \( "x$1" = "x--debug" -o "x$1" = "x-debug" \) ]; then
+# !!! We may have more than one argument, changed -eq to -ge in if & elif clauses below
+if [ "$#" -ge 1 -a \( "x$1" = "x--debug" -o "x$1" = "x-debug" \) ]; then
 	debug=1
+	shift # pop the debug argument
 	printf "\nDebug enabled.\n\n"
-elif [ "$#" -eq 1 -a \( "x$1" = "x--help" -o "x$1" = "x-help" \) ]; then
+elif [ "$#" -ge 1 -a \( "x$1" = "x--help" -o "x$1" = "x-help" \) ]; then
 	echo "$usage_message"
 	exit 0
 fi
@@ -216,7 +218,9 @@ printf "\nLaunching Tor Browser Bundle for Linux in ${HOME}\n"
 cd "${HOME}"
 # XXX Someday we should pass whatever command-line arguments we got
 # (probably filenames or URLs) to Firefox.
-./Browser/firefox -no-remote -profile Data/Browser/profile.default
+# !!! Dash above comment! Now we pass command-line arguments we got (except --debug) to Firefox.
+# !!! Use at your own risk!
+./Browser/firefox -no-remote -profile Data/Browser/profile.default ${@}
 exitcode="$?"
 if [ "$exitcode" -ne 0 ]; then
 	complain "Tor Browser exited abnormally.  Exit code: $exitcode"
