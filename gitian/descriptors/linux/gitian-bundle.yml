@@ -134,11 +134,11 @@ script: |
   #
   unzip linux-langpacks.zip
   cd linux-langpacks
-  for i in *.xpi
+  for LANG in $BUNDLE_LOCALES
   do
-    LANG=`basename $i .xpi`
+    xpi=$LANG.xpi
     cp -a ../tor-browser ../tor-browser_$LANG
-    cp $i ../tor-browser_$LANG/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    cp $xpi ../tor-browser_$LANG/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
     # FF24 puts the prefs in a different jar:

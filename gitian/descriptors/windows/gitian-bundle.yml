@@ -131,10 +131,10 @@ script: |
   #
   unzip ../win32-langpacks.zip
   cd win32-langpacks
-  for i in *.xpi
+  for LANG in $BUNDLE_LOCALES
   do
-    LANG=`basename $i .xpi`
-    cp $i ../"Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    xpi=$LANG.xpi
+    cp $xpi ../"Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
     # FF24 puts the prefs in a different jar:
