@@ -1,5 +1,6 @@
 TORBROWSER_VERSION=4.0-alpha-1
 BUNDLE_LOCALES="ar de es-ES fa fr it ko nl pl pt-PT ru vi zh-CN"
+BUILD_PT_BUNDLES=1
 
 VERIFY_TAGS=1
 
