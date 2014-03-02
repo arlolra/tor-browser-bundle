@@ -5,24 +5,17 @@ export LC_ALL=C
 DMGFILE=$1
 shift
 
-# Attempt to normalize inode ordering..
-# XXX: the genisoimage -path-list argument seems broken
-mkdir -p ~/build/tmp/dmg
+find $@ -executable -exec chmod 700 {} \;
+find $@ ! -executable -exec chmod 600 {} \;
+
 cd $@
-for i in `find . | sort`
-do
-  if [ -d $i ];
-  then
-    mkdir -p ~/build/tmp/dmg/$i
-  else
-    cp --parents -d --preserve=all $i ~/build/tmp/dmg/
-  fi
-done
+find . -type f | sed -e 's/^\.\///' | sort | xargs -i echo "{}={}" > ~/build/filelist.txt
+find . -type l | sed -e 's/^\.\///' | sort | xargs -i echo "{}={}" >> ~/build/filelist.txt
 
-find ~/build/tmp/dmg -executable -exec chmod 700 {} \;
-find ~/build/tmp/dmg ! -executable -exec chmod 600 {} \;
+mkisofs -D -V "Tor Browser" -no-pad -R -apple -o ~/build/tbb-uncompressed.dmg -path-list ~/build/filelist.txt -graft-points -dir-mode 0700 -new-dir-mode 0700
 
-genisoimage -D -V "Tor Browser" -no-pad -R -apple -o tbb-uncompressed.dmg ~/build/tmp/dmg/
+cd ~/build
+
 ~/build/libdmg-hfsplus/dmg/dmg dmg tbb-uncompressed.dmg $DMGFILE
 rm tbb-uncompressed.dmg
-rm -rf ~/build/tmp/dmg/
+rm ~/build/filelist.txt

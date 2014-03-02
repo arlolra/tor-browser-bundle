@@ -41,6 +41,7 @@ files:
 - "noscript@noscript.net.xpi"
 - "dzip.sh"
 - "ddmg.sh"
+- "libdmg.patch"
 - "bare-version"
 - "bundle.inputs"
 - "versions"
@@ -141,6 +142,7 @@ script: |
   #
   # Set up DMG skeleton
   cd libdmg-hfsplus
+  git am ~/build/libdmg.patch
   cmake CMakeLists.txt
   cd dmg
   make
@@ -162,6 +164,10 @@ script: |
     ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip ${TORBROWSER_NAME}_en-US.app
    rm -rf ~/build/${TORBROWSER_NAME}_en-US.app
   else
+   # XXX: We need to insert these placeholders because otherwise mkisofs won't
+   # include these otherwise empty dirs:
+   touch ~/build/$TORBROWSER_NAME.app/Data/Browser/Caches/placeholder.txt
+   touch ~/build/$TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/defaults/preferences/placeholder.txt
    cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
     ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.dmg ~/build/dmg
    rm -rf ~/build/dmg/$TORBROWSER_APP.app
