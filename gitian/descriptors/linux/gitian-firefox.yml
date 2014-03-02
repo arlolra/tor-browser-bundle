@@ -100,6 +100,8 @@ script: |
   cd $INSTDIR
   for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/firefox Browser/plugin-container Browser/components/*.so # Browser/updater 
   do
+    # Build-ID is sometimes non-deterministic, and we use debuglink anyway
+    objcopy --remove-section=.note.gnu.build-id $LIB 
     objcopy --only-keep-debug $LIB Debug/$LIB
     strip $LIB
     objcopy --add-gnu-debuglink=./Debug/$LIB $LIB
