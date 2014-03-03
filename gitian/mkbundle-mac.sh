@@ -63,9 +63,12 @@ cp mac-tor.sh $GITIAN_DIR/inputs/
 cd mac
 rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-skeleton.zip .
-cd ../mac.dmg
-rm -f $GITIAN_DIR/inputs/mac-dmg.zip
-$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-dmg.zip .
+cd ../mac-desktop.dmg
+rm -f $GITIAN_DIR/inputs/dmg-desktop.tar.xz
+$WRAPPER_DIR/build-helpers/dtar.sh $GITIAN_DIR/inputs/dmg-desktop.tar.xz .
+cd ../mac-applications.dmg
+rm -f $GITIAN_DIR/inputs/dmg-applications.tar-gz
+$WRAPPER_DIR/build-helpers/dtar.sh $GITIAN_DIR/inputs/dmg-applications.tar.xz .
 
 cd $WRAPPER_DIR
 

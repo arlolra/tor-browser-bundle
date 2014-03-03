@@ -36,7 +36,8 @@ files:
 - "bridge_prefs.js"
 - "relativelink-src.zip"
 - "mac-skeleton.zip"
-- "mac-dmg.zip"
+- "dmg-applications.tar.xz"
+- "dmg-desktop.tar.xz"
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "dzip.sh"
@@ -148,7 +149,7 @@ script: |
   make
   cd ../../
   cd dmg
-  unzip ~/build/mac-dmg.zip
+  tar -Jxvf ~/build/dmg-applications.tar.xz # FIXME: Desktop or Application as dest?
   cd ..
   #
   # FF24 puts the prefs in the browser jar:
