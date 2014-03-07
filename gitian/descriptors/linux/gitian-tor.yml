@@ -26,6 +26,7 @@ files:
 - "versions"
 - "bug10297.patch"
 - "bug5018.patch"
+- "bug11069.patch"
 - "dzip.sh"
 - "openssl.tar.gz"
 script: |
@@ -80,6 +81,9 @@ script: |
   then
     git am ~/build/bug10297.patch
     git am ~/build/bug5018.patch
+  fi
+  if [ $BUILD_PT_BUNDLES ]; then
+    git am ~/build/bug11069.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src

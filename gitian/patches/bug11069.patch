@@ -1,0 +1,169 @@
+From 404cc6095e31ce47af9287cdda1e4d3ff449b387 Mon Sep 17 00:00:00 2001
+From: George Kadianakis <desnacked@riseup.net>
+Date: Fri, 28 Feb 2014 15:19:30 +0000
+Subject: [PATCH] Throw control port warning if we failed connecting to briges.
+
+---
+ changes/bug11069    |  4 ++++
+ src/or/connection.c | 41 ++++++++++++++++++++++++++++++++---------
+ src/or/connection.h |  2 ++
+ src/or/control.c    |  7 ++++---
+ src/or/entrynodes.c | 21 ---------------------
+ src/or/entrynodes.h |  1 -
+ 6 files changed, 42 insertions(+), 34 deletions(-)
+ create mode 100644 changes/bug11069
+
+diff --git a/changes/bug11069 b/changes/bug11069
+new file mode 100644
+index 0000000..5aa3085
+--- /dev/null
++++ b/changes/bug11069
+@@ -0,0 +1,4 @@
++  o Minor bugfixes (clients):
++    - Fix tor so that it raises a control port warning when we fail to
++      connect to all of our bridges. Fixes bug 11069; bugfix on
++      tor-0.2.1.2-alpha.
+diff --git a/src/or/connection.c b/src/or/connection.c
+index 77565ee..12f2b01 100644
+--- a/src/or/connection.c
++++ b/src/or/connection.c
+@@ -3129,15 +3129,6 @@ connection_handle_read_impl(connection_t *conn)
+   before = buf_datalen(conn->inbuf);
+   if (connection_read_to_buf(conn, &max_to_read, &socket_error) < 0) {
+     /* There's a read error; kill the connection.*/
+-    if (conn->type == CONN_TYPE_OR) {
+-      connection_or_notify_error(TO_OR_CONN(conn),
+-                                 socket_error != 0 ?
+-                                   errno_to_orconn_end_reason(socket_error) :
+-                                   END_OR_CONN_REASON_CONNRESET,
+-                                 socket_error != 0 ?
+-                                   tor_socket_strerror(socket_error) :
+-                                   "(unknown, errno was 0)");
+-    }
+     if (CONN_IS_EDGE(conn)) {
+       edge_connection_t *edge_conn = TO_EDGE_CONN(conn);
+       connection_edge_end_errno(edge_conn);
+@@ -3152,6 +3143,19 @@ connection_handle_read_impl(connection_t *conn)
+      * connection_or_notify_error() above.
+      */
+     connection_mark_for_close_internal(conn);
++
++    /* If it's an OR connection, notify the other components of its
++       failure. */
++    if (conn->type == CONN_TYPE_OR) {
++      connection_or_notify_error(TO_OR_CONN(conn),
++                                 socket_error != 0 ?
++                                   errno_to_orconn_end_reason(socket_error) :
++                                   END_OR_CONN_REASON_CONNRESET,
++                                 socket_error != 0 ?
++                                   tor_socket_strerror(socket_error) :
++                                   "(unknown, errno was 0)");
++    }
++
+     return -1;
+   }
+   n_read += buf_datalen(conn->inbuf) - before;
+@@ -4164,6 +4168,25 @@ connection_dir_get_by_purpose_and_resource(int purpose,
+   return NULL;
+ }
+ 
++/** Return 1 if there are any active OR connections. We use this to
++ * guess if we should tell the controller that we didn't manage to
++ * connect to any of our bridges. */
++int
++any_active_or_conns(void)
++{
++  smartlist_t *conns = get_connection_array();
++  SMARTLIST_FOREACH_BEGIN(conns, connection_t *, conn) {
++    if (conn->type == CONN_TYPE_OR &&
++        !conn->marked_for_close) {
++      log_debug(LD_DIR, "%s: Found an OR connection: %s",
++                __func__, conn->address);
++      return 1;
++    }
++  } SMARTLIST_FOREACH_END(conn);
++
++  return 0;
++}
++
+ /** Return 1 if <b>conn</b> is a listener conn, else return 0. */
+ int
+ connection_is_listener(connection_t *conn)
+diff --git a/src/or/connection.h b/src/or/connection.h
+index fa07650..47c70c5 100644
+--- a/src/or/connection.h
++++ b/src/or/connection.h
+@@ -187,6 +187,8 @@ connection_t *connection_get_by_type_state_rendquery(int type, int state,
+ dir_connection_t *connection_dir_get_by_purpose_and_resource(
+                                            int state, const char *resource);
+ 
++int any_active_or_conns(void);
++
+ #define connection_speaks_cells(conn) ((conn)->type == CONN_TYPE_OR)
+ int connection_is_listener(connection_t *conn);
+ int connection_state_is_open(connection_t *conn);
+diff --git a/src/or/control.c b/src/or/control.c
+index 05ff9a6..198fb18 100644
+--- a/src/or/control.c
++++ b/src/or/control.c
+@@ -4898,9 +4898,10 @@ control_event_bootstrap_problem, (const char *warn, int reason))
+   if (reason == END_OR_CONN_REASON_NO_ROUTE)
+     recommendation = "warn";
+ 
+-  if (get_options()->UseBridges &&
+-      !any_bridge_descriptors_known() &&
+-      !any_pending_bridge_descriptor_fetches())
++  /* If we are using bridges and all our OR connections are now
++     closed, it means that we totally failed to connect to our
++     bridges. Throw a warning. */
++  if (get_options()->UseBridges && !any_active_or_conns())
+     recommendation = "warn";
+ 
+   if (we_are_hibernating())
+diff --git a/src/or/entrynodes.c b/src/or/entrynodes.c
+index d463303..17c5b13 100644
+--- a/src/or/entrynodes.c
++++ b/src/or/entrynodes.c
+@@ -2213,27 +2213,6 @@ any_bridge_descriptors_known(void)
+   return choose_random_entry(NULL) != NULL;
+ }
+ 
+-/** Return 1 if there are any directory conns fetching bridge descriptors
+- * that aren't marked for close. We use this to guess if we should tell
+- * the controller that we have a problem. */
+-int
+-any_pending_bridge_descriptor_fetches(void)
+-{
+-  smartlist_t *conns = get_connection_array();
+-  SMARTLIST_FOREACH_BEGIN(conns, connection_t *, conn) {
+-    if (conn->type == CONN_TYPE_DIR &&
+-        conn->purpose == DIR_PURPOSE_FETCH_SERVERDESC &&
+-        TO_DIR_CONN(conn)->router_purpose == ROUTER_PURPOSE_BRIDGE &&
+-        !conn->marked_for_close &&
+-        conn->linked &&
+-        conn->linked_conn && !conn->linked_conn->marked_for_close) {
+-      log_debug(LD_DIR, "found one: %s", conn->address);
+-      return 1;
+-    }
+-  } SMARTLIST_FOREACH_END(conn);
+-  return 0;
+-}
+-
+ /** Return 1 if we have at least one descriptor for an entry guard
+  * (bridge or member of EntryNodes) and all descriptors we know are
+  * down. Else return 0. If <b>act</b> is 1, then mark the down guards
+diff --git a/src/or/entrynodes.h b/src/or/entrynodes.h
+index 772c666..73ac017 100644
+--- a/src/or/entrynodes.h
++++ b/src/or/entrynodes.h
+@@ -105,7 +105,6 @@ void retry_bridge_descriptor_fetch_directly(const char *digest);
+ void fetch_bridge_descriptors(const or_options_t *options, time_t now);
+ void learned_bridge_descriptor(routerinfo_t *ri, int from_cache);
+ int any_bridge_descriptors_known(void);
+-int any_pending_bridge_descriptor_fetches(void);
+ int entries_known_but_down(const or_options_t *options);
+ void entries_retry_all(const or_options_t *options);
+ 
+-- 
+1.8.1.2
+
