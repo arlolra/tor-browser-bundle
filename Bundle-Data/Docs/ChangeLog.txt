@@ -17,7 +17,9 @@ Tor Browser Bundle 3.6-beta-1 -- Mar 12 2014
    * Update Tor to 0.2.4.21
    * Backport Pending Tor Patches:
      * Bug 5018: Don't launch Pluggable Transport helpers if not in use
+     * Bug 9229: Eliminate 60 second stall during bootstrap with some PTs
      * Bug 11069: Detect and report Pluggable Transport bootstrap failures
+     * Bug 11156: Prevent spurious warning about missing pluggable transports 
    * Bug 10237: Disable the media cache to prevent disk leaks for videos
    * Bug 10703: Force the default charset to avoid locale fingerprinting
    * Bug 10104: Update gitian to fix LXC build issues (for non-KVM/VT builders)

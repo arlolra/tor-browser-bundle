@@ -1,14 +1,14 @@
-From e967595b931c92650250cc385ef7f6aeabd887f5 Mon Sep 17 00:00:00 2001
+From 3394daa34842a397561e65002a33c13355df651d Mon Sep 17 00:00:00 2001
 From: George Kadianakis <desnacked@riseup.net>
 Date: Thu, 28 Feb 2013 18:58:36 +0200
-Subject: [PATCH 1/3] Only launch transport proxies that provide useful
+Subject: [PATCH 1/4] Only launch transport proxies that provide useful
  transports.
 
 ---
- changes/bug5018     |    3 +++
- src/or/config.c     |   20 ++++++++++++++++----
- src/or/entrynodes.c |   23 +++++++++++++++++++++++
- src/or/entrynodes.h |    1 +
+ changes/bug5018     |  3 +++
+ src/or/config.c     | 20 ++++++++++++++++----
+ src/or/entrynodes.c | 23 +++++++++++++++++++++++
+ src/or/entrynodes.h |  1 +
  4 files changed, 43 insertions(+), 4 deletions(-)
  create mode 100644 changes/bug5018
 
@@ -22,7 +22,7 @@ index 0000000..c5c12ef
 +    - Don't launch pluggable transport proxies that contribute
 +      transports we don't need. Resolves ticket 5018.
 diff --git a/src/or/config.c b/src/or/config.c
-index 3984755..5f905d5 100644
+index ef02946..47510c5 100644
 --- a/src/or/config.c
 +++ b/src/or/config.c
 @@ -4242,7 +4242,8 @@ parse_client_transport_line(const char *line, int validate_only)
@@ -118,17 +118,17 @@ index 52b8dc0..b02cd48 100644
  
  double pathbias_get_close_success_count(entry_guard_t *guard);
 -- 
-1.7.9.5
+1.8.1.2
 
-From d222f04e3a4093efc7be19f43def04d9c0704653 Mon Sep 17 00:00:00 2001
+From 54f75531a9613ee7b964be93b0051bc75322e7e3 Mon Sep 17 00:00:00 2001
 From: David Fifield <david@bamsoftware.com>
 Date: Sat, 26 Oct 2013 14:34:48 -0700
-Subject: [PATCH 2/3] Simplify transport_is_needed.
+Subject: [PATCH 2/4] Simplify transport_is_needed.
 
 By Roger at
 https://trac.torproject.org/projects/tor/ticket/5018#comment:11.
 ---
- src/or/entrynodes.c |   14 ++++----------
+ src/or/entrynodes.c | 14 ++++----------
  1 file changed, 4 insertions(+), 10 deletions(-)
 
 diff --git a/src/or/entrynodes.c b/src/or/entrynodes.c
@@ -163,21 +163,21 @@ index 4062cee..98a01c5 100644
  
  /** Remember a new bridge at <b>addr</b>:<b>port</b>. If <b>digest</b>
 -- 
-1.7.9.5
+1.8.1.2
 
-From c1e396e66773813e051e8c96df86b585031a833b Mon Sep 17 00:00:00 2001
+From 936ff64974b00a898fa0e77e3fd6f9b2df57f448 Mon Sep 17 00:00:00 2001
 From: David Fifield <david@bamsoftware.com>
 Date: Sat, 26 Oct 2013 14:37:50 -0700
-Subject: [PATCH 3/3] Document that unneeded transports are ignored.
+Subject: [PATCH 3/4] Document that unneeded transports are ignored.
 
 Suggested by Roger in
 https://trac.torproject.org/projects/tor/ticket/5018#comment:11.
 ---
- src/or/config.c |    3 ++-
+ src/or/config.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/or/config.c b/src/or/config.c
-index 5f905d5..3ae0216 100644
+index 47510c5..435d981 100644
 --- a/src/or/config.c
 +++ b/src/or/config.c
 @@ -4220,7 +4220,8 @@ parse_bridge_line(const char *line, int validate_only)
@@ -191,5 +191,35 @@ index 5f905d5..3ae0216 100644
   * our internal transport list.
   * - If it's a managed proxy line, launch the managed proxy. */
 -- 
-1.7.9.5
+1.8.1.2
+
+From a4cf8514af1d2dbfd15857af83076577b7dcc4ee Mon Sep 17 00:00:00 2001
+From: George Kadianakis <desnacked@riseup.net>
+Date: Mon, 10 Mar 2014 22:05:31 +0000
+Subject: [PATCH 4/4]  Tone down the log message for when we don't need a PT
+ proxy.
+
+Conflicts:
+	changes/bug5018
+---
+ src/or/config.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/or/config.c b/src/or/config.c
+index 435d981..914c3de 100644
+--- a/src/or/config.c
++++ b/src/or/config.c
+@@ -4295,8 +4295,8 @@ parse_client_transport_line(const char *line, int validate_only)
+ 
+   if (is_managed) { /* managed */
+     if (!validate_only && is_useless_proxy) {
+-      log_warn(LD_GENERAL, "Pluggable transport proxy (%s) does not provide "
+-               "any needed transports and will not be launched.", line);
++      log_notice(LD_GENERAL, "Pluggable transport proxy (%s) does not provide "
++                 "any needed transports and will not be launched.", line);
+     }
+ 
+     /* If we are not just validating, use the rest of the line as the
+-- 
+1.8.1.2
 

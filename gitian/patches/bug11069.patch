@@ -1,16 +1,24 @@
-From 404cc6095e31ce47af9287cdda1e4d3ff449b387 Mon Sep 17 00:00:00 2001
+From 67c70b2566fc9bef4527fb8a0c24ce7d8c4d0647 Mon Sep 17 00:00:00 2001
 From: George Kadianakis <desnacked@riseup.net>
-Date: Fri, 28 Feb 2014 15:19:30 +0000
-Subject: [PATCH] Throw control port warning if we failed connecting to briges.
+Date: Mon, 10 Mar 2014 22:52:07 +0000
+Subject: [PATCH] Throw control port warning if we failed to connect to all our
+ bridges.
 
+Conflicts:
+	src/or/connection.c
+	src/or/control.c
+	src/or/control.h
+	src/test/test_extorport.c
 ---
- changes/bug11069    |  4 ++++
- src/or/connection.c | 41 ++++++++++++++++++++++++++++++++---------
- src/or/connection.h |  2 ++
- src/or/control.c    |  7 ++++---
- src/or/entrynodes.c | 21 ---------------------
- src/or/entrynodes.h |  1 -
- 6 files changed, 42 insertions(+), 34 deletions(-)
+ changes/bug11069       |  4 ++++
+ src/or/connection.c    | 25 +++++++++++++++++++++++++
+ src/or/connection.h    |  2 ++
+ src/or/connection_or.c |  8 +++++---
+ src/or/control.c       | 13 ++++++++-----
+ src/or/control.h       |  3 ++-
+ src/or/entrynodes.c    | 21 ---------------------
+ src/or/entrynodes.h    |  1 -
+ 8 files changed, 46 insertions(+), 31 deletions(-)
  create mode 100644 changes/bug11069
 
 diff --git a/changes/bug11069 b/changes/bug11069
@@ -24,57 +32,27 @@ index 0000000..5aa3085
 +      connect to all of our bridges. Fixes bug 11069; bugfix on
 +      tor-0.2.1.2-alpha.
 diff --git a/src/or/connection.c b/src/or/connection.c
-index 77565ee..12f2b01 100644
+index 4f74a1d..ba28d81 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
-@@ -3129,15 +3129,6 @@ connection_handle_read_impl(connection_t *conn)
-   before = buf_datalen(conn->inbuf);
-   if (connection_read_to_buf(conn, &max_to_read, &socket_error) < 0) {
-     /* There's a read error; kill the connection.*/
--    if (conn->type == CONN_TYPE_OR) {
--      connection_or_notify_error(TO_OR_CONN(conn),
--                                 socket_error != 0 ?
--                                   errno_to_orconn_end_reason(socket_error) :
--                                   END_OR_CONN_REASON_CONNRESET,
--                                 socket_error != 0 ?
--                                   tor_socket_strerror(socket_error) :
--                                   "(unknown, errno was 0)");
--    }
-     if (CONN_IS_EDGE(conn)) {
-       edge_connection_t *edge_conn = TO_EDGE_CONN(conn);
-       connection_edge_end_errno(edge_conn);
-@@ -3152,6 +3143,19 @@ connection_handle_read_impl(connection_t *conn)
-      * connection_or_notify_error() above.
-      */
-     connection_mark_for_close_internal(conn);
-+
-+    /* If it's an OR connection, notify the other components of its
-+       failure. */
-+    if (conn->type == CONN_TYPE_OR) {
-+      connection_or_notify_error(TO_OR_CONN(conn),
-+                                 socket_error != 0 ?
-+                                   errno_to_orconn_end_reason(socket_error) :
-+                                   END_OR_CONN_REASON_CONNRESET,
-+                                 socket_error != 0 ?
-+                                   tor_socket_strerror(socket_error) :
-+                                   "(unknown, errno was 0)");
-+    }
-+
-     return -1;
-   }
-   n_read += buf_datalen(conn->inbuf) - before;
-@@ -4164,6 +4168,25 @@ connection_dir_get_by_purpose_and_resource(int purpose,
+@@ -3846,6 +3846,31 @@ connection_get_by_type_purpose(int type, int purpose)
    return NULL;
  }
  
-+/** Return 1 if there are any active OR connections. We use this to
-+ * guess if we should tell the controller that we didn't manage to
-+ * connect to any of our bridges. */
++/** Return 1 if there are any active OR connections apart from
++ * <b>this_conn</b>.
++ *
++ * We use this to guess if we should tell the controller that we
++ * didn't manage to connect to any of our bridges. */
 +int
-+any_active_or_conns(void)
++any_other_active_or_conns(const or_connection_t *this_conn)
 +{
 +  smartlist_t *conns = get_connection_array();
 +  SMARTLIST_FOREACH_BEGIN(conns, connection_t *, conn) {
++    if (conn == TO_CONN(this_conn)) { /* don't consider this conn */
++      continue;
++    }
++
 +    if (conn->type == CONN_TYPE_OR &&
 +        !conn->marked_for_close) {
 +      log_debug(LD_DIR, "%s: Found an OR connection: %s",
@@ -90,23 +68,71 @@ index 77565ee..12f2b01 100644
  int
  connection_is_listener(connection_t *conn)
 diff --git a/src/or/connection.h b/src/or/connection.h
-index fa07650..47c70c5 100644
+index c78fe6e..9bd5f88 100644
 --- a/src/or/connection.h
 +++ b/src/or/connection.h
-@@ -187,6 +187,8 @@ connection_t *connection_get_by_type_state_rendquery(int type, int state,
+@@ -180,6 +180,8 @@ connection_t *connection_get_by_type_state_rendquery(int type, int state,
  dir_connection_t *connection_dir_get_by_purpose_and_resource(
                                             int state, const char *resource);
  
-+int any_active_or_conns(void);
++int any_other_active_or_conns(const or_connection_t *this_conn);
 +
  #define connection_speaks_cells(conn) ((conn)->type == CONN_TYPE_OR)
  int connection_is_listener(connection_t *conn);
  int connection_state_is_open(connection_t *conn);
+diff --git a/src/or/connection_or.c b/src/or/connection_or.c
+index 8e7cd9e..8684f18 100644
+--- a/src/or/connection_or.c
++++ b/src/or/connection_or.c
+@@ -645,7 +645,8 @@ connection_or_about_to_close(or_connection_t *or_conn)
+                                      reason);
+         if (!authdir_mode_tests_reachability(options))
+           control_event_bootstrap_problem(
+-                orconn_end_reason_to_control_string(reason), reason);
++                orconn_end_reason_to_control_string(reason),
++                reason, or_conn);
+       }
+     }
+   } else if (conn->hold_open_until_flushed) {
+@@ -1008,7 +1009,7 @@ connection_or_connect_failed(or_connection_t *conn,
+ {
+   control_event_or_conn_status(conn, OR_CONN_EVENT_FAILED, reason);
+   if (!authdir_mode_tests_reachability(get_options()))
+-    control_event_bootstrap_problem(msg, reason);
++    control_event_bootstrap_problem(msg, reason, conn);
+ }
+ 
+ /** <b>conn</b> got an error in connection_handle_read_impl() or
+@@ -1638,7 +1639,8 @@ connection_or_client_learned_peer_id(or_connection_t *conn,
+     if (!authdir_mode_tests_reachability(options))
+       control_event_bootstrap_problem(
+                                 "Unexpected identity in router certificate",
+-                                END_OR_CONN_REASON_OR_IDENTITY);
++                                END_OR_CONN_REASON_OR_IDENTITY,
++                                conn);
+     return -1;
+   }
+   if (authdir_mode_tests_reachability(options)) {
 diff --git a/src/or/control.c b/src/or/control.c
-index 05ff9a6..198fb18 100644
+index a88de12..cd2c55c 100644
 --- a/src/or/control.c
 +++ b/src/or/control.c
-@@ -4898,9 +4898,10 @@ control_event_bootstrap_problem, (const char *warn, int reason))
+@@ -4696,10 +4696,12 @@ control_event_bootstrap(bootstrap_status_t status, int progress)
+ 
+ /** Called when Tor has failed to make bootstrapping progress in a way
+  * that indicates a problem. <b>warn</b> gives a hint as to why, and
+- * <b>reason</b> provides an "or_conn_end_reason" tag.
++ * <b>reason</b> provides an "or_conn_end_reason" tag.  <b>or_conn</b>
++ * is the connection that caused this problem.
+  */
+ void
+-control_event_bootstrap_problem(const char *warn, int reason)
++control_event_bootstrap_problem(const char *warn, int reason,
++                                const or_connection_t *or_conn)
+ {
+   int status = bootstrap_percent;
+   const char *tag, *summary;
+@@ -4721,9 +4723,10 @@ control_event_bootstrap_problem(const char *warn, int reason)
    if (reason == END_OR_CONN_REASON_NO_ROUTE)
      recommendation = "warn";
  
@@ -116,15 +142,29 @@ index 05ff9a6..198fb18 100644
 +  /* If we are using bridges and all our OR connections are now
 +     closed, it means that we totally failed to connect to our
 +     bridges. Throw a warning. */
-+  if (get_options()->UseBridges && !any_active_or_conns())
++  if (get_options()->UseBridges && !any_other_active_or_conns(or_conn))
      recommendation = "warn";
  
    if (we_are_hibernating())
+diff --git a/src/or/control.h b/src/or/control.h
+index 61062da..1d90a90 100644
+--- a/src/or/control.h
++++ b/src/or/control.h
+@@ -85,7 +85,8 @@ void enable_control_logging(void);
+ void monitor_owning_controller_process(const char *process_spec);
+ 
+ void control_event_bootstrap(bootstrap_status_t status, int progress);
+-void control_event_bootstrap_problem(const char *warn, int reason);
++void control_event_bootstrap_problem(const char *warn, int reason,
++                                     const or_connection_t *or_conn);
+ 
+ void control_event_clients_seen(const char *controller_str);
+ 
 diff --git a/src/or/entrynodes.c b/src/or/entrynodes.c
-index d463303..17c5b13 100644
+index 2aa063c..b145c94 100644
 --- a/src/or/entrynodes.c
 +++ b/src/or/entrynodes.c
-@@ -2213,27 +2213,6 @@ any_bridge_descriptors_known(void)
+@@ -2134,27 +2134,6 @@ any_bridge_descriptors_known(void)
    return choose_random_entry(NULL) != NULL;
  }
  
@@ -153,10 +193,10 @@ index d463303..17c5b13 100644
   * (bridge or member of EntryNodes) and all descriptors we know are
   * down. Else return 0. If <b>act</b> is 1, then mark the down guards
 diff --git a/src/or/entrynodes.h b/src/or/entrynodes.h
-index 772c666..73ac017 100644
+index 52b8dc0..f6c07d9 100644
 --- a/src/or/entrynodes.h
 +++ b/src/or/entrynodes.h
-@@ -105,7 +105,6 @@ void retry_bridge_descriptor_fetch_directly(const char *digest);
+@@ -104,7 +104,6 @@ void retry_bridge_descriptor_fetch_directly(const char *digest);
  void fetch_bridge_descriptors(const or_options_t *options, time_t now);
  void learned_bridge_descriptor(routerinfo_t *ri, int from_cache);
  int any_bridge_descriptors_known(void);
