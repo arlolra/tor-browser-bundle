@@ -12,4 +12,5 @@ pref("extensions.torlauncher.default_bridge.obfs3.7", "obfs3 109.105.109.163:477
 
 pref("extensions.torlauncher.default_bridge.flashproxy.1", "flashproxy 0.0.1.0:1");
 
-pref("extensions.torlauncher.default_bridge.fte.1", "fte bridges.fteproxy.org:8080");
+pref("extensions.torlauncher.default_bridge.fte.1", "fte 131.252.210.150:8080 271EC1874E40FE65C145C6397AA34FFF7008E50E");
+pref("extensions.torlauncher.default_bridge.fte.2", "fte 79.125.3.12:8080 17AF9F9F4E57614A060B7221DCCEDB8BB546DD73");
