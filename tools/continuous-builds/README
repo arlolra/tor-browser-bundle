@@ -1,0 +1,14 @@
+Nightly builds can be produced and uploaded to a publishing host by
+running build-tbb.sh. The checkout-tbb.sh script can be used to check
+out the latest master before starting a build.
+
+The publishing host should handle uploaded tar file using the
+park-nightly.sh script through the command option in sshd's
+AuthorizedKeysFile.
+
+  command="[ $(hostname) = perdulce ] && ~/park-nightly.sh",no-pty ssh-rsa ...
+
+In order to not grow the disk usage too much on the publishing host,
+the following script can be run by cron:
+https://github.com/boklm/prune-old-builds.
+
