@@ -1,8 +1,9 @@
-Tor Browser Bundle 3.6-beta-1 -- Mar 12 2014
+Tor Browser Bundle 3.6-beta-1 -- Mar 17 2014
  * All Platforms
+   * Update Firefox to 24.4.0esr
    * Include Pluggable Transports by default:
      * Obfsproxy3 0.2.4, Flashproxy 1.6, and FTE 0.2.6 are now included
-   * Update Tor Launcher to 0.2.5.0
+   * Update Tor Launcher to 0.2.5.1
      * Bug 10418: Provide UI configuration for Pluggable Transports
      * Bug 10604: Allow Tor status & error messages to be translated
      * Bug 10894: Make bridge UI clear that helpdesk is a last resort for
