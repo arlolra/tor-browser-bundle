@@ -9,8 +9,6 @@ Tor Browser Bundle 3.5.3 -- Mar 19 2014
    * Bug 10237: Disable the media cache to prevent disk leaks for videos
    * Bug 10703: Force the default charset to avoid locale fingerprinting
    * Bug 10104: Update gitian to fix LXC build issues (for non-KVM/VT builders)
- * Mac:
-   * Bug 4271: Use DMG instead of ZIP for Mac packages
  * Linux:
    * Bug 9533: Fix keyboard input on Ubuntu 13.10
    * Bug 9896: Provide debug symbols for Tor Browser binary
