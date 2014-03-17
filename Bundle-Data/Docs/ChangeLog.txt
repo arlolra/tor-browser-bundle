@@ -1,3 +1,21 @@
+Tor Browser Bundle 3.5.3 -- Mar 19 2014
+ * All Platforms
+   * Update Firefox to 24.4.0esr
+   * Update Torbutton to 1.6.7.0:
+     * Bug 9901: Fix browser freeze due to content type sniffing
+     * Bug 10611: Add Swedish (sv) to extra locales to update
+   * Update NoScript to 2.6.8.17
+   * Update Tor to 0.2.4.21
+   * Bug 10237: Disable the media cache to prevent disk leaks for videos
+   * Bug 10703: Force the default charset to avoid locale fingerprinting
+   * Bug 10104: Update gitian to fix LXC build issues (for non-KVM/VT builders)
+ * Mac:
+   * Bug 4271: Use DMG instead of ZIP for Mac packages
+ * Linux:
+   * Bug 9533: Fix keyboard input on Ubuntu 13.10
+   * Bug 9896: Provide debug symbols for Tor Browser binary
+   * Bug 10472: Pass arguments to the browser from Linux startup script
+
 Tor Browser Bundle 3.6-beta-1 -- Mar 17 2014
  * All Platforms
    * Update Firefox to 24.4.0esr
