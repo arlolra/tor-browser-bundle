@@ -41,7 +41,7 @@ Tor Browser Bundle 3.6-beta-1 -- Mar 17 2014
    * Bug 10703: Force the default charset to avoid locale fingerprinting
    * Bug 10104: Update gitian to fix LXC build issues (for non-KVM/VT builders)
  * Mac:
-   * Bug 4271: Use DMG instead of ZIP for Mac packages
+   * Bug 4261: Use DMG instead of ZIP for Mac packages
  * Linux:
    * Bug 9353: Fix keyboard input on Ubuntu 13.10
    * Bug 9896: Provide debug symbols for Tor Browser binary
