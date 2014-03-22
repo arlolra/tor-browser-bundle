@@ -10,7 +10,7 @@ Tor Browser Bundle 3.5.3 -- Mar 19 2014
    * Bug 10703: Force the default charset to avoid locale fingerprinting
    * Bug 10104: Update gitian to fix LXC build issues (for non-KVM/VT builders)
  * Linux:
-   * Bug 9533: Fix keyboard input on Ubuntu 13.10
+   * Bug 9353: Fix keyboard input on Ubuntu 13.10
    * Bug 9896: Provide debug symbols for Tor Browser binary
    * Bug 10472: Pass arguments to the browser from Linux startup script
 
@@ -43,7 +43,7 @@ Tor Browser Bundle 3.6-beta-1 -- Mar 17 2014
  * Mac:
    * Bug 4271: Use DMG instead of ZIP for Mac packages
  * Linux:
-   * Bug 9533: Fix keyboard input on Ubuntu 13.10
+   * Bug 9353: Fix keyboard input on Ubuntu 13.10
    * Bug 9896: Provide debug symbols for Tor Browser binary
    * Bug 10472: Pass arguments to the browser from Linux startup script
 
