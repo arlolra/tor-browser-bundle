@@ -1,6 +1,6 @@
 #! /bin/sh
 # usage:
-# build-tbb.sh [TARGET [PUBLISH-HOST [PUBLISH-KEY [BUILDDIR [DESTDIR [N]]]]]]
+# build-tbb.sh [TARGET [PUBLISH-HOST [PUBLISH-SSH-KEY [BUILDDIR [DESTDIR [N]]]]]]
 #
 # Build TARGET in BUILDDIR, which will end up in DESTDIR
 # Try doing it N times.
@@ -8,13 +8,16 @@
 
 # TODO:
 # - if there's no new commits, don't build but make sure there's a symlink on perdulce
+# - copy build logs to publish-host, at least when failing the build
 
 TARGET=$1; [ -z "$TARGET" ] && TARGET=nightly
 PUBLISH_HOST=$2; [ -z "$PUBLISH_HOST" ] && PUBLISH_HOST=perdulce.torproject.org
-PUBLISH_KEY=$3; [ -z "$PUBLISH_KEY" ] && PUBLISH_KEY=~/.ssh/perdulce-upload
+PUBLISH_SSH_KEY=$3; [ -z "$PUBLISH_SSH_KEY" ] && PUBLISH_SSH_KEY=~/.ssh/perdulce-upload
 BUILDDIR=$4; [ -z "$BUILDDIR" ] && BUILDDIR=~/usr/src/tor-browser-bundle/gitian
 DESTDIR=$5; [ -z "$DESTDIR" ] && DESTDIR=$BUILDDIR/tbb-$TARGET
 N=$6; [ -z "$N" ] && N=16
+
+[ -z "$PGPKEYID" ] && PGPKEYID=0x984496E7
 
 logfile=$(date -u +%s).log
 
@@ -39,10 +42,10 @@ if [ $status = done ]; then
   mv $DESTDIR $NEWDESTDIR
   cd $NEWDESTDIR || exit 3
   sha256sum *.tar.xz *.zip *.exe > sha256sums.txt
-  gpg -a --clearsign --local-user 0x984496E7 sha256sums.txt || exit 2
+  gpg -a --clearsign --local-user $PGPKEYID sha256sums.txt || exit 2
   cd ..
   D=$(basename $NEWDESTDIR)
-  tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe | ssh -i $PUBLISH_KEY $PUBLISH_HOST | tee -a $logfile
+  tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
 fi
