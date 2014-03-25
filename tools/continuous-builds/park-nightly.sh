@@ -40,3 +40,5 @@ do_check $DSTDIR || exit 2
 [ -d $DIR/$DSTDIR ] && [ -e $DIR/$DSTDIR/tbb-nightly.stamp ] && rm -rf $DIR/$DSTDIR
 cd ..; mv $DSTDIR $DIR/ || exit 1
 [ -z "$V" ] || echo "All good, all good"
+
+[ -x ~/usr/bin/prune-old-builds ] && ~/usr/bin/prune-old-builds ~/public_html/builds
