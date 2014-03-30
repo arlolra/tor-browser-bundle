@@ -42,6 +42,7 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
+  export PYTHON=python2
   umask 0022
   #
   # Config options for hardening-wrapper
@@ -65,41 +66,41 @@ script: |
   #
   cd pyptlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
+  $PYTHON setup.py build --build-lib build
   cp -a build/pyptlib $PTDIR/
   cd ..
   #
   tar xzf pycrypto.tar.gz
   cd pycrypto-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
+  $PYTHON setup.py build --build-lib build
   cp -a build/Crypto $PTDIR/
   cd ..
   #
   tar xzf argparse.tar.gz
   cd argparse-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
+  $PYTHON setup.py build --build-lib build
   cp -a build/argparse.py $PTDIR/
   cd ..
   #
   unzip zope.interface.zip
   cd zope.interface-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
+  $PYTHON setup.py build --build-lib build
   cp -a build/zope $PTDIR/
   cd ..
   #
   tar xjf twisted.tar.bz2
   cd Twisted-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
+  $PYTHON setup.py build --build-lib build
   cp -a build/twisted $PTDIR/
   cd ..
   #
   cd obfsproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
+  $PYTHON setup.py build --build-lib build
   cp -a build/obfsproxy $PTDIR/
   cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
   mkdir -p $INSTDIR/Docs/Obfsproxy
@@ -118,8 +119,8 @@ script: |
   tar xzf m2crypto.tar.gz
   cd M2Crypto-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  python setup.py build_ext --build-lib build --openssl $INSTDIR/openssl
-  python setup.py build --build-lib build
+  $PYTHON setup.py build_ext --build-lib build --openssl $INSTDIR/openssl
+  $PYTHON setup.py build --build-lib build
   cp -a build/M2Crypto $PTDIR/
   cd ..
   #
