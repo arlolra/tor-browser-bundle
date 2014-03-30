@@ -1,0 +1,39 @@
+From 6770153d4ced726e54305ad38d14ea82df0d639e Mon Sep 17 00:00:00 2001
+From: Nick Mathewson <nickm@torproject.org>
+Date: Sat, 29 Mar 2014 21:49:32 -0700
+Subject: [PATCH] should_disable_dir_fetches() now returns 1 if
+ DisableNetwork==1
+
+This change prevents LD_BUG warnings and bootstrap failure messages
+when we try to do directory fetches when starting with
+DisableNetwork == 1, a consensus present, but no descriptors (or
+insufficient descriptors) yet.
+
+Fixes bug 11200 and bug 10405.  It's a bugfix on 0.2.3.9-alpha.
+Thanks to mcs for walking me through the repro instructions!
+---
+ src/or/networkstatus.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/src/or/networkstatus.c b/src/or/networkstatus.c
+index bcadc52..9a1824b 100644
+--- a/src/or/networkstatus.c
++++ b/src/or/networkstatus.c
+@@ -1394,6 +1394,14 @@ should_delay_dir_fetches(const or_options_t *options, const char **msg_out)
+     *msg_out = NULL;
+   }
+ 
++  if (options->DisableNetwork) {
++    if (msg_out) {
++      *msg_out = "DisableNetwork is set.";
++    }
++    log_info(LD_DIR, "Delaying dir fetches (DisableNetwork is set)");
++    return 1;
++  }
++
+   if (options->UseBridges) {
+     if (!any_bridge_descriptors_known()) {
+       if (msg_out) {
+-- 
+1.8.1.2
+

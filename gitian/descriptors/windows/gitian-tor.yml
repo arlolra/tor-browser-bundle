@@ -28,6 +28,7 @@ files:
 - "bug5018.patch"
 - "bug9229.patch"
 - "bug11156.patch"
+- "bug11200.patch"
 - "bug11069.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
@@ -102,7 +103,9 @@ script: |
       git am ~/build/bug5018.patch
       git am ~/build/bug11069.patch
       git am ~/build/bug11156.patch
-    fi  fi
+      git am ~/build/bug11200.patch
+    fi
+  fi
   mkdir -p $OUTDIR/src
   git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
