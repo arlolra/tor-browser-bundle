@@ -16,9 +16,10 @@ QuickStart:
  $ make match
 
  By default, the Makefile wraps input downloads in 'torsocks'. This is done
- to allow unofficial secret verifiers to remain secret by default. Removing
- the 'torsocks' from the 'prep' Makefile rule should be sufficient to avoid
- using Tor.
+ to allow unofficial secret verifiers to remain secret by default. To download
+ inputs without torsocks, run:
+
+ $ make TORSOCKS=
 
  By default, 'make' will also clear out any previous partial builds. See the
  "Partial Rebuilds" section for information on performing partial rebuilds
