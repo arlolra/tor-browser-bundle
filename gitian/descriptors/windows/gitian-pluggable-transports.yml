@@ -97,7 +97,6 @@ script: |
   make
   make install
   cp -an $INSTDIR/gmp/bin/*dll* $INSTDIR/Tor
-  cp -an $INSTDIR/gmp/lib/*dll* $INSTDIR/Tor
   cd ..
   #
   #
@@ -119,6 +118,7 @@ script: |
   # http://wiki.winehq.org/msiexec
   # /qn disables user interface; /i installs.
   LD_PRELOAD= msiexec /qn /i python.msi TARGETDIR=$INSTDIR/python
+  sed -i 's/self.dll_libraries = get_msvcr()/pass#self.dll_libraries = get_msvcr()/g' $INSTDIR/python/Lib/distutils/cygwinccompiler.py
   INSTPYTHON="wine $INSTDIR/python/python.exe"
   #
   7z x py2exe.exe
@@ -226,21 +226,20 @@ script: |
   cd ..
   #
   cd fteproxy
-  cp $INSTDIR/gmp/bin/*dll* .
-  cp $INSTDIR/gmp/lib/*dll* .
   ln -s $INSTDIR/gmp thirdparty/gmp
+  cp -a $INSTDIR/gmp/bin/libgmp-*.dll .
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  make win32
-  make thirdparty/re2/obj/libre2.a
-  LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --inplace
-  LD_PRELOAD= $INSTPYTHON setup.py py2exe
+  WINDOWS_BUILD=1 CROSS_COMPILE=1 make thirdparty/re2/obj/libre2.a
+  LD_PRELOAD= $INSTPYTHON setup_tbb.py build_ext -c mingw32
+  LD_PRELOAD= $INSTPYTHON setup_tbb.py py2exe
   py2exe_zip_timestomp dist/fteproxy.zip
-  mkdir -p $PTDIR/fte
-  mkdir -p $PTDIR/fte/tests
   cp -an dist/{*.pyd,*.exe,*.zip} $PTDIR/
-  cp -an fte/VERSION $PTDIR/fte
-  cp -ran fte/defs $PTDIR/fte
-  cp -ran fte/tests/dfas $PTDIR/fte/tests
+  mkdir -p $PTDIR/fte
+  cp -a fte/VERSION $PTDIR/fte
+  mkdir -p $PTDIR/fte/defs
+  cp -a fte/defs/*.json $PTDIR/fte/defs
+  mkdir -p $PTDIR/fte/tests/dfas
+  cp -a fte/tests/dfas/{*.dfa,*.regex} $PTDIR/fte/tests/dfas
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -an {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..

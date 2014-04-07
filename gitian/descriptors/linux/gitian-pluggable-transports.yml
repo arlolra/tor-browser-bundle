@@ -133,8 +133,9 @@ script: |
   cd ..
   #
   cd fteproxy
+  ln -s $INSTDIR/gmp thirdparty/gmp
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include" make
+  make
   cp -a bin/fteproxy $PTDIR/
   cp -ra fte $PTDIR/
   mkdir -p $INSTDIR/Docs/fteproxy
