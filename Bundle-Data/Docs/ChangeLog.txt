@@ -1,3 +1,7 @@
+Tor Browser Bundle 3.5.4 -- Apr 7 2014
+ * All Platforms
+   * Update OpenSSL to 1.0.1g
+
 Tor Browser Bundle 3.5.3 -- Mar 19 2014
  * All Platforms
    * Update Firefox to 24.4.0esr
