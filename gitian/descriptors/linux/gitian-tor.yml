@@ -28,8 +28,9 @@ files:
 - "bug5018.patch"
 - "bug9229.patch"
 - "bug11156.patch"
-- "bug11069.patch"
 - "bug11200.patch"
+- "bug11069.patch"
+- "bug9665.patch"
 - "dzip.sh"
 - "openssl.tar.gz"
 script: |
@@ -98,6 +99,7 @@ script: |
       git am ~/build/bug11156.patch
     fi
     git am ~/build/bug11200.patch
+    git am ~/build/bug9665.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src

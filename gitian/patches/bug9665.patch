@@ -1,0 +1,108 @@
+From 08ae53e400ff6fa2d8147aad440c38173c106cae Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?F=C3=A1bio=20J=2E=20Bertinatto?= <fabiojrb@gmail.com>
+Date: Tue, 5 Nov 2013 00:50:16 -0200
+Subject: [PATCH 1/3] Fix bug9665
+
+---
+ src/or/connection_or.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/or/connection_or.c b/src/or/connection_or.c
+index 04ad2cc..ba3ac00 100644
+--- a/src/or/connection_or.c
++++ b/src/or/connection_or.c
+@@ -1195,6 +1195,11 @@ connection_or_connect(const tor_addr_t *_addr, uint16_t port,
+                "your pluggable transport proxy stopped running.",
+                fmt_addrport(&TO_CONN(conn)->addr, TO_CONN(conn)->port),
+                transport_name, transport_name);
++
++      control_event_bootstrap_problem(
++                                "Can't connect to bridge",
++                                END_OR_CONN_REASON_NO_ROUTE);
++
+     } else {
+       log_warn(LD_GENERAL, "Tried to connect to '%s' through a proxy, but "
+                "the proxy address could not be found.",
+-- 
+1.8.1.2
+
+From 754a50592c412d95d2eb48038784d0ef725a7dc2 Mon Sep 17 00:00:00 2001
+From: Nick Mathewson <nickm@torproject.org>
+Date: Mon, 7 Apr 2014 13:41:07 -0400
+Subject: [PATCH 2/3] Forward-port bug9665 fix to work with our fix for 11069
+
+---
+ src/or/connection_or.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/or/connection_or.c b/src/or/connection_or.c
+index ba3ac00..01ff4dc 100644
+--- a/src/or/connection_or.c
++++ b/src/or/connection_or.c
+@@ -1198,7 +1198,8 @@ connection_or_connect(const tor_addr_t *_addr, uint16_t port,
+ 
+       control_event_bootstrap_problem(
+                                 "Can't connect to bridge",
+-                                END_OR_CONN_REASON_NO_ROUTE);
++                                END_OR_CONN_REASON_NO_ROUTE,
++                                conn);
+ 
+     } else {
+       log_warn(LD_GENERAL, "Tried to connect to '%s' through a proxy, but "
+-- 
+1.8.1.2
+
+From 90341b4852bf88f1fdf9fd150fa2f5c47f88b2cb Mon Sep 17 00:00:00 2001
+From: Nick Mathewson <nickm@torproject.org>
+Date: Mon, 7 Apr 2014 13:44:22 -0400
+Subject: [PATCH 3/3] For missing transport, say "PT_MISSING" not "NO_ROUTE"
+
+---
+ src/or/connection_or.c | 2 +-
+ src/or/or.h            | 3 ++-
+ src/or/reasons.c       | 2 ++
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/or/connection_or.c b/src/or/connection_or.c
+index 01ff4dc..6572a91 100644
+--- a/src/or/connection_or.c
++++ b/src/or/connection_or.c
+@@ -1198,7 +1198,7 @@ connection_or_connect(const tor_addr_t *_addr, uint16_t port,
+ 
+       control_event_bootstrap_problem(
+                                 "Can't connect to bridge",
+-                                END_OR_CONN_REASON_NO_ROUTE,
++                                END_OR_CONN_REASON_PT_MISSING,
+                                 conn);
+ 
+     } else {
+diff --git a/src/or/or.h b/src/or/or.h
+index 38ab176..1b35c1f 100644
+--- a/src/or/or.h
++++ b/src/or/or.h
+@@ -604,7 +604,8 @@ typedef enum {
+ #define END_OR_CONN_REASON_NO_ROUTE       6 /* no route to host/net */
+ #define END_OR_CONN_REASON_IO_ERROR       7 /* read/write error */
+ #define END_OR_CONN_REASON_RESOURCE_LIMIT 8 /* sockets, buffers, etc */
+-#define END_OR_CONN_REASON_MISC           9
++#define END_OR_CONN_REASON_PT_MISSING     9 /* PT failed or not available */
++#define END_OR_CONN_REASON_MISC           10
+ 
+ /* Reasons why we (or a remote OR) might close a stream. See tor-spec.txt for
+  * documentation of these.  The values must match. */
+diff --git a/src/or/reasons.c b/src/or/reasons.c
+index 0674474..750e89b 100644
+--- a/src/or/reasons.c
++++ b/src/or/reasons.c
+@@ -231,6 +231,8 @@ orconn_end_reason_to_control_string(int r)
+       return "RESOURCELIMIT";
+     case END_OR_CONN_REASON_MISC:
+       return "MISC";
++    case END_OR_CONN_REASON_PT_MISSING:
++      return "PT_MISSING";
+     case 0:
+       return "";
+     default:
+-- 
+1.8.1.2
+
