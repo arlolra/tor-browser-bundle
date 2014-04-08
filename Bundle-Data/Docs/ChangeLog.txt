@@ -1,3 +1,24 @@
+Tor Browser Bundle 3.6-beta-2 -- Apr 8 2014
+ * All Platforms
+   * Update OpenSSL to 1.0.1g
+   * Bug 9010: Add Turkish language support.
+   * Update obfs3 transport to 0.2.8
+   * Update fte transport to 0.2.12
+   * Update NoScript to 2.6.8.19
+   * Update Torbutton to 1.6.8.0
+     * Bug 11242: Fix improper "update needed" message after in-place upgrade.
+     * Bug 10398: Ease translation of about:tor page elements
+   * Update Tor Launcher to 0.2.5.2
+     * Bug 9665: Localize Tor's unreachable bridges bootstrap error
+   * Backport Pending Tor Patches:
+     * Bug 9665: Report a bootstrap error if all bridges are unreachable
+     * Bug 11200: Prevent spurious error message prior to enabling network.
+ * Linux:
+   * Bug 11190: Switch linux PT build process to python2
+   * Bug 10383: Enable NIST P224 and P256 accel support for 64bit builds.
+ * Windows:
+   * Bug 11286: Fix fte transport launch error
+
 Tor Browser Bundle 3.5.4 -- Apr 7 2014
  * All Platforms
    * Update OpenSSL to 1.0.1g
