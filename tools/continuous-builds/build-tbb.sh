@@ -45,7 +45,7 @@ if [ $status = done ]; then
   gpg -a --clearsign --local-user $PGPKEYID sha256sums.txt || exit 2
   cd ..
   D=$(basename $NEWDESTDIR)
-  tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
+  tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe $D/*.dmg | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
 fi
