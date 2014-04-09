@@ -2,7 +2,6 @@ Tor Browser Bundle 3.6-beta-2 -- Apr 8 2014
  * All Platforms
    * Update OpenSSL to 1.0.1g
    * Bug 9010: Add Turkish language support.
-   * Update obfs3 transport to 0.2.8
    * Update fte transport to 0.2.12
    * Update NoScript to 2.6.8.19
    * Update Torbutton to 1.6.8.0
