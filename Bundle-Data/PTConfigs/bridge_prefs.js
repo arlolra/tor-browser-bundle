@@ -16,8 +16,10 @@ pref("extensions.torlauncher.default_bridge.flashproxy.3", "flashproxy 0.0.1.0:3
 pref("extensions.torlauncher.default_bridge.flashproxy.4", "flashproxy 0.0.1.0:4");
 pref("extensions.torlauncher.default_bridge.flashproxy.5", "flashproxy 0.0.1.0:5");
 
-pref("extensions.torlauncher.default_bridge.fte.1", "fte 131.252.210.150:8080 271EC1874E40FE65C145C6397AA34FFF7008E50E");
-pref("extensions.torlauncher.default_bridge.fte.2", "fte 79.125.3.12:8080 17AF9F9F4E57614A060B7221DCCEDB8BB546DD73");
-pref("extensions.torlauncher.default_bridge.fte.3", "fte 128.105.214.161:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
-pref("extensions.torlauncher.default_bridge.fte.4", "fte 128.105.214.162:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
-pref("extensions.torlauncher.default_bridge.fte.5", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
+pref("extensions.torlauncher.default_bridge.fte.1", "fte 128.105.214.161:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
+pref("extensions.torlauncher.default_bridge.fte.2", "fte 128.105.214.162:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
+pref("extensions.torlauncher.default_bridge.fte.3", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
+// XXX: Fingerprints changed:
+//pref("extensions.torlauncher.default_bridge.fte.4", "fte 131.252.210.150:8080 271EC1874E40FE65C145C6397AA34FFF7008E50E");
+//pref("extensions.torlauncher.default_bridge.fte.5", "fte 79.125.3.12:8080 17AF9F9F4E57614A060B7221DCCEDB8BB546DD73");
+
