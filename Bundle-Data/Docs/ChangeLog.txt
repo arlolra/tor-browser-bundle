@@ -7,7 +7,7 @@ Tor Browser Bundle 3.6-beta-2 -- Apr 8 2014
    * Update Torbutton to 1.6.8.0
      * Bug 11242: Fix improper "update needed" message after in-place upgrade.
      * Bug 10398: Ease translation of about:tor page elements
-   * Update Tor Launcher to 0.2.5.2
+   * Update Tor Launcher to 0.2.5.3
      * Bug 9665: Localize Tor's unreachable bridges bootstrap error
    * Backport Pending Tor Patches:
      * Bug 9665: Report a bootstrap error if all bridges are unreachable
