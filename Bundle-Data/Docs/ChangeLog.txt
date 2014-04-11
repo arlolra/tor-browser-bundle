@@ -5,7 +5,7 @@ Tor Browser Bundle 3.6-beta-2 -- Apr 8 2014
    * Bug 9387 testing: Disable JS JIT, type inference, asmjs, and ion. 
    * Update fte transport to 0.2.12
    * Update NoScript to 2.6.8.19
-   * Update Torbutton to 1.6.8.0
+   * Update Torbutton to 1.6.8.1
      * Bug 11242: Fix improper "update needed" message after in-place upgrade.
      * Bug 10398: Ease translation of about:tor page elements
    * Update Tor Launcher to 0.2.5.3
