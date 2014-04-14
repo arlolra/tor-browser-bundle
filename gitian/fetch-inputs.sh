@@ -5,6 +5,7 @@
 
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
 MIRROR_URL_DCF=https://people.torproject.org/~dcf/mirrors/sources/
+MIRROR_URL_ASN=https://people.torproject.org/~asn/mirrors/sources/
 set -e
 set -u
 umask 0022
@@ -167,6 +168,13 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_DCF}${!PACKAGE}"
 done
 
+for i in PYYAML
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${MIRROR_URL_ASN}${!PACKAGE}"
+  get "${!PACKAGE}" "${MIRROR_URL_ASN}${!PACKAGE}"
+done
+
 for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS
 do
   URL="${i}_URL"
@@ -217,7 +225,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -260,6 +268,7 @@ ln -sf "$PYTHON_PACKAGE" python.tar.bz2
 ln -sf "$PYTHON_MSI_PACKAGE" python.msi
 ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
 ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
+ln -sf "$PYYAML_PACKAGE" pyyaml.tar.gz
 ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
 ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
 ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz

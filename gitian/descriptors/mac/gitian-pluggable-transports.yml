@@ -30,6 +30,7 @@ files:
 - "gmp.tar.bz2"
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
+- "pyyaml.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
 - "m2crypto.tar.gz"
@@ -101,6 +102,13 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/argparse.py $PTDIR/
+  cd ..
+  #
+  tar xzf pyyaml.tar.gz
+  cd PyYAML-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  $PYTHON setup.py build --build-lib build
+  cp -a build/yaml $PTDIR/
   cd ..
   #
   unzip zope.interface.zip
