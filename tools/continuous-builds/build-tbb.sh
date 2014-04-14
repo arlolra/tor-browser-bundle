@@ -3,7 +3,8 @@
 # build-tbb.sh [TARGET [PUBLISH-HOST [PUBLISH-SSH-KEY [BUILDDIR [DESTDIR [N]]]]]]
 #
 # Build TARGET in BUILDDIR, which will end up in DESTDIR
-# Try doing it N times.
+# Try building $TARGET one time and if that fails, try "build-$TARGET"
+# up to N-1 times.
 # Upload result to PUBLISH-HOST using SSH key PUBLISH-KEY.
 
 # TODO:
@@ -32,7 +33,7 @@ while [ $status != done ]; do
   killall qemu-system-i386 qemu-system-x86_64
   make $TARGET > build-$(date -u +%s).log && status=done
   printf "%s: Tried building $TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
-  TARGET=build-nightly
+  TARGET=build-$TARGET
   [ $n -ge $N ] && break
 done
 
@@ -45,7 +46,7 @@ if [ $status = done ]; then
   gpg -a --clearsign --local-user $PGPKEYID sha256sums.txt || exit 2
   cd ..
   D=$(basename $NEWDESTDIR)
-  tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
+  tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe $D/*.dmg | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
 fi
