@@ -107,7 +107,7 @@ script: |
   tar xzf pyyaml.tar.gz
   cd PyYAML-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  $PYTHON setup.py build --build-lib build
+  python setup.py build --build-lib build
   cp -a build/yaml $PTDIR/
   cd ..
   #
