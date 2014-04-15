@@ -5,11 +5,10 @@ suites:
 architectures:
 - "i386"
 - "amd64"
-packages: 
+packages:
 - "git-core"
 - "unzip"
 - "zip"
-- "mingw-w64"
 - "faketime"
 - "python"
 - "rnv"
@@ -52,13 +51,11 @@ script: |
   export LC_ALL=C
   export TORBROWSER_VERSION=`cat bare-version`
   umask 0022
-  # 
-  mkdir -p $OUTDIR/
-  mkdir -p tor-browser/Data/Browser/Caches
-  mkdir -p tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
-  mkdir -p tor-browser/Docs/sources/
   #
-  cp *.xpi tor-browser/Data/Browser/profile.default/extensions/
+  mkdir -p $OUTDIR/
+  mkdir -p tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tor-browser/Data/Browser/Caches
+  mkdir -p tor-browser/Docs/sources/
   #
   cd tor-launcher
   make clean
@@ -85,19 +82,19 @@ script: |
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   rm -f .git/refs/heads/master
   ./makexpi.sh
-  cp ./pkg/*.xpi ../tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cp pkg/*.xpi ../tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
-  mv tor-browser/Data/Browser/profile.default/extensions/noscript@noscript.net.xpi tor-browser/Data/Browser/profile.default/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
-  cd tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org/
+  cp *.xpi tor-browser/Data/Browser/profile.default/extensions/
+  cd tor-browser/Data/Browser/profile.default/extensions
+  mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
+  cd https-everywhere@eff.org/
   unzip ../https-everywhere@eff.org.xpi
   rm ../https-everywhere@eff.org.xpi
   cd ~/build/
   #
   unzip relativelink-src.zip
-  cd RelativeLink
-  cp RelativeLink.sh ../tor-browser/start-tor-browser
-  cd ..
+  cp RelativeLink/RelativeLink.sh tor-browser/start-tor-browser
   #
   cd tor-browser
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
@@ -115,22 +112,18 @@ script: |
   #
   # Copy reproducibility info
   cp versions tor-browser/Docs/sources/
-  cp bundle.inputs tor-browser/Docs/sources/bundle.inputs
+  cp bundle.inputs tor-browser/Docs/sources/
   #
   cp -a tor-browser tor-browser_en-US
-  # FF24 puts the prefs in a different jar:
-  if [ -f tor-browser_en-US/Browser/browser/omni.ja ]; then
-     pushd tor-browser_en-US/Browser/browser/
-  else
-     pushd tor-browser_en-US/Browser/
-  fi
+  #
+  pushd tor-browser_en-US/Browser/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
+  cp defaults/preferences/000-tor-browser.js ~/build/
+  # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
-  zip -Xd omni.ja defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   popd
-  #7z a -sfx tor-browser.exe tor-browser_en-US
-  #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_en-US.7z-selfextract
+  #
   ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
   rm -rf tor-browser_en-US
   #
@@ -143,23 +136,16 @@ script: |
     cp $xpi ../tor-browser_$LANG/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    # FF24 puts the prefs in a different jar:
-    if [ -f tor-browser_$LANG/Browser/browser/omni.ja ]; then
-       pushd tor-browser_$LANG/Browser/browser/
-    else
-       pushd tor-browser_$LANG/Browser/
-    fi
-
-    unzip omni.ja defaults/preferences/000-tor-browser.js
+    pushd tor-browser_$LANG/Browser/browser/
+    mkdir -p defaults/preferences
+    cp ~/build/000-tor-browser.js defaults/preferences/
+    # Set the locale of the bundle.
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
-    zip -Xd omni.ja defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     popd
 
-    #7z a -sfx tor-browser.exe tor-browser_$LANG
-    #mv tor-browser.exe $OUTDIR/tor-browser-linux${GBUILD_BITS}_$LANG.7z-selfextract
     ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
 
     rm -rf tor-browser_$LANG
     cd linux-langpacks
-  done 
+  done

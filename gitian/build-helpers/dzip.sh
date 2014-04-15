@@ -8,4 +8,4 @@ shift
 find $@ -executable -exec chmod 700 {} \;
 find $@ ! -executable -exec chmod 600 {} \;
 
-find $@ | sort | zip $ZIPOPTS -X -@ $ZIPFILE
+find $@ | sort | zip $ZIPOPTS -X -@ "$ZIPFILE"

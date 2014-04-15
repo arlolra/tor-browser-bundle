@@ -4,12 +4,10 @@ suites:
 - "precise"
 architectures:
 - "i386"
-packages: 
+packages:
 - "git-core"
 - "unzip"
 - "zip"
-- "mingw-w64"
-- "nsis"
 - "faketime"
 - "python"
 - "hfsprogs"
@@ -65,13 +63,13 @@ script: |
     export TORBROWSER_APP="TorBrowser"
     export TORBROWSER_NAME="TorBrowserBundle"
   fi
-  # 
+  #
   mkdir -p $OUTDIR/
-  mkdir -p dmg
   mkdir -p $TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org
   mkdir -p $TORBROWSER_NAME.app/Data/Browser/Caches
-  mkdir -p $TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
   mkdir -p $TORBROWSER_NAME.app/Docs/sources
+  mkdir -p $TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/
+  mkdir -p dmg
   #
   cd tor-launcher
   make clean
@@ -80,9 +78,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  rm ../*.xpi
-  ~/build/dzip.sh ../tor-launcher@torproject.org.xpi .
-  mv ../tor-launcher@torproject.org.xpi ../../../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi
+  ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
@@ -92,9 +88,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  rm ../*.xpi
-  ~/build/dzip.sh ../torbutton@torproject.org.xpi .
-  mv ../torbutton@torproject.org.xpi ../../../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi
+  ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
   cd https-everywhere
@@ -102,11 +96,11 @@ script: |
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   rm -f .git/refs/heads/master
   ./makexpi.sh
-  cp ./pkg/*.xpi ../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cp pkg/*.xpi ../$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
   cp *.xpi ./$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/
-  cd ./$TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/
+  cd $TORBROWSER_NAME.app/Data/Browser/profile.default/extensions/
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere@eff.org
   unzip ../https-everywhere@eff.org.xpi
@@ -114,13 +108,11 @@ script: |
   cd ~/build/
   #
   unzip relativelink-src.zip
-  cd RelativeLink
-  cp RelativeLinkOSX.sh ../$TORBROWSER_NAME.app/Contents/MacOS/TorBrowserBundle
-  cd ..
+  cp RelativeLink/RelativeLinkOSX.sh $TORBROWSER_NAME.app/Contents/MacOS/TorBrowserBundle
   #
-  unzip ~/build/tor-mac$GBUILD_BITS-gbuilt.zip
+  unzip tor-mac$GBUILD_BITS-gbuilt.zip
   if [ $BUILD_PT_BUNDLES ]; then
-    unzip ~/build/pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
+    unzip pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
   fi
   cd $TORBROWSER_NAME.app
   unzip ~/build/mac-skeleton.zip
@@ -139,7 +131,7 @@ script: |
   #
   # Copy reproducibility info
   cp versions $TORBROWSER_NAME.app/Docs/sources/
-  cp bundle.inputs $TORBROWSER_NAME.app/Docs/sources/bundle.inputs
+  cp bundle.inputs $TORBROWSER_NAME.app/Docs/sources/
   #
   # Set up DMG skeleton
   cd libdmg-hfsplus
@@ -147,31 +139,31 @@ script: |
   cmake CMakeLists.txt
   cd dmg
   make
-  cd ../../
-  cd dmg
-  tar -Jxvf ~/build/dmg-applications.tar.xz # FIXME: Desktop or Application as dest?
+  cd ../../dmg
+  # FIXME: Desktop or Application as dest?
+  tar -Jxvf ~/build/dmg-applications.tar.xz
   cd ..
   #
-  # FF24 puts the prefs in the browser jar:
   pushd $TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
+  # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   popd
   #
   if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
-   cp -a ~/build/$TORBROWSER_NAME.app ~/build/${TORBROWSER_NAME}_en-US.app
+    cp -a ~/build/$TORBROWSER_NAME.app ~/build/${TORBROWSER_NAME}_en-US.app
     ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip ${TORBROWSER_NAME}_en-US.app
-   rm -rf ~/build/${TORBROWSER_NAME}_en-US.app
+    rm -rf ~/build/${TORBROWSER_NAME}_en-US.app
   else
-   # XXX: We need to insert these placeholders because otherwise mkisofs won't
-   # include these otherwise empty dirs:
-   touch ~/build/$TORBROWSER_NAME.app/Data/Browser/Caches/placeholder.txt
-   touch ~/build/$TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/defaults/preferences/placeholder.txt
-   cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
+    # XXX: We need to insert these placeholders because otherwise mkisofs won't
+    # include these otherwise empty dirs:
+    touch ~/build/$TORBROWSER_NAME.app/Data/Browser/Caches/placeholder.txt
+    touch ~/build/$TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/defaults/preferences/placeholder.txt
+    cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
     ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.dmg ~/build/dmg
-   rm -rf ~/build/dmg/$TORBROWSER_APP.app
+    rm -rf ~/build/dmg/$TORBROWSER_APP.app
   fi
   mv $TORBROWSER_NAME.app ${TORBROWSER_NAME}_plain.app
   #
@@ -189,11 +181,10 @@ script: |
     cp $xpi ~/build/dmg/$DEST.app/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    # FF24 puts the prefs in the browser jar:
     pushd ~/build/dmg/$DEST.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
-
     mkdir -p defaults/preferences
-    cp ~/build/000-tor-browser.js defaults/preferences/000-tor-browser.js
+    cp ~/build/000-tor-browser.js defaults/preferences/
+    # Set the locale of the bundle.
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     popd
@@ -208,5 +199,4 @@ script: |
        rm -rf ~/build/dmg/$DEST.app
     fi
     cd mac-langpacks
-  done 
-  cd ..
+  done
