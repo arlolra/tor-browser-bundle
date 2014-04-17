@@ -297,10 +297,10 @@ https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TA
 torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
 tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
-pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git
-obfsproxy             https://git.torproject.org/pluggable-transports/obfsproxy.git
-flashproxy            https://git.torproject.org/flashproxy.git
-fteproxy              https://github.com/kpdyer/fteproxy.git
+pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
+obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG
+flashproxy            https://git.torproject.org/flashproxy.git $FLASHPROXY_TAG
+fteproxy              https://github.com/kpdyer/fteproxy.git $FTEPROXY_TAG
 libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG
 EOF
 
