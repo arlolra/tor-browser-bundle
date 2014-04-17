@@ -46,6 +46,7 @@ files:
 - "versions"
 - "tbb-docs.zip"
 - "mac-tor.sh"
+- "torbrowser.version"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -146,6 +147,10 @@ script: |
   #
   pushd $TORBROWSER_NAME.app/Contents/MacOS/TorBrowser.app/Contents/MacOS/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
+  # Set the version of the bundle.
+  grep -v '^pref(\"torbrowser.version\",' defaults/preferences/000-tor-browser.js > defaults/preferences/000-tor-browser.js.fixed
+  cat ~/build/torbrowser.version >> defaults/preferences/000-tor-browser.js.fixed
+  mv defaults/preferences/000-tor-browser.js.fixed defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js

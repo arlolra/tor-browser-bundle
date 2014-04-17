@@ -17,7 +17,6 @@ remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
 files:
-- "torbrowser.version"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
@@ -51,9 +50,6 @@ script: |
   #
   cd tor-browser
   mv .mozconfig-mac .mozconfig
-  grep -v '^pref(\"torbrowser.version\",' browser/app/profile/000-tor-browser.js > browser/app/profile/000-tor-browser.js.fixed
-  cat ../torbrowser.version >> browser/app/profile/000-tor-browser.js.fixed
-  mv browser/app/profile/000-tor-browser.js.fixed browser/app/profile/000-tor-browser.js
   # .git and the src takes up a lot of useless space, and we need the space to build
   #git archive HEAD | tar -x -C $OUTDIR/src
   rm -rf .git
