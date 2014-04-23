@@ -162,3 +162,90 @@ index cb39729..d78c7bb 100644
 -- 
 1.8.1.2
 
+From 1a3eb5c72dd0feb43a542ca465c57dd0801ff7cc Mon Sep 17 00:00:00 2001
+From: George Kadianakis <desnacked@riseup.net>
+Date: Tue, 8 Apr 2014 16:59:46 +0100
+Subject: [PATCH 1/4] Don't halt bootstrap to figure out if we should restart
+ PT proxies.
+
+Instead, figure out if we should restart PT proxies _immediately_ after
+we re-read the config file.
+---
+ changes/bug11156    | 5 +++++
+ src/or/config.c     | 6 ++++++
+ src/or/transports.c | 3 +--
+ 3 files changed, 12 insertions(+), 2 deletions(-)
+ create mode 100644 changes/bug11156
+
+diff --git a/changes/bug11156 b/changes/bug11156
+new file mode 100644
+index 0000000..bb20ed1e
+--- /dev/null
++++ b/changes/bug11156
+@@ -0,0 +1,5 @@
++  o Minor bugfixes (clients):
++    - Fix a bug where a client-side Tor with pluggable transports
++      would take 60 seconds to bootstrap if a config re-read was
++      triggered at just the right timing during bootstrap. Refixes bug
++      11156; bugfix on 0.2.5.3-alpha.
+\ No newline at end of file
+diff --git a/src/or/config.c b/src/or/config.c
+index dbf643c..c2d6545 100644
+--- a/src/or/config.c
++++ b/src/or/config.c
+@@ -1433,6 +1433,12 @@ options_act(const or_options_t *old_options)
+   sweep_transport_list();
+   sweep_proxy_list();
+ 
++  /* Start the PT proxy configuration. By doing this configuration
++     here, we also figure out which proxies need to be restarted and
++     which not. */
++  if (pt_proxies_configuration_pending())
++    pt_configure_remaining_proxies();
++
+   /* Bail out at this point if we're not going to be a client or server:
+    * we want to not fork, and to log stuff to stderr. */
+   if (!running_tor)
+diff --git a/src/or/transports.c b/src/or/transports.c
+index 7e496fe..e1876d6 100644
+--- a/src/or/transports.c
++++ b/src/or/transports.c
+@@ -534,8 +534,7 @@ launch_managed_proxy(managed_proxy_t *mp)
+ }
+ 
+ /** Check if any of the managed proxies we are currently trying to
+- *  configure have anything new to say. This is called from
+- *  run_scheduled_events(). */
++ *  configure has anything new to say. */
+ void
+ pt_configure_remaining_proxies(void)
+ {
+-- 
+1.8.1.2
+
+From 4719a2f5248b8cf6d70daef91fd1cf9fd65628f4 Mon Sep 17 00:00:00 2001
+From: George Kadianakis <desnacked@riseup.net>
+Date: Mon, 21 Apr 2014 14:17:35 +0300
+Subject: [PATCH 4/4] fixup! Don't halt bootstrap to figure out if we should
+ restart PT proxies.
+
+---
+ src/or/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/or/config.c b/src/or/config.c
+index c2d6545..551b09f 100644
+--- a/src/or/config.c
++++ b/src/or/config.c
+@@ -1436,7 +1436,7 @@ options_act(const or_options_t *old_options)
+   /* Start the PT proxy configuration. By doing this configuration
+      here, we also figure out which proxies need to be restarted and
+      which not. */
+-  if (pt_proxies_configuration_pending())
++  if (pt_proxies_configuration_pending() && !net_is_disabled())
+     pt_configure_remaining_proxies();
+ 
+   /* Bail out at this point if we're not going to be a client or server:
+-- 
+1.8.1.2
+
