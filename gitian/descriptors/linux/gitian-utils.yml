@@ -1,0 +1,84 @@
+---
+name: "utils-linux"
+suites:
+- "lucid"
+architectures:
+- "i386"
+- "amd64"
+packages:
+- "git-core"
+- "unzip"
+- "zip"
+- "autoconf"
+- "autoconf2.13"
+- "automake"
+- "faketime"
+- "libtool"
+- "hardening-wrapper"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://github.com/libevent/libevent.git"
+  "dir": "libevent"
+files:
+- "versions"
+- "dzip.sh"
+- "openssl.tar.gz"
+- "python.tar.bz2"
+script: |
+  INSTDIR="$HOME/install"
+  source versions
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  export LC_ALL=C
+  umask 0022
+  #
+  # Config options for hardening-wrapper
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
+
+  # Building Libevent
+  cd libevent
+  ./autogen.sh
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --disable-static --prefix=$INSTDIR/libevent
+  make $MAKEOPTS
+  make install
+  cd ..
+
+  # Building OpenSSL
+  tar xzf openssl.tar.gz
+  cd openssl-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ./config -shared --prefix=$INSTDIR/openssl enable-ec_nistp_64_gcc_128
+  else
+    ./config -shared --prefix=$INSTDIR/openssl
+  fi
+  # Using $MAKEOPTS breaks the build. Might be the issue mentioned on
+  # http://cblfs.cross-lfs.org/index.php/OpenSSL.
+  make
+  make install
+  cd ..
+
+  # Building Python
+  # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
+  # with Python 2.6. Thus, we compile 2.7 ourselves...
+  tar xjf python.tar.bz2
+  cd Python-*
+  ./configure
+  make $MAKEOPTS altinstall prefix=$INSTDIR/python exec-prefix=$INSTDIR/python
+  cd ..
+
+  # Grabbing the results
+  cd $INSTDIR
+  ~/build/dzip.sh openssl-$OPENSSL_VER-linux$GBUILD_BITS-utils.zip openssl
+  # TODO: It is not guaranteed we have a X.X.XX-style version.
+  ~/build/dzip.sh libevent-${LIBEVENT_TAG:8:6}-linux$GBUILD_BITS-utils.zip libevent
+  ~/build/dzip.sh python-$PYTHON_VER-linux$GBUILD_BITS-utils.zip python
+
+  cp $INSTDIR/*-utils.zip $OUTDIR/

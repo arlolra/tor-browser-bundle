@@ -29,9 +29,10 @@ remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
 files:
+- "python-linux32-utils.zip"
+- "python-linux64-utils.zip"
 - "re-dzip.sh"
 - "dzip.sh"
-- "python.tar.bz2"
 - "versions"
 script: |
   source versions
@@ -55,25 +56,17 @@ script: |
   mkdir -p $INSTDIR/build/bin/
   ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
   export PATH=$PATH:$INSTDIR/build/bin
+  # Preparing Python for Firefox
+  unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
+  # TODO: We might want to have a smarter solution than hard-coding the version.
+  ln -sf $INSTDIR/python/bin/python2.7 $INSTDIR/python/bin/python
+  export PATH=$INSTDIR/python/bin:$PATH
   #
   mkdir -p $INSTDIR/Browser/
   mkdir -p $INSTDIR/Debug/Browser/components
   #
-  # Fx 24 ESR does not work with Python < 2.7 anymore. But 10.04 does only ship
-  # with Python 2.6. Thus, we compile 2.7 ourselves...
-  if [ ${TORBROWSER_VERSION::3} != "3.0" ]; then
-    mkdir python
-    cd python
-    tar -xjvf ../python.tar.bz2
-    Python-*/configure
-    make
-    sudo make install
-    cd ..
-  fi
-  #
   cd tor-browser
   # .git and the src takes up a lot of useless space, and we need the space to build
-  #git archive HEAD | tar -x -C $OUTDIR/src
   rm -rf .git
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
@@ -94,19 +87,17 @@ script: |
   # Strip and generate debuginfo for the firefox binary that we keep, all *.so
   # files, and the plugin-container (see ticket #10126)
   cd $INSTDIR
-  for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/firefox Browser/plugin-container Browser/components/*.so # Browser/updater 
+  for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/firefox Browser/plugin-container Browser/components/*.so # Browser/updater
   do
     # Build-ID is sometimes non-deterministic, and we use debuglink anyway
-    objcopy --remove-section=.note.gnu.build-id $LIB 
+    objcopy --remove-section=.note.gnu.build-id $LIB
     objcopy --only-keep-debug $LIB Debug/$LIB
     strip $LIB
     objcopy --add-gnu-debuglink=./Debug/$LIB $LIB
   done
   ~/build/re-dzip.sh Browser/omni.ja
   ~/build/re-dzip.sh Browser/webapprt/omni.ja
-  if [ -f Browser/browser/omni.ja ]; then # FF24 includes a third .ja
-    ~/build/re-dzip.sh Browser/browser/omni.ja
-  fi
+  ~/build/re-dzip.sh Browser/browser/omni.ja
   ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-gbuilt.zip Browser/
   ~/build/dzip.sh tor-browser-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-browser-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

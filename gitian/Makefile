@@ -72,12 +72,29 @@ prep-beta:
 	./check-prerequisites.sh
 	$(TORSOCKS) ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.beta
 
-clean:
-	rm -f ../../gitian-builder/inputs/*gbuilt*
+clean: clean-utils clean-tor clean-browser clean-pt clean-bundle
 	rm -f ../../gitian-builder/inputs/*.yml
 	rm -f ../../gitian-builder/inputs/bundle.inputs
 	rm -f ../../gitian-builder/inputs/versions*
-	rm -f ../../gitian-builder/inputs/*debug.zip
+
+clean-utils:
+	rm -f ../../gitian-builder/inputs/*utils.zip
+
+clean-tor:
+	rm -f ../../gitian-builder/inputs/tor-linux*
+	rm -f ../../gitian-builder/inputs/tor-mac*
+	rm -f ../../gitian-builder/inputs/tor-win*
+
+clean-browser:
+	rm -f ../../gitian-builder/inputs/tor-browser-linux*
+	rm -f ../../gitian-builder/inputs/tor-browser-mac*
+	rm -f ../../gitian-builder/inputs/tor-browser-win*
+
+clean-pt:
+	rm -f ../../gitian-builder/inputs/pluggable-transports*
+
+clean-bundle:
+	rm -f ../../gitian-builder/inputs/bundle-*
 
 vmclean:
 	rm -rf ../../gitian-builder/*.qcow2
