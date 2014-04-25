@@ -8,11 +8,14 @@ packages:
 - "git-core"
 - "unzip"
 - "zip"
-# This is needed for compiling the StartTorBrowserBundle.exe.
+# This package is needed for compiling the StartTorBrowserBundle.exe.
 - "mingw-w64"
 - "nsis"
 - "faketime"
 - "python"
+# Both packages are needed for assembling the HTTPS-Everywhere rules since 3.5.
+- "python-lxml"
+- "sqlite3"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/moba/tbb-windows-installer.git"

@@ -10,8 +10,7 @@ TORBROWSER_TAG=tor-browser-${FIREFOX_VERSION}-1-build2
 TOR_TAG=tor-0.2.5.3-alpha
 TORLAUNCHER_TAG=0.2.5.3
 TORBUTTON_TAG=1.6.8.1
-# XXX: 3.5 requires python2.7, see #11556
-HTTPSE_TAG=3.4.5
+HTTPSE_TAG=3.5
 NSIS_TAG=v0.1
 ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
@@ -38,6 +37,7 @@ TWISTED_VER=13.1.0
 M2CRYPTO_VER=0.21.1
 PY2EXE_VER=0.6.9
 SETUPTOOLS_VER=1.4
+LXML_VER=3.3.5
 
 ## File names for the source packages
 OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -60,6 +60,7 @@ TWISTED_PACKAGE=Twisted-${TWISTED_VER}.tar.bz2
 M2CRYPTO_PACKAGE=M2Crypto-${M2CRYPTO_VER}.tar.gz
 PY2EXE_PACKAGE=py2exe-${PY2EXE_VER}.win32-py2.7.exe
 SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
+LXML_PACKAGE=lxml-${LXML_VER}.tar.gz
 
 # Hashes for packages with weak sigs or no sigs
 OPENSSL_HASH=53cb818c3b90e507a8348f4f5eaedb05d8bfe5358aabb508b7263cc670c3e028
@@ -99,3 +100,4 @@ TWISTED_URL=https://pypi.python.org/packages/source/T/Twisted/${TWISTED_PACKAGE}
 M2CRYPTO_URL=https://pypi.python.org/packages/source/M/M2Crypto/${M2CRYPTO_PACKAGE}
 PY2EXE_URL=http://softlayer-dal.dl.sourceforge.net/project/py2exe/py2exe/${PY2EXE_VER}/${PY2EXE_PACKAGE}
 SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS_PACKAGE}
+LXML_URL=https://pypi.python.org/packages/source/l/lxml/${LXML_PACKAGE}

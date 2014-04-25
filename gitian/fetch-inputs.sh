@@ -133,11 +133,12 @@ do
   fi
 done
 
-for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP
+for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o "${i}" == "PYTHON_MSI" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o \
+       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -275,6 +276,7 @@ ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz
 ln -sf "$PY2EXE_PACKAGE" py2exe.exe
 ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
 ln -sf "$GMP_PACKAGE" gmp.tar.bz2
+ln -sf "$LXML_PACKAGE" lxml.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.

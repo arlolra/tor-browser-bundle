@@ -15,6 +15,9 @@ packages:
 - "cmake"
 - "zlib1g-dev"
 - "libbz2-dev"
+# Both packages are needed for assembling the HTTPS-Everywhere rules since 3.5.
+- "python-lxml"
+- "sqlite3"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"

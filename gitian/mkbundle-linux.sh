@@ -93,8 +93,9 @@ if [ ! -f inputs/openssl-$OPENSSL_VER-linux32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG:8:6}-linux32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG:8:6}-linux64-utils.zip -o \
      ! -f inputs/python-$PYTHON_VER-linux32-utils.zip -o \
-     ! -f inputs/python-$PYTHON_VER-linux64-utils.zip ];
-
+     ! -f inputs/python-$PYTHON_VER-linux64-utils.zip -o \
+     ! -f inputs/lxml-$LXML_VER-linux32-utils.zip -o \
+     ! -f inputs/lxml-$LXML_VER-linux64-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Linux Bundle (1/5 for Linux) ******"
@@ -116,6 +117,8 @@ then
   ln -sf libevent-${LIBEVENT_TAG_ORIG:8:6}-linux64-utils.zip libevent-linux64-utils.zip
   ln -sf python-$PYTHON_VER-linux32-utils.zip python-linux32-utils.zip
   ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
+  ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
+  ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
   cd ..
   #cp -a result/tor-linux-res.yml $GITIAN_DIR/inputs/
 else
@@ -132,6 +135,8 @@ else
   ln -sf libevent-${LIBEVENT_TAG_ORIG:8:6}-linux64-utils.zip libevent-linux64-utils.zip
   ln -sf python-$PYTHON_VER-linux32-utils.zip python-linux32-utils.zip
   ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
+  ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
+  ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
   cd ..
 fi
 

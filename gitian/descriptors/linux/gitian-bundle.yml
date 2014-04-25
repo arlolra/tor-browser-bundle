@@ -13,6 +13,8 @@ packages:
 - "python"
 - "rnv"
 - "xz-utils"
+- "libxslt1.1"
+- "sqlite3"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"
@@ -29,6 +31,10 @@ files:
 - "tor-linux64-gbuilt.zip"
 - "pluggable-transports-linux32-gbuilt.zip"
 - "pluggable-transports-linux64-gbuilt.zip"
+- "python-linux32-utils.zip"
+- "python-linux64-utils.zip"
+- "lxml-linux32-utils.zip"
+- "lxml-linux64-utils.zip"
 - "torrc-defaults-appendix-linux"
 - "bridge_prefs.js"
 - "relativelink-src.zip"
@@ -57,6 +63,10 @@ script: |
   mkdir -p tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
   mkdir -p tor-browser/Data/Browser/Caches
   mkdir -p tor-browser/Docs/sources/
+  # Preparing Python for HTTPS-Everywhere.
+  unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
+  export PATH=$INSTDIR/python/bin:$PATH
+  unzip -d $INSTDIR/python/lib/python2.7 lxml-linux$GBUILD_BITS-utils.zip
   #
   cd tor-launcher
   make clean
