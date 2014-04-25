@@ -10,6 +10,7 @@ Tor Browser Bundle 3.6 -- Apr 29 2014
    * Update HTTPS-Everywhere to 3.5
    * Update NoScript to 2.6.8.20
    * Update obfs3 transport to 0.2.8
+   * Update fte transport to 0.2.13
    * Backport Pending Tor Patches:
      * Bug 11156: Additional obfsproxy startup error message fixes
    * Bug 11586: Include license files for component software in Docs directory.
