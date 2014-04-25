@@ -77,20 +77,20 @@ clean: clean-utils clean-tor clean-browser clean-pt clean-bundle
 	rm -f ../../gitian-builder/inputs/bundle.inputs
 	rm -f ../../gitian-builder/inputs/versions*
 
-clean-utils:
+clean-utils: clean-bundle
 	rm -f ../../gitian-builder/inputs/*utils.zip
 
-clean-tor:
+clean-tor: clean-bundle
 	rm -f ../../gitian-builder/inputs/tor-linux*
 	rm -f ../../gitian-builder/inputs/tor-mac*
 	rm -f ../../gitian-builder/inputs/tor-win*
 
-clean-browser:
+clean-browser: clean-bundle
 	rm -f ../../gitian-builder/inputs/tor-browser-linux*
 	rm -f ../../gitian-builder/inputs/tor-browser-mac*
 	rm -f ../../gitian-builder/inputs/tor-browser-win*
 
-clean-pt:
+clean-pt: clean-bundle
 	rm -f ../../gitian-builder/inputs/pluggable-transports*
 
 clean-bundle:
