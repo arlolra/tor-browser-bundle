@@ -48,18 +48,18 @@ Detailed Explanation of Scripts:
  0. Makefile: The main Makefile. It has six main commands:
      - prep: Check OS prerequisites and download source dependency inputs
      - build: Build localized bundles for Linux, Windows, and Mac
-     - clean: Remove prior partial build stages (Tor and Firefox)
+     - clean: Remove prior partial build stages (see 'Partial Rebuilds' below)
      - vmclean: Remove VM base images
      - distclean: Remove source dependency inputs, and run clean and vmclean
      - all: The default. It calls clean, prep, and then build.
-     - sign: Signs your build output and uplodas it to people.torproject.org
+     - sign: Signs your build output and uploads it to people.torproject.org
      - match: Checks your build output against public signed hashes
-    To build alpha bundles, alternate targets are provided:
-     - alpha: The equivalent to the 'all' rule for alpha packages
-     - build-alpha: The equivalent to the 'build' rule for alpha packages
-     - prep-alpha: The equivalent to the 'prep' rule for alpha packages
-     - sign-alpha: Signs your build output and uplodas it to people.torproject.org
-     - match-alpha: Checks your build output against public signed hashes
+    To build beta/alpha/nightly bundles, alternate targets are provided:
+     - beta: The equivalent to the 'all' rule for beta packages
+     - build-beta: The equivalent to the 'build' rule for beta packages
+     - prep-beta: The equivalent to the 'prep' rule for beta packages
+     - sign-beta: Signs your build output and uploads it to people.torproject.org
+     - match-beta: Checks your build output against public signed hashes
  
  1. check-prerequisites.sh: This script checks if your system is capable of
     running Gitian, and if it is not, it tells you what you need to do.
@@ -95,31 +95,47 @@ Detailed Explanation of Scripts:
     call the appropriate descriptors to build a 32bit Mac bundle. It also
     will create build VM images for you if you haven't done that before.
 
+ 9. record-inputs.sh: This script records all of the hashes and bundle
+    inputs for inclusion in the 'Docs/sources' subdirectory of the bundles
+    themselves.
+ 
+ 10. hash-bundles.sh: This script generates a 'sha256sums.txt' file in sorted,
+     reproducible order.
+
+ 11. check-match.sh: This script checks your 'sha256sums.txt' file against
+     any signed, published builds.
+
+ 12. upload-signature.sh: This script signs and uploads your 'sha256sums.txt'
+     file (for use if you are an official builder).
+
 
 Partial Rebuilds:
 
-  The mkbundle shell scripts each have three Gitian stages.
+  The mkbundle shell scripts each have five Gitian stages:
+    1. Build support utilities (gitian-utils.yml)
+    2. Tor (gitian-tor.yml)
+    3. Tor Browser (gitian-firefox.yml)
+    4. Pluggable Transports (gitian-pluggable-transports.yml)
+    5. Addon and bundle package assembly (gitian-bundle.yml)
 
-  First, using their platform's gitian-tor.yml Gitian descriptor, they build
-  tor and the tor dependencies (libevent, zlib, and openssl). Second, using
-  the gitian-firefox.yml descriptor, they build Firefox with the Tor Browser
-  patches and preferences applied. Third, in gitian-bundle.yml, they assemble
-  the bundles using the addons and localization packs.
-
-  The Tor and Firefox stages end up as a *gbuilt*.zip files in
-  ../../gitian-builder/inputs/, and those zip files are used as inputs into
-  the final bundling and localization stage. If those files exist in that
-  directory, the corresponding bundle will *not* be built.
+  Each stage leaves build artifacts in ../../gitian-builder/inputs/ for use
+  in later stages. If the artifact files for a given stage are present, that
+  stage is skipped by a 'make build'.
 
   No other dependency checking on build stages is performed.
 
-  This means that if any of the source inputs, or the Ubuntu buildchain tools,
-  or the build tools' dependencies upgrade, your Tor and Firefox inputs will
-  no longer match those produced by someone else's build from a fresher VM
-  that downloaded those newer toolchain packages.
+  If you wish to rebuild only a given stage, there are several 'make clean-'
+  targets to remove the artifacts for that stage. Running a subsequent
+  'make build' after that will rebuild only those targets that have been
+  cleaned, and then re-package everything again as well.
 
-  This means for official builds, you should always run 'make clean' (which
-  is called by the default Makefile target).
+  Note that if any of the source inputs, or the Ubuntu buildchain tools, or
+  the build tools' dependencies upgrade, your Tor and Firefox inputs will
+  no longer match those produced by someone else's build from a fresh build
+  that downloaded those newer input, dependency, and toolchain packages.
+
+  This means for official builds, it is a good idea to always run a full
+  'make clean' first, or just run 'make'.
 
 
 Known Issues and Quirks:
@@ -138,7 +154,8 @@ Known Issues and Quirks:
      VMs) or 'rm ../../gitian-builder/*lucid*' (to remove the Linux VMs).
 
      You probably want to make sure you have no stray qemu processes before
-     rebuilding the VMs or starting a new build, too.
+     rebuilding the VMs or starting a new build, too. 'killall qemu-kvm' is
+     your friend.
 
      Once you get a working set of base VMs (in ../../gitian-builder/base-*),
      you should probably copy them somewhere safe if you want to avoid VM
@@ -166,12 +183,6 @@ Known Issues and Quirks:
      SSH keys of the previous instances' VM, and VM startup will either hang
      or prompt you for an SSH password).
 
-  6. The number of cpus in the VM images is currently hardcoded at 4. If you
-     need a different number, please let me know and I will write a patch to 
-     support configuring the number of CPUs easily.
-
-  7. LXC-built bundles are still not deterministic and may run into other issues.
-     See TODO file for details.
 
 Diagnosing Problems:
 

@@ -20,7 +20,6 @@ Short Term:
      - Refuse to build if `git diff --raw` is non-zero?
  - Detect arch on Linux
    - https://trac.torproject.org/projects/tor/ticket/3841
- - Too many libevent libs are included.. Only need a couple
 
 Mid Term:
  - Write a VM test+rebuild script
@@ -36,8 +35,6 @@ Mid Term:
  - Clean up old paths (requires Tor Launcher commits)
    - Remove FirefoxPortable paths for Windows
    - Relocate torrc to Library/Tor for MacOS
- - DMGs for Mac
-   https://trac.torproject.org/projects/tor/ticket/4261
  - Universal binaries for Mac?
    - Usability win, but gettor loss (we're at 23M right now)
    - https://developer.mozilla.org/en-US/docs/Mac_OS_X_Universal_Binaries
@@ -48,10 +45,6 @@ Mid Term:
  - Fix windows issues:
    - Link to DirectX via Wine (for WebGL)
      - Weird C++ stdext namespace issues remain :/
-   - Accesibility still fails :/
-     - https://bugzilla.mozilla.org/show_bug.cgi?id=815581
-       - Has conflicts with FF17-ESR :/
-       - Can we just pull the whole accessibility dir?
  - If Tor Launcher fails to load, the browser still can launch
    - Add browser code to detect missing addons?
    - Missing/Partial Localization strings can cause this..
