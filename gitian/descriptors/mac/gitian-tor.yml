@@ -109,8 +109,8 @@ script: |
       git am ~/build/bug11069.patch
       git am ~/build/bug11156.patch
       git am ~/build/bug9665.patch
+      git am ~/build/bug11200.patch
     fi
-    git am ~/build/bug11200.patch
   fi
   mkdir -p $OUTDIR/src
   git archive HEAD | tar -x -C $OUTDIR/src
