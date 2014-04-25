@@ -4,15 +4,18 @@ Tor Browser Bundle 3.6 -- Apr 29 2014
    * Update Tor Launcher to 0.2.5.4
      * Bug #11482: Hide bridge settings prompt if no default bridges.
      * Bug #11484: Show help button even if no default bridges.
-   * Update Torbutton to 1.6.8.1
+   * Update Torbutton to 1.6.9.0
      * Bug 7439: Improve download warning dialog text.
      * Bug 11384: Completely remove hidden toggle menu item.
    * Update HTTPS-Everywhere to 3.5
    * Update NoScript to 2.6.8.20
-   * Update obfs3 transport to XXX
+   * Update obfs3 transport to 0.2.8
    * Backport Pending Tor Patches:
      * Bug 11156: Additional obfsproxy startup error message fixes
    * Bug 11586: Include license files for component software in Docs directory.
+ * Windows and Mac:
+   * Bug 9308: Prevent install path from leaking in some JS exceptions
+               on Mac and Windows builds
 
 Tor Browser Bundle 3.6-beta-2 -- Apr 8 2014
  * All Platforms
