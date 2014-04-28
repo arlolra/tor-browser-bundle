@@ -7,7 +7,6 @@ Tor Browser Bundle 3.6 -- Apr 29 2014
    * Update Torbutton to 1.6.9.0
      * Bug 7439: Improve download warning dialog text.
      * Bug 11384: Completely remove hidden toggle menu item.
-   * Update HTTPS-Everywhere to 3.5.1
    * Update NoScript to 2.6.8.20
    * Update obfs3 transport to 0.2.8
    * Update fte transport to 0.2.13
