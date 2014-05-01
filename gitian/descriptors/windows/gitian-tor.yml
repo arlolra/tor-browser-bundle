@@ -31,6 +31,7 @@ files:
 - "bug11200.patch"
 - "bug11069.patch"
 - "bug9665.patch"
+- "bug8402.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
 - "openssl.tar.gz"
@@ -106,6 +107,7 @@ script: |
       git am ~/build/bug11156.patch
       git am ~/build/bug9665.patch
       git am ~/build/bug11200.patch
+      git am ~/build/bug8402.patch
     fi
   fi
   mkdir -p $OUTDIR/src

@@ -1,0 +1,437 @@
+From 88ddabbce1e15627f51b1bd6aef06f1b3515dd15 Mon Sep 17 00:00:00 2001
+From: Yawning Angel <yawning@schwanenlied.me>
+Date: Thu, 1 May 2014 03:57:29 +0000
+Subject: [PATCH 1/2] Allow ClientTransportPlugins to use proxies
+
+This change allows using Socks4Proxy, Socks5Proxy and HTTPSProxy with
+ClientTransportPlugins via the TOR_PT_PROXY extension to the
+pluggable transport specification.
+
+This fixes bug #8402.
+
+WARNING:
+
+This is a backport to tor-0.2.4.x of a unmerged patch.  Differences
+at the time of writing from my real branch are:
+ * Unit tests.
+ * get_proxy_type() is removed in the backport, 0.2.5.x uses the
+   routine elsewhere, so it is left intact (with modifications).
+---
+ src/or/config.c     |  24 +++++++----
+ src/or/connection.c |  55 ++++++++++---------------
+ src/or/transports.c | 114 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/or/transports.h |   3 ++
+ 4 files changed, 152 insertions(+), 44 deletions(-)
+
+diff --git a/src/or/config.c b/src/or/config.c
+index 09fdc0c..3fe5b73 100644
+--- a/src/or/config.c
++++ b/src/or/config.c
+@@ -490,7 +490,9 @@ static int options_transition_affects_descriptor(
+ static int check_nickname_list(const char *lst, const char *name, char **msg);
+ 
+ static int parse_bridge_line(const char *line, int validate_only);
+-static int parse_client_transport_line(const char *line, int validate_only);
++static int parse_client_transport_line(const or_options_t *options,
++                                       const char *line,
++                                       int validate_only);
+ 
+ static int parse_server_transport_line(const char *line, int validate_only);
+ static char *get_bindaddr_from_transport_listen_line(const char *line,
+@@ -1337,7 +1339,7 @@ options_act(const or_options_t *old_options)
+   pt_prepare_proxy_list_for_config_read();
+   if (options->ClientTransportPlugin) {
+     for (cl = options->ClientTransportPlugin; cl; cl = cl->next) {
+-      if (parse_client_transport_line(cl->value, 0)<0) {
++      if (parse_client_transport_line(options, cl->value, 0)<0) {
+         log_warn(LD_BUG,
+                  "Previously validated ClientTransportPlugin line "
+                  "could not be added!");
+@@ -2954,11 +2956,11 @@ options_validate(or_options_t *old_options, or_options_t *options,
+     }
+   }
+ 
+-  /* Check if more than one proxy type has been enabled. */
++  /* Check if more than one exclusive proxy type has been enabled. */
+   if (!!options->Socks4Proxy + !!options->Socks5Proxy +
+-      !!options->HTTPSProxy + !!options->ClientTransportPlugin > 1)
++      !!options->HTTPSProxy > 1)
+     REJECT("You have configured more than one proxy type. "
+-           "(Socks4Proxy|Socks5Proxy|HTTPSProxy|ClientTransportPlugin)");
++           "(Socks4Proxy|Socks5Proxy|HTTPSProxy)");
+ 
+   /* Check if the proxies will give surprising behavior. */
+   if (options->HTTPProxy && !(options->Socks4Proxy ||
+@@ -3073,7 +3075,7 @@ options_validate(or_options_t *old_options, or_options_t *options,
+   }
+ 
+   for (cl = options->ClientTransportPlugin; cl; cl = cl->next) {
+-    if (parse_client_transport_line(cl->value, 1)<0)
++    if (parse_client_transport_line(options, cl->value, 1)<0)
+       REJECT("Transport line did not parse. See logs for details.");
+   }
+ 
+@@ -4229,7 +4231,8 @@ parse_bridge_line(const char *line, int validate_only)
+  * our internal transport list.
+  * - If it's a managed proxy line, launch the managed proxy. */
+ static int
+-parse_client_transport_line(const char *line, int validate_only)
++parse_client_transport_line(const or_options_t *options, const char *line,
++                            int validate_only)
+ {
+   smartlist_t *items = NULL;
+   int r;
+@@ -4308,6 +4311,13 @@ parse_client_transport_line(const char *line, int validate_only)
+       pt_kickstart_client_proxy(transport_list, proxy_argv);
+     }
+   } else { /* external */
++    /* ClientTransportPlugins connecting through a proxy is managed only. */
++    if (options->Socks4Proxy || options->Socks5Proxy || options->HTTPSProxy) {
++      log_warn(LD_CONFIG, "You have configured an external proxy with another "
++                          "proxy type. (Socks4Proxy|Socks5Proxy|HTTPSProxy)");
++      goto err;
++    }
++
+     if (smartlist_len(transport_list) != 1) {
+       log_warn(LD_CONFIG, "You can't have an external proxy with "
+                "more than one transports.");
+diff --git a/src/or/connection.c b/src/or/connection.c
+index 4f74a1d..683cf46 100644
+--- a/src/or/connection.c
++++ b/src/or/connection.c
+@@ -81,7 +81,6 @@ static const char *connection_proxy_state_to_string(int state);
+ static int connection_read_https_proxy_response(connection_t *conn);
+ static void connection_send_socks5_connect(connection_t *conn);
+ static const char *proxy_type_to_string(int proxy_type);
+-static int get_proxy_type(void);
+ 
+ /** The last addresses that our network interface seemed to have been
+  * binding to.  We use this as one way to detect when our IP changes.
+@@ -4390,6 +4389,27 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
+ {
+   const or_options_t *options = get_options();
+ 
++  /* Client Transport Plugins can use another proxy, but that should be hidden
++   * from the rest of tor (as the plugin is responsible for dealing with the
++   * proxy), check it first, then check the rest of the proxy types to allow
++   * the config to have unused ClientTransportPlugin entries.
++   */
++  if (options->ClientTransportPlugin) {
++    const transport_t *transport = NULL;
++    int r;
++    r = find_transport_by_bridge_addrport(&conn->addr, conn->port, &transport);
++    if (r<0)
++      return -1;
++    if (transport) { /* transport found */
++      tor_addr_copy(addr, &transport->addr);
++      *port = transport->port;
++      *proxy_type = transport->socks_version;
++      return 0;
++    }
++
++    /* Unused ClientTransportPlugin. */
++  }
++
+   if (options->HTTPSProxy) {
+     tor_addr_copy(addr, &options->HTTPSProxyAddr);
+     *port = options->HTTPSProxyPort;
+@@ -4405,43 +4425,12 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
+     *port = options->Socks5ProxyPort;
+     *proxy_type = PROXY_SOCKS5;
+     return 0;
+-  } else if (options->ClientTransportPlugin ||
+-             options->Bridges) {
+-    const transport_t *transport = NULL;
+-    int r;
+-    r = find_transport_by_bridge_addrport(&conn->addr, conn->port, &transport);
+-    if (r<0)
+-      return -1;
+-    if (transport) { /* transport found */
+-      tor_addr_copy(addr, &transport->addr);
+-      *port = transport->port;
+-      *proxy_type = transport->socks_version;
+-      return 0;
+-    }
+   }
+ 
+   *proxy_type = PROXY_NONE;
+   return 0;
+ }
+ 
+-/** Returns the global proxy type used by tor. */
+-static int
+-get_proxy_type(void)
+-{
+-  const or_options_t *options = get_options();
+-
+-  if (options->HTTPSProxy)
+-    return PROXY_CONNECT;
+-  else if (options->Socks4Proxy)
+-    return PROXY_SOCKS4;
+-  else if (options->Socks5Proxy)
+-    return PROXY_SOCKS5;
+-  else if (options->ClientTransportPlugin)
+-    return PROXY_PLUGGABLE;
+-  else
+-    return PROXY_NONE;
+-}
+-
+ /** Log a failed connection to a proxy server.
+  *  <b>conn</b> is the connection we use the proxy server for. */
+ void
+@@ -4457,7 +4446,7 @@ log_failed_proxy_connection(connection_t *conn)
+   log_warn(LD_NET,
+            "The connection to the %s proxy server at %s just failed. "
+            "Make sure that the proxy server is up and running.",
+-           proxy_type_to_string(get_proxy_type()),
++           proxy_type_to_string(proxy_type),
+            fmt_addrport(&proxy_addr, proxy_port));
+ }
+ 
+diff --git a/src/or/transports.c b/src/or/transports.c
+index 3749d6b..cae1f31 100644
+--- a/src/or/transports.c
++++ b/src/or/transports.c
+@@ -103,6 +103,8 @@ static INLINE int proxy_configuration_finished(const managed_proxy_t *mp);
+ 
+ static void managed_proxy_destroy(managed_proxy_t *mp,
+                                   int also_terminate_process);
++static char* get_pt_proxy_uri(void);
++static void parse_proxy_error(const char *line);
+ 
+ static void handle_finished_proxy(managed_proxy_t *mp);
+ static int configure_proxy(managed_proxy_t *mp);
+@@ -123,6 +125,8 @@ static INLINE void free_execve_args(char **arg);
+ #define PROTO_SMETHOD_ERROR "SMETHOD-ERROR"
+ #define PROTO_CMETHODS_DONE "CMETHODS DONE"
+ #define PROTO_SMETHODS_DONE "SMETHODS DONE"
++#define PROTO_PROXY_DONE "PROXY DONE"
++#define PROTO_PROXY_ERROR "PROXY-ERROR"
+ 
+ /** The first and only supported - at the moment - configuration
+     protocol version. */
+@@ -434,6 +438,17 @@ add_transport_to_proxy(const char *transport, managed_proxy_t *mp)
+ static int
+ proxy_needs_restart(const managed_proxy_t *mp)
+ {
++  int ret = 1;
++  char* proxy_uri;
++
++  /* If the PT proxy config has changed, then all existing pluggable transports
++   * should be restarted.
++   */
++
++  proxy_uri = get_pt_proxy_uri();
++  if (strcmp_opt(proxy_uri, mp->proxy_uri) != 0)
++    goto needs_restart;
++
+   /* mp->transport_to_launch is populated with the names of the
+      transports that must be launched *after* the SIGHUP.
+      mp->transports is populated with the transports that were
+@@ -454,10 +469,10 @@ proxy_needs_restart(const managed_proxy_t *mp)
+ 
+   } SMARTLIST_FOREACH_END(t);
+ 
+-  return 0;
+-
+- needs_restart:
+-  return 1;
++  ret = 0;
++needs_restart:
++  tor_free(proxy_uri);
++  return ret;
+ }
+ 
+ /** Managed proxy <b>mp</b> must be restarted. Do all the necessary
+@@ -488,6 +503,11 @@ proxy_prepare_for_restart(managed_proxy_t *mp)
+   SMARTLIST_FOREACH(mp->transports, transport_t *, t, transport_free(t));
+   smartlist_clear(mp->transports);
+ 
++  /* Reset the proxy's HTTPS/SOCKS proxy */
++  tor_free(mp->proxy_uri);
++  mp->proxy_uri = get_pt_proxy_uri();
++  mp->proxy_supported = 0;
++
+   /* flag it as an infant proxy so that it gets launched on next tick */
+   mp->conf_state = PT_PROTO_INFANT;
+   unconfigured_proxies_n++;
+@@ -718,12 +738,52 @@ managed_proxy_destroy(managed_proxy_t *mp,
+   /* free the argv */
+   free_execve_args(mp->argv);
+ 
++  /* free the outgoing proxy URI */
++  tor_free(mp->proxy_uri);
++
+   tor_process_handle_destroy(mp->process_handle, also_terminate_process);
+   mp->process_handle = NULL;
+ 
+   tor_free(mp);
+ }
+ 
++/** Convert the tor proxy options to a URI suitable for TOR_PT_PROXY. */
++static char *
++get_pt_proxy_uri(void)
++{
++  const or_options_t *options = get_options();
++  char *uri = NULL;
++
++  if (options->Socks4Proxy || options->Socks5Proxy || options->HTTPSProxy) {
++    char addr[TOR_ADDR_BUF_LEN+1];
++
++    if (options->Socks4Proxy) {
++      tor_addr_to_str(addr, &options->Socks4ProxyAddr, sizeof(addr), 1);
++      tor_asprintf(&uri, "socks4a://%s:%d", addr, options->Socks4ProxyPort);
++    } else if (options->Socks5Proxy) {
++      tor_addr_to_str(addr, &options->Socks5ProxyAddr, sizeof(addr), 1);
++      if (!options->Socks5ProxyUsername && !options->Socks5ProxyPassword) {
++        tor_asprintf(&uri, "socks5://%s:%d", addr, options->Socks5ProxyPort);
++      } else {
++        tor_asprintf(&uri, "socks5://%s:%s@%s:%d",
++                     options->Socks5ProxyUsername,
++                     options->Socks5ProxyPassword,
++                     addr, options->Socks5ProxyPort);
++      }
++    } else if (options->HTTPSProxy) {
++      tor_addr_to_str(addr, &options->HTTPSProxyAddr, sizeof(addr), 1);
++      if (!options->HTTPSProxyAuthenticator) {
++        tor_asprintf(&uri, "http://%s:%d", addr, options->HTTPSProxyPort);
++      } else {
++        tor_asprintf(&uri, "http://%s@%s:%d", options->HTTPSProxyAuthenticator,
++                     addr, options->HTTPSProxyPort);
++      }
++    }
++  }
++
++  return uri;
++}
++
+ /** Handle a configured or broken managed proxy <b>mp</b>. */
+ static void
+ handle_finished_proxy(managed_proxy_t *mp)
+@@ -736,6 +796,12 @@ handle_finished_proxy(managed_proxy_t *mp)
+     managed_proxy_destroy(mp, 0); /* destroy it but don't terminate */
+     break;
+   case PT_PROTO_CONFIGURED: /* if configured correctly: */
++    if (mp->proxy_uri && !mp->proxy_supported) {
++      log_warn(LD_CONFIG, "Managed proxy '%s' did not configure the "
++               "specified outgoing proxy.", mp->argv[0]);
++      managed_proxy_destroy(mp, 1); /* annihilate it. */
++      break;
++    }
+     register_proxy(mp); /* register its transports */
+     mp->conf_state = PT_PROTO_COMPLETED; /* and mark it as completed. */
+     break;
+@@ -854,6 +920,22 @@ handle_proxy_line(const char *line, managed_proxy_t *mp)
+       goto err;
+ 
+     return;
++  } else if (!strcmpstart(line, PROTO_PROXY_DONE)) {
++    if (mp->conf_state != PT_PROTO_ACCEPTING_METHODS)
++      goto err;
++
++    if (mp->proxy_uri) {
++      mp->proxy_supported = 1;
++      return;
++    }
++
++    /* No proxy was configured, this should log */
++  } else if (!strcmpstart(line, PROTO_PROXY_ERROR)) {
++    if (mp->conf_state != PT_PROTO_ACCEPTING_METHODS)
++      goto err;
++
++    parse_proxy_error(line);
++    goto err;
+   } else if (!strcmpstart(line, SPAWN_ERROR_MESSAGE)) {
+     /* managed proxy launch failed: parse error message to learn why. */
+     int retval, child_state, saved_errno;
+@@ -1105,6 +1187,21 @@ parse_cmethod_line(const char *line, managed_proxy_t *mp)
+   return r;
+ }
+ 
++/** Parses an PROXY-ERROR <b>line</b> and warns the user accordingly. */
++static void
++parse_proxy_error(const char *line)
++{
++  /* (Length of the protocol string) plus (a space) and (the first char of
++     the error message) */
++  if (strlen(line) < (strlen(PROTO_PROXY_ERROR) + 2))
++    log_notice(LD_CONFIG, "Managed proxy sent us an %s without an error "
++               "message.", PROTO_PROXY_ERROR);
++
++  log_warn(LD_CONFIG, "Managed proxy failed to configure the "
++           "pluggable transport's outgoing proxy. (%s)",
++           line+strlen(PROTO_PROXY_ERROR)+1);
++}
++
+ /** Return the string that tor should place in TOR_PT_SERVER_BINDADDR
+  *  while configuring the server managed proxy in <b>mp</b>. The
+  *  string is stored in the heap, and it's the the responsibility of
+@@ -1193,6 +1290,14 @@ create_managed_proxy_environment(const managed_proxy_t *mp)
+      * variable in Tor's environment and crash PTs that try to parse
+      * it even when not run in server mode.) */
+     smartlist_add(envs, tor_strdup("TOR_PT_EXTENDED_SERVER_PORT="));
++  } else {
++    /* If ClientTransportPlugin has a HTTPS/SOCKS proxy configured, set the
++     * TOR_PT_PROXY line.
++     */
++
++    if (mp->proxy_uri) {
++      smartlist_add_asprintf(envs, "TOR_PT_PROXY=%s", mp->proxy_uri);
++    }
+   }
+ 
+   SMARTLIST_FOREACH_BEGIN(envs, const char *, env_var) {
+@@ -1225,6 +1330,7 @@ managed_proxy_create(const smartlist_t *transport_list,
+   mp->is_server = is_server;
+   mp->argv = proxy_argv;
+   mp->transports = smartlist_new();
++  mp->proxy_uri = get_pt_proxy_uri();
+ 
+   mp->transports_to_launch = smartlist_new();
+   SMARTLIST_FOREACH(transport_list, const char *, transport,
+diff --git a/src/or/transports.h b/src/or/transports.h
+index 6ee82f4..f13de5d 100644
+--- a/src/or/transports.h
++++ b/src/or/transports.h
+@@ -74,6 +74,9 @@ typedef struct {
+   char **argv; /* the cli arguments of this proxy */
+   int conf_protocol; /* the configuration protocol version used */
+ 
++  char *proxy_uri;  /* the outgoing proxy in TOR_PT_PROXY URI format */
++  int proxy_supported : 1; /* the proxy claims to honor TOR_PT_PROXY */
++
+   int is_server; /* is it a server proxy? */
+ 
+   /* A pointer to the process handle of this managed proxy. */
+-- 
+1.8.1.2
+
+From 34004139ee9380c5c468d28037520d02681dd7cf Mon Sep 17 00:00:00 2001
+From: Yawning Angel <yawning@schwanenlied.me>
+Date: Thu, 1 May 2014 19:01:34 +0000
+Subject: [PATCH 2/2] Improve the log message when a transport doesn't support
+ proxies.
+
+Per feedback, explicltly note that the transport will be killed when it
+does not acknowledge the configured outgoing proxy.
+---
+ src/or/transports.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/or/transports.c b/src/or/transports.c
+index cae1f31..917d12a 100644
+--- a/src/or/transports.c
++++ b/src/or/transports.c
+@@ -798,7 +798,8 @@ handle_finished_proxy(managed_proxy_t *mp)
+   case PT_PROTO_CONFIGURED: /* if configured correctly: */
+     if (mp->proxy_uri && !mp->proxy_supported) {
+       log_warn(LD_CONFIG, "Managed proxy '%s' did not configure the "
+-               "specified outgoing proxy.", mp->argv[0]);
++               "specified outgoing proxy and will be terminated.",
++               mp->argv[0]);
+       managed_proxy_destroy(mp, 1); /* annihilate it. */
+       break;
+     }
+-- 
+1.8.1.2
+
