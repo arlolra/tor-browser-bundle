@@ -1,3 +1,12 @@
+Tor Browser Bundle 3.6.1 -- May 6 2014
+ * All Platforms
+   * Update HTTPS-Everywhere to 3.5.1
+   * Bug 11658: Fix proxy configuration for non-Pluggable Transports users
+   * Backport Pending Tor Patches:
+     * Bug 8402: Allow Tor proxy configuration while PTs are present
+   * Note: The Pluggable Transports themselves have not been updated to
+           support proxy configuration yet.
+
 Tor Browser Bundle 3.6 -- Apr 29 2014
  * All Platforms
    * Update Firefox to 24.5.0esr
