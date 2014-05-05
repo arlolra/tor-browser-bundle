@@ -1,6 +1,7 @@
 Tor Browser Bundle 3.6.1 -- May 6 2014
  * All Platforms
    * Update HTTPS-Everywhere to 3.5.1
+   * Update NoScript to 2.6.8.22
    * Bug 11658: Fix proxy configuration for non-Pluggable Transports users
    * Backport Pending Tor Patches:
      * Bug 8402: Allow Tor proxy configuration while PTs are present
