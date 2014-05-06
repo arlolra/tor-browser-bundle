@@ -44,6 +44,8 @@ cd "$INPUTS_DIR"
 CLEANUP=$(tempfile)
 trap "bash '$CLEANUP'; rm -f '$CLEANUP'" EXIT
 
+# FIXME: This code is copied to verify-tags.sh.. Should we make a bash
+# function library?
 verify() {
   local file="$1"; shift
   local keyring="$1"; shift

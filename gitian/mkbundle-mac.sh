@@ -72,9 +72,16 @@ $WRAPPER_DIR/build-helpers/dtar.sh $GITIAN_DIR/inputs/dmg-applications.tar.xz .
 
 cd $WRAPPER_DIR
 
+# FIXME: Library function?
+die_msg() {
+  local msg="$1"; shift
+  printf "\n\n$msg\n"
+  exit 1
+}
+
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
-  ./verify-tags.sh $GITIAN_DIR/inputs $VERSIONS_FILE || exit 1
+  ./verify-tags.sh $GITIAN_DIR/inputs $VERSIONS_FILE || die_msg "You should run 'make prep' to ensure your inputs are up to date"
   # If we're verifying tags, be explicit to gitian that we
   # want to build from tags.
   NSIS_TAG=refs/tags/$NSIS_TAG

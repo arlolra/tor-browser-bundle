@@ -65,6 +65,13 @@ $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/linux-skeleton.zip .
 
 cd $WRAPPER_DIR
 
+# FIXME: Library function?
+die_msg() {
+  local msg="$1"; shift
+  printf "\n\n$msg\n"
+  exit 1
+}
+
 # Let's preserve the original $FOO for creating proper symlinks after building
 # the utils both if we verify tags and if we don't.
 
@@ -72,7 +79,7 @@ LIBEVENT_TAG_ORIG=$LIBEVENT_TAG
 
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
-  ./verify-tags.sh $GITIAN_DIR/inputs $VERSIONS_FILE || exit 1
+  ./verify-tags.sh $GITIAN_DIR/inputs $VERSIONS_FILE || die_msg "You should run 'make prep' to ensure your inputs are up to date"
   # If we're verifying tags, be explicit to gitian that we
   # want to build from tags.
   NSIS_TAG=refs/tags/$NSIS_TAG
