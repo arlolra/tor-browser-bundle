@@ -1,4 +1,4 @@
-From 7476a5c00aabdb2b2b4cd29f3029a7fa3afc657d Mon Sep 17 00:00:00 2001
+From 2c9bcdf79a9ba98b79feba10a8000f5609de36e6 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Tue, 25 Mar 2014 07:21:22 +0000
 Subject: [PATCH 1/5] Allow ClientTransportPlugins to use proxies
@@ -17,10 +17,10 @@ This fixes bug #8402.
  5 files changed, 258 insertions(+), 27 deletions(-)
 
 diff --git a/src/or/config.c b/src/or/config.c
-index da6aec0..91e8410 100644
+index 1faf138..614e779 100644
 --- a/src/or/config.c
 +++ b/src/or/config.c
-@@ -535,7 +535,9 @@ static int options_transition_affects_descriptor(
+@@ -536,7 +536,9 @@ static int options_transition_affects_descriptor(
        const or_options_t *old_options, const or_options_t *new_options);
  static int check_nickname_list(char **lst, const char *name, char **msg);
  
@@ -31,7 +31,7 @@ index da6aec0..91e8410 100644
  
  static int parse_server_transport_line(const char *line, int validate_only);
  static char *get_bindaddr_from_transport_listen_line(const char *line,
-@@ -1399,7 +1401,7 @@ options_act(const or_options_t *old_options)
+@@ -1426,7 +1428,7 @@ options_act(const or_options_t *old_options)
    pt_prepare_proxy_list_for_config_read();
    if (options->ClientTransportPlugin) {
      for (cl = options->ClientTransportPlugin; cl; cl = cl->next) {
@@ -40,7 +40,7 @@ index da6aec0..91e8410 100644
          log_warn(LD_BUG,
                   "Previously validated ClientTransportPlugin line "
                   "could not be added!");
-@@ -3120,11 +3122,11 @@ options_validate(or_options_t *old_options, or_options_t *options,
+@@ -3169,11 +3171,11 @@ options_validate(or_options_t *old_options, or_options_t *options,
      }
    }
  
@@ -55,7 +55,7 @@ index da6aec0..91e8410 100644
  
    /* Check if the proxies will give surprising behavior. */
    if (options->HTTPProxy && !(options->Socks4Proxy ||
-@@ -3237,7 +3239,7 @@ options_validate(or_options_t *old_options, or_options_t *options,
+@@ -3284,7 +3286,7 @@ options_validate(or_options_t *old_options, or_options_t *options,
    }
  
    for (cl = options->ClientTransportPlugin; cl; cl = cl->next) {
@@ -64,7 +64,7 @@ index da6aec0..91e8410 100644
        REJECT("Transport line did not parse. See logs for details.");
    }
  
-@@ -4609,7 +4611,8 @@ parse_bridge_line(const char *line)
+@@ -4734,7 +4736,8 @@ parse_bridge_line(const char *line)
   * our internal transport list.
   * - If it's a managed proxy line, launch the managed proxy. */
  static int
@@ -74,7 +74,7 @@ index da6aec0..91e8410 100644
  {
    smartlist_t *items = NULL;
    int r;
-@@ -4700,6 +4703,13 @@ parse_client_transport_line(const char *line, int validate_only)
+@@ -4825,6 +4828,13 @@ parse_client_transport_line(const char *line, int validate_only)
        pt_kickstart_client_proxy(transport_list, proxy_argv);
      }
    } else { /* external */
@@ -89,7 +89,7 @@ index da6aec0..91e8410 100644
        log_warn(LD_CONFIG, "You can't have an external proxy with "
                 "more than one transports.");
 diff --git a/src/or/connection.c b/src/or/connection.c
-index 8c697d6..93d164c 100644
+index 3cc4e09..a9c5596 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
 @@ -86,6 +86,8 @@ static int connection_read_https_proxy_response(connection_t *conn);
@@ -101,7 +101,7 @@ index 8c697d6..93d164c 100644
  
  /** The last addresses that our network interface seemed to have been
   * binding to.  We use this as one way to detect when our IP changes.
-@@ -1671,14 +1673,14 @@ get_proxy_type(void)
+@@ -1689,14 +1691,14 @@ get_proxy_type(void)
  {
    const or_options_t *options = get_options();
  
@@ -119,7 +119,7 @@ index 8c697d6..93d164c 100644
    else
      return PROXY_NONE;
  }
-@@ -4733,6 +4735,35 @@ assert_connection_ok(connection_t *conn, time_t now)
+@@ -4771,6 +4773,35 @@ assert_connection_ok(connection_t *conn, time_t now)
  }
  
  /** Fills <b>addr</b> and <b>port</b> with the details of the global
@@ -155,7 +155,7 @@ index 8c697d6..93d164c 100644
   *  proxy server we are using.
   *  <b>conn</b> contains the connection we are using the proxy for.
   *
-@@ -4744,6 +4775,16 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
+@@ -4782,6 +4813,16 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
  {
    const or_options_t *options = get_options();
  
@@ -172,7 +172,7 @@ index 8c697d6..93d164c 100644
    if (options->HTTPSProxy) {
      tor_addr_copy(addr, &options->HTTPSProxyAddr);
      *port = options->HTTPSProxyPort;
-@@ -4759,19 +4800,8 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
+@@ -4797,19 +4838,8 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
      *port = options->Socks5ProxyPort;
      *proxy_type = PROXY_SOCKS5;
      return 0;
@@ -193,12 +193,12 @@ index 8c697d6..93d164c 100644
 +    return get_bridge_pt_addrport(addr, port, proxy_type, conn);
    }
  
-   *proxy_type = PROXY_NONE;
+   tor_addr_make_unspec(addr);
 diff --git a/src/or/transports.c b/src/or/transports.c
-index 8b4a118..8e82a41 100644
+index dc30754..b810315 100644
 --- a/src/or/transports.c
 +++ b/src/or/transports.c
-@@ -122,6 +122,8 @@ static INLINE void free_execve_args(char **arg);
+@@ -124,6 +124,8 @@ static INLINE void free_execve_args(char **arg);
  #define PROTO_SMETHOD_ERROR "SMETHOD-ERROR"
  #define PROTO_CMETHODS_DONE "CMETHODS DONE"
  #define PROTO_SMETHODS_DONE "SMETHODS DONE"
@@ -207,7 +207,7 @@ index 8b4a118..8e82a41 100644
  
  /** The first and only supported - at the moment - configuration
      protocol version. */
-@@ -437,6 +439,17 @@ add_transport_to_proxy(const char *transport, managed_proxy_t *mp)
+@@ -439,6 +441,17 @@ add_transport_to_proxy(const char *transport, managed_proxy_t *mp)
  static int
  proxy_needs_restart(const managed_proxy_t *mp)
  {
@@ -225,7 +225,7 @@ index 8b4a118..8e82a41 100644
    /* mp->transport_to_launch is populated with the names of the
       transports that must be launched *after* the SIGHUP.
       mp->transports is populated with the transports that were
-@@ -457,10 +470,10 @@ proxy_needs_restart(const managed_proxy_t *mp)
+@@ -459,10 +472,10 @@ proxy_needs_restart(const managed_proxy_t *mp)
  
    } SMARTLIST_FOREACH_END(t);
  
@@ -240,7 +240,7 @@ index 8b4a118..8e82a41 100644
  }
  
  /** Managed proxy <b>mp</b> must be restarted. Do all the necessary
-@@ -491,6 +504,11 @@ proxy_prepare_for_restart(managed_proxy_t *mp)
+@@ -493,6 +506,11 @@ proxy_prepare_for_restart(managed_proxy_t *mp)
    SMARTLIST_FOREACH(mp->transports, transport_t *, t, transport_free(t));
    smartlist_clear(mp->transports);
  
@@ -252,7 +252,7 @@ index 8b4a118..8e82a41 100644
    /* flag it as an infant proxy so that it gets launched on next tick */
    mp->conf_state = PT_PROTO_INFANT;
    unconfigured_proxies_n++;
-@@ -725,12 +743,52 @@ managed_proxy_destroy(managed_proxy_t *mp,
+@@ -727,12 +745,52 @@ managed_proxy_destroy(managed_proxy_t *mp,
    /* free the argv */
    free_execve_args(mp->argv);
  
@@ -305,7 +305,7 @@ index 8b4a118..8e82a41 100644
  /** Handle a configured or broken managed proxy <b>mp</b>. */
  static void
  handle_finished_proxy(managed_proxy_t *mp)
-@@ -743,6 +801,12 @@ handle_finished_proxy(managed_proxy_t *mp)
+@@ -745,6 +803,12 @@ handle_finished_proxy(managed_proxy_t *mp)
      managed_proxy_destroy(mp, 0); /* destroy it but don't terminate */
      break;
    case PT_PROTO_CONFIGURED: /* if configured correctly: */
@@ -318,7 +318,7 @@ index 8b4a118..8e82a41 100644
      register_proxy(mp); /* register its transports */
      mp->conf_state = PT_PROTO_COMPLETED; /* and mark it as completed. */
      break;
-@@ -860,6 +924,22 @@ handle_proxy_line(const char *line, managed_proxy_t *mp)
+@@ -862,6 +926,22 @@ handle_proxy_line(const char *line, managed_proxy_t *mp)
        goto err;
  
      return;
@@ -341,7 +341,7 @@ index 8b4a118..8e82a41 100644
    } else if (!strcmpstart(line, SPAWN_ERROR_MESSAGE)) {
      /* managed proxy launch failed: parse error message to learn why. */
      int retval, child_state, saved_errno;
-@@ -1126,6 +1206,21 @@ parse_cmethod_line(const char *line, managed_proxy_t *mp)
+@@ -1128,6 +1208,21 @@ parse_cmethod_line(const char *line, managed_proxy_t *mp)
    return r;
  }
  
@@ -363,7 +363,7 @@ index 8b4a118..8e82a41 100644
  /** Return a newly allocated string that tor should place in
   * TOR_PT_SERVER_TRANSPORT_OPTIONS while configuring the server
   * manged proxy in <b>mp</b>. Return NULL if no such options are found. */
-@@ -1286,6 +1381,14 @@ create_managed_proxy_environment(const managed_proxy_t *mp)
+@@ -1292,6 +1387,14 @@ create_managed_proxy_environment(const managed_proxy_t *mp)
      } else {
        smartlist_add_asprintf(envs, "TOR_PT_EXTENDED_SERVER_PORT=");
      }
@@ -378,7 +378,7 @@ index 8b4a118..8e82a41 100644
    }
  
    SMARTLIST_FOREACH_BEGIN(envs, const char *, env_var) {
-@@ -1318,6 +1421,7 @@ managed_proxy_create(const smartlist_t *transport_list,
+@@ -1324,6 +1427,7 @@ managed_proxy_create(const smartlist_t *transport_list,
    mp->is_server = is_server;
    mp->argv = proxy_argv;
    mp->transports = smartlist_new();
@@ -387,7 +387,7 @@ index 8b4a118..8e82a41 100644
    mp->transports_to_launch = smartlist_new();
    SMARTLIST_FOREACH(transport_list, const char *, transport,
 diff --git a/src/or/transports.h b/src/or/transports.h
-index 7b524f2..5b8144b 100644
+index 1365ead..bc2331d 100644
 --- a/src/or/transports.h
 +++ b/src/or/transports.h
 @@ -81,6 +81,9 @@ typedef struct {
@@ -418,11 +418,11 @@ index 7b524f2..5b8144b 100644
  
  #endif
 diff --git a/src/test/test_pt.c b/src/test/test_pt.c
-index 3277921..ada8dbe 100644
+index f71627d..788d420 100644
 --- a/src/test/test_pt.c
 +++ b/src/test/test_pt.c
-@@ -435,6 +435,85 @@ test_pt_configure_proxy(void *arg)
-   }
+@@ -450,6 +450,85 @@ test_pt_configure_proxy(void *arg)
+   tor_free(mp);
  }
  
 +/* Test the get_pt_proxy_uri() function. */
@@ -507,7 +507,7 @@ index 3277921..ada8dbe 100644
  #define PT_LEGACY(name)                                               \
    { #name, legacy_test_helper, 0, &legacy_setup, test_pt_ ## name }
  
-@@ -447,6 +526,8 @@ struct testcase_t pt_tests[] = {
+@@ -462,6 +541,8 @@ struct testcase_t pt_tests[] = {
      NULL, NULL },
    { "configure_proxy",test_pt_configure_proxy, TT_FORK,
      NULL, NULL },
@@ -517,9 +517,10 @@ index 3277921..ada8dbe 100644
  };
  
 -- 
-1.8.1.2
+2.0.0.rc0
 
-From bc59556e87a0b0ebaf2adfc57147522f05b3f974 Mon Sep 17 00:00:00 2001
+
+From d1f3631335cc2757e2319055348a1614a00fa7b2 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Mon, 14 Apr 2014 21:51:34 +0000
 Subject: [PATCH 2/5] Fixed the test build with --enable-gcc-warnings
@@ -529,10 +530,10 @@ Subject: [PATCH 2/5] Fixed the test build with --enable-gcc-warnings
  1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/src/test/test_pt.c b/src/test/test_pt.c
-index ada8dbe..ac604eb 100644
+index 788d420..cfbd084 100644
 --- a/src/test/test_pt.c
 +++ b/src/test/test_pt.c
-@@ -449,7 +449,7 @@ test_get_pt_proxy_uri(void *arg)
+@@ -464,7 +464,7 @@ test_get_pt_proxy_uri(void *arg)
    tt_assert(uri == NULL);
  
    /* Test with a SOCKS4 proxy. */
@@ -541,7 +542,7 @@ index ada8dbe..ac604eb 100644
    ret = tor_addr_port_lookup(options->Socks4Proxy,
                               &options->Socks4ProxyAddr,
                               &options->Socks4ProxyPort);
-@@ -457,11 +457,10 @@ test_get_pt_proxy_uri(void *arg)
+@@ -472,11 +472,10 @@ test_get_pt_proxy_uri(void *arg)
    uri = get_pt_proxy_uri();
    tt_str_op(uri, ==, "socks4a://192.0.2.1:1080");
    tor_free(uri);
@@ -555,7 +556,7 @@ index ada8dbe..ac604eb 100644
    ret = tor_addr_port_lookup(options->Socks5Proxy,
                               &options->Socks5ProxyAddr,
                               &options->Socks5ProxyPort);
-@@ -471,16 +470,17 @@ test_get_pt_proxy_uri(void *arg)
+@@ -486,16 +485,17 @@ test_get_pt_proxy_uri(void *arg)
    tor_free(uri);
  
    /* Test with a SOCKS5 proxy, with username/password. */
@@ -578,7 +579,7 @@ index ada8dbe..ac604eb 100644
    ret = tor_addr_port_lookup(options->HTTPSProxy,
                               &options->HTTPSProxyAddr,
                               &options->HTTPSProxyPort);
-@@ -490,15 +490,15 @@ test_get_pt_proxy_uri(void *arg)
+@@ -505,15 +505,15 @@ test_get_pt_proxy_uri(void *arg)
    tor_free(uri);
  
    /* Test with a HTTPS proxy, with authenticator. */
@@ -598,7 +599,7 @@ index ada8dbe..ac604eb 100644
    ret = tor_addr_port_lookup(options->Socks4Proxy,
                               &options->Socks4ProxyAddr,
                               &options->Socks4ProxyPort);
-@@ -506,7 +506,7 @@ test_get_pt_proxy_uri(void *arg)
+@@ -521,7 +521,7 @@ test_get_pt_proxy_uri(void *arg)
    uri = get_pt_proxy_uri();
    tt_str_op(uri, ==, "socks4a://[2001:db8::1]:1080");
    tor_free(uri);
@@ -608,9 +609,10 @@ index ada8dbe..ac604eb 100644
   done:
    if (uri)
 -- 
-1.8.1.2
+2.0.0.rc0
 
-From 3c991178926f39ffacef1d86e403f5d360d30404 Mon Sep 17 00:00:00 2001
+
+From e2b63cda85ba08b1675c7cf376d21700ca34bcf5 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Thu, 1 May 2014 03:30:09 +0000
 Subject: [PATCH 3/5] Remove get_bridge_pt_addrport().
@@ -627,7 +629,7 @@ being used, it is PT/proxy-less.
  1 file changed, 12 insertions(+), 34 deletions(-)
 
 diff --git a/src/or/connection.c b/src/or/connection.c
-index 93d164c..9a766d6 100644
+index a9c5596..4bb2683 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
 @@ -86,8 +86,6 @@ static int connection_read_https_proxy_response(connection_t *conn);
@@ -639,7 +641,7 @@ index 93d164c..9a766d6 100644
  
  /** The last addresses that our network interface seemed to have been
   * binding to.  We use this as one way to detect when our IP changes.
-@@ -4735,35 +4733,6 @@ assert_connection_ok(connection_t *conn, time_t now)
+@@ -4773,35 +4771,6 @@ assert_connection_ok(connection_t *conn, time_t now)
  }
  
  /** Fills <b>addr</b> and <b>port</b> with the details of the global
@@ -675,7 +677,7 @@ index 93d164c..9a766d6 100644
   *  proxy server we are using.
   *  <b>conn</b> contains the connection we are using the proxy for.
   *
-@@ -4781,8 +4750,19 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
+@@ -4819,8 +4788,19 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
     * the config to have unused ClientTransportPlugin entries.
     */
    if (options->ClientTransportPlugin) {
@@ -696,7 +698,7 @@ index 93d164c..9a766d6 100644
    }
  
    if (options->HTTPSProxy) {
-@@ -4800,8 +4780,6 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
+@@ -4838,8 +4818,6 @@ get_proxy_addrport(tor_addr_t *addr, uint16_t *port, int *proxy_type,
      *port = options->Socks5ProxyPort;
      *proxy_type = PROXY_SOCKS5;
      return 0;
@@ -704,11 +706,12 @@ index 93d164c..9a766d6 100644
 -    return get_bridge_pt_addrport(addr, port, proxy_type, conn);
    }
  
-   *proxy_type = PROXY_NONE;
+   tor_addr_make_unspec(addr);
 -- 
-1.8.1.2
+2.0.0.rc0
 
-From c4c41bb8e31ab39f2c7fe3c8f11ee727a65c3e09 Mon Sep 17 00:00:00 2001
+
+From ae0174c6e1da1051403c51fa881f66d57cc22acd Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Thu, 1 May 2014 03:43:53 +0000
 Subject: [PATCH 4/5] Log the correct proxy type on failure.
@@ -721,10 +724,10 @@ config.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/or/connection.c b/src/or/connection.c
-index 9a766d6..b2e6a69 100644
+index 4bb2683..cfa6ee5 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
-@@ -4801,7 +4801,7 @@ log_failed_proxy_connection(connection_t *conn)
+@@ -4841,7 +4841,7 @@ log_failed_proxy_connection(connection_t *conn)
    log_warn(LD_NET,
             "The connection to the %s proxy server at %s just failed. "
             "Make sure that the proxy server is up and running.",
@@ -734,9 +737,10 @@ index 9a766d6..b2e6a69 100644
  }
  
 -- 
-1.8.1.2
+2.0.0.rc0
 
-From e3b5b7f4b9e5ef4637f0719d54be9f534e41019c Mon Sep 17 00:00:00 2001
+
+From 378e6f7f8521ed0c35dc1afc91840117713498fb Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Thu, 1 May 2014 18:58:53 +0000
 Subject: [PATCH 5/5] Improve the log message when a transport doesn't support
@@ -749,10 +753,10 @@ does not acknowledge the configured outgoing proxy.
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/or/transports.c b/src/or/transports.c
-index 8e82a41..3991bd3 100644
+index b810315..eee159d 100644
 --- a/src/or/transports.c
 +++ b/src/or/transports.c
-@@ -803,7 +803,8 @@ handle_finished_proxy(managed_proxy_t *mp)
+@@ -805,7 +805,8 @@ handle_finished_proxy(managed_proxy_t *mp)
    case PT_PROTO_CONFIGURED: /* if configured correctly: */
      if (mp->proxy_uri && !mp->proxy_supported) {
        log_warn(LD_CONFIG, "Managed proxy '%s' did not configure the "
@@ -763,5 +767,5 @@ index 8e82a41..3991bd3 100644
        break;
      }
 -- 
-1.8.1.2
+2.0.0.rc0
 
