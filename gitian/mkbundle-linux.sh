@@ -100,8 +100,8 @@ cd $GITIAN_DIR
 
 if [ ! -f inputs/openssl-$OPENSSL_VER-linux32-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-linux64-utils.zip -o \
-     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG:8:6}-linux32-utils.zip -o \
-     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG:8:6}-linux64-utils.zip -o \
+     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip -o \
+     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip -o \
      ! -f inputs/python-$PYTHON_VER-linux32-utils.zip -o \
      ! -f inputs/python-$PYTHON_VER-linux64-utils.zip -o \
      ! -f inputs/lxml-$LXML_VER-linux32-utils.zip -o \
@@ -122,9 +122,8 @@ then
   cp -a ../build/out/*-utils.zip .
   ln -sf openssl-$OPENSSL_VER-linux32-utils.zip openssl-linux32-utils.zip
   ln -sf openssl-$OPENSSL_VER-linux64-utils.zip openssl-linux64-utils.zip
-  # TODO: It is not guaranteed we have a X.X.XX-style version.
-  ln -sf libevent-${LIBEVENT_TAG_ORIG:8:6}-linux32-utils.zip libevent-linux32-utils.zip
-  ln -sf libevent-${LIBEVENT_TAG_ORIG:8:6}-linux64-utils.zip libevent-linux64-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip libevent-linux32-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip libevent-linux64-utils.zip
   ln -sf python-$PYTHON_VER-linux32-utils.zip python-linux32-utils.zip
   ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
   ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
@@ -140,9 +139,8 @@ else
   cd inputs
   ln -sf openssl-$OPENSSL_VER-linux32-utils.zip openssl-linux32-utils.zip
   ln -sf openssl-$OPENSSL_VER-linux64-utils.zip openssl-linux64-utils.zip
-  # TODO: It is not guaranteed we have a X.X.XX-style version.
-  ln -sf libevent-${LIBEVENT_TAG_ORIG:8:6}-linux32-utils.zip libevent-linux32-utils.zip
-  ln -sf libevent-${LIBEVENT_TAG_ORIG:8:6}-linux64-utils.zip libevent-linux64-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip libevent-linux32-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip libevent-linux64-utils.zip
   ln -sf python-$PYTHON_VER-linux32-utils.zip python-linux32-utils.zip
   ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
   ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip

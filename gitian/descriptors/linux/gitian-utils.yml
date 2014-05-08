@@ -89,14 +89,13 @@ script: |
   $INSTDIR/python/bin/python2.7 setup.py build
   cd build/lib*
   ~/build/dzip.sh lxml-$LXML_VER-linux$GBUILD_BITS-utils.zip lxml
-  cp *-utils.zip $OUTDIR
+  cp *utils.zip $OUTDIR
   cd ../../../
 
   # Grabbing the remaining results
   cd $INSTDIR
   ~/build/dzip.sh openssl-$OPENSSL_VER-linux$GBUILD_BITS-utils.zip openssl
-  # TODO: It is not guaranteed we have a X.X.XX-style version.
-  ~/build/dzip.sh libevent-${LIBEVENT_TAG:8:6}-linux$GBUILD_BITS-utils.zip libevent
+  ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-linux$GBUILD_BITS-utils.zip libevent
   ~/build/dzip.sh python-$PYTHON_VER-linux$GBUILD_BITS-utils.zip python
 
-  cp $INSTDIR/*-utils.zip $OUTDIR/
+  cp *utils.zip $OUTDIR/
