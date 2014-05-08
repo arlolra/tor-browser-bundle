@@ -26,6 +26,8 @@ remotes:
   "dir": "flashproxy"
 - "url": "https://github.com/kpdyer/fteproxy.git"
   "dir": "fteproxy"
+- "url": "https://github.com/habnabit/txsocksx.git"
+  "dir": "txsocksx"
 files:
 - "openssl.tar.gz"
 - "gmp.tar.bz2"
@@ -36,6 +38,7 @@ files:
 - "zope.interface.zip"
 - "twisted.tar.bz2"
 - "m2crypto.tar.gz"
+- "parsley.tar.gz"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
 - "python.msi"
@@ -191,6 +194,22 @@ script: |
   # the -c option, so we set the compiler in a configuration file.
   echo $'[build_ext]\ncompiler=mingw32' > setup.cfg
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
+  cd ..
+  #
+  tar xzf parsley.tar.gz
+  cd Parsley-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  LD_PRELOAD= $INSTPYTHON setup.py install
+  cd ..
+  #
+  cd txsocksx
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  # Let's pretend we have the setup dependency already as we don't want to get
+  # it downloaded during building. Just pretending and thus avoiding another
+  # dependency should be fine here as txsocksx catches the exception due to
+  # missing __version__ and __sha__ .
+  mkdir vcversioner-1.14.1.1-py2.7.egg
+  LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
   #
   # py2exe byte-compiles to .pyc files, which embed the mtime of the parent .py file.

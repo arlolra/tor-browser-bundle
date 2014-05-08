@@ -178,7 +178,7 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_ASN}${!PACKAGE}"
 done
 
-for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS
+for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
@@ -229,7 +229,7 @@ fi
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -281,6 +281,7 @@ ln -sf "$PY2EXE_PACKAGE" py2exe.exe
 ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
 ln -sf "$GMP_PACKAGE" gmp.tar.bz2
 ln -sf "$LXML_PACKAGE" lxml.tar.gz
+ln -sf "$PARSLEY_PACKAGE" parsley.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
@@ -308,6 +309,7 @@ obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPRO
 flashproxy            https://git.torproject.org/flashproxy.git $FLASHPROXY_TAG
 fteproxy              https://github.com/kpdyer/fteproxy.git $FTEPROXY_TAG
 libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG
+txsocksx              https://github.com/habnabit/txsocksx.git $TXSOCKSX_TAG
 EOF
 
 exit 0

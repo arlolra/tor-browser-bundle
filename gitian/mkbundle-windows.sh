@@ -143,7 +143,7 @@ then
   echo "****** Starting Pluggable Transports Component of Windows Bundle (3/4 for Windows) ******"
   echo 
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,fteproxy=$FTEPROXY_TAG $DESCRIPTOR_DIR/windows/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG $DESCRIPTOR_DIR/windows/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./pluggable-transports-fail-win32.log.`date +%Y%m%d%H%M%S`

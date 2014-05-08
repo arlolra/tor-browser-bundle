@@ -107,6 +107,7 @@ while read dir commit; do
 done << EOF
 libdmg-hfsplus          $LIBDMG_TAG
 fteproxy                $FTEPROXY_TAG
+txsocksx                $TXSOCKSX_TAG
 EOF
 
 # Verify signatures on signed packages
@@ -130,7 +131,7 @@ done
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"

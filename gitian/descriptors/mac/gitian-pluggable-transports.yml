@@ -25,6 +25,8 @@ remotes:
   "dir": "flashproxy"
 - "url": "https://github.com/kpdyer/fteproxy.git"
   "dir": "fteproxy"
+- "url": "https://github.com/habnabit/txsocksx.git"
+  "dir": "txsocksx"
 files:
 - "openssl.tar.gz"
 - "gmp.tar.bz2"
@@ -34,6 +36,7 @@ files:
 - "zope.interface.zip"
 - "twisted.tar.bz2"
 - "m2crypto.tar.gz"
+- "parsley.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
@@ -124,6 +127,26 @@ script: |
   LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers
   python setup.py build --build-lib build
   cp -a build/twisted $PTDIR/
+  cd ..
+  #
+  tar xzf parsley.tar.gz
+  cd Parsley-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  python setup.py build --build-lib build
+  cp -a build/parsley.py $PTDIR/
+  cp -a build/ometa $PTDIR/
+  cp -a build/terml $PTDIR/
+  cd ..
+  #
+  cd txsocksx
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  # Let's pretend we have the setup dependency already as we don't want to get
+  # it downloaded during building. Just pretending and thus avoiding another
+  # dependency should be fine here as txsocksx catches the exception due to
+  # missing __version__ and __sha__ .
+  mkdir vcversioner-1.14.1.1-py2.7.egg
+  python setup.py build --build-lib build
+  cp -a build/txsocksx $PTDIR/
   cd ..
   #
   cd obfsproxy
