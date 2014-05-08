@@ -274,5 +274,5 @@ script: |
   cp -a $INSTDIR/python/python27.dll $PTDIR/
   #
   cd $INSTDIR
-  ~/build/dzip.sh pluggable-transports-win32-gbuilt.zip Tor/ Data/
+  ~/build/dzip.sh pluggable-transports-win32-gbuilt.zip Tor/ Data/ Docs/
   cp pluggable-transports-win32-gbuilt.zip $OUTDIR/
