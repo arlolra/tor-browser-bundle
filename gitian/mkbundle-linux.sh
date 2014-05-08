@@ -114,7 +114,7 @@ then
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/linux/gitian-utils.yml
   if [ $? -ne 0 ];
   then
-    #mv var/build.log ./tor-fail-linux.log.`date +%Y%m%d%H%M%S`
+    #mv var/build.log ./utils-fail-linux.log.`date +%Y%m%d%H%M%S`
     exit 1
   fi
 
@@ -129,7 +129,7 @@ then
   ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
   ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
   cd ..
-  #cp -a result/tor-linux-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/utils-linux-res.yml inputs/
 else
   echo
   echo "****** SKIPPING already built Utilities Component of Linux Bundle (1/5 for Linux) ******"
@@ -164,7 +164,7 @@ then
 
   cp -a build/out/tor-linux*-gbuilt.zip inputs/
   cp -a build/out/tor-linux*-debug.zip inputs/
-  #cp -a result/tor-linux-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/tor-linux-res.yml inputs/
 else
   echo
   echo "****** SKIPPING already built Tor Component of Linux Bundle (2/5 for Linux) ******"
@@ -188,7 +188,7 @@ then
 
   cp -a build/out/tor-browser-linux*-gbuilt.zip inputs/
   cp -a build/out/tor-browser-linux*-debug.zip inputs/
-  #cp -a result/torbrowser-linux-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/torbrowser-linux-res.yml inputs/
 else
   echo
   echo "****** SKIPPING already built TorBrowser Component of Linux Bundle (3/5 for Linux) ******"
@@ -211,7 +211,7 @@ then
 
   cp -a build/out/pluggable-transports-linux*-gbuilt.zip inputs/
   cp -a build/out/pluggable-transports-linux*-debug.zip inputs/
-  #cp -a result/pluggable-transports-linux-res.yml $GITIAN_DIR/inputs/
+  #cp -a result/pluggable-transports-linux-res.yml inputs/
 else
   echo
   echo "****** SKIPPING already built Pluggable Transports Component of Linux Bundle (4/5 for Linux) ******"

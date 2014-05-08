@@ -12,24 +12,18 @@ packages:
 - "autoconf2.13"
 - "faketime"
 - "yasm"
-- "mingw-w64"
-- "g++-mingw-w64-i686"
-- "mingw-w64-tools"
-- "libmpc-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
 files:
-# XXX: we need to make this input tarball deterministic :/
-- "mingw-w64-svn-snapshot.zip"
-- "binutils.tar.bz2"
-- "gcc.tar.bz2"
+- "mingw-w64-win32-utils.zip"
 - "re-dzip.sh"
 - "dzip.sh"
-- "i686-w64-mingw32-gcc"
-- "i686-w64-mingw32-g++"
-- "i686-w64-mingw32-ld"
+# TODO: Hardening.
+#- "i686-w64-mingw32-gcc"
+#- "i686-w64-mingw32-g++"
+#- "i686-w64-mingw32-ld"
 - "msvcr100.dll"
 - "versions"
 script: |
@@ -43,80 +37,14 @@ script: |
   #
   mkdir -p $INSTDIR/Browser/
   mkdir -p $OUTDIR/
-  # If we ever find out that the 12.04 mingw is buggy/insufficient:
-  #sudo bash -c 'echo "deb http://archive.ubuntu.com/ubuntu raring main restricted universe multiverse" >> /etc/apt/sources.list'
-  #sudo apt-get update
-  #sudo apt-get install -y g++-mingw-w64-i686 mingw-w64-tools mingw-w64
-  
-  # Build the latest MinGW-w64 headers, CRT and runtime libraries to get Tor
-  # Browser going on all Windows platforms >= XP. In order to do so we link
-  # against msvcr100 (which we ship with the browser) as msvcrt on Windows XP
-  # does not contain the secure functions Firefox uses. That in turn makes it
-  # necessary to re-compile the mingw-w64 runtime libraries as well as they are
-  # linked against msvcrt by default. See bug 9084 for a more detailed
-  # discussion.
-
-  # FIXME: We need sudo for all of this because otherwise
-  # the toolchain can't find the alternate prefix for the CRT headers :/ 
-
+  unzip -d $INSTDIR mingw-w64-win32-utils.zip
+  # Make sure our custom mingw gets used.
+  export PATH=$INSTDIR/mingw-w64/bin:$PATH
   # We don't want to link against msvcrt.dll due to bug 9084.
   i686-w64-mingw32-g++ -dumpspecs > msvcr100.spec
   sed 's/msvcrt/msvcr100/' -i msvcr100.spec
 
-  mkdir binutils
-  cd binutils
-  tar -xjvf ../binutils.tar.bz2
-  sed 's/= extern_rt_rel_d;/= extern_rt_rel_d;\n  memset (extern_rt_rel_d, 0, PE_IDATA5_SIZE);/' -i binutils-*/ld/pe-dll.c
-  binutils-*/configure --prefix=/usr --target=i686-w64-mingw32 --disable-multilib
-  make
-  sudo make install
-  cd ..
-
-  mkdir mingw-w64
-  cd mingw-w64
-  unzip ../mingw-w64-svn-snapshot.zip
-  #
-  mkdir mingw-w64-headers32 && cd mingw-w64-headers32
-  ../mingw-w64-svn/mingw-w64-headers/configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32/ --enable-sdk=all --enable-secure-api --enable-idl
-  sudo make install
-  sudo ln -s /usr/i686-w64-mingw32 /usr/mingw
-  sudo mkdir -p /usr/i686-w64-mingw32/lib
-  cd ..
-  cd ..
-  # First stage of gcc compilation
-  mkdir gcc 
-  cd gcc
-  tar -xjvf ../gcc.tar.bz2
-  # Linking libgcc against msvcrt is hard-coded...
-  sed 's/msvcrt/msvcr100/' -i gcc-*/gcc/config/i386/t-mingw-w32 
-  # LDFLAGS_FOR_TARGET does not work for some reason. Thus, we take
-  # CFLAGS_FOR_TARGET.
-  export CFLAGS_FOR_TARGET="-specs=/home/ubuntu/build/msvcr100.spec"
-  gcc-*/configure --prefix=/usr --target=i686-w64-mingw32 --disable-multilib --enable-languages=c,c++
-  make all-gcc
-  sudo make install-gcc
-  cd ..
-  #
-  cd mingw-w64
-  mkdir mingw-w64-crt32 && cd mingw-w64-crt32
-  ../mingw-w64-svn/mingw-w64-crt/configure --host=i686-w64-mingw32 --prefix=/usr/i686-w64-mingw32
-  make
-  sudo make install
-  cd ..
-  #
-  mkdir widl32 && cd widl32
-  ../mingw-w64-svn/mingw-w64-tools/widl/configure --prefix=/usr --target=i686-w64-mingw32
-  make
-  sudo make install
-  cd ..
-  cd ..
-  # Second stage of gcc compilation
-  cd gcc
-  make
-  sudo make install
-  #
-  cd ..
-  #
+  # Building the browser
   cd tor-browser
   mv .mozconfig-mingw .mozconfig
   # FIXME
@@ -130,7 +58,7 @@ script: |
   # is therefore just a workaround which should get fixed but is at least
   # justified as the signature of _strcmpi and _stricmp is the same, see:
   # http://msdn.microsoft.com/en-us/library/k59z8dwe.aspx.
-  sed 's/strcmpi/stricmp/' -i nsprpub/pr/src/linking/prlink.c 
+  sed 's/strcmpi/stricmp/' -i nsprpub/pr/src/linking/prlink.c
   export HOST_LDFLAGS=" "
   export LDFLAGS="-specs=/home/ubuntu/build/msvcr100.spec"
   # Our flags don't get passed to NSS. We need to do that manually using an
@@ -170,14 +98,12 @@ script: |
   # Stripping again updates the PE header checksums to be correct
   i686-w64-mingw32-strip $INSTDIR/Browser/gkmedias.dll
   i686-w64-mingw32-strip $INSTDIR/Browser/xul.dll
-  #
+
+  # Making the .ja files deterministic and grabbing the results
   cd $INSTDIR
   ~/build/re-dzip.sh Browser/omni.ja
-  if [ -f Browser/webapprt/omni.ja ]; then
-    ~/build/re-dzip.sh Browser/webapprt/omni.ja
-  fi
-  if [ -f Browser/browser/omni.ja ]; then
-    ~/build/re-dzip.sh Browser/browser/omni.ja
-  fi
+  ~/build/re-dzip.sh Browser/webapprt/omni.ja
+  ~/build/re-dzip.sh Browser/browser/omni.ja
   ~/build/dzip.sh tor-browser-win32-gbuilt.zip Browser
+
   cp tor-browser-win32-gbuilt.zip $OUTDIR

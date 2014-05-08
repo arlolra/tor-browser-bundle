@@ -4,7 +4,7 @@ suites:
 - "precise"
 architectures:
 - "i386"
-packages: 
+packages:
 - "git-core"
 - "unzip"
 - "zip"
@@ -18,10 +18,6 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
   "dir": "tor"
-- "url": "https://github.com/libevent/libevent.git"
-  "dir": "libevent"
-- "url": "https://github.com/madler/zlib.git"
-  "dir": "zlib"
 files:
 - "versions"
 - "bug10297.patch"
@@ -35,60 +31,33 @@ files:
 - "bug8402-master.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
-- "openssl.tar.gz"
+- "binutils-win32-utils.zip"
+- "openssl-win32-utils.zip"
+- "libevent-win32-utils.zip"
+- "zlib-win32-utils.zip"
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
-  # XXX: Hardening options cause the exe's to crash.. not sure why
-  #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
-  #export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/"
   umask 0022
-  # 
+  #
   mkdir -p $INSTDIR/bin/
   mkdir -p $INSTDIR/Tor/
   mkdir -p $INSTDIR/Data/Tor/
-  mkdir -p $OUTDIR/
-  #
-  mkdir binutils
-  cd binutils
-  tar -xjvf ../binutils.tar.bz2
-  sed 's/= extern_rt_rel_d;/= extern_rt_rel_d;\n  memset (extern_rt_rel_d, 0, PE_IDATA5_SIZE);/' -i binutils-*/ld/pe-dll.c
-  binutils-*/configure --prefix=/usr --target=i686-w64-mingw32 --disable-multilib
-  make
-  sudo make install
-  cd ..
-  #
-  export CFLAGS="-mwindows"
-  export LDFLAGS="-mwindows"
-  cd zlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1
-  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 install
+  unzip -d $INSTDIR binutils-win32-utils.zip
+  unzip -d $INSTDIR zlib-win32-utils.zip
+  unzip -d $INSTDIR libevent-win32-utils.zip
+  unzip -d $INSTDIR openssl-win32-utils.zip
   cp $INSTDIR/zlib/lib/*.dll $INSTDIR/Tor/
-  cd ..
-  #
-  cd libevent
-  ./autogen.sh
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --disable-static --host=i686-w64-mingw32 --prefix=$INSTDIR/libevent
-  make $MAKEOPTS
-  make install
   cp $INSTDIR/libevent/bin/*.dll $INSTDIR/Tor/
-  cd ..
-  #
-  tar xzf openssl.tar.gz
-  cd openssl-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl #enable-ec_nistp_64_gcc_128
-  make
-  make install
   cp $INSTDIR/openssl/bin/*.dll $INSTDIR/Tor/
-  cd ..
+  # Make sure our custom ld gets used.
+  # See the we-need-only-the-binutils-comment in gitian-utils.yml for the
+  # reasoning behind the "mingw-w64" dir instead of an expected "binutils" one.
+  export PATH=$INSTDIR/mingw-w64/bin:$PATH
   #
   cd tor
   git update-index --refresh -q
@@ -114,7 +83,7 @@ script: |
     fi
   fi
   mkdir -p $OUTDIR/src
-  git archive HEAD | tar -x -C $OUTDIR/src
+  #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   ./configure --disable-asciidoc --host=i686-w64-mingw32 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
@@ -124,7 +93,6 @@ script: |
   install -s $INSTDIR/bin/tor.exe $INSTDIR/Tor/
   cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
   # XXX: Geoip files..
-  #
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/Tor/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/Tor/
   #
