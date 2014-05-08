@@ -194,8 +194,8 @@ script: |
   CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CFLAGS" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CXXFLAGS" make
   cp -a bin/fteproxy $PTDIR/
   cp -ra fte $PTDIR/
-  mkdir -p $INSTDIR/Docs/fteproxy
-  cp -a {COPYING,README.md} $INSTDIR/Docs/fteproxy
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/fteproxy
+  cp -a {COPYING,README.md} $INSTDIR/TorBrowserBundle.app/Docs/fteproxy
   cd ..
   #
   cd $INSTDIR
