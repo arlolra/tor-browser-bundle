@@ -4,7 +4,7 @@ suites:
 - "precise"
 architectures:
 - "i386"
-packages: 
+packages:
 - "git-core"
 - "unzip"
 - "zip"
@@ -73,10 +73,9 @@ script: |
   #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
   #export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/"
   umask 0022
-  # 
+  #
   mkdir -p $INSTDIR/bin/
   mkdir -p $PTDIR/
-  mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $OUTDIR/
   #
   # Set the timestamp on every .pyc file in a zip file, and re-dzip the zip file.
@@ -274,5 +273,5 @@ script: |
   cp -a $INSTDIR/python/python27.dll $PTDIR/
   #
   cd $INSTDIR
-  ~/build/dzip.sh pluggable-transports-win32-gbuilt.zip Tor/ Data/ Docs/
+  ~/build/dzip.sh pluggable-transports-win32-gbuilt.zip Tor/ Docs/
   cp pluggable-transports-win32-gbuilt.zip $OUTDIR/
