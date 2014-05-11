@@ -106,6 +106,7 @@ while read dir commit; do
   check_git_hash "$dir" "$commit"
 done << EOF
 libdmg-hfsplus          $LIBDMG_TAG
+libfte                  $LIBFTE_TAG
 fteproxy                $FTEPROXY_TAG
 txsocksx                $TXSOCKSX_TAG
 EOF

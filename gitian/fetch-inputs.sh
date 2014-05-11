@@ -307,6 +307,7 @@ tor-browser           https://git.torproject.org/tor-browser.git          $TORBR
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG
 flashproxy            https://git.torproject.org/flashproxy.git $FLASHPROXY_TAG
+libfte                https://github.com/kpdyer/libfte.git $LIBFTE_TAG
 fteproxy              https://github.com/kpdyer/fteproxy.git $FTEPROXY_TAG
 libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG
 txsocksx              https://github.com/habnabit/txsocksx.git $TXSOCKSX_TAG

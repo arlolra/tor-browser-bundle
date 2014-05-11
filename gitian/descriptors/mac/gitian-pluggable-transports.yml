@@ -23,6 +23,8 @@ remotes:
   "dir": "obfsproxy"
 - "url": "https://git.torproject.org/flashproxy.git"
   "dir": "flashproxy"
+- "url": "https://github.com/kpdyer/libfte.git"
+  "dir": "libfte"
 - "url": "https://github.com/kpdyer/fteproxy.git"
   "dir": "fteproxy"
 - "url": "https://github.com/habnabit/txsocksx.git"
@@ -189,11 +191,19 @@ script: |
   cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/TorBrowserBundle.app/Docs/FlashProxy
   cd ..
   #
-  cd fteproxy
+  cd libfte
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CFLAGS" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CXXFLAGS" make
-  cp -a bin/fteproxy $PTDIR/
   cp -ra fte $PTDIR/
+  mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/libfte
+  cp -a {LICENSE,README.md} $INSTDIR/TorBrowserBundle.app/Docs/libfte
+  cp -an thirdparty/re2/LICENSE $INSTDIR/TorBrowserBundle.app/Docs/libfte/LICENSE.re2
+  cd ..
+  #
+  cd fteproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  cp -a bin/fteproxy $PTDIR/fteproxy.bin
+  cp -ra fteproxy $PTDIR/
   mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/fteproxy
   cp -a {COPYING,README.md} $INSTDIR/TorBrowserBundle.app/Docs/fteproxy
   cd ..

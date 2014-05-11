@@ -23,6 +23,8 @@ remotes:
   "dir": "obfsproxy"
 - "url": "https://git.torproject.org/flashproxy.git"
   "dir": "flashproxy"
+- "url": "https://github.com/kpdyer/libfte.git"
+  "dir": "libfte"
 - "url": "https://github.com/kpdyer/fteproxy.git"
   "dir": "fteproxy"
 - "url": "https://github.com/habnabit/txsocksx.git"
@@ -163,12 +165,20 @@ script: |
   cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
   #
-  cd fteproxy
+  cd libfte
   ln -s $INSTDIR/gmp thirdparty/gmp
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make
-  cp -a bin/fteproxy $PTDIR/
   cp -ra fte $PTDIR/
+  mkdir -p $INSTDIR/Docs/libfte
+  cp -a {LICENSE,README.md} $INSTDIR/Docs/libfte
+  cp -a thirdparty/re2/LICENSE $INSTDIR/Docs/libfte/LICENSE.re2
+  cd ..
+  #
+  cd fteproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  cp -a bin/fteproxy $PTDIR/fteproxy.bin
+  cp -ra fteproxy $PTDIR/
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -a {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..

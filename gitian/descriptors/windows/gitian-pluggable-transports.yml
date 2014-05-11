@@ -24,6 +24,8 @@ remotes:
   "dir": "obfsproxy"
 - "url": "https://git.torproject.org/flashproxy.git"
   "dir": "flashproxy"
+- "url": "https://github.com/kpdyer/libfte.git"
+  "dir": "libfte"
 - "url": "https://github.com/kpdyer/fteproxy.git"
   "dir": "fteproxy"
 - "url": "https://github.com/habnabit/txsocksx.git"
@@ -250,21 +252,26 @@ script: |
   cp dist/flashproxy-client-win32/{doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
   #
-  cd fteproxy
+  cd libfte
   ln -s $INSTDIR/gmp thirdparty/gmp
   cp -a $INSTDIR/gmp/bin/libgmp-*.dll .
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  WINDOWS_BUILD=1 CROSS_COMPILE=1 make thirdparty/re2/obj/libre2.a
-  LD_PRELOAD= $INSTPYTHON setup_tbb.py build_ext -c mingw32
+  LD_PRELOAD= WINDOWS_BUILD=1 CROSS_COMPILE=1 PYTHON=$INSTPYTHON make
+  LD_PRELOAD= $INSTPYTHON setup.py install
+  mkdir -p $INSTDIR/Docs/libfte
+  cp -an {LICENSE,README.md} $INSTDIR/Docs/libfte
+  cp -an thirdparty/re2/LICENSE $INSTDIR/Docs/libfte/LICENSE.re2
+  cd ..
+  #
+  cd fteproxy
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_tbb.py py2exe
   py2exe_zip_timestomp dist/fteproxy.zip
   cp -an dist/{*.pyd,*.exe,*.zip} $PTDIR/
-  mkdir -p $PTDIR/fte
-  cp -a fte/VERSION $PTDIR/fte
-  mkdir -p $PTDIR/fte/defs
-  cp -a fte/defs/*.json $PTDIR/fte/defs
-  mkdir -p $PTDIR/fte/tests/dfas
-  cp -a fte/tests/dfas/{*.dfa,*.regex} $PTDIR/fte/tests/dfas
+  mkdir -p $PTDIR/fteproxy
+  cp -a fteproxy/VERSION $PTDIR/fteproxy
+  mkdir -p $PTDIR/fteproxy/defs
+  cp -a fteproxy/defs/*.json $PTDIR/fteproxy/defs
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -an {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..

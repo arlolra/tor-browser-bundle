@@ -1,5 +1,5 @@
 ## fteproxy configuration
-ClientTransportPlugin fte exec PluggableTransports/fteproxy --managed
+ClientTransportPlugin fte exec PluggableTransports/fteproxy.bin --managed
 
 ## obfsproxy configuration
 ClientTransportPlugin obfs2,obfs3 exec PluggableTransports/obfsproxy.bin managed

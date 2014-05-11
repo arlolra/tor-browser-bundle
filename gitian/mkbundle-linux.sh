@@ -202,7 +202,7 @@ then
   echo "****** Starting Pluggable Transports Component of Linux Bundle (4/5 for Linux) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG $DESCRIPTOR_DIR/linux/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG $DESCRIPTOR_DIR/linux/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./pluggable-transports-fail-linux.log.`date +%Y%m%d%H%M%S`
