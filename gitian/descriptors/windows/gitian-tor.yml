@@ -84,6 +84,9 @@ script: |
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
+  # Let's avoid the console window popping up.
+  export CFLAGS="-mwindows"
+  export LDFLAGS="-mwindows"
   ./autogen.sh
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   ./configure --disable-asciidoc --host=i686-w64-mingw32 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
