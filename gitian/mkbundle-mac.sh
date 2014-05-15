@@ -42,7 +42,7 @@ fi
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
-echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-MacOS\");" > $GITIAN_DIR/inputs/torbrowser.version 
+echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-MacOS\");" > $GITIAN_DIR/inputs/torbrowser.version
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
@@ -51,7 +51,7 @@ cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
 
 cd $WRAPPER_DIR/..
 rm -f $GITIAN_DIR/inputs/relativelink-src.zip
-$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/ 
+$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/
 
 cd ./Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
@@ -79,6 +79,11 @@ die_msg() {
   exit 1
 }
 
+# Let's preserve the original $FOO for creating proper symlinks after building
+# the utils both if we verify tags and if we don't.
+
+LIBEVENT_TAG_ORIG=$LIBEVENT_TAG
+
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
   ./verify-tags.sh $GITIAN_DIR/inputs $VERSIONS_FILE || die_msg "You should run 'make prep' to ensure your inputs are up to date"
@@ -100,32 +105,64 @@ fi
 
 cd $GITIAN_DIR
 
-if [ ! -f $GITIAN_DIR/inputs/tor-mac32-gbuilt.zip ];
+if [ ! -f inputs/openssl-$OPENSSL_VER-mac32-utils.zip -o \
+     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip ];
 then
-  echo 
-  echo "****** Starting Tor Component of Mac Bundle (1/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** Starting Utilities Component of Mac Bundle (1/5 for Max) ******"
+  echo
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
+  if [ $? -ne 0 ];
+  then
+    #mv var/build.log ./utils-fail-mac.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG,tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
+  cd inputs
+  cp -a ../build/out/*-utils.zip .
+  ln -sf openssl-$OPENSSL_VER-mac32-utils.zip openssl-mac32-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip libevent-mac32-utils.zip
+  cd ..
+  #cp -a result/utils-mac-res.yml inputs/
+else
+  echo
+  echo "****** SKIPPING already built Utilities Component of Mac Bundle (1/5 for
+  Mac) ******"
+  echo
+  # We might have built the utilities in the past but maybe the links are
+  # pointing to the wrong version. Refresh them.
+  cd inputs
+  ln -sf openssl-$OPENSSL_VER-mac32-utils.zip openssl-mac32-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip libevent-mac32-utils.zip
+  cd ..
+fi
+
+if [ ! -f inputs/tor-mac32-gbuilt.zip ];
+then
+  echo
+  echo "****** Starting Tor Component of Mac Bundle (2/5 for Mac) ******"
+  echo
+
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./tor-fail-mac.log.`date +%Y%m%d%H%M%S`
     exit 1
   fi
-  
-  cp -a build/out/tor-mac*-gbuilt.zip $GITIAN_DIR/inputs/
-  #cp -a result/tor-mac-res.yml $GITIAN_DIR/inputs/
+
+  cp -a build/out/tor-mac*-gbuilt.zip inputs/
+  #cp -a result/tor-mac-res.yml inputs/
 else
-  echo 
-  echo "****** SKIPPING already built Tor Component of Mac Bundle (1/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** SKIPPING already built Tor Component of Mac Bundle (2/5 for Mac) ******"
+  echo
 fi
 
-if [ ! -f $GITIAN_DIR/inputs/tor-browser-mac32-gbuilt.zip ];
+if [ ! -f inputs/tor-browser-mac32-gbuilt.zip ];
 then
-  echo 
-  echo "****** Starting TorBrowser Component of Mac Bundle (2/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** Starting TorBrowser Component of Mac Bundle (3/5 for Mac) ******"
+  echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
   if [ $? -ne 0 ];
@@ -134,19 +171,19 @@ then
     exit 1
   fi
 
-  cp -a build/out/tor-browser-mac*-gbuilt.zip $GITIAN_DIR/inputs/
-  #cp -a result/torbrowser-mac-res.yml $GITIAN_DIR/inputs/
+  cp -a build/out/tor-browser-mac*-gbuilt.zip inputs/
+  #cp -a result/torbrowser-mac-res.yml inputs/
 else
-  echo 
-  echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (2/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (3/5 for Mac) ******"
+  echo
 fi
 
-if [ ! -f $GITIAN_DIR/inputs/pluggable-transports-mac32-gbuilt.zip ];
+if [ ! -f inputs/pluggable-transports-mac32-gbuilt.zip ];
 then
-  echo 
-  echo "****** Starting Pluggable Transports Component of Mac Bundle (3/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** Starting Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"
+  echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
@@ -155,44 +192,40 @@ then
     exit 1
   fi
 
-  cp -a build/out/pluggable-transports-mac*-gbuilt.zip $GITIAN_DIR/inputs/
-  #cp -a result/pluggable-transports-mac-res.yml $GITIAN_DIR/inputs/
+  cp -a build/out/pluggable-transports-mac*-gbuilt.zip inputs/
+  #cp -a result/pluggable-transports-mac-res.yml inputs/
 else
-  echo 
-  echo "****** SKIPPING already built Pluggable Transports Component of Mac Bundle (3/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** SKIPPING already built Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"
+  echo
 fi
 
 
-if [ ! -f $GITIAN_DIR/inputs/bundle-mac.gbuilt ];
-then 
-  echo 
-  echo "****** Starting Bundling+Localization Component of Mac Bundle (4/4 for Mac) ******"
-  echo 
-  
+if [ ! -f inputs/bundle-mac.gbuilt ];
+then
+  echo
+  echo "****** Starting Bundling+Localization Component of Mac Bundle (5/5 for Mac) ******"
+  echo
+
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
-  
+
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libdmg-hfsplus=$LIBDMG_TAG,https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
     exit 1
   fi
-  
-  #cp -a build/out/*.dmg $WRAPPER_DIR
+
   mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
   cp -a build/out/* $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
-  touch $GITIAN_DIR/inputs/bundle-mac.gbuilt
+  touch inputs/bundle-mac.gbuilt
 else
-  echo 
-  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (4/4 for Mac) ******"
-  echo 
+  echo
+  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (5/5 for Mac) ******"
+  echo
 fi
 
-echo 
+echo
 echo "****** Mac Bundle complete ******"
-echo 
-
-
-# FIXME: docs
+echo
 
