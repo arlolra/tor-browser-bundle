@@ -1,4 +1,4 @@
-From 2c9bcdf79a9ba98b79feba10a8000f5609de36e6 Mon Sep 17 00:00:00 2001
+From 9d7410ac5837658efa9b2d7d85c0c71f09a7a759 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Tue, 25 Mar 2014 07:21:22 +0000
 Subject: [PATCH 1/5] Allow ClientTransportPlugins to use proxies
@@ -9,38 +9,18 @@ pluggable transport specification.
 
 This fixes bug #8402.
 ---
- src/or/config.c     |  24 +++++++----
+ src/or/config.c     |  13 ++++--
  src/or/connection.c |  62 +++++++++++++++++++++--------
  src/or/transports.c | 112 ++++++++++++++++++++++++++++++++++++++++++++++++++--
  src/or/transports.h |   6 +++
  src/test/test_pt.c  |  81 +++++++++++++++++++++++++++++++++++++
- 5 files changed, 258 insertions(+), 27 deletions(-)
+ 5 files changed, 251 insertions(+), 23 deletions(-)
 
 diff --git a/src/or/config.c b/src/or/config.c
-index 1faf138..614e779 100644
+index 0f7b1d2..b33098e 100644
 --- a/src/or/config.c
 +++ b/src/or/config.c
-@@ -536,7 +536,9 @@ static int options_transition_affects_descriptor(
-       const or_options_t *old_options, const or_options_t *new_options);
- static int check_nickname_list(char **lst, const char *name, char **msg);
- 
--static int parse_client_transport_line(const char *line, int validate_only);
-+static int parse_client_transport_line(const or_options_t *options,
-+                                       const char *line,
-+                                       int validate_only);
- 
- static int parse_server_transport_line(const char *line, int validate_only);
- static char *get_bindaddr_from_transport_listen_line(const char *line,
-@@ -1426,7 +1428,7 @@ options_act(const or_options_t *old_options)
-   pt_prepare_proxy_list_for_config_read();
-   if (options->ClientTransportPlugin) {
-     for (cl = options->ClientTransportPlugin; cl; cl = cl->next) {
--      if (parse_client_transport_line(cl->value, 0)<0) {
-+      if (parse_client_transport_line(options, cl->value, 0)<0) {
-         log_warn(LD_BUG,
-                  "Previously validated ClientTransportPlugin line "
-                  "could not be added!");
-@@ -3169,11 +3171,11 @@ options_validate(or_options_t *old_options, or_options_t *options,
+@@ -3174,11 +3174,11 @@ options_validate(or_options_t *old_options, or_options_t *options,
      }
    }
  
@@ -55,26 +35,7 @@ index 1faf138..614e779 100644
  
    /* Check if the proxies will give surprising behavior. */
    if (options->HTTPProxy && !(options->Socks4Proxy ||
-@@ -3284,7 +3286,7 @@ options_validate(or_options_t *old_options, or_options_t *options,
-   }
- 
-   for (cl = options->ClientTransportPlugin; cl; cl = cl->next) {
--    if (parse_client_transport_line(cl->value, 1)<0)
-+    if (parse_client_transport_line(options, cl->value, 1)<0)
-       REJECT("Transport line did not parse. See logs for details.");
-   }
- 
-@@ -4734,7 +4736,8 @@ parse_bridge_line(const char *line)
-  * our internal transport list.
-  * - If it's a managed proxy line, launch the managed proxy. */
- static int
--parse_client_transport_line(const char *line, int validate_only)
-+parse_client_transport_line(const or_options_t *options, const char *line,
-+                            int validate_only)
- {
-   smartlist_t *items = NULL;
-   int r;
-@@ -4825,6 +4828,13 @@ parse_client_transport_line(const char *line, int validate_only)
+@@ -4842,6 +4842,13 @@ parse_client_transport_line(const or_options_t *options,
        pt_kickstart_client_proxy(transport_list, proxy_argv);
      }
    } else { /* external */
@@ -89,7 +50,7 @@ index 1faf138..614e779 100644
        log_warn(LD_CONFIG, "You can't have an external proxy with "
                 "more than one transports.");
 diff --git a/src/or/connection.c b/src/or/connection.c
-index 3cc4e09..a9c5596 100644
+index cef9172..b32cddf 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
 @@ -86,6 +86,8 @@ static int connection_read_https_proxy_response(connection_t *conn);
@@ -517,10 +478,10 @@ index f71627d..788d420 100644
  };
  
 -- 
-2.0.0.rc0
+2.0.0.rc2
 
 
-From d1f3631335cc2757e2319055348a1614a00fa7b2 Mon Sep 17 00:00:00 2001
+From 92eecbfee128b22b07bcc97ac36ecdd5183c2da7 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Mon, 14 Apr 2014 21:51:34 +0000
 Subject: [PATCH 2/5] Fixed the test build with --enable-gcc-warnings
@@ -609,10 +570,10 @@ index 788d420..cfbd084 100644
   done:
    if (uri)
 -- 
-2.0.0.rc0
+2.0.0.rc2
 
 
-From e2b63cda85ba08b1675c7cf376d21700ca34bcf5 Mon Sep 17 00:00:00 2001
+From 8361223c10eb929b570e72853a5d9e51b67fd6c3 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Thu, 1 May 2014 03:30:09 +0000
 Subject: [PATCH 3/5] Remove get_bridge_pt_addrport().
@@ -629,7 +590,7 @@ being used, it is PT/proxy-less.
  1 file changed, 12 insertions(+), 34 deletions(-)
 
 diff --git a/src/or/connection.c b/src/or/connection.c
-index a9c5596..4bb2683 100644
+index b32cddf..ff8cdf1 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
 @@ -86,8 +86,6 @@ static int connection_read_https_proxy_response(connection_t *conn);
@@ -708,10 +669,10 @@ index a9c5596..4bb2683 100644
  
    tor_addr_make_unspec(addr);
 -- 
-2.0.0.rc0
+2.0.0.rc2
 
 
-From ae0174c6e1da1051403c51fa881f66d57cc22acd Mon Sep 17 00:00:00 2001
+From 68184b317d3f4dc14e758e451377e4e3996bd0ab Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Thu, 1 May 2014 03:43:53 +0000
 Subject: [PATCH 4/5] Log the correct proxy type on failure.
@@ -724,7 +685,7 @@ config.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/or/connection.c b/src/or/connection.c
-index 4bb2683..cfa6ee5 100644
+index ff8cdf1..5069ed6 100644
 --- a/src/or/connection.c
 +++ b/src/or/connection.c
 @@ -4841,7 +4841,7 @@ log_failed_proxy_connection(connection_t *conn)
@@ -737,10 +698,10 @@ index 4bb2683..cfa6ee5 100644
  }
  
 -- 
-2.0.0.rc0
+2.0.0.rc2
 
 
-From 378e6f7f8521ed0c35dc1afc91840117713498fb Mon Sep 17 00:00:00 2001
+From 34200a44fbbd3f158ea17043c2bcd21d0e382b89 Mon Sep 17 00:00:00 2001
 From: Yawning Angel <yawning@schwanenlied.me>
 Date: Thu, 1 May 2014 18:58:53 +0000
 Subject: [PATCH 5/5] Improve the log message when a transport doesn't support
@@ -767,5 +728,5 @@ index b810315..eee159d 100644
        break;
      }
 -- 
-2.0.0.rc0
+2.0.0.rc2
 
