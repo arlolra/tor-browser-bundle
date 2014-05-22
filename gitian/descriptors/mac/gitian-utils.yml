@@ -21,6 +21,7 @@ files:
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "openssl.tar.gz"
+- "gmp.tar.bz2"
 - "versions"
 - "dzip.sh"
 script: |
@@ -38,7 +39,9 @@ script: |
   # For OpenSSL
   ln -s ~/build/apple-osx/bin/apple-osx-gcc ~/build/apple-osx/bin/i686-apple-darwin11-cc
 
+  # XXX Clean up these flags?
   export CFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
+  export CXXFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -mmacosx-version-min=10.5"
   export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
 
   # Building Libevent
@@ -62,9 +65,19 @@ script: |
   make install
   cd ..
 
+  # Building GMP
+  tar xjf gmp.tar.bz2
+  cd gmp-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --host=i686-apple-darwin11 --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+  make
+  make install
+  cd ..
+
   # Grabbing the results
   cd $INSTDIR
   ~/build/dzip.sh openssl-$OPENSSL_VER-mac32-utils.zip openssl
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-mac32-utils.zip libevent
+  ~/build/dzip.sh gmp-$GMP_VER-mac32-utils.zip gmp
 
   cp *utils.zip $OUTDIR/

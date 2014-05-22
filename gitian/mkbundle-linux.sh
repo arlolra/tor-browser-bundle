@@ -105,7 +105,9 @@ if [ ! -f inputs/openssl-$OPENSSL_VER-linux32-utils.zip -o \
      ! -f inputs/python-$PYTHON_VER-linux32-utils.zip -o \
      ! -f inputs/python-$PYTHON_VER-linux64-utils.zip -o \
      ! -f inputs/lxml-$LXML_VER-linux32-utils.zip -o \
-     ! -f inputs/lxml-$LXML_VER-linux64-utils.zip ];
+     ! -f inputs/lxml-$LXML_VER-linux64-utils.zip -o \
+     ! -f inputs/gmp-$GMP_VER-linux32-utils.zip -o \
+     ! -f inputs/gmp-$GMP_VER-linux64-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Linux Bundle (1/5 for Linux) ******"
@@ -128,6 +130,8 @@ then
   ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
   ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
   ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
+  ln -sf gmp-$GMP_VER-linux32-utils.zip gmp-linux32-utils.zip
+  ln -sf gmp-$GMP_VER-linux64-utils.zip gmp-linux64-utils.zip
   cd ..
   #cp -a result/utils-linux-res.yml inputs/
 else
@@ -145,6 +149,8 @@ else
   ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
   ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
   ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
+  ln -sf gmp-$GMP_VER-linux32-utils.zip gmp-linux32-utils.zip
+  ln -sf gmp-$GMP_VER-linux64-utils.zip gmp-linux64-utils.zip
   cd ..
 fi
 

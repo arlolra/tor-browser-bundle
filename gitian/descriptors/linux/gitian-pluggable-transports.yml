@@ -5,7 +5,7 @@ suites:
 architectures:
 - "i386"
 - "amd64"
-packages: 
+packages:
 - "git-core"
 - "unzip"
 - "zip"
@@ -30,8 +30,6 @@ remotes:
 - "url": "https://github.com/habnabit/txsocksx.git"
   "dir": "txsocksx"
 files:
-- "openssl.tar.gz"
-- "gmp.tar.bz2"
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
 - "pyyaml.tar.gz"
@@ -40,77 +38,81 @@ files:
 - "m2crypto.tar.gz"
 - "parsley.tar.gz"
 - "dzip.sh"
+- "gmp-linux32-utils.zip"
+- "gmp-linux64-utils.zip"
+- "openssl-linux32-utils.zip"
+- "openssl-linux64-utils.zip"
 script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
-  export LIBRARY_PATH="$INSTDIR/lib"
+  mkdir -p $PTDIR
+  mkdir -p $INSTDIR/Debug/
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   export PYTHON=python2
   umask 0022
-  #
+
   # Config options for hardening-wrapper
   export DEB_BUILD_HARDENING=1
   export DEB_BUILD_HARDENING_STACKPROTECTOR=1
   export DEB_BUILD_HARDENING_FORTIFY=1
   export DEB_BUILD_HARDENING_FORMAT=1
   export DEB_BUILD_HARDENING_PIE=1
-  #
-  mkdir -p $PTDIR
-  mkdir -p $INSTDIR/Debug/
-  #
-  tar xvf gmp.tar.bz2
-  cd gmp-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
-  make
-  make install
-  cp -an $INSTDIR/gmp/lib/*.so* $INSTDIR/Tor
-  cd ..
-  #
+
+  unzip -d $INSTDIR gmp-linux$GBUILD_BITS-utils.zip
+  unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
+  cp $INSTDIR/gmp/lib/*.so* $INSTDIR/Tor
+
+  # Building pyptlib
   cd pyptlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
   cp -a build/pyptlib $PTDIR/
   cd ..
-  #
+
+  # Building PyCrypto
   tar xzf pycrypto.tar.gz
   cd pycrypto-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
   cp -a build/Crypto $PTDIR/
   cd ..
-  #
+
+  # Building argparse
   tar xzf argparse.tar.gz
   cd argparse-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
   cp -a build/argparse.py $PTDIR/
   cd ..
-  #
+
+  # Building Zope interfaces
   unzip zope.interface.zip
   cd zope.interface-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
   cp -a build/zope $PTDIR/
   cd ..
-  #
+
+  # Building PyYAML
   tar xzf pyyaml.tar.gz
   cd PyYAML-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
   cp -a build/yaml $PTDIR/
   cd ..
-  #
+
+  # Building Twisted
   tar xjf twisted.tar.bz2
   cd Twisted-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
   cp -a build/twisted $PTDIR/
   cd ..
-  #
+
+  # Building Parsley
   tar xzf parsley.tar.gz
   cd Parsley-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
@@ -119,7 +121,8 @@ script: |
   cp -a build/ometa $PTDIR/
   cp -a build/terml $PTDIR/
   cd ..
-  #
+
+  # Building txsocksx
   cd txsocksx
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   # Let's pretend we have the setup dependency already as we don't want to get
@@ -130,7 +133,8 @@ script: |
   $PYTHON setup.py build --build-lib build
   cp -a build/txsocksx $PTDIR/
   cd ..
-  #
+
+  # Building obfsproxy
   cd obfsproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   $PYTHON setup.py build --build-lib build
@@ -139,16 +143,8 @@ script: |
   mkdir -p $INSTDIR/Docs/Obfsproxy
   cp -a {LICENSE,README} $INSTDIR/Docs/Obfsproxy
   cd ..
-  #
-  tar xzf openssl.tar.gz
-  cd openssl-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  #./Configure -shared --prefix=$INSTDIR/openssl linux-elf
-  ./config -shared --prefix=$INSTDIR/openssl
-  make
-  make install
-  cd ..
-  #
+
+  # Building M2Crypto
   tar xzf m2crypto.tar.gz
   cd M2Crypto-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
@@ -156,7 +152,8 @@ script: |
   $PYTHON setup.py build --build-lib build
   cp -a build/M2Crypto $PTDIR/
   cd ..
-  #
+
+  # Building flashproxy
   cd flashproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make dist DISTNAME=flashproxy-client
@@ -164,7 +161,8 @@ script: |
   mkdir -p $INSTDIR/Docs/FlashProxy
   cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
-  #
+
+  # Building libfte
   cd libfte
   ln -s $INSTDIR/gmp thirdparty/gmp
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
@@ -174,7 +172,8 @@ script: |
   cp -a {LICENSE,README.md} $INSTDIR/Docs/libfte
   cp -a thirdparty/re2/LICENSE $INSTDIR/Docs/libfte/LICENSE.re2
   cd ..
-  #
+
+  # Building fteproxy
   cd fteproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   cp -a bin/fteproxy $PTDIR/fteproxy.bin
@@ -182,9 +181,9 @@ script: |
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -a {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..
-  #
+
+  # Grabbing the results
   cd $INSTDIR
-  #
   ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/ Docs/
   ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-debug.zip Debug/
   cp pluggable-transports-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

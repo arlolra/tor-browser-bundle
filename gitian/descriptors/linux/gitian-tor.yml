@@ -44,14 +44,14 @@ script: |
   export TZ=UTC
   export LC_ALL=C
   umask 0022
-  #
+
   # Config options for hardening-wrapper
   export DEB_BUILD_HARDENING=1
   export DEB_BUILD_HARDENING_STACKPROTECTOR=1
   export DEB_BUILD_HARDENING_FORTIFY=1
   export DEB_BUILD_HARDENING_FORMAT=1
   export DEB_BUILD_HARDENING_PIE=1
-  #
+
   mkdir -p $INSTDIR/Data/Tor/
   mkdir -p $INSTDIR/Tor/
   mkdir -p $INSTDIR/Debug/Tor/
@@ -60,9 +60,9 @@ script: |
   cp $INSTDIR/openssl/lib/libssl.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/openssl/lib/libcrypto.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/libevent/lib/libevent-2.0.so.5 $INSTDIR/Tor/
-  #
   chmod 700 $INSTDIR/Tor/*so*
-  #
+
+  # Building tor
   cd tor
   git update-index --refresh -q
   export GIT_COMMITTER_NAME="nobody"
@@ -106,7 +106,8 @@ script: |
     strip $INSTDIR/Tor/$LIB
     objcopy --add-gnu-debuglink=./Debug/Tor/$LIB $INSTDIR/Tor/$LIB
   done
-  #
+
+  # Grabbing the results
   ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip Data/ Tor/
   ~/build/dzip.sh tor-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

@@ -30,6 +30,7 @@ files:
 - "binutils.tar.bz2"
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
+- "gmp.tar.bz2"
 - "versions"
 - "dzip.sh"
 script: |
@@ -135,11 +136,20 @@ script: |
   make install
   cd ..
 
+  # Building GMP
+  tar xjf gmp.tar.bz2
+  cd gmp-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --prefix=$INSTDIR/gmp --host=i686-w64-mingw32 --enable-cxx --disable-static --enable-shared
+  make
+  make install
+  cd ..
+
   # Grabbing the remaining results
   cd $INSTDIR
   ~/build/dzip.sh mingw-w64-$GCC_VER-win32-utils.zip mingw-w64
   ~/build/dzip.sh zlib-${ZLIB_TAG#v}-win32-utils.zip zlib
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-win32-utils.zip libevent
   ~/build/dzip.sh openssl-$OPENSSL_VER-win32-utils.zip openssl
-
+  ~/build/dzip.sh gmp-$GMP_VER-win32-utils.zip gmp
   cp *-utils.zip $OUTDIR/

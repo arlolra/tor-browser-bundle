@@ -31,8 +31,6 @@ remotes:
 - "url": "https://github.com/habnabit/txsocksx.git"
   "dir": "txsocksx"
 files:
-- "openssl.tar.gz"
-- "gmp.tar.bz2"
 - "setuptools.tar.gz"
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -47,39 +45,9 @@ files:
 - "py2exe.exe"
 - "dzip.sh"
 - "pyc-timestamp.sh"
+- "openssl-win32-utils.zip"
+- "gmp-win32-utils.zip"
 script: |
-  INSTDIR="$HOME/install"
-  PTDIR="$INSTDIR/Tor/PluggableTransports"
-  export LIBRARY_PATH="$INSTDIR/lib"
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
-  export TZ=UTC
-  export LC_ALL=C
-  export CFLAGS="-mwindows"
-  export LDFLAGS="-mwindows"
-
-  # We need at least Wine 1.5.29 which is not in Ubuntu's main repository (see
-  # below). Thus, we resort to a PPA and need therefore to determine the correct
-  # network interface depending on the virtualization we use.
-  ip=`hostname --all-ip-addresses | cut -d ' ' -f1 | cut -d. -f1-3`
-  if [ $ip = "10.0.3" ]; then
-    # LXC
-    MIRROR_HOST=10.0.3.1
-  else
-    # KVM
-    MIRROR_HOST=10.0.2.2
-  fi
-
-  WINEROOT=$HOME/.wine/drive_c
-  # XXX: Hardening options cause the exe's to crash.. not sure why
-  #export CFLAGS="-mwindows -fstack-protector-all -fPIE -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat-security"
-  #export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/"
-  umask 0022
-  #
-  mkdir -p $INSTDIR/bin/
-  mkdir -p $PTDIR/
-  mkdir -p $OUTDIR/
-  #
   # Set the timestamp on every .pyc file in a zip file, and re-dzip the zip file.
   function py2exe_zip_timestomp {
     ZIPFILE="$1"
@@ -93,23 +61,41 @@ script: |
     mv -f "$tmpzip" "$ZIPFILE"
     rm -rf "$tmpdir"
   }
-  #
-  #
-  tar xvf gmp.tar.bz2
-  cd gmp-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --prefix=$INSTDIR/gmp --host=i686-w64-mingw32 --enable-cxx --disable-static --enable-shared
-  make
-  make install
-  cp -an $INSTDIR/gmp/bin/*dll* $INSTDIR/Tor
-  cd ..
-  #
-  #
-  # Install a Wine new enough to have a fix for http://bugs.winehq.org/show_bug.cgi?id=29764;
-  # otherwise Python run under Wine constantly crashes in _PyVerify_fd, which is
-  # called by such common operations as io.open and os.fstat (anything involving
-  # a file descriptor number). Ubuntu's main repository only has wine1.4, and
-  # the issue was fixed in 1.5.29.
+
+  INSTDIR="$HOME/install"
+  PTDIR="$INSTDIR/Tor/PluggableTransports"
+  mkdir -p $INSTDIR/bin/
+  mkdir -p $PTDIR/
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
+  export TZ=UTC
+  export LC_ALL=C
+  export CFLAGS="-mwindows"
+  export LDFLAGS="-mwindows"
+  umask 0022
+
+  unzip -d $INSTDIR gmp-win32-utils.zip
+  unzip -d $INSTDIR openssl-win32-utils.zip
+  cp $INSTDIR/gmp/bin/*dll* $INSTDIR/Tor
+
+  # We need at least Wine 1.5.29 which is not in Ubuntu's main repository (see
+  # below). Thus, we resort to a PPA and need therefore to determine the correct
+  # network interface depending on the virtualization we use.
+  ip=`hostname --all-ip-addresses | cut -d ' ' -f1 | cut -d. -f1-3`
+  if [ $ip = "10.0.3" ]; then
+    # LXC
+    MIRROR_HOST=10.0.3.1
+  else
+    # KVM
+    MIRROR_HOST=10.0.2.2
+  fi
+  # Install a Wine new enough to have a fix for
+  # http://bugs.winehq.org/show_bug.cgi?id=29764; otherwise Python run under
+  # Wine constantly crashes in _PyVerify_fd, which is called by such common
+  # operations as io.open and os.fstat (anything involving a file descriptor
+  # number). Ubuntu's main repository only has wine1.4, and the issue was fixed
+  # in 1.5.29.
+  WINEROOT=$HOME/.wine/drive_c
   sudo -s sh -c "echo deb http://$MIRROR_HOST:3142/ppa.launchpad.net/ubuntu-wine/ppa/ubuntu precise main >> /etc/apt/sources.list"
   # This key is from https://launchpad.net/~ubuntu-wine/+archive/ppa and
   # http://keyserver.ubuntu.com:11371/pks/lookup?op=get&search=0x5A9A06AEF9CB8DB0.
@@ -140,40 +126,40 @@ script: |
   LD_PRELOAD= $INSTPYTHON setup.py py2exe
   cp -a dist/gcc.exe dist/g++.exe dist/dllwrap.exe dist/swig.exe $WINEROOT/windows/
   cd ..
-  #
+
+  # Building setuptools
   tar xzf setuptools.tar.gz
   cd setuptools-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
-  #
+
+  # Bulding pyptlib
   cd pyptlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
-  #
+
+  # Building PyCrypto
   tar xzf pycrypto.tar.gz
   cd pycrypto-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  # This is bogus, that we run the configure script in the build environment, but it seems to work.
-  # https://bugs.launchpad.net/pycrypto/+bug/1096207 for ac_cv_func_malloc_0_nonnull.
+  # This is bogus, that we run the configure script in the build environment,
+  # but it seems to work. https://bugs.launchpad.net/pycrypto/+bug/1096207 for
+  # ac_cv_func_malloc_0_nonnull.
   ac_cv_func_malloc_0_nonnull=yes sh configure --host=i686-w64-mingw32
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
-  #
+
+  # Building argparse
   tar xzf argparse.tar.gz
   cd argparse-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
-  #
-  tar xzf pyyaml.tar.gz
-  cd PyYAML-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  LD_PRELOAD= $INSTPYTHON setup.py install
-  cd ..
-  #
+
+  # Building Zope interfaces
   unzip zope.interface.zip
   cd zope.interface-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
@@ -182,11 +168,20 @@ script: |
   # Must create this file in order for py2exe to find the package.
   touch $INSTDIR/python/Lib/site-packages/zope/__init__.py
   cd ..
-  #
+
+  # Building PyYAML
+  tar xzf pyyaml.tar.gz
+  cd PyYAML-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  LD_PRELOAD= $INSTPYTHON setup.py install
+  cd ..
+
+  # Building Twisted
   tar xjf twisted.tar.bz2
   cd Twisted-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  # twisted/internet/iocpreactor/iocpsupport/iocpsupport.c includes "python.h" rather than "Python.h".
+  # twisted/internet/iocpreactor/iocpsupport/iocpsupport.c includes "python.h"
+  # rather than "Python.h".
   ln -sf Python.h $INSTDIR/python/include/python.h
   # We need to set the "mingw32" compiler to avoid an error in build_ext, but
   # Twisted's "install" command calls build_ext unconditionally, whether the
@@ -196,13 +191,18 @@ script: |
   echo $'[build_ext]\ncompiler=mingw32' > setup.cfg
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
-  #
+  # py2exe byte-compiles to .pyc files, which embed the mtime of the parent .py
+  # file.
+  find $INSTDIR/python -type f | xargs touch --date="$REFERENCE_DATETIME"
+
+  # Building Parsley
   tar xzf parsley.tar.gz
   cd Parsley-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
-  #
+
+  # Building txsocksx
   cd txsocksx
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   # Let's pretend we have the setup dependency already as we don't want to get
@@ -212,10 +212,8 @@ script: |
   mkdir vcversioner-1.14.1.1-py2.7.egg
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
-  #
-  # py2exe byte-compiles to .pyc files, which embed the mtime of the parent .py file.
-  find $INSTDIR/python -type f | xargs touch --date="$REFERENCE_DATETIME"
-  #
+
+  # Building obfsproxy
   cd obfsproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_py2exe.py py2exe
@@ -225,24 +223,19 @@ script: |
   mkdir -p $INSTDIR/Docs/Obfsproxy
   cp {LICENSE,README} $INSTDIR/Docs/Obfsproxy
   cd ..
-  #
-  tar xzf openssl.tar.gz
-  cd openssl-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
-  make
-  make install
-  cd ..
-  #
+
+  # Building M2Crypto
   tar xzf m2crypto.tar.gz
   cd M2Crypto-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --openssl $INSTDIR/openssl/ -lssl.dll,crypto.dll
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
-  #
+  # py2exe byte-compiles to .pyc files, which embed the mtime of the parent .py
+  # file.
   find $INSTDIR/python -type f | xargs touch --date="$REFERENCE_DATETIME"
-  #
+
+  # Building flashproxy
   cd flashproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make dist-exe DISTNAME=flashproxy-client PYTHON="LD_PRELOAD= $INSTPYTHON"
@@ -251,7 +244,8 @@ script: |
   mkdir -p $INSTDIR/Docs/FlashProxy
   cp dist/flashproxy-client-win32/{doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
-  #
+
+  # Building libfte
   cd libfte
   ln -s $INSTDIR/gmp thirdparty/gmp
   cp -a $INSTDIR/gmp/bin/libgmp-*.dll .
@@ -262,7 +256,8 @@ script: |
   cp -an {LICENSE,README.md} $INSTDIR/Docs/libfte
   cp -an thirdparty/re2/LICENSE $INSTDIR/Docs/libfte/LICENSE.re2
   cd ..
-  #
+
+  # Building fteproxy
   cd fteproxy
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_tbb.py py2exe
@@ -275,10 +270,11 @@ script: |
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -an {COPYING,README.md} $INSTDIR/Docs/fteproxy
   cd ..
-  #
+
   # http://bugs.winehq.org/show_bug.cgi?id=3591
   cp -a $INSTDIR/python/python27.dll $PTDIR/
-  #
+
+  # Grabbing the result
   cd $INSTDIR
   ~/build/dzip.sh pluggable-transports-win32-gbuilt.zip Tor/ Docs/
   cp pluggable-transports-win32-gbuilt.zip $OUTDIR/

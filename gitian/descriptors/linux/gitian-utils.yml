@@ -25,11 +25,12 @@ remotes:
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
 files:
-- "versions"
-- "dzip.sh"
 - "openssl.tar.gz"
 - "python.tar.bz2"
 - "lxml.tar.gz"
+- "gmp.tar.bz2"
+- "versions"
+- "dzip.sh"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -38,7 +39,7 @@ script: |
   export TZ=UTC
   export LC_ALL=C
   umask 0022
-  #
+
   # Config options for hardening-wrapper
   export DEB_BUILD_HARDENING=1
   export DEB_BUILD_HARDENING_STACKPROTECTOR=1
@@ -80,7 +81,7 @@ script: |
   make $MAKEOPTS altinstall prefix=$INSTDIR/python exec-prefix=$INSTDIR/python
   cd ..
 
-  # Building the Python lxml module
+  # Building lxml
   tar xzf lxml.tar.gz
   cd lxml-*
   # Make sure we use our freshly built python binary here. Otherwise bad things
@@ -92,10 +93,19 @@ script: |
   cp *utils.zip $OUTDIR
   cd ../../../
 
+  # Building GMP
+  tar xjf gmp.tar.bz2
+  cd gmp-*
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  ./configure --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+  make
+  make install
+  cd ..
+
   # Grabbing the remaining results
   cd $INSTDIR
   ~/build/dzip.sh openssl-$OPENSSL_VER-linux$GBUILD_BITS-utils.zip openssl
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-linux$GBUILD_BITS-utils.zip libevent
   ~/build/dzip.sh python-$PYTHON_VER-linux$GBUILD_BITS-utils.zip python
-
+  ~/build/dzip.sh gmp-$GMP_VER-linux$GBUILD_BITS-utils.zip gmp
   cp *utils.zip $OUTDIR/

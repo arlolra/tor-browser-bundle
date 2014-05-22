@@ -104,7 +104,8 @@ if [ ! -f inputs/binutils-$BINUTILS_VER-win32-utils.zip -o \
      ! -f inputs/mingw-w64-$GCC_VER-win32-utils.zip -o \
      ! -f inputs/zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip -o \
-     ! -f inputs/openssl-$OPENSSL_VER-win32-utils.zip ];
+     ! -f inputs/openssl-$OPENSSL_VER-win32-utils.zip -o \
+     ! -f inputs/gmp-$GMP_VER-win32-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Windows Bundle (1/5 for Windows) ******"
@@ -124,6 +125,7 @@ then
   ln -sf zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip zlib-win32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip libevent-win32-utils.zip
   ln -sf openssl-$OPENSSL_VER-win32-utils.zip openssl-win32-utils.zip
+  ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
   cd ..
   #cp -a result/utils-win-res.yml inputs/
 else
@@ -138,6 +140,7 @@ else
   ln -sf zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip zlib-win32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip libevent-win32-utils.zip
   ln -sf openssl-$OPENSSL_VER-win32-utils.zip openssl-win32-utils.zip
+  ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
   cd ..
 fi
 

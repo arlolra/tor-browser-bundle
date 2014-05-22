@@ -106,7 +106,8 @@ fi
 cd $GITIAN_DIR
 
 if [ ! -f inputs/openssl-$OPENSSL_VER-mac32-utils.zip -o \
-     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip ];
+     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip -o \
+     ! -f inputs/gmp-$GMP_VER-mac32-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Mac Bundle (1/5 for Max) ******"
@@ -122,6 +123,7 @@ then
   cp -a ../build/out/*-utils.zip .
   ln -sf openssl-$OPENSSL_VER-mac32-utils.zip openssl-mac32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip libevent-mac32-utils.zip
+  ln -sf gmp-$GMP_VER-mac32-utils.zip gmp-mac32-utils.zip
   cd ..
   #cp -a result/utils-mac-res.yml inputs/
 else
@@ -134,6 +136,7 @@ else
   cd inputs
   ln -sf openssl-$OPENSSL_VER-mac32-utils.zip openssl-mac32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip libevent-mac32-utils.zip
+  ln -sf gmp-$GMP_VER-mac32-utils.zip gmp-mac32-utils.zip
   cd ..
 fi
 
