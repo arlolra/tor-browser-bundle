@@ -151,6 +151,8 @@ script: |
   cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
   mkdir -p $INSTDIR/TorBrowserBundle.app/Docs/Obfsproxy
   cp -a {LICENSE,README} $INSTDIR/TorBrowserBundle.app/Docs/Obfsproxy
+  # XXX: Workaround for bug 11190
+  sed 's/python2/python/' -i $PTDIR/obfsproxy.bin
   cd ..
 
   # Building M2Crypto
