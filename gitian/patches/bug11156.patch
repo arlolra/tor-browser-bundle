@@ -249,3 +249,27 @@ index c2d6545..551b09f 100644
 -- 
 1.8.1.2
 
+From dfcbc4500aad07a641e9e856d442c848d86d2c7e Mon Sep 17 00:00:00 2001
+From: George Kadianakis <desnacked@riseup.net>
+Date: Thu, 1 May 2014 17:32:29 +0100
+Subject: [PATCH] fixup! Fix a misuse of strlcpy() introduced by the #11156
+ patch.
+
+---
+ changes/bug11654 | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 changes/bug11654
+
+diff --git a/changes/bug11654 b/changes/bug11654
+new file mode 100644
+index 0000000..97c70b2
+--- /dev/null
++++ b/changes/bug11654
+@@ -0,0 +1,4 @@
++  o Minor bugfixes:
++    - Fix a broken log message about delayed directory fetches that
++      was caused by a misuse of strlcpy(). Fixes bug 11654; bugfix on
++      0.2.5.3-alpha.
+-- 
+1.9.1
+
