@@ -21,7 +21,6 @@ files:
 - "versions"
 - "bug10297.patch"
 - "bug5018.patch"
-- "bug9229.patch"
 - "bug11156.patch"
 - "bug11200.patch"
 - "bug11069.patch"
@@ -70,7 +69,6 @@ script: |
   if [ $BUILD_PT_BUNDLES ]; then
     if [ ${TOR_TAG::9} == "tor-0.2.4" ];
     then
-      git am ~/build/bug9229.patch
       git am ~/build/bug5018.patch
       git am ~/build/bug11069.patch
       git am ~/build/bug11156.patch
