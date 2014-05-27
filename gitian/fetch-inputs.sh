@@ -289,8 +289,8 @@ cd ..
 git remote set-url origin https://git.torproject.org/builders/gitian-builder.git
 git fetch origin
 git fetch --tags origin # XXX - why do we fetch tags specifically?
-git checkout tor-browser-builder-2
-git merge origin/tor-browser-builder-2
+git checkout tor-browser-builder-3
+git merge origin/tor-browser-builder-3
 cd inputs
 
 while read dir url tag; do
