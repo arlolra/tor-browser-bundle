@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # GNU/Linux does not really require something like RelativeLink.c
 # However, we do want to have the same look and feel with similar features.
@@ -218,17 +218,82 @@ fi
 LD_LIBRARY_PATH="${HOME}/TorBrowser/Tor/"
 export LD_LIBRARY_PATH
 
+function setControlPortPasswd() {
+    local ctrlPasswd=$1
+    test -z "$ctrlPasswd" -o "$ctrlPasswd" = $'\"secret\"' && return
+    if test "${ctrlPasswd:0:1}" = $'\"'; then  # First 2 chars were '"
+        printf "Using system Tor process.\n"
+        export TOR_CONTROL_PASSWD
+    else
+        complain "There seems to have been a quoting problem with your \
+TOR_CONTROL_PASSWD environment variable."
+        cat <<EOF
+
+The Tor ControlPort password should be given inside double quotes, inside single
+quotes, i.e. if the ControlPort password is “secret” (without curly quotes) then
+we must start this script after setting the environment variable exactly like
+this:
+
+  \$ TOR_CONTROL_PASSWD='"secret"' $myname
+
+EOF
+    fi
+}
+
+# Using a system-installed Tor process with Tor Browser:
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# The Tor ControlPort password should be given inside double quotes, inside
+# single quotes, i.e. if the ControlPort password is “secret” (without
+# curly quotes) then we must set the environment variable *exactly* like
+# this:
+#
+# TOR_CONTROL_PASSWD='"secret"'
+#
+# Yes, the variable MUST be double-quoted, then single-quoted, exactly as
+# shown. This is used by TorButtom to authenticate to Tor's ControlPort, and
+# is necessary for using TBB with a with a system-installed Tor.
+#
+# Additionally, if using a system-installed Tor, the following about:config
+# options should be set (values in <> mean they are the value taken from your
+# torrc):
+#
+# SETTING NAME                            VALUE
+# extensions.torbutton.banned_ports       [...],<SocksPort>,<ControlPort>
+# extensions.torbutton.block_disk         false
+# extensions.torbutton.custom.socks_host  127.0.0.1
+# extensions.torbutton.custom.socks_port  <SocksPort>
+# extensions.torbutton.inserted_button    true
+# extensions.torbutton.launch_warning     false
+# extensions.torbutton.loglevel           2
+# extensions.torbutton.logmethod          0
+# extensions.torbutton.settings_method    custom
+# extensions.torbutton.socks_port         <SocksPort>
+# extensions.torbutton.use_privoxy        false
+# extensions.torlauncher.control_port      <ControlPort>
+# extensions.torlauncher.loglevel          2
+# extensions.torlauncher.logmethod         0
+# extensions.torlauncher.prompt_at_startup false
+# extensions.torlauncher.start_tor         false
+#
+# where the '[...]' in the banned_ports option means "leave anything that was
+# already in the preference alone, just append the things specified after it".
+
+# Either set `TOR_CONTROL_PASSWD` before running ./start-tor-browser, or put
+# your password in the following line where the word “secret” is:
+setControlPortPasswd ${TOR_CONTROL_PASSWD:='"secret"'}
+
 # XXX: Debug mode for Firefox??
 
 # not in debug mode, run proceed normally
-printf "\nLaunching Tor Browser Bundle for Linux in ${HOME}\n"
+printf "Launching Tor Browser for Linux in ${HOME}...\n"
 cd "${HOME}"
 # XXX Someday we should pass whatever command-line arguments we got
 # (probably filenames or URLs) to Firefox.
 # !!! Dash above comment! Now we pass command-line arguments we got (except --debug) to Firefox.
 # !!! Use at your own risk!
 # Adding --class for fixing bug 11102.
-./firefox --class "Tor Browser" -profile TorBrowser/Data/Browser/profile.default "${@}"
+TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox  --class "Tor Browser" \
+    -profile TorBrowser/Data/Browser/profile.default "${@}"
 exitcode="$?"
 if [ "$exitcode" -ne 0 ]; then
 	complain "Tor Browser exited abnormally.  Exit code: $exitcode"
