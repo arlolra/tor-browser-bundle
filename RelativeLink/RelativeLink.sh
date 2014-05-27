@@ -284,20 +284,41 @@ setControlPortPasswd ${TOR_CONTROL_PASSWD:='"secret"'}
 
 # XXX: Debug mode for Firefox??
 
-# not in debug mode, run proceed normally
 printf "Launching Tor Browser for Linux in ${HOME}...\n"
 cd "${HOME}"
-# XXX Someday we should pass whatever command-line arguments we got
-# (probably filenames or URLs) to Firefox.
-# !!! Dash above comment! Now we pass command-line arguments we got (except --debug) to Firefox.
+logfile=${PWD}/tbb-debug.log
+touch $logfile && printf "Logging Tor Browser output to file: %s\n" "${logfile}"
+
+# !!! We pass command-line arguments we got (except --debug) to Firefox.
 # !!! Use at your own risk!
 # Adding --class for fixing bug 11102.
-TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox  --class "Tor Browser" \
-    -profile TorBrowser/Data/Browser/profile.default "${@}"
-exitcode="$?"
-if [ "$exitcode" -ne 0 ]; then
-	complain "Tor Browser exited abnormally.  Exit code: $exitcode"
-	exit "$exitcode"
-else
-	printf '\nTor Browser exited cleanly.\n'
+TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
+    -profile TorBrowser/Data/Browser/profile.default "${@}" > $logfile 2>&1 </dev/null &
+
+pid="$!"
+
+for second in `seq 1 15` ; do
+    sleep 1
+    # Doing `kill -0` doesn't send a signal to the process, but it'll yell
+    # "No such process" if that process doesn't exist (i.e. it already died):
+    if `kill -0 $pid 2>&1 >/dev/null` ; then
+        wait "$pid"
+        exitcode="$?"
+        complain "Tor Browser exited abnormally. Exit code: $exitcode "
+        exit "$exitcode"
+    else
+        continue
+    fi
+done
+
+if test -z "${exitcode}" ; then
+    if test -z "$(kill -0 $pid 2>&1 >/dev/null)" ; then
+        printf "Running Tor Browser process (PID %s) in background...\n" "$pid"
+        disown "$pid"
+        exitcode="0"
+    else
+        exitcode="66"  # Something odd happened
+    fi
 fi
+
+exit "$exitcode"
