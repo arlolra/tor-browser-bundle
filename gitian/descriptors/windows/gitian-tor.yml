@@ -94,7 +94,7 @@ script: |
   cd ..
   install -s $INSTDIR/bin/tor.exe $INSTDIR/Tor/
   cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
-  # XXX: Geoip files..
+  cp $INSTDIR/share/tor/geoip6 $INSTDIR/Data/Tor/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll $INSTDIR/Tor/
   cp -a /usr/lib/gcc/i686-w64-mingw32/4.6/libssp*.dll $INSTDIR/Tor/
 

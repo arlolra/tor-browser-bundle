@@ -53,7 +53,8 @@ script: |
   unzip -d $INSTDIR libevent-mac32-utils.zip
   cp $INSTDIR/libevent/lib/libevent-*.dylib $INSTDIR/TorBrowserBundle.app/Tor/
   LIBEVENT_FILE=`basename $INSTDIR/libevent/lib/libevent-*.dylib`
-  #
+
+  # Building tor
   # XXX Clean up these flags?
   export CFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
   export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
@@ -89,10 +90,11 @@ script: |
   cd $INSTDIR
   cp bin/tor TorBrowserBundle.app/Tor/
   cp share/tor/geoip TorBrowserBundle.app/Data/Tor/
+  cp share/tor/geoip6 TorBrowserBundle.app/Data/Tor/
   cd TorBrowserBundle.app/Tor/
   i686-apple-darwin11-install_name_tool -change $INSTDIR/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
-  # XXX: Geoip files..
-  #
+
+  # Grabbing the result
   cd $INSTDIR
   ~/build/dzip.sh tor-mac32-gbuilt.zip TorBrowserBundle.app
   cp tor-mac32-gbuilt.zip $OUTDIR/

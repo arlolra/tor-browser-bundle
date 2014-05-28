@@ -92,6 +92,7 @@ script: |
   make $MAKEOPTS
   make install
   cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
+  cp $INSTDIR/share/tor/geoip6 $INSTDIR/Data/Tor/
   # Strip and generate debuginfo for libs
   cd $INSTDIR
   objcopy --only-keep-debug $INSTDIR/bin/tor $INSTDIR/Debug/Tor/tor
