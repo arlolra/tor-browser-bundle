@@ -34,6 +34,7 @@ files:
 - "libevent-mac32-utils.zip"
 script: |
   INSTDIR="$HOME/install"
+  TBDIR="$INSTDIR/TorBrowserBundle.app/TorBrowser"
   source versions
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -42,8 +43,8 @@ script: |
   umask 0022
   #
   mkdir -p $INSTDIR/bin/
-  mkdir -p $INSTDIR/TorBrowserBundle.app/Tor/
-  mkdir -p $INSTDIR/TorBrowserBundle.app/Data/Tor/
+  mkdir -p $TBDIR/Tor/
+  mkdir -p $TBDIR/Data/Tor/
   mkdir -p $OUTDIR/
   #
   sudo dpkg -i *.deb
@@ -51,7 +52,7 @@ script: |
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
   unzip -d $INSTDIR openssl-mac32-utils.zip
   unzip -d $INSTDIR libevent-mac32-utils.zip
-  cp $INSTDIR/libevent/lib/libevent-*.dylib $INSTDIR/TorBrowserBundle.app/Tor/
+  cp $INSTDIR/libevent/lib/libevent-*.dylib $TBDIR/Tor/
   LIBEVENT_FILE=`basename $INSTDIR/libevent/lib/libevent-*.dylib`
 
   # Building tor
@@ -88,10 +89,10 @@ script: |
   make $MAKEOPTS
   make install
   cd $INSTDIR
-  cp bin/tor TorBrowserBundle.app/Tor/
-  cp share/tor/geoip TorBrowserBundle.app/Data/Tor/
-  cp share/tor/geoip6 TorBrowserBundle.app/Data/Tor/
-  cd TorBrowserBundle.app/Tor/
+  cp bin/tor $TBDIR/Tor/
+  cp share/tor/geoip $TBDIR/Data/Tor/
+  cp share/tor/geoip6 $TBDIR/Data/Tor/
+  cd $TBDIR/Tor/
   i686-apple-darwin11-install_name_tool -change $INSTDIR/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
 
   # Grabbing the result

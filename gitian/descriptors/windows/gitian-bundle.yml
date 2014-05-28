@@ -33,7 +33,6 @@ files:
 - "pluggable-transports-win32-gbuilt.zip"
 - "torrc-defaults-appendix-windows"
 - "bridge_prefs.js"
-- "relativelink-src.zip"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
 - "noscript@noscript.net.xpi"
@@ -56,9 +55,9 @@ script: |
   umask 0022
   #
   mkdir -p $OUTDIR/
-  mkdir -p tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/https-everywhere@eff.org
-  mkdir -p tbb-windows-installer/"Tor Browser"/Data/Browser/Caches
-  mkdir -p tbb-windows-installer/"Tor Browser"/Docs/sources
+  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/Caches
+  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Docs/sources
   #
   cd tor-launcher
   make clean
@@ -67,7 +66,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
+  ~/build/dzip.sh ../../../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
@@ -76,7 +75,7 @@ script: |
   # FIXME: Switch to re-dzip.sh here?
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
+  ~/build/dzip.sh ../../../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
   #cd https-everywhere
@@ -84,26 +83,20 @@ script: |
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   #rm -f .git/refs/heads/master
   #./makexpi.sh
-  #cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  #cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   #cd ..
   #
-  cp *.xpi tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions
-  cd tbb-windows-installer/"Tor Browser"/Data/Browser/profile.default/extensions
+  cp *.xpi tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
+  cd tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere@eff.org
   unzip ../https-everywhere@eff.org.xpi
   rm ../https-everywhere@eff.org.xpi
   cd ~/build/
   #
-  unzip relativelink-src.zip
-  cd RelativeLink
-  make clean
-  make
-  cp StartTorBrowserBundle.exe ../tbb-windows-installer/"Tor Browser"/"Start Tor Browser.exe"
-  cd ..
-  #
   cd tbb-windows-installer/"Tor Browser"
   unzip ~/build/tor-browser-win32-gbuilt.zip
+  cd Browser/TorBrowser
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   unzip ~/build/tbb-docs.zip
@@ -112,11 +105,11 @@ script: |
     cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
     cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
   fi
-  cd ..
+  cd ../../..
   #
   # Copy reproducibility info
-  cp ../versions "Tor Browser"/Docs/sources/
-  cp ../bundle.inputs "Tor Browser"/Docs/sources/
+  cp ../versions "Tor Browser"/Browser/TorBrowser/Docs/sources/
+  cp ../bundle.inputs "Tor Browser"/Browser/TorBrowser/Docs/sources/
   #
   pushd "Tor Browser"/Browser/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
@@ -137,7 +130,7 @@ script: |
   for LANG in $BUNDLE_LOCALES
   do
     xpi=$LANG.xpi
-    cp $xpi ../"Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    cp $xpi ../"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
     pushd "Tor Browser"/Browser/browser/
@@ -149,6 +142,6 @@ script: |
 
     makensis torbrowser.nsi
     mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
-    rm "Tor Browser"/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    rm "Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd win32-langpacks
   done

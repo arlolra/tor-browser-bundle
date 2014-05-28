@@ -296,14 +296,14 @@ cd inputs
 while read dir url tag; do
   update_git "$dir" "$url" "$tag"
 done << EOF
-tbb-windows-installer https://github.com/moba/tbb-windows-installer.git $NSIS_TAG
+tbb-windows-installer https://github.com/MarkCSmith/tbb-windows-installer.git $NSIS_TAG
 zlib                  https://github.com/madler/zlib.git       $ZLIB_TAG
 libevent              https://github.com/libevent/libevent.git $LIBEVENT_TAG
 tor                   https://git.torproject.org/tor.git              $TOR_TAG
 https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TAG
 torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
-tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
-tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
+tor-launcher          https://git.torproject.org/user/brade/tor-launcher.git         $TORLAUNCHER_TAG
+tor-browser           https://git.torproject.org/user/brade/tor-browser.git          $TORBROWSER_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG
 flashproxy            https://git.torproject.org/flashproxy.git $FLASHPROXY_TAG

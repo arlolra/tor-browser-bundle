@@ -61,9 +61,9 @@ script: |
   umask 0022
   #
   mkdir -p $OUTDIR/
-  mkdir -p tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
-  mkdir -p tor-browser/Data/Browser/Caches
-  mkdir -p tor-browser/Docs/sources/
+  mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/Caches
+  mkdir -p tor-browser/Browser/TorBrowser/Docs/sources/
   # Preparing Python for HTTPS-Everywhere.
   unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
   export PATH=$INSTDIR/python/bin:$PATH
@@ -76,7 +76,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tor-browser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
+  ~/build/dzip.sh ../../../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
@@ -86,7 +86,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tor-browser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
+  ~/build/dzip.sh ../../../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
   #cd https-everywhere
@@ -94,11 +94,11 @@ script: |
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   #rm -f .git/refs/heads/master
   #./makexpi.sh
-  #cp pkg/*.xpi ../tor-browser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  #cp pkg/*.xpi ../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   #cd ..
   #
-  cp *.xpi tor-browser/Data/Browser/profile.default/extensions/
-  cd tor-browser/Data/Browser/profile.default/extensions
+  cp *.xpi tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/
+  cd tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere@eff.org/
   unzip ../https-everywhere@eff.org.xpi
@@ -106,10 +106,12 @@ script: |
   cd ~/build/
   #
   unzip relativelink-src.zip
-  cp RelativeLink/RelativeLink.sh tor-browser/start-tor-browser
+  cp RelativeLink/RelativeLink.sh tor-browser/Browser/start-tor-browser
   #
   cd tor-browser
+  ln -s Browser/start-tor-browser
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
+  cd Browser/TorBrowser
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
   unzip ~/build/linux-skeleton.zip
   unzip ~/build/tbb-docs.zip
@@ -120,11 +122,11 @@ script: |
   fi
   chmod 700 Data/Browser
   chmod 700 Data/Tor
-  cd ..
+  cd ../../..
   #
   # Copy reproducibility info
-  cp versions tor-browser/Docs/sources/
-  cp bundle.inputs tor-browser/Docs/sources/
+  cp versions tor-browser/Browser/TorBrowser/Docs/sources/
+  cp bundle.inputs tor-browser/Browser/TorBrowser/Docs/sources/
   #
   cp -a tor-browser tor-browser_en-US
   #
@@ -149,7 +151,7 @@ script: |
   do
     xpi=$LANG.xpi
     cp -a ../tor-browser ../tor-browser_$LANG
-    cp $xpi ../tor-browser_$LANG/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    cp $xpi ../tor-browser_$LANG/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
     pushd tor-browser_$LANG/Browser/browser/

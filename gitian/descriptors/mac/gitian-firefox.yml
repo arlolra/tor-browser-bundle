@@ -21,6 +21,7 @@ files:
 - "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
 - "dzip.sh"
+- "fix-info-plist.sh"
 - "versions"
 script: |
   INSTDIR="$HOME/install/"
@@ -64,15 +65,21 @@ script: |
   make -C obj-macos package INNER_MAKE_PACKAGE=true
   cp -a obj-macos/dist/firefox/* $INSTDIR
   # Remove firefox-bin (we don't use it, see ticket #10126)
-  rm -f $INSTDIR/Browser/firefox-bin
+  rm -f $INSTDIR/TorBrowser.app/Contents/MacOS/firefox-bin
   #
   cd $INSTDIR
   # XXX: Find a better way to tell that we are having a 32bit build
   GBUILD_BITS=32
+  # Adjust the Info.plist file
+  INFO_PLIST=TorBrowser.app/Contents/Info.plist
+  mv $INFO_PLIST tmp.plist
+  ~/build/fix-info-plist.sh $TORBROWSER_VERSION < tmp.plist > $INFO_PLIST
+  rm -f tmp.plist
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/webapprt/omni.ja
   if [ -f TorBrowser.app/Contents/MacOS/browser/omni.ja  ]; then # FF24 includes a third .ja
     ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/browser/omni.ja
   fi
-  ~/build/dzip.sh tor-browser-mac${GBUILD_BITS}-gbuilt.zip ./TorBrowser.app
+  cd TorBrowser.app/
+  ~/build/dzip.sh tor-browser-mac${GBUILD_BITS}-gbuilt.zip ./Contents
   cp tor-browser-mac${GBUILD_BITS}-gbuilt.zip $OUTDIR
