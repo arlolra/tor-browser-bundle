@@ -2,7 +2,7 @@
 ClientTransportPlugin fte exec Tor\PluggableTransports\fteproxy --managed
 
 ## obfsproxy configuration
-ClientTransportPlugin obfs2,obfs3,scramblesuit exec Tor\PluggableTransports\obfsproxy managed
+ClientTransportPlugin obfs2,obfs3 exec Tor\PluggableTransports\obfsproxy managed
 
 ## flash proxy configuration
 #
