@@ -5,7 +5,7 @@
 #
 # To run in debug mode simply pass --debug
 #
-# Copyright 2011 The Tor Project.  See LICENSE for licensing information.
+# Copyright 2014 The Tor Project.  See LICENSE for licensing information.
 
 complain_dialog_title="Tor Browser Bundle"
 
@@ -208,14 +208,14 @@ else
 fi
 
 SYSARCHITECTURE=$(getconf LONG_BIT)
-TORARCHITECTURE=$(expr "$(file Tor/tor)" : '.*ELF \([[:digit:]]*\)')
+TORARCHITECTURE=$(expr "$(file TorBrowser/Tor/tor)" : '.*ELF \([[:digit:]]*\)')
 
 if [ $SYSARCHITECTURE -ne $TORARCHITECTURE ]; then
    complain "Wrong architecture? 32-bit vs. 64-bit."
    exit 1
 fi
 
-LD_LIBRARY_PATH="${HOME}/Tor/"
+LD_LIBRARY_PATH="${HOME}/TorBrowser/Tor/"
 export LD_LIBRARY_PATH
 
 # XXX: Debug mode for Firefox??
@@ -227,7 +227,7 @@ cd "${HOME}"
 # (probably filenames or URLs) to Firefox.
 # !!! Dash above comment! Now we pass command-line arguments we got (except --debug) to Firefox.
 # !!! Use at your own risk!
-./Browser/firefox -no-remote -profile Data/Browser/profile.default ${@}
+./firefox -profile TorBrowser/Data/Browser/profile.default ${@}
 exitcode="$?"
 if [ "$exitcode" -ne 0 ]; then
 	complain "Tor Browser exited abnormally.  Exit code: $exitcode"

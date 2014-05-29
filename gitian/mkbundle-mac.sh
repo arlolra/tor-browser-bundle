@@ -49,11 +49,7 @@ cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 cp -r $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
 cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
 
-cd $WRAPPER_DIR/..
-rm -f $GITIAN_DIR/inputs/relativelink-src.zip
-$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/relativelink-src.zip ./RelativeLink/
-
-cd ./Bundle-Data/
+cd $WRAPPER_DIR/../Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
 cp PTConfigs/mac/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
