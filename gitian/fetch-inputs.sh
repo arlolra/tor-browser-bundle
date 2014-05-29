@@ -90,7 +90,7 @@ update_git() {
 
   if [ -d "$dir/.git" ];
   then
-    (cd "$dir" && git remote set-url origin $url && git fetch origin && git fetch --tags origin)
+    (cd "$dir" && git remote set-url origin $url && git fetch --prune origin && git fetch --prune --tags origin)
   else
     if ! git clone "$url"; then
       echo >&2 "Error: Cloning $url failed"
