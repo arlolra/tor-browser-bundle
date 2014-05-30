@@ -50,5 +50,5 @@ if [ $status = done ]; then
   tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe $D/*.dmg | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
-  tail -n 50 $logfile | mail -s "Nightly build failure -- $(date +%F)" $logrecipients
+  tail -n 50 $logfile ../../gitian-builder/var/build.log ../../gitian-builder/var/target.log | mail -s "Nightly build failure -- $(date +%F)" $logrecipients
 fi
