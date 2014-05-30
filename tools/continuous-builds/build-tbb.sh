@@ -21,7 +21,7 @@ N=$6; [ -z "$N" ] && N=16
 [ -z "$PGPKEYID" ] && PGPKEYID=0x984496E7
 
 logfile=$(date -u +%s).log
-logrecipients="gk@torproject.org"
+logrecipients="gk@torproject.org linus@torproject.org"
 
 . ~/setup-gitian-build-env.sh
 cd $BUILDDIR || exit 1
