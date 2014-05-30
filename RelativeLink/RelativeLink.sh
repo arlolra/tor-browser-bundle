@@ -227,7 +227,7 @@ cd "${HOME}"
 # (probably filenames or URLs) to Firefox.
 # !!! Dash above comment! Now we pass command-line arguments we got (except --debug) to Firefox.
 # !!! Use at your own risk!
-./firefox -profile TorBrowser/Data/Browser/profile.default ${@}
+./firefox -profile TorBrowser/Data/Browser/profile.default "${@}"
 exitcode="$?"
 if [ "$exitcode" -ne 0 ]; then
 	complain "Tor Browser exited abnormally.  Exit code: $exitcode"
