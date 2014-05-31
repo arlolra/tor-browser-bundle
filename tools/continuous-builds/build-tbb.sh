@@ -27,14 +27,15 @@ logrecipients="gk@torproject.org linus@torproject.org"
 cd $BUILDDIR || exit 1
 status=init
 n=0
+MAKE_TARGET=$TARGET
 while [ $status != done ]; do
   n=$(expr $n + 1)
   printf "%s: Starting build number %d. target=$TARGET.\n" $0 $n | tee -a $logfile
   date | tee -a $logfile
   killall qemu-system-i386 qemu-system-x86_64
-  make $TARGET > build-$(date -u +%s).log && status=done
-  printf "%s: Tried building $TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
-  TARGET=build-$TARGET
+  make $MAKE_TARGET > build-$(date -u +%s).log && status=done
+  printf "%s: Tried building $MAKE_TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
+  MAKE_TARGET=build-$TARGET
   [ $n -ge $N ] && break
 done
 
