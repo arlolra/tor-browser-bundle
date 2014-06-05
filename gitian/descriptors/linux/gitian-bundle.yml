@@ -41,7 +41,6 @@ files:
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
 - "noscript@noscript.net.xpi"
-- "https-everywhere@eff.org.xpi"
 - "dzip.sh"
 - "dtar.sh"
 - "bare-version"
@@ -89,13 +88,13 @@ script: |
   ~/build/dzip.sh ../../../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
-  #cd https-everywhere
+  cd https-everywhere
   # XXX: Bloody hack to workaround a bug in HTTPS_E's git hash extraction in
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
-  #rm -f .git/refs/heads/master
-  #./makexpi.sh
-  #cp pkg/*.xpi ../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
-  #cd ..
+  rm -f .git/refs/heads/master
+  ./makexpi.sh
+  cp pkg/*.xpi ../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cd ..
   #
   cp *.xpi tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/
   cd tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions
