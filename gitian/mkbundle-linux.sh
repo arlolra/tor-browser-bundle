@@ -216,7 +216,6 @@ then
   fi
 
   cp -a build/out/pluggable-transports-linux*-gbuilt.zip inputs/
-  cp -a build/out/pluggable-transports-linux*-debug.zip inputs/
   #cp -a result/pluggable-transports-linux-res.yml inputs/
 else
   echo

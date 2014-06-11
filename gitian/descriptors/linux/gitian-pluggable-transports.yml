@@ -46,7 +46,6 @@ script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
   mkdir -p $PTDIR
-  mkdir -p $INSTDIR/Debug/
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
@@ -185,6 +184,4 @@ script: |
   # Grabbing the results
   cd $INSTDIR
   ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/ Docs/
-  ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-debug.zip Debug/
   cp pluggable-transports-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/
-  cp pluggable-transports-linux$GBUILD_BITS-debug.zip $OUTDIR/
