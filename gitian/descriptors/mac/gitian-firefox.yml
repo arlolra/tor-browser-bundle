@@ -21,7 +21,7 @@ files:
 - "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
 - "dzip.sh"
-- "fix-info-plist.sh"
+- "fix-info-plist.py"
 - "versions"
 script: |
   INSTDIR="$HOME/install/"
@@ -73,7 +73,7 @@ script: |
   # Adjust the Info.plist file
   INFO_PLIST=TorBrowser.app/Contents/Info.plist
   mv $INFO_PLIST tmp.plist
-  ~/build/fix-info-plist.sh $TORBROWSER_VERSION < tmp.plist > $INFO_PLIST
+  ~/build/fix-info-plist.py $TORBROWSER_VERSION < tmp.plist > $INFO_PLIST
   rm -f tmp.plist
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
   ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/webapprt/omni.ja
