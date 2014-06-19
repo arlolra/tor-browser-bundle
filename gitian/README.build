@@ -45,26 +45,37 @@ Detailed Explanation of Scripts:
  This directory is a wrapper around our modified version of Gitian, and has
  several helper scripts to make things easier.
 
- 0. Makefile: The main Makefile. It has six main commands:
+ 0. Makefile: The main Makefile. It has the following commands:
      - prep: Check OS prerequisites and download source dependency inputs
      - build: Build localized bundles for Linux, Windows, and Mac
-     - clean: Remove prior partial build stages (see 'Partial Rebuilds' below)
+     - clean: Remove prior partial build stages (see 'Partial Rebuilds' below
+       for the usage of clean-* commands)
      - vmclean: Remove VM base images
      - distclean: Remove source dependency inputs, and run clean and vmclean
      - all: The default. It calls clean, prep, and then build.
      - sign: Signs your build output and uploads it to people.torproject.org
      - match: Checks your build output against public signed hashes
     To build beta/alpha/nightly bundles, alternate targets are provided:
+     - nightly: The equivalent to the 'all' rule for nightly packages
+     - alpha: The equivalent to the 'all' rule for alpha packages
      - beta: The equivalent to the 'all' rule for beta packages
-     - build-beta: The equivalent to the 'build' rule for beta packages
+     - prep-nightly: The equivalent to the 'prep' rule for nightly packages
+     - prep-alpha: The equivalent to the 'prep' rule for alpha packages
      - prep-beta: The equivalent to the 'prep' rule for beta packages
-     - sign-beta: Signs your build output and uploads it to people.torproject.org
-     - match-beta: Checks your build output against public signed hashes
- 
+     - build-nightly: The equivalent to the 'build' rule for nightly packages
+     - build-alpha: The equivalent to the 'build' rule for alpha packages
+     - build-beta: The equivalent to the 'build' rule for beta packages
+     - sign-nightly: The equivalent to the 'sign' rule for nightly packages
+     - sign-alpha: The equivalent to the 'sign' rule for alpha packages
+     - sign-beta: The equivalent to the 'sign' rule for beta packages
+     - match-nightly: The equivalent to the 'match' rule for nightly packages
+     - match-alpha: The equivalent to the 'match' rule for alpha packages
+     - match-beta: The equivalent to the 'match' rule for beta packages
+
  1. check-prerequisites.sh: This script checks if your system is capable of
     running Gitian, and if it is not, it tells you what you need to do.
     It is called by 'make prep'.
- 
+
  2. fetch-inputs.sh: This script fetches all of our source dependencies from
     the Internet and downloads them into ../../gitian-builder/inputs.
     After you run this script, you should be able to complete the rest of your
@@ -76,17 +87,18 @@ Detailed Explanation of Scripts:
  4. verify-tags.sh: This script verifies the signatures on git tags from
     the versions file. It is only run if VERIFY_TAGS is set in the versions
     file.
-  
+
  5. descriptors: In the descriptors directory, you will find the Gitian
-    descriptors for Linux, Windows, and Mac. There are three descriptors for
-    each platform: One to build Tor and its dependencies, one to build Firefox
-    and its dependencies, and one to bundle everything together. Each
-    descriptor is run from a fresh VM.
- 
+    descriptors for Linux, Windows, and Mac. There are five descriptors for
+    each platform: One to build the utilities needed by other descriptors,
+    one to build Tor, one to build Tor Browser, one to build the Pluggable
+    Transports and one to bundle everything together. Each descriptor is run
+    from a fresh VM.
+
  6. mkbundle-linux.sh: This script is a wrapper around Gitian's gbuild to call
     the appropriate descriptors to build 32 and 64 bit Linux bundle. It also will
     create build VM images for you if you haven't done that before.
- 
+
  7. mkbundle-windows.sh: This script is a wrapper around Gitian's gbuild to
     call the appropriate descriptors to build a Windows bundle. It also will
     create build VM images for you if you haven't done that before.
@@ -98,7 +110,7 @@ Detailed Explanation of Scripts:
  9. record-inputs.sh: This script records all of the hashes and bundle
     inputs for inclusion in the 'Docs/sources' subdirectory of the bundles
     themselves.
- 
+
  10. hash-bundles.sh: This script generates a 'sha256sums.txt' file in sorted,
      reproducible order.
 
@@ -130,7 +142,7 @@ Partial Rebuilds:
   cleaned, and then re-package everything again as well.
 
   Note that if any of the source inputs, or the Ubuntu buildchain tools, or
-  the build tools' dependencies upgrade, your Tor and Firefox inputs will
+  the build tools' dependencies upgrade, your Tor and Tor Browser inputs will
   no longer match those produced by someone else's build from a fresh build
   that downloaded those newer input, dependency, and toolchain packages.
 
@@ -187,7 +199,7 @@ Known Issues and Quirks:
 Diagnosing Problems:
 
   During a running build, you can tail logs in real time in
-  ../../gitian-builder/var/*.log 
+  ../../gitian-builder/var/*.log
 
   Upon failure, logs of any failed component builds are relocated to
   ../../gitian-builder/*fail*.log. This is to prevent subsequent builds
