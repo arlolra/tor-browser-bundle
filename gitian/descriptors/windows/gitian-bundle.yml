@@ -8,8 +8,6 @@ packages:
 - "git-core"
 - "unzip"
 - "zip"
-# This package is needed for compiling the StartTorBrowserBundle.exe.
-- "mingw-w64"
 - "nsis"
 - "faketime"
 - "python"

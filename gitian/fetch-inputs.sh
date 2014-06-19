@@ -92,7 +92,7 @@ update_git() {
   then
     (cd "$dir" && git remote set-url origin $url && git fetch --prune origin && git fetch --prune --tags origin)
   else
-    if ! git clone "$url"; then
+    if ! git clone "$url" "$dir"; then
       echo >&2 "Error: Cloning $url failed"
       exit 1
     fi
@@ -108,12 +108,6 @@ update_git() {
   then
     (cd "$dir" && git pull || true )
   fi
-}
-
-checkout_mingw() {
-  svn co -r $MINGW_REV https://svn.code.sf.net/p/mingw-w64/code/trunk/ mingw-w64-svn || exit 1
-  # XXX: Path
-  ZIPOPTS="-x*/.svn/*" faketime -f "2000-01-01 00:00:00" "$WRAPPER_DIR/build-helpers/dzip.sh" mingw-w64-svn-snapshot.zip mingw-w64-svn
 }
 
 ##############################################################################
@@ -212,24 +206,9 @@ cd ..
 wget -U "" -N ${NOSCRIPT_URL}
 wget -U "" -N ${HTTPSE_URL}
 
-# So is mingw:
-if [ ! -f mingw-w64-svn-snapshot.zip ];
-then
-  checkout_mingw
-else
-  # We do have mingw-w64 already but is it the correct revision? We check the
-  # hash of the zip archive as it has to be changed as well if a new revision
-  # should be used.
-   if ! echo "${MINGW_HASH}  ${MINGW_PACKAGE}" | sha256sum -c -; then
-     # We need to update the local mingw-w64 copy
-     rm -rf mingw-w64-svn*
-     checkout_mingw
-   fi
-fi
-
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -304,6 +283,7 @@ https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TA
 torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
 tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
+mingw-w64-git         http://git.code.sf.net/p/mingw-w64/mingw-w64        $MINGW_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG
 flashproxy            https://git.torproject.org/flashproxy.git $FLASHPROXY_TAG

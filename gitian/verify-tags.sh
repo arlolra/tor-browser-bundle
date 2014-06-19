@@ -105,6 +105,7 @@ EOF
 while read dir commit; do
   check_git_hash "$dir" "$commit"
 done << EOF
+mingw-w64-git           $MINGW_TAG
 libdmg-hfsplus          $LIBDMG_TAG
 libfte                  $LIBFTE_TAG
 fteproxy                $FTEPROXY_TAG
@@ -132,7 +133,7 @@ done
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MINGW MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
