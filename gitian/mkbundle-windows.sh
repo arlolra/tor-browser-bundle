@@ -107,7 +107,7 @@ then
   echo "****** Starting Utilities Component of Windows Bundle (1/5 for Windows) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/windows/gitian-utils.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit mingw-w64-git=$MINGW_TAG,zlib=$ZLIB_TAG,libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/windows/gitian-utils.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./utils-fail-win.log.`date +%Y%m%d%H%M%S`

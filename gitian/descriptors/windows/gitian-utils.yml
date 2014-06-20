@@ -20,13 +20,13 @@ packages:
 - "libmpc-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
+- "url": "http://git.code.sf.net/p/mingw-w64/mingw-w64"
+  "dir": "mingw-w64-git"
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
 - "url": "https://github.com/madler/zlib.git"
   "dir": "zlib"
 files:
-# XXX: we need to make this input tarball deterministic :/
-- "mingw-w64-svn-snapshot.zip"
 - "binutils.tar.bz2"
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
@@ -61,10 +61,8 @@ script: |
 
   # Building mingw-w64
   mkdir -p mingw-w64/mingw-w64-headers32
-  cd mingw-w64
-  unzip ../mingw-w64-svn-snapshot.zip
-  cd mingw-w64-headers32
-  ../mingw-w64-svn/mingw-w64-headers/configure --host=i686-w64-mingw32 --prefix=$INSTDIR/mingw-w64/i686-w64-mingw32 --enable-sdk=all --enable-secure-api --enable-idl
+  cd mingw-w64/mingw-w64-headers32
+  ../../mingw-w64-git/mingw-w64-headers/configure --host=i686-w64-mingw32 --prefix=$INSTDIR/mingw-w64/i686-w64-mingw32 --enable-sdk=all --enable-secure-api --enable-idl
   make install
   cd ..
   cd ..
@@ -89,13 +87,13 @@ script: |
   #
   cd mingw-w64
   mkdir mingw-w64-crt32 && cd mingw-w64-crt32
-  ../mingw-w64-svn/mingw-w64-crt/configure --host=i686-w64-mingw32 --prefix=$INSTDIR/mingw-w64/i686-w64-mingw32
+  ../../mingw-w64-git/mingw-w64-crt/configure --host=i686-w64-mingw32 --prefix=$INSTDIR/mingw-w64/i686-w64-mingw32
   make $MAKEOPTS
   make install
   cd ..
   #
   mkdir widl32 && cd widl32
-  ../mingw-w64-svn/mingw-w64-tools/widl/configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32
+  ../../mingw-w64-git/mingw-w64-tools/widl/configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32
   make $MAKEOPTS
   make install
   cd ..
