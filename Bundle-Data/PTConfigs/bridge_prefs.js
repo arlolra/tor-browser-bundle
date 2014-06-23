@@ -25,3 +25,5 @@ pref("extensions.torlauncher.default_bridge.fte.5", "fte 79.125.3.12:8080 272465
 pref("extensions.torlauncher.default_bridge.scramblesuit.1", "scramblesuit 188.40.121.112:39707 5DE8D363D8F150C99E1A2D7237368D614838132C password=L5POGQONBPS2HZUR6GXBIDS4CMIYYOTI");
 pref("extensions.torlauncher.default_bridge.scramblesuit.2", "scramblesuit 188.226.213.208:54278 AA5A86C1490296EF4FACA946CC5A182FCD1C5B1E password=MD2VRP7WXAMSG7MKIGMHI4CB4BMSNO7T");
 pref("extensions.torlauncher.default_bridge.scramblesuit.3", "scramblesuit 83.212.101.3:443 A09D536DD1752D542E1FBB3C9CE4449D51298239 password=XTCXLG2JAMJKZW2POLBAOWOQETQSMASH");
+
+pref("extensions.torlauncher.default_bridge.meek.1", "meek 0.0.2.0:1");

@@ -28,6 +28,8 @@ remotes:
   "dir": "https-everywhere"
 - "url": "https://github.com/vasi/libdmg-hfsplus.git"
   "dir": "libdmg-hfsplus"
+- "url": "https://git.torproject.org/pluggable-transports/meek.git"
+  "dir": "meek"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-mac32-gbuilt.zip"
@@ -35,6 +37,8 @@ files:
 - "pluggable-transports-mac32-gbuilt.zip"
 - "torrc-defaults-appendix-mac"
 - "bridge_prefs.js"
+- "meek-http-helper-user.js"
+- "TorBrowser.app.meek-http-helper.zip"
 - "mac-skeleton.zip"
 - "dmg-applications.tar.xz"
 - "dmg-desktop.tar.xz"
@@ -43,6 +47,7 @@ files:
 - "https-everywhere@eff.org.xpi"
 - "dzip.sh"
 - "ddmg.sh"
+- "background-plist.py"
 - "libdmg.patch"
 - "bare-version"
 - "bundle.inputs"
@@ -70,6 +75,7 @@ script: |
   #
   mkdir -p $OUTDIR/
   mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/Caches
   mkdir -p $TORBROWSER_NAME.app/TorBrowser/Docs/sources
   mkdir -p $TORBROWSER_NAME.app/Contents/MacOS
@@ -111,6 +117,10 @@ script: |
   rm ../https-everywhere@eff.org.xpi
   cd ~/build/
   #
+  cd meek/firefox
+  ~/build/dzip.sh ../../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.meek-http-helper/extensions/meek-http-helper@bamsoftware.com.xpi .
+  cd ~/build/
+  #
   unzip tor-mac$GBUILD_BITS-gbuilt.zip
   if [ $BUILD_PT_BUNDLES ]; then
     unzip pluggable-transports-mac$GBUILD_BITS-gbuilt.zip
@@ -122,6 +132,7 @@ script: |
   if [ $BUILD_PT_BUNDLES ]; then
     cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
     cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
+    cat ~/build/meek-http-helper-user.js >> Data/Browser/profile.meek-http-helper/user.js
   fi
   # Install a "tor" shim that sets the working directory. See #10030.
   mv Tor/tor Tor/tor.real
@@ -155,6 +166,15 @@ script: |
   # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+  popd
+  # Install a headless copy of TorBrowser.app, with a modified Info.plist so
+  # that it runs without a dock icon. See #11429.
+  pushd $TORBROWSER_NAME.app/TorBrowser/Tor/PluggableTransports
+  mkdir -p TorBrowser.app.meek-http-helper/Contents
+  (cd TorBrowser.app.meek-http-helper/Contents && ln -s ../../../../../Contents/* .)
+  rm -f TorBrowser.app.meek-http-helper/Contents/Info.plist
+  ~/build/background-plist.py ../../../Contents/Info.plist > TorBrowser.app.meek-http-helper/Contents/Info.plist
+  unzip ~/build/TorBrowser.app.meek-http-helper.zip
   popd
   #
   if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then

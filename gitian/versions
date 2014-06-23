@@ -22,6 +22,8 @@ LIBFTE_TAG=ee9e9ddf5c86e6940559a313d2bd22cc33b654c9 # tag 0.0.3
 FTEPROXY_TAG=5e7a9fd498a948d17b0996275ef1b6f743251317 # tag 0.2.15
 LIBDMG_TAG=dfd5e5cc3dc1191e37d3c3a6118975afdd1d7014
 TXSOCKSX_TAG=216eb0894a1755872f4789f9458aa6cf543b8433 # unsigned habnabit/1.13.0.2
+GOPTLIB_TAG=0.2
+MEEK_TAG=0.9
 
 GITIAN_TAG=tor-browser-builder-3.x-5
 
@@ -42,6 +44,7 @@ SETUPTOOLS_VER=1.4
 LXML_VER=3.3.5
 PARSLEY_VER=1.2
 HTTPSE_VER=3.5.1
+GO_VER=1.2
 
 ## File names for the source packages
 OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -66,6 +69,7 @@ PY2EXE_PACKAGE=py2exe-${PY2EXE_VER}.win32-py2.7.exe
 SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 LXML_PACKAGE=lxml-${LXML_VER}.tar.gz
 PARSLEY_PACKAGE=Parsley-${PARSLEY_VER}.tar.gz
+GO_PACKAGE=go${GO_VER}.src.tar.gz
 
 # Hashes for packages with weak sigs or no sigs
 OPENSSL_HASH=53cb818c3b90e507a8348f4f5eaedb05d8bfe5358aabb508b7263cc670c3e028
@@ -85,6 +89,7 @@ M2CRYPTO_HASH=25b94498505c2d800ee465db0cc1aff097b1615adc3ac042a1c85ceca264fc0a
 PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
 SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 PARSLEY_HASH=50d30cee70770fd44db7cea421cb2fb75af247c3a1cd54885c06b30a7c85dd23
+GO_HASH=9ab83fb8eafe39f4204ef0f8e84e5ff7e8f1d533ddb05f51e6dc81503e8c0ae4
 
 ## Non-git package URLs
 OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -109,3 +114,4 @@ PY2EXE_URL=http://softlayer-dal.dl.sourceforge.net/project/py2exe/py2exe/${PY2EX
 SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS_PACKAGE}
 LXML_URL=https://pypi.python.org/packages/source/l/lxml/${LXML_PACKAGE}
 PARSLEY_URL=https://pypi.python.org/packages/source/P/Parsley/${PARSLEY_PACKAGE}
+GO_URL=https://go.googlecode.com/files/${GO_PACKAGE}

@@ -10,3 +10,6 @@ ClientTransportPlugin obfs2,obfs3,scramblesuit exec PluggableTransports/obfsprox
 # receive connections from the Internet (the port for which you
 # configured port forwarding).
 ClientTransportPlugin flashproxy exec PluggableTransports/flashproxy-client --register :0 :9000
+
+## meek configuration
+ClientTransportPlugin meek exec PluggableTransports/meek-client-torbrowser -- PluggableTransports/meek-client --url=https://meek-reflect.appspot.com/ --front=www.google.com

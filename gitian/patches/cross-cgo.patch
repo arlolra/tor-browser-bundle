@@ -1,0 +1,16 @@
+--- a/src/cmd/go/build.go	2014-02-17 05:38:55.806060278 +0000
++++ b/src/cmd/go/build.go	2014-02-17 05:39:40.414057143 +0000
+@@ -1928,9 +1928,10 @@
+ )
+ 
+ func (b *builder) cgo(p *Package, cgoExe, obj string, gccfiles []string, gxxfiles []string) (outGo, outObj []string, err error) {
+-	if goos != toolGOOS {
+-		return nil, nil, errors.New("cannot use cgo when compiling for a different operating system")
+-	}
++	// https://code.google.com/p/go/issues/detail?id=4714#c7
++	// if goos != toolGOOS {
++	// 	return nil, nil, errors.New("cannot use cgo when compiling for a different operating system")
++	// }
+ 
+ 	cgoCPPFLAGS := stringList(envList("CGO_CPPFLAGS"), p.CgoCPPFLAGS)
+ 	cgoCFLAGS := stringList(envList("CGO_CFLAGS"), p.CgoCFLAGS)

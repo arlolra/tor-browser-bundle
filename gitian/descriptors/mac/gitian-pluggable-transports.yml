@@ -28,6 +28,10 @@ remotes:
   "dir": "fteproxy"
 - "url": "https://github.com/habnabit/txsocksx.git"
   "dir": "txsocksx"
+- "url": "https://git.torproject.org/pluggable-transports/goptlib.git"
+  "dir": "goptlib"
+- "url": "https://git.torproject.org/pluggable-transports/meek.git"
+  "dir": "meek"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -36,6 +40,8 @@ files:
 - "twisted.tar.bz2"
 - "m2crypto.tar.gz"
 - "parsley.tar.gz"
+- "go.tar.gz"
+- "cross-cgo.patch"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
@@ -72,6 +78,21 @@ script: |
   export CFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -I$INSTDIR/gmp/include -L$INSTDIR/gmp/lib"
   export CXXFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -I$INSTDIR/gmp/include -L$INSTDIR/gmp/lib"
   export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5"
+
+  # Building go
+  # http://golang.org/doc/install/source#environment
+  export GOPATH="$HOME/go"
+  export GOOS=darwin
+  export GOARCH=386
+  tar xvf go.tar.gz
+  cd go
+  patch -p1 < ~/build/cross-cgo.patch
+  cd src
+  # Disable CC et al. that are set up for cross builds. (The Go compiler is a
+  # cross-compiler, but it needs to run on *this* host.)
+  CC= CFLAGS= LDFLAGS= LDSHARED= ./make.bash
+  cd ../..
+  export PATH="$PATH:$PWD/go/bin"
 
   # Building pyptlib
   cd pyptlib
@@ -199,6 +220,31 @@ script: |
   cp -ra fteproxy $PTDIR/
   mkdir -p $TBDIR/Docs/fteproxy
   cp -a {COPYING,README.md} $TBDIR/Docs/fteproxy
+  cd ..
+
+  # Building goptlib
+  cd goptlib
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
+  ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/goptlib.git"
+  CGO_ENABLED=1 CC="$CC $CFLAGS $LDFLAGS" go install git.torproject.org/pluggable-transports/goptlib.git
+  cd ..
+
+  # Building meek
+  cd meek
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  cd meek-client
+  # https://code.google.com/p/go/issues/detail?id=4714#c7
+  # We need cgo for crypto/x509 support on mac.
+  CGO_ENABLED=1 CC="$CC $CFLAGS $LDFLAGS" go build
+  cp -a meek-client $PTDIR
+  cd ..
+  cd meek-client-torbrowser
+  CGO_ENABLED=1 CC="$CC $CFLAGS $LDFLAGS" go build
+  cp -a meek-client-torbrowser $PTDIR
+  cd ..
+  mkdir -p $TBDIR/Docs/meek
+  cp -a README doc/*.1 $TBDIR/Docs/meek
   cd ..
 
   # Grabbing the result

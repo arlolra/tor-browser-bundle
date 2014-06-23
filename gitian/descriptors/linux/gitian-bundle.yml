@@ -23,6 +23,8 @@ remotes:
   "dir": "torbutton"
 - "url": "https://git.torproject.org/https-everywhere.git"
   "dir": "https-everywhere"
+- "url": "https://git.torproject.org/pluggable-transports/meek.git"
+  "dir": "meek"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-linux32-gbuilt.zip"
@@ -37,6 +39,7 @@ files:
 - "lxml-linux64-utils.zip"
 - "torrc-defaults-appendix-linux"
 - "bridge_prefs.js"
+- "meek-http-helper-user.js"
 - "relativelink-src.zip"
 - "linux-skeleton.zip"
 - "linux-langpacks.zip"
@@ -62,6 +65,7 @@ script: |
   #
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/Caches
   mkdir -p tor-browser/Browser/TorBrowser/Docs/sources/
   # Preparing Python for HTTPS-Everywhere.
@@ -103,6 +107,10 @@ script: |
   cd https-everywhere@eff.org/
   unzip ../https-everywhere@eff.org.xpi
   rm ../https-everywhere@eff.org.xpi
+  cd ~/build
+  #
+  cd meek/firefox
+  ~/build/dzip.sh ../../tor-browser/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions/meek-http-helper@bamsoftware.com.xpi .
   cd ~/build/
   #
   unzip relativelink-src.zip
@@ -119,6 +127,7 @@ script: |
     unzip ~/build/pluggable-transports-linux$GBUILD_BITS-gbuilt.zip
     cat ~/build/torrc-defaults-appendix-linux >> Data/Tor/torrc-defaults
     cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
+    cat ~/build/meek-http-helper-user.js >> Data/Browser/profile.meek-http-helper/user.js
   fi
   chmod 700 Data/Browser
   chmod 700 Data/Tor

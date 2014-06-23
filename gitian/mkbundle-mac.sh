@@ -52,8 +52,11 @@ cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
 cd $WRAPPER_DIR/../Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
+rm -f $GITIAN_DIR/inputs/TorBrowser.app.meek-http-helper.zip
+(cd PTConfigs/mac && $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/TorBrowser.app.meek-http-helper.zip TorBrowser.app.meek-http-helper)
 cp PTConfigs/mac/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
 cp PTConfigs/bridge_prefs.js $GITIAN_DIR/inputs/
+cp PTConfigs/meek-http-helper-user.js $GITIAN_DIR/inputs/
 cp mac-tor.sh $GITIAN_DIR/inputs/
 
 cd mac
@@ -184,7 +187,7 @@ then
   echo "****** Starting Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,flashproxy=$FLASHPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG,goptlib=$GOPTLIB_TAG,meek=$MEEK_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -208,7 +211,7 @@ then
 
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libdmg-hfsplus=$LIBDMG_TAG,https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libdmg-hfsplus=$LIBDMG_TAG,https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,meek=$MEEK_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`

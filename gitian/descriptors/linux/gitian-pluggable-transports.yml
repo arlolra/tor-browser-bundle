@@ -29,6 +29,10 @@ remotes:
   "dir": "fteproxy"
 - "url": "https://github.com/habnabit/txsocksx.git"
   "dir": "txsocksx"
+- "url": "https://git.torproject.org/pluggable-transports/goptlib.git"
+  "dir": "goptlib"
+- "url": "https://git.torproject.org/pluggable-transports/meek.git"
+  "dir": "meek"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -37,6 +41,7 @@ files:
 - "twisted.tar.bz2"
 - "m2crypto.tar.gz"
 - "parsley.tar.gz"
+- "go.tar.gz"
 - "dzip.sh"
 - "gmp-linux32-utils.zip"
 - "gmp-linux64-utils.zip"
@@ -63,6 +68,15 @@ script: |
   unzip -d $INSTDIR gmp-linux$GBUILD_BITS-utils.zip
   unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
   cp $INSTDIR/gmp/lib/*.so* $INSTDIR/Tor
+
+  # Building go
+  # http://golang.org/doc/install/source#environment
+  export GOPATH="$HOME/go"
+  tar xvf go.tar.gz
+  cd go/src
+  ./make.bash
+  cd ../..
+  export PATH="$PATH:$PWD/go/bin"
 
   # Building pyptlib
   cd pyptlib
@@ -179,6 +193,29 @@ script: |
   cp -ra fteproxy $PTDIR/
   mkdir -p $INSTDIR/Docs/fteproxy
   cp -a {COPYING,README.md} $INSTDIR/Docs/fteproxy
+  cd ..
+
+  # Building goptlib
+  cd goptlib
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
+  ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/goptlib.git"
+  go install git.torproject.org/pluggable-transports/goptlib.git
+  cd ..
+
+  # Building meek
+  cd meek
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  cd meek-client
+  go build
+  cp -a meek-client $PTDIR
+  cd ..
+  cd meek-client-torbrowser
+  go build
+  cp -a meek-client-torbrowser $PTDIR
+  cd ..
+  mkdir -p $INSTDIR/Docs/meek
+  cp -a README doc/*.1 $INSTDIR/Docs/meek
   cd ..
 
   # Grabbing the results

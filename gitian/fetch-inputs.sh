@@ -156,9 +156,9 @@ do
   get "${!PACKAGE}" "${MIRROR_URL}${!PACKAGE}"
 done
 
-# XXX: Omit ARGPARSE because Google won't allow wget -N and because the
-# download seems to 404 about 50% of the time.
-for i in ARGPARSE
+# XXX: Omit googlecode.com packages because Google won't allow wget -N
+# and because the download seems to 404 about 50% of the time.
+for i in ARGPARSE GO
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL_DCF}${!PACKAGE}"
@@ -208,7 +208,7 @@ wget -U "" -N ${HTTPSE_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -261,6 +261,7 @@ ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
 ln -sf "$GMP_PACKAGE" gmp.tar.bz2
 ln -sf "$LXML_PACKAGE" lxml.tar.gz
 ln -sf "$PARSLEY_PACKAGE" parsley.tar.gz
+ln -sf "$GO_PACKAGE" go.tar.gz
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
@@ -291,6 +292,8 @@ libfte                https://github.com/kpdyer/libfte.git $LIBFTE_TAG
 fteproxy              https://github.com/kpdyer/fteproxy.git $FTEPROXY_TAG
 libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG
 txsocksx              https://github.com/habnabit/txsocksx.git $TXSOCKSX_TAG
+goptlib               https://git.torproject.org/pluggable-transports/goptlib.git $GOPTLIB_TAG
+meek                  https://git.torproject.org/pluggable-transports/meek.git $MEEK_TAG
 EOF
 
 exit 0

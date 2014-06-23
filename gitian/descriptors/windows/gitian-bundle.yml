@@ -24,6 +24,8 @@ remotes:
   "dir": "torbutton"
 - "url": "https://git.torproject.org/https-everywhere.git"
   "dir": "https-everywhere"
+- "url": "https://git.torproject.org/pluggable-transports/meek.git"
+  "dir": "meek"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-win32-gbuilt.zip"
@@ -31,6 +33,7 @@ files:
 - "pluggable-transports-win32-gbuilt.zip"
 - "torrc-defaults-appendix-windows"
 - "bridge_prefs.js"
+- "meek-http-helper-user.js"
 - "windows-skeleton.zip"
 - "win32-langpacks.zip"
 - "noscript@noscript.net.xpi"
@@ -54,6 +57,7 @@ script: |
   #
   mkdir -p $OUTDIR/
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/Caches
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Docs/sources
   #
@@ -92,6 +96,11 @@ script: |
   rm ../https-everywhere@eff.org.xpi
   cd ~/build/
   #
+  cd meek/firefox
+  ~/build/dzip.sh ../meek-http-helper@bamsoftware.com.xpi .
+  mv ../meek-http-helper@bamsoftware.com.xpi ../../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions/meek-http-helper@bamsoftware.com.xpi
+  cd ~/build/
+  #
   cd tbb-windows-installer/"Tor Browser"
   unzip ~/build/tor-browser-win32-gbuilt.zip
   cd Browser/TorBrowser
@@ -102,6 +111,7 @@ script: |
     unzip ~/build/pluggable-transports-win32-gbuilt.zip
     cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
     cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
+    cat ~/build/meek-http-helper-user.js >> Data/Browser/profile.meek-http-helper/user.js
   fi
   cd ../../..
   #
