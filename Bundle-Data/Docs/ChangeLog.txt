@@ -8,11 +8,11 @@ Tor Browser Bundle 4.0-alpha-1 -- Jul 4 2014
      * Bug 12221: Remove obsolete Javascript components from the toggle era
    * Update Tor Launcher to 0.2.6.0
    * Bug 11641: Reorganize bundle directory structure to mimic Firefox
-   * Bug 12249: Don't create PT debug files anymore
    * Bug 10819: Create a preference to enable/disable third party isolation
  * Linux:
    * Bug 10178: Make it easier to set an alternate Tor control port and password
    * Bug 11102: Set Window Class to "Tor Browser" to aid in Desktop navigation
+   * Bug 12249: Don't create PT debug files anymore
 
 Tor Browser Bundle 3.6.1 -- May 6 2014
  * All Platforms
