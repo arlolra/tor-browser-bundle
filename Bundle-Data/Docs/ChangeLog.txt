@@ -1,10 +1,10 @@
-Tor Browser Bundle 4.0-alpha-1 -- Jul 4 2014
+Tor Browser Bundle 4.0-alpha-1 -- Jul 9 2014
  * All Platforms
    * Include the Meek Pluggable Transport (version 0.9) (Bug 10935)
    * Update Tor to 0.2.5.5-alpha
-   * Update NoScript to 2.6.8.30rc4
-   * Update HTTPS Everywhere to 3.5.3
+   * Update NoScript to 2.6.8.31
      * Script permissions now apply based on URL bar
+   * Update HTTPS Everywhere to 3.5.3
    * Update Torbutton to 1.6.11.0
      * Bug 12221: Remove obsolete Javascript components from the toggle era
      * Bug 10819: Bind new third party isolation pref to Torbutton security UI
