@@ -36,8 +36,6 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -79,9 +77,7 @@ script: |
   # CFLAGS_FOR_TARGET.
   export CFLAGS_FOR_TARGET="-specs=/home/ubuntu/build/msvcr100.spec"
   gcc-*/configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32 --disable-multilib --enable-languages=c,c++
-  # XXX: Using $MAKEOPTS (tested with -j4) breaks the build which does not
-  # happen in a non-gitian environment. This is probably related to bug 11459.
-  make all-gcc
+  make $MAKEOPTS all-gcc
   make install-gcc
   cd ..
   #
@@ -104,6 +100,13 @@ script: |
   make install
   cd ..
 
+  # XXX: Build the libraries we include into the bundles deterministically. As
+  # libfaketime breaks the mingw-w64 build (probably due to bug 11459) we omit
+  # the compiler and linker from it. It seems we get away with this strategy
+  # and the libgcc* and libss* which we ship, too, are still built in a
+  # reproducible fashion.
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
   # Building zlib
   export CFLAGS="-mwindows"
   export LDFLAGS="-mwindows"
