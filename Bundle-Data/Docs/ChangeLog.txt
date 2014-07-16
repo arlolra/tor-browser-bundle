@@ -1,6 +1,7 @@
 Tor Browser Bundle 4.0-alpha-1 -- Jul 9 2014
  * All Platforms
    * Include the Meek Pluggable Transport (version 0.9) (Bug 10935)
+   * Update Firefox to 24.7.0esr
    * Update Tor to 0.2.5.5-alpha
    * Update NoScript to 2.6.8.31
      * Script permissions now apply based on URL bar
