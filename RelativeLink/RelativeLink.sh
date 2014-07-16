@@ -220,7 +220,12 @@ export LD_LIBRARY_PATH
 
 function setControlPortPasswd() {
     local ctrlPasswd=$1
-    test -z "$ctrlPasswd" -o "$ctrlPasswd" = $'\"secret\"' && return
+
+    if test -z "$ctrlPasswd" -o "$ctrlPasswd" = $'\"secret\"' ; then
+        unset TOR_CONTROL_PASSWD
+        return
+    fi
+
     if test "${ctrlPasswd:0:1}" = $'\"'; then  # First 2 chars were '"
         printf "Using system Tor process.\n"
         export TOR_CONTROL_PASSWD
