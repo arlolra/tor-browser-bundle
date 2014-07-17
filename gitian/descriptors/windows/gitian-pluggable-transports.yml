@@ -304,15 +304,15 @@ script: |
   cd meek
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   cd meek-client
-  go build
+  go build -ldflags '-s'
   cp -a meek-client.exe $PTDIR
   cd ..
   cd meek-client-torbrowser
-  go build
+  go build -ldflags '-s'
   cp -a meek-client-torbrowser.exe $PTDIR
   cd ..
   cd terminateprocess-buffer
-  go build
+  go build -ldflags '-s'
   cp -a terminateprocess-buffer.exe $PTDIR
   cd ..
   mkdir -p $INSTDIR/Docs/meek

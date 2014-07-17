@@ -236,11 +236,11 @@ script: |
   cd meek-client
   # https://code.google.com/p/go/issues/detail?id=4714#c7
   # We need cgo for crypto/x509 support on mac.
-  go build
+  go build -ldflags '-s'
   cp -a meek-client $PTDIR
   cd ..
   cd meek-client-torbrowser
-  go build
+  go build -ldflags '-s'
   cp -a meek-client-torbrowser $PTDIR
   cd ..
   mkdir -p $TBDIR/Docs/meek
