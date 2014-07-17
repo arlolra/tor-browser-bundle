@@ -48,7 +48,6 @@ files:
 - "python.msi"
 - "py2exe.exe"
 - "go.tar.gz"
-- "cross-cgo.patch"
 - "dzip.sh"
 - "pyc-timestamp.sh"
 - "openssl-win32-utils.zip"
@@ -139,10 +138,13 @@ script: |
   export GOOS=windows
   export GOARCH=386
   tar xvf go.tar.gz
-  cd go
-  patch -p1 < ~/build/cross-cgo.patch
-  cd src
-  ./make.bash
+  cd go/src
+  # http://golang.org/cmd/cgo/:
+  # "To enable cgo during cross compiling builds, set the CGO_ENABLED
+  # environment variable to 1 when building the Go tools with make.bash. Also,
+  # set CC_FOR_TARGET to the C cross compiler for the target. CC will be used
+  # for compiling for the host."
+  CGO_ENABLED=1 CC_FOR_TARGET="i686-w64-mingw32-gcc" CC= CFLAGS= LDFLAGS= ./make.bash
   cd ../..
   export PATH="$PATH:$PWD/go/bin"
 
@@ -295,22 +297,22 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
   ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/goptlib.git"
-  CGO_ENABLED=1 CC="i686-w64-mingw32-gcc" go install git.torproject.org/pluggable-transports/goptlib.git
+  go install git.torproject.org/pluggable-transports/goptlib.git
   cd ..
 
   # Building meek
   cd meek
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   cd meek-client
-  CGO_ENABLED=1 CC="i686-w64-mingw32-gcc" go build
+  go build
   cp -a meek-client.exe $PTDIR
   cd ..
   cd meek-client-torbrowser
-  CGO_ENABLED=1 CC="i686-w64-mingw32-gcc" go build
+  go build
   cp -a meek-client-torbrowser.exe $PTDIR
   cd ..
   cd terminateprocess-buffer
-  CGO_ENABLED=1 CC="i686-w64-mingw32-gcc" go build
+  go build
   cp -a terminateprocess-buffer.exe $PTDIR
   cd ..
   mkdir -p $INSTDIR/Docs/meek

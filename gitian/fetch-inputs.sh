@@ -158,7 +158,7 @@ done
 
 # XXX: Omit googlecode.com packages because Google won't allow wget -N
 # and because the download seems to 404 about 50% of the time.
-for i in ARGPARSE GO
+for i in ARGPARSE
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL_DCF}${!PACKAGE}"
@@ -172,7 +172,7 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_ASN}${!PACKAGE}"
 done
 
-for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY
+for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY GO
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
