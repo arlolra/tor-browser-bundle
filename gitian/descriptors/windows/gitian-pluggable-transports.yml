@@ -231,7 +231,7 @@ script: |
   # dependency should be fine here as txsocksx catches the exception due to
   # missing __version__ and __sha__ .
   mkdir vcversioner-1.14.1.1-py2.7.egg
-  LD_PRELOAD= $INSTPYTHON setup.py install
+  LD_PRELOAD= $INSTPYTHON setup.py install_lib
   cd ..
 
   # Building obfsproxy
