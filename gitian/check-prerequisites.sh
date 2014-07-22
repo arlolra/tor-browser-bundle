@@ -49,7 +49,7 @@ then
 fi
 
 if [ "z$USE_LXC" != "z1" ];
-then 
+then
   groups | grep libvirtd > /dev/null
   if [ $? -ne 0 ];
   then
@@ -59,6 +59,19 @@ then
     echo " sudo adduser $USER libvirtd"
     echo " newgrp libvirtd"
     exit 1
+  fi
+  if [ -z "$DISPLAY" ];
+  then
+    groups | grep kvm > /dev/null
+    if [ $? -ne 0 ];
+    then
+      echo "You need to be in the kvm group to run Gitian on a headless server."
+      echo
+      echo "Please run:"
+      echo " sudo adduser $USER kvm"
+      echo " newgrp kvm"
+      exit 1
+    fi
   fi
 fi
 
