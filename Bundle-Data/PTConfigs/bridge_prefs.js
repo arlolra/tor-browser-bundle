@@ -17,21 +17,16 @@ pref("extensions.torlauncher.default_bridge.flashproxy.4", "flashproxy 0.0.1.0:4
 pref("extensions.torlauncher.default_bridge.flashproxy.5", "flashproxy 0.0.1.0:5");
 
 // <ipv4>
-pref("extensions.torlauncher.default_bridge.fte.1", "fte t5fPOQM3-1097909862.us-west-2.elb.amazonaws.com:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
-pref("extensions.torlauncher.default_bridge.fte.2", "fte 54.244.94.118:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
-pref("extensions.torlauncher.default_bridge.fte.3", "fte 131.252.210.150:8080 0E858AC201BF0F3FA3C462F64844CBFFC7297A42");
-pref("extensions.torlauncher.default_bridge.fte.4", "fte server-01.fteproxy.net:8080 0E858AC201BF0F3FA3C462F64844CBFFC7297A42");
-pref("extensions.torlauncher.default_bridge.fte.5", "fte 128.105.214.161:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
-pref("extensions.torlauncher.default_bridge.fte.6", "fte server-02.fteproxy.net:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
-pref("extensions.torlauncher.default_bridge.fte.7", "fte 128.105.214.162:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
-pref("extensions.torlauncher.default_bridge.fte.8", "fte server-03.fteproxy.net:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
-pref("extensions.torlauncher.default_bridge.fte.9", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
-pref("extensions.torlauncher.default_bridge.fte.10", "fte server-04.fteproxy.net:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
-pref("extensions.torlauncher.default_bridge.fte.11", "fte 79.125.3.12:8080 272465348803EE2546A9BB8EE37D462915531F09");
-pref("extensions.torlauncher.default_bridge.fte.12", "fte server-05.fteproxy.net:8080 272465348803EE2546A9BB8EE37D462915531F09");
+pref("extensions.torlauncher.default_bridge.fte.1", "fte 54.244.94.118:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
+pref("extensions.torlauncher.default_bridge.fte.2", "fte 131.252.210.150:8080 0E858AC201BF0F3FA3C462F64844CBFFC7297A42");
+pref("extensions.torlauncher.default_bridge.fte.3", "fte 128.105.214.161:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
+pref("extensions.torlauncher.default_bridge.fte.4", "fte 128.105.214.162:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
+pref("extensions.torlauncher.default_bridge.fte.5", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
+pref("extensions.torlauncher.default_bridge.fte.6", "fte 79.125.3.12:8080 272465348803EE2546A9BB8EE37D462915531F09");
 // </ipv4>
 // <ipv6>
-pref("extensions.torlauncher.default_bridge.fte.13", "fte ipv6.t5fPOQM3-1097909862.us-west-2.elb.amazonaws.com:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
+pref("extensions.torlauncher.default_bridge.fte-ipv6.1", "fte 2620:108:700f::36f5:f95b:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
+pref("extensions.torlauncher.default_bridge.fte-ipv6.2", "fte 2620:108:700f::36d6:163f:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
 // </ipv6>
 
 pref("extensions.torlauncher.default_bridge.scramblesuit.1", "scramblesuit 188.40.121.112:39707 5DE8D363D8F150C99E1A2D7237368D614838132C password=L5POGQONBPS2HZUR6GXBIDS4CMIYYOTI");
