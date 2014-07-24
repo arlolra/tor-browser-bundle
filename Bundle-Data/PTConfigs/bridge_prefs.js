@@ -24,10 +24,6 @@ pref("extensions.torlauncher.default_bridge.fte.4", "fte 128.105.214.162:8080 FC
 pref("extensions.torlauncher.default_bridge.fte.5", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
 pref("extensions.torlauncher.default_bridge.fte.6", "fte 79.125.3.12:8080 272465348803EE2546A9BB8EE37D462915531F09");
 // </ipv4>
-// <ipv6>
-pref("extensions.torlauncher.default_bridge.fte-ipv6.1", "fte 2620:108:700f::36f5:f95b:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
-pref("extensions.torlauncher.default_bridge.fte-ipv6.2", "fte 2620:108:700f::36d6:163f:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
-// </ipv6>
 
 pref("extensions.torlauncher.default_bridge.scramblesuit.1", "scramblesuit 188.40.121.112:39707 5DE8D363D8F150C99E1A2D7237368D614838132C password=L5POGQONBPS2HZUR6GXBIDS4CMIYYOTI");
 pref("extensions.torlauncher.default_bridge.scramblesuit.2", "scramblesuit 188.226.213.208:54278 AA5A86C1490296EF4FACA946CC5A182FCD1C5B1E password=MD2VRP7WXAMSG7MKIGMHI4CB4BMSNO7T");
