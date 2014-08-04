@@ -31,6 +31,7 @@ files:
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
 - "gmp.tar.bz2"
+- "peXXigen.patch"
 - "versions"
 - "dzip.sh"
 script: |
@@ -45,6 +46,8 @@ script: |
   cd binutils*
   # XXX: This is needed due to bug 10102.
   sed 's/= extern_rt_rel_d;/= extern_rt_rel_d;\n  memset (extern_rt_rel_d, 0, PE_IDATA5_SIZE);/' -i ld/pe-dll.c
+  # Zeroing timestamps in PE headers reliably, see bug 12753.
+  patch -p1 < ../peXXigen.patch
   ./configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32 --disable-multilib
   make $MAKEOPTS
   make install
