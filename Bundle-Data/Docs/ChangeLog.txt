@@ -1,4 +1,4 @@
-Tor Browser Bundle 4.0-alpha-1 -- Jul 29 2014
+Tor Browser Bundle 4.0-alpha-1 -- Aug 7 2014
  * All Platforms
    * Ticket 10935: Include the Meek Pluggable Transport (version 0.10)
      * Two modes of Meek are provided: Meek over Google and Meek over Amazon
