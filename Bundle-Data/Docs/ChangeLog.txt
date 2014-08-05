@@ -14,17 +14,27 @@ Tor Browser Bundle 4.0-alpha-1 -- Aug 7 2014
      * Bug 12680: Change Torbutton URL in about dialog.
      * Bug 11472: Adjust about:tor font and logo positioning to avoid overlap
      * Bug 9531: Workaround to avoid rare hangs during New Identity
-   * Update Tor Launcher to 0.2.6.1
+   * Update Tor Launcher to 0.2.6.2
      * Bug 11199: Improve behavior if tor exits
      * Bug 12451: Add option to hide TBB's logo
      * Bug 11193: Change "Tor Browser Bundle" to "Tor Browser"
      * Bug 11471: Ensure text fits the initial configuration dialog
+     * Bug 9516: Send Tor Launcher log messages to Browser Console
    * Bug 11641: Reorganize bundle directory structure to mimic Firefox
    * Bug 10819: Create a preference to enable/disable third party isolation
  * Linux:
    * Bug 10178: Make it easier to set an alternate Tor control port and password
    * Bug 11102: Set Window Class to "Tor Browser" to aid in Desktop navigation
    * Bug 12249: Don't create PT debug files anymore
+
+Tor Browser Bundle 3.6.4 -- Aug 6 2014
+ * All Platforms
+   * Update Tor to 0.2.4.23
+   * Update Tor launcher to 0.2.5.6
+     * Bug 9516: Send Tor Launcher log messages to Browser Console
+   * Update Torbutton to 1.6.11.1
+     * Bug 11472: Adjust about:tor font and logo positioning to avoid overlap
+     * Bug 12680: Fix Torbutton about url.
 
 Tor Browser Bundle 3.6.3 -- Jul 24 2014
  * All Platforms
