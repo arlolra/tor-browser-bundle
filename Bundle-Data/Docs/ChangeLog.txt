@@ -31,6 +31,7 @@ Tor Browser Bundle 3.6.4 -- Aug 6 2014
  * All Platforms
    * Update Tor to 0.2.4.23
    * Update Tor launcher to 0.2.5.6
+   * Update NoScript to 2.6.8.36
      * Bug 9516: Send Tor Launcher log messages to Browser Console
    * Update Torbutton to 1.6.11.1
      * Bug 11472: Adjust about:tor font and logo positioning to avoid overlap
