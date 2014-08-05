@@ -6,12 +6,13 @@ Tor Browser Bundle 4.0-alpha-1 -- Jul 29 2014
    * Update NoScript to 2.6.8.33
      * Script permissions now apply based on URL bar
    * Update HTTPS Everywhere to 5.0development.0
-   * Update Torbutton to 1.6.11.1
+   * Update Torbutton to 1.6.12.0
      * Bug 12221: Remove obsolete Javascript components from the toggle era
      * Bug 10819: Bind new third party isolation pref to Torbutton security UI
      * Bug 9268: Fix some window resizing corner cases with DPI and taskbar size.
      * Bug 12680: Change Torbutton URL in about dialog.
      * Bug 11472: Adjust about:tor font and logo positioning to avoid overlap
+     * Bug 9531: Workaround to avoid rare hangs during New Identity
    * Update Tor Launcher to 0.2.6.1
      * Bug 11199: Improve behavior if tor exits
      * Bug 12451: Add option to hide TBB's logo
