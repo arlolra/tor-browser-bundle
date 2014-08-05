@@ -22,6 +22,9 @@ Tor Browser Bundle 4.0-alpha-1 -- Aug 7 2014
      * Bug 9516: Send Tor Launcher log messages to Browser Console
    * Bug 11641: Reorganize bundle directory structure to mimic Firefox
    * Bug 10819: Create a preference to enable/disable third party isolation
+   * Backported Tor Patches:
+     * Bug 11200: Fix a hang during bootstrap introduced in the initial
+                  bug11200 patch.
  * Linux:
    * Bug 10178: Make it easier to set an alternate Tor control port and password
    * Bug 11102: Set Window Class to "Tor Browser" to aid in Desktop navigation

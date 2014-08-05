@@ -28,6 +28,7 @@ files:
 - "bug9665.patch"
 - "bug8402.patch"
 - "bug8402-master.patch"
+- "bug11200-hang-0.2.5.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
 - "binutils-win32-utils.zip"
@@ -79,6 +80,7 @@ script: |
       git am ~/build/bug8402.patch
     else
       git am ~/build/bug8402-master.patch
+      git am ~/build/bug11200-hang-0.2.5.patch
     fi
   fi
   mkdir -p $OUTDIR/src
