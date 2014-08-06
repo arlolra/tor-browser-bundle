@@ -1,4 +1,4 @@
-Tor Browser Bundle 4.0-alpha-1 -- Aug 7 2014
+Tor Browser Bundle 4.0-alpha-1 -- Aug 8 2014
  * All Platforms
    * Ticket 10935: Include the Meek Pluggable Transport (version 0.10)
      * Two modes of Meek are provided: Meek over Google and Meek over Amazon
@@ -31,10 +31,15 @@ Tor Browser Bundle 4.0-alpha-1 -- Aug 7 2014
    * Bug 11102: Set Window Class to "Tor Browser" to aid in Desktop navigation
    * Bug 12249: Don't create PT debug files anymore
 
-Tor Browser Bundle 3.6.4 -- Aug 6 2014
+Tor Browser Bundle 3.6.4 -- Aug 8 2014
  * All Platforms
    * Update Tor to 0.2.4.23
    * Update Tor launcher to 0.2.5.6
+   * Update OpenSSL to 1.0.1i
+   * Backported Tor Patches:
+     * Bug 11654: Properly apply the fix for malformed bug11156 log message
+     * Bug 11200: Fix a hang during bootstrap introduced in the initial
+                  bug11200 patch.
    * Update NoScript to 2.6.8.36
      * Bug 9516: Send Tor Launcher log messages to Browser Console
    * Update Torbutton to 1.6.11.1
