@@ -1,61 +1,7 @@
-From 2897735249dfe2de11b2f2e777aa35e1b1926329 Mon Sep 17 00:00:00 2001
+From fcac4b4467427e8f6ad948e8c8e6f34a0131e716 Mon Sep 17 00:00:00 2001
 From: Roger Dingledine <arma@torproject.org>
 Date: Tue, 5 Aug 2014 16:54:46 -0400
-Subject: [PATCH 1/4] move the consensus check below the disablednetwork check
-
-should have no impact in practice
----
- src/or/nodelist.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/src/or/nodelist.c b/src/or/nodelist.c
-index 8f87081..a33a8b2 100644
---- a/src/or/nodelist.c
-+++ b/src/or/nodelist.c
-@@ -1495,11 +1495,20 @@ update_router_have_minimum_dir_info(void)
-   time_t now = time(NULL);
-   int res;
-   const or_options_t *options = get_options();
--  const networkstatus_t *consensus =
--    networkstatus_get_reasonably_live_consensus(now,usable_consensus_flavor());
-+  const networkstatus_t *consensus;
-   int using_md;
-   const char *delay_fetches_msg = NULL;
- 
-+  if (should_delay_dir_fetches(get_options(), &delay_fetches_msg)) {
-+    log_notice(LD_DIR, "Delaying directory fetches: %s", delay_fetches_msg);
-+    strlcpy(dir_info_status, delay_fetches_msg,  sizeof(dir_info_status));
-+    res = 0;
-+    goto done;
-+  }
-+
-+  consensus =
-+    networkstatus_get_reasonably_live_consensus(now,usable_consensus_flavor());
-+
-   if (!consensus) {
-     if (!networkstatus_get_latest_consensus())
-       strlcpy(dir_info_status, "We have no usable consensus.",
-@@ -1511,13 +1520,6 @@ update_router_have_minimum_dir_info(void)
-     goto done;
-   }
- 
--  if (should_delay_dir_fetches(get_options(), &delay_fetches_msg)) {
--    log_notice(LD_DIR, "Delaying directory fetches: %s", delay_fetches_msg);
--    strlcpy(dir_info_status, delay_fetches_msg,  sizeof(dir_info_status));
--    res = 0;
--    goto done;
--  }
--
-   using_md = consensus->flavor == FLAV_MICRODESC;
- 
-   {
--- 
-1.9.1
-
-From 9c62f4677d49073332bfcdd2f8c61229c943fd22 Mon Sep 17 00:00:00 2001
-From: Roger Dingledine <arma@torproject.org>
-Date: Tue, 5 Aug 2014 17:04:39 -0400
-Subject: [PATCH 2/4] Build circuits more readily when DisableNetwork goes to 0
+Subject: [PATCH] Build circuits more readily when DisableNetwork goes to 0
 
 When Tor starts with DisabledNetwork set, it would correctly
 conclude that it shouldn't try making circuits, but it would
@@ -64,8 +10,8 @@ when DisableNetwork is set to 0. Fixes the bug introduced by the
 fix for bug 11200; bugfix on 0.2.5.4-alpha.
 ---
  changes/bug11200-caching |  7 +++++++
- src/or/nodelist.c        | 10 ++++++++--
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ src/or/nodelist.c        | 21 ++++++++++++---------
+ 2 files changed, 19 insertions(+), 9 deletions(-)
  create mode 100644 changes/bug11200-caching
 
 diff --git a/changes/bug11200-caching b/changes/bug11200-caching
@@ -82,97 +28,10 @@ index 0000000..e3fbaec
 +      fix for bug 11200; bugfix on 0.2.5.4-alpha.
 +
 diff --git a/src/or/nodelist.c b/src/or/nodelist.c
-index a33a8b2..c863663 100644
+index 8f87081..7b1f338 100644
 --- a/src/or/nodelist.c
 +++ b/src/or/nodelist.c
-@@ -1494,16 +1494,21 @@ update_router_have_minimum_dir_info(void)
- {
-   time_t now = time(NULL);
-   int res;
-+  static int disabled=0;
-   const or_options_t *options = get_options();
-   const networkstatus_t *consensus;
-   int using_md;
-   const char *delay_fetches_msg = NULL;
- 
-   if (should_delay_dir_fetches(get_options(), &delay_fetches_msg)) {
--    log_notice(LD_DIR, "Delaying directory fetches: %s", delay_fetches_msg);
-+    if (!disabled)
-+      log_notice(LD_DIR, "Delaying directory fetches: %s", delay_fetches_msg);
-     strlcpy(dir_info_status, delay_fetches_msg,  sizeof(dir_info_status));
-     res = 0;
-+    disabled = 1;
-     goto done;
-+  } else {
-+    disabled = 0;
-   }
- 
-   consensus =
-@@ -1568,6 +1573,7 @@ update_router_have_minimum_dir_info(void)
-     control_event_client_status(LOG_NOTICE, "NOT_ENOUGH_DIR_INFO");
-   }
-   have_min_dir_info = res;
--  need_to_update_have_min_dir_info = 0;
-+  if (!disabled)
-+    need_to_update_have_min_dir_info = 0;
- }
- 
--- 
-1.9.1
-
-From a8f3a72027f35284b2115b078ef8a39c60e5f054 Mon Sep 17 00:00:00 2001
-From: Roger Dingledine <arma@torproject.org>
-Date: Tue, 5 Aug 2014 17:33:33 -0400
-Subject: [PATCH 3/4] Stop redundant clearing of
- need_to_update_have_min_dir_info
-
-We were clearing it in router_have_minimum_dir_info() as well as in
-update_router_have_minimum_dir_info().
----
- src/or/nodelist.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/src/or/nodelist.c b/src/or/nodelist.c
-index c863663..6eb286f 100644
---- a/src/or/nodelist.c
-+++ b/src/or/nodelist.c
-@@ -1277,7 +1277,6 @@ router_have_minimum_dir_info(void)
- {
-   if (PREDICT_UNLIKELY(need_to_update_have_min_dir_info)) {
-     update_router_have_minimum_dir_info();
--    need_to_update_have_min_dir_info = 0;
-   }
-   return have_min_dir_info;
- }
-@@ -1488,7 +1487,7 @@ get_frac_paths_needed_for_circs(const or_options_t *options,
- 
- /** Change the value of have_min_dir_info, setting it true iff we have enough
-  * network and router information to build circuits.  Clear the value of
-- * need_to_update_have_min_dir_info. */
-+ * need_to_update_have_min_dir_info if we're confident of our answer. */
- static void
- update_router_have_minimum_dir_info(void)
- {
--- 
-1.9.1
-
-From 3605a9bade91f78b139f4900830836d82abadf15 Mon Sep 17 00:00:00 2001
-From: Roger Dingledine <arma@torproject.org>
-Date: Wed, 6 Aug 2014 02:11:52 -0400
-Subject: [PATCH 4/4] refactor DisableNetwork check
-
-Move the block from update_router_have_minimum_dir_info() to
-router_have_minimum_dir_info() so it's clearer that it's not
-actually updating the variable.
----
- src/or/nodelist.c | 34 +++++++++++++++-------------------
- 1 file changed, 15 insertions(+), 19 deletions(-)
-
-diff --git a/src/or/nodelist.c b/src/or/nodelist.c
-index 6eb286f..57b0bce 100644
---- a/src/or/nodelist.c
-+++ b/src/or/nodelist.c
-@@ -1275,9 +1275,21 @@ static char dir_info_status[256] = "";
+@@ -1275,10 +1275,21 @@ static char dir_info_status[256] = "";
  int
  router_have_minimum_dir_info(void)
  {
@@ -189,48 +48,34 @@ index 6eb286f..57b0bce 100644
 +
    if (PREDICT_UNLIKELY(need_to_update_have_min_dir_info)) {
      update_router_have_minimum_dir_info();
+-    need_to_update_have_min_dir_info = 0;
    }
 +
    return have_min_dir_info;
  }
  
-@@ -1493,25 +1505,10 @@ update_router_have_minimum_dir_info(void)
- {
-   time_t now = time(NULL);
-   int res;
--  static int disabled=0;
-   const or_options_t *options = get_options();
--  const networkstatus_t *consensus;
--  int using_md;
--  const char *delay_fetches_msg = NULL;
--
--  if (should_delay_dir_fetches(get_options(), &delay_fetches_msg)) {
--    if (!disabled)
--      log_notice(LD_DIR, "Delaying directory fetches: %s", delay_fetches_msg);
--    strlcpy(dir_info_status, delay_fetches_msg,  sizeof(dir_info_status));
--    res = 0;
--    disabled = 1;
--    goto done;
--  } else {
--    disabled = 0;
--  }
--
--  consensus =
-+  const networkstatus_t *consensus =
+@@ -1498,7 +1509,6 @@ update_router_have_minimum_dir_info(void)
+   const networkstatus_t *consensus =
      networkstatus_get_reasonably_live_consensus(now,usable_consensus_flavor());
-+  int using_md;
+   int using_md;
+-  const char *delay_fetches_msg = NULL;
  
    if (!consensus) {
      if (!networkstatus_get_latest_consensus())
-@@ -1572,7 +1569,6 @@ update_router_have_minimum_dir_info(void)
-     control_event_client_status(LOG_NOTICE, "NOT_ENOUGH_DIR_INFO");
+@@ -1511,13 +1521,6 @@ update_router_have_minimum_dir_info(void)
+     goto done;
    }
-   have_min_dir_info = res;
--  if (!disabled)
--    need_to_update_have_min_dir_info = 0;
-+  need_to_update_have_min_dir_info = 0;
- }
  
+-  if (should_delay_dir_fetches(get_options(), &delay_fetches_msg)) {
+-    log_notice(LD_DIR, "Delaying directory fetches: %s", delay_fetches_msg);
+-    strlcpy(dir_info_status, delay_fetches_msg,  sizeof(dir_info_status));
+-    res = 0;
+-    goto done;
+-  }
+-
+   using_md = consensus->flavor == FLAV_MICRODESC;
+ 
+   {
 -- 
 1.9.1
 
