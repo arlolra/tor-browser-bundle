@@ -1,4 +1,4 @@
 #!/bin/sh
 # Hardened mingw gcc wrapper
 
-/usr/bin/i686-w64-mingw32-gcc -Wl,--dynamicbase -Wl,--nxcompat -fstack-protector-all -pie -fPIE --param ssp-buffer-size=4 -fno-strict-overflow "$@"
+/home/ubuntu/install/mingw-w64/bin/i686-w64-mingw32-gcc -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -fstack-protector --param ssp-buffer-size=4 -fno-strict-overflow "$@"

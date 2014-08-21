@@ -1,9 +1,4 @@
 #!/bin/sh
 # Hardened mingw gcc wrapper
 
-if [ -x /usr/bin/i686-w64-mingw32-ld.orig ];
-then
-  /usr/bin/i686-w64-mingw32-ld.orig --dynamicbase --nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/ "$@"
-else
-  /usr/bin/i686-w64-mingw32-ld --dynamicbase --nxcompat -lssp -L/usr/lib/gcc/i686-w64-mingw32/4.6/ "$@"
-fi
+/home/ubuntu/install/mingw-w64/bin/i686-w64-mingw32-ld --dynamicbase --nxcompat --enable-reloc-section -lssp -L$INSTDIR/gcclibs/ "$@"
