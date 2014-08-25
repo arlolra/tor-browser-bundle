@@ -81,9 +81,12 @@ script: |
       git am ~/build/bug9665.patch
       git am ~/build/bug11200.patch
       git am ~/build/bug8402.patch
-    else
+    elif [ ${TOR_TAG::9} == "tor-0.2.5" ];
+    then
       git am ~/build/bug8402-master.patch
       git am ~/build/bug11200-hang-0.2.5.patch
+    else
+      git am ~/build/bug8402-master.patch
     fi
   fi
   mkdir -p $OUTDIR/src
