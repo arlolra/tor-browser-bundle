@@ -11,7 +11,6 @@ packages:
 - "autoconf"
 - "automake"
 - "autoconf2.13"
-- "mingw-w64"
 - "faketime"
 - "libtool"
 reference_datetime: "2000-01-01 00:00:00"
@@ -31,7 +30,7 @@ files:
 - "bug11200-hang-0.2.5.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
-- "binutils-win32-utils.zip"
+- "mingw-w64-win32-utils.zip"
 - "openssl-win32-utils.zip"
 - "libevent-win32-utils.zip"
 - "zlib-win32-utils.zip"
@@ -48,7 +47,7 @@ script: |
   mkdir -p $INSTDIR/bin/
   mkdir -p $INSTDIR/Tor/
   mkdir -p $INSTDIR/Data/Tor/
-  unzip -d $INSTDIR binutils-win32-utils.zip
+  unzip -d $INSTDIR mingw-w64-win32-utils.zip
   unzip -d $INSTDIR zlib-win32-utils.zip
   unzip -d $INSTDIR libevent-win32-utils.zip
   unzip -d $INSTDIR openssl-win32-utils.zip
@@ -59,9 +58,6 @@ script: |
   cp $INSTDIR/gcclibs/*.dll $INSTDIR/Tor/
 
   export PATH=$INSTDIR/mingw-w64/bin:$PATH
-
-  sudo mv /usr/bin/i686-w64-mingw32-ld /usr/bin/i686-w64-mingw32-ld.orig
-  sudo cp $INSTDIR/mingw-w64/bin/i686-w64-mingw32-ld /usr/bin/
 
   # Building tor
   cd tor
