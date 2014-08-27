@@ -57,7 +57,7 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  make -f client.mk configure
+  make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
   make $MAKEOPTS -f client.mk build
@@ -67,9 +67,21 @@ script: |
   # Remove firefox-bin (we don't use it, see ticket #10126)
   rm -f $INSTDIR/TorBrowser.app/Contents/MacOS/firefox-bin
   #
-  cd $INSTDIR
+  # Make MAR-based update tools available for use during the bundle phase.
+  MARTOOLS=~/build/mar-tools
+  mkdir -p $MARTOOLS
+  cp -p config/createprecomplete.py $MARTOOLS/
+  cp -p tools/update-packaging/*.sh $MARTOOLS/
+  cp -p obj-*/dist/host/bin/mar $MARTOOLS/
+  cp -p obj-*/dist/host/bin/mbsdiff $MARTOOLS/
+  cd ~/build
+  zip -r mar-tools-mac${GBUILD_BITS}.zip mar-tools
+  cp -p mar-tools-mac${GBUILD_BITS}.zip $OUTDIR/
+  #
   # XXX: Find a better way to tell that we are having a 32bit build
   GBUILD_BITS=32
+  #
+  cd $INSTDIR
   # Adjust the Info.plist file
   INFO_PLIST=TorBrowser.app/Contents/Info.plist
   mv $INFO_PLIST tmp.plist

@@ -42,7 +42,6 @@ fi
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
-echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-MacOS\");" > $GITIAN_DIR/inputs/torbrowser.version
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
@@ -109,7 +108,7 @@ if [ ! -f inputs/openssl-$OPENSSL_VER-mac32-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-mac32-utils.zip ];
 then
   echo
-  echo "****** Starting Utilities Component of Mac Bundle (1/5 for Max) ******"
+  echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
   echo
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
   if [ $? -ne 0 ];
@@ -174,6 +173,7 @@ then
   fi
 
   cp -a build/out/tor-browser-mac*-gbuilt.zip inputs/
+  cp -a build/out/mar-tools-mac*.zip inputs/
   #cp -a result/torbrowser-mac-res.yml inputs/
 else
   echo

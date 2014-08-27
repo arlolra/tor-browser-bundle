@@ -42,8 +42,8 @@ files:
 - "bare-version"
 - "bundle.inputs"
 - "versions"
+- "mar-tools-win32.zip"
 - "tbb-docs.zip"
-- "torbrowser.version"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -54,6 +54,10 @@ script: |
   export TORBROWSER_VERSION=`cat bare-version`
   export LC_ALL=C
   umask 0022
+  #
+  # Extract the MAR tools.
+  unzip -d ~/build ~/build/mar-tools-win32.zip
+  MARTOOLS=~/build/mar-tools
   #
   mkdir -p $OUTDIR/
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
@@ -121,15 +125,24 @@ script: |
   #
   pushd "Tor Browser"/Browser/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
-  # Set the version of the bundle.
-  grep -v '^pref(\"torbrowser.version\",' defaults/preferences/000-tor-browser.js > defaults/preferences/000-tor-browser.js.fixed
-  cat ~/build/torbrowser.version >> defaults/preferences/000-tor-browser.js.fixed
-  mv defaults/preferences/000-tor-browser.js.fixed defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+  rm -rf defaults
   popd
+  #
+  # Recreate precomplete file (needs to be accurate for full MAR updates).
+  pushd "Tor Browser"/Browser/
+  rm -f precomplete
+  python $MARTOOLS/createprecomplete.py
+  popd
+  #
+  # Create full MAR file and installer.
+  # Strangely, mbsdiff is linked as mbsdiff.exe even though it is a host
+  # (e.g., Linux) executable.
+  MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_en-US.mar
+  MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
   makensis torbrowser.nsi
   mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_en-US.exe
   #
@@ -146,8 +159,20 @@ script: |
     cp ~/build/000-tor-browser.js defaults/preferences/
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+    rm -rf defaults
     popd
 
+    # Recreate precomplete file (needs to be accurate for full MAR updates).
+    pushd "Tor Browser"/Browser/
+    rm -f precomplete
+    python $MARTOOLS/createprecomplete.py
+    popd
+
+    # Create full MAR file and installer for this locale.
+    # Strangely, mbsdiff is linked as mbsdiff.exe even though it is a host
+    # (e.g., Linux) executable.
+    MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_$LANG.mar
+    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
     makensis torbrowser.nsi
     mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
     rm "Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi

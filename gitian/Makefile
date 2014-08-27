@@ -89,6 +89,7 @@ clean-browser: clean-bundle
 	rm -f ../../gitian-builder/inputs/tor-browser-linux*
 	rm -f ../../gitian-builder/inputs/tor-browser-mac*
 	rm -f ../../gitian-builder/inputs/tor-browser-win*
+	rm -f ../../gitian-builder/inputs/mar-tools-*
 
 clean-pt: clean-bundle
 	rm -f ../../gitian-builder/inputs/pluggable-transports*
