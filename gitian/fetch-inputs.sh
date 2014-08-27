@@ -227,13 +227,13 @@ cd langpacks-$FIREFOX_LANG_VER
 for i in $BUNDLE_LOCALES
 do
   cd linux-langpacks
-  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/linux-i686/xpi/$i.xpi"
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/linux-i686/xpi/$i.xpi"
   cd ..
   cd win32-langpacks
-  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/win32/xpi/$i.xpi"
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/win32/xpi/$i.xpi"
   cd ..
   cd mac-langpacks
-  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/releases/$FIREFOX_LANG_VER/mac/xpi/$i.xpi"
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/mac/xpi/$i.xpi"
   cd ..
 done
 
