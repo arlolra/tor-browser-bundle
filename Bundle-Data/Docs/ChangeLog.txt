@@ -20,6 +20,24 @@ Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
  * Windows:
    * Bug 10065: Enable DEP, ASLR, and SSP hardening options
 
+Tor Browser Bundle 3.6.5 -- Sep 2 2014
+ * All Platforms
+   * Update Firefox to 24.8.0esr
+   * Update Torbutton to 1.6.12.1
+     * Bug 12684: New strings for canvas image extraction message
+     * Bug 12221: Remove obsolete Javascript components from the toggle era
+     * Bug 10819: Bind new third party isolation pref to Torbutton security UI
+     * Bug 9268: Fix some window resizing corner cases with DPI and taskbar size.
+     * Bug 12680: Change Torbutton URL in about dialog.
+     * Bug 11472: Adjust about:tor font and logo positioning to avoid overlap
+     * Bug 9531: Workaround to avoid rare hangs during New Identity
+   * Bug 12684: Improve Canvas image extraction permissions prompt
+   * Bug 7265: Only prompt for first party canvas access. Log all scripts
+               that attempt to extract canvas images to Browser console.
+   * Bug 12974: Disable NTLM and Negotiate HTTP Auth
+   * Bug 2874: Remove Components.* from content access (regression)
+   * Bug 9881: Open popups in new tabs by default
+
 Tor Browser Bundle 4.0-alpha-1 -- Aug 8 2014
  * All Platforms
    * Ticket 10935: Include the Meek Pluggable Transport (version 0.10)
@@ -57,6 +75,7 @@ Tor Browser Bundle 3.6.4 -- Aug 8 2014
  * All Platforms
    * Update Tor to 0.2.4.23
    * Update Tor launcher to 0.2.5.6
+     * Bug 9516: Show Tor log in TorBrowser's Browser Console
    * Update OpenSSL to 1.0.1i
    * Backported Tor Patches:
      * Bug 11654: Properly apply the fix for malformed bug11156 log message
