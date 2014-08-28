@@ -50,8 +50,9 @@ files:
 - "bare-version"
 - "bundle.inputs"
 - "versions"
+- "mar-tools-linux32.zip"
+- "mar-tools-linux64.zip"
 - "tbb-docs.zip"
-- "torbrowser.version"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -72,6 +73,10 @@ script: |
   unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
   export PATH=$INSTDIR/python/bin:$PATH
   unzip -d $INSTDIR/python/lib/python2.7 lxml-linux$GBUILD_BITS-utils.zip
+  #
+  # Extract the MAR tools.
+  unzip -d ~/build ~/build/mar-tools-linux${GBUILD_BITS}.zip
+  MARTOOLS=~/build/mar-tools
   #
   cd tor-launcher
   make clean
@@ -141,16 +146,22 @@ script: |
   #
   pushd tor-browser_en-US/Browser/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
-  # Set the version of the bundle.
-  grep -v '^pref(\"torbrowser.version\",' defaults/preferences/000-tor-browser.js > defaults/preferences/000-tor-browser.js.fixed
-  cat ~/build/torbrowser.version >> defaults/preferences/000-tor-browser.js.fixed
-  mv defaults/preferences/000-tor-browser.js.fixed defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+  rm -rf defaults
   popd
   #
+  # Recreate precomplete file (needs to be accurate for full MAR updates).
+  pushd tor-browser_en-US/Browser
+  rm -f precomplete
+  python $MARTOOLS/createprecomplete.py
+  popd
+  #
+  # Create full MAR file and compressed package.
+  MAR_FILE=tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.mar
+  MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE tor-browser_en-US/Browser
   ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
   rm -rf tor-browser_en-US
   #
@@ -169,8 +180,18 @@ script: |
     # Set the locale of the bundle.
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+    rm -rf defaults
     popd
 
+    # Recreate precomplete file (needs to be accurate for full MAR updates).
+    pushd tor-browser_$LANG/Browser
+    rm -f precomplete
+    python $MARTOOLS/createprecomplete.py
+    popd
+
+    # Create full MAR file and compressed package for this locale.
+    MAR_FILE=tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
+    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE tor-browser_$LANG/Browser
     ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
 
     rm -rf tor-browser_$LANG

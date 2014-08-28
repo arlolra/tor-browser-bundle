@@ -1,4 +1,3 @@
----
 name: "torbrowser-windows"
 suites:
 - "precise"
@@ -70,7 +69,7 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  make -f client.mk configure
+  make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
   # FIXME: MinGW doens't like being built with hardening, and Firefox doesn't
@@ -98,6 +97,19 @@ script: |
   # Stripping again updates the PE header checksums to be correct
   i686-w64-mingw32-strip $INSTDIR/Browser/gkmedias.dll
   i686-w64-mingw32-strip $INSTDIR/Browser/xul.dll
+
+  # Make MAR-based update tools available for use during the bundle phase.
+  # Strangely, mbsdiff is linked as mbsdiff.exe even though it is a host
+  # (e.g., Linux) executable.
+  MARTOOLS=~/build/mar-tools
+  mkdir -p $MARTOOLS
+  cp -p config/createprecomplete.py $MARTOOLS/
+  cp -p tools/update-packaging/*.sh $MARTOOLS/
+  cp -p obj-*/dist/host/bin/mar $MARTOOLS/
+  cp -p obj-*/dist/host/bin/mbsdiff.exe $MARTOOLS/
+  cd ~/build
+  zip -r mar-tools-win32.zip mar-tools
+  cp mar-tools-win32.zip $OUTDIR/
 
   # Making the .ja files deterministic and grabbing the results
   cd $INSTDIR

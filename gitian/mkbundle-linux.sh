@@ -42,7 +42,6 @@ fi
 cd $GITIAN_DIR
 export PATH=$PATH:$PWD/libexec
 
-echo "pref(\"torbrowser.version\", \"$TORBROWSER_VERSION-Linux\");" > $GITIAN_DIR/inputs/torbrowser.version
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
 
@@ -195,6 +194,7 @@ then
 
   cp -a build/out/tor-browser-linux*-gbuilt.zip inputs/
   cp -a build/out/tor-browser-linux*-debug.zip inputs/
+  cp -a build/out/mar-tools-linux*.zip inputs/
   #cp -a result/torbrowser-linux-res.yml inputs/
 else
   echo
@@ -241,6 +241,8 @@ then
 
   mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
   cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
+  cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
+  cp -a inputs/mar-tools-linux*.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   cp -a inputs/*debug.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch inputs/bundle-linux.gbuilt
 else

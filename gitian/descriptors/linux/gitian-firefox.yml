@@ -71,7 +71,7 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  make -f client.mk configure
+  make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
   make $MAKEOPTS -f client.mk build
@@ -83,6 +83,17 @@ script: |
   # subsequent builds could test to see if they've been uploaded before...
   # But let's find out if it actually matters first..
   rm -f $INSTDIR/Browser/*.chk
+  #
+  # Make MAR-based update tools available for use during the bundle phase.
+  MARTOOLS=~/build/mar-tools
+  mkdir -p $MARTOOLS
+  cp -p config/createprecomplete.py $MARTOOLS/
+  cp -p tools/update-packaging/*.sh $MARTOOLS/
+  cp -p obj-*/dist/host/bin/mar $MARTOOLS/
+  cp -p obj-*/dist/host/bin/mbsdiff $MARTOOLS/
+  cd ~/build
+  zip -r mar-tools-linux${GBUILD_BITS}.zip mar-tools
+  cp -p mar-tools-linux${GBUILD_BITS}.zip $OUTDIR/
   #
   # Strip and generate debuginfo for the firefox binary that we keep, all *.so
   # files, and the plugin-container (see ticket #10126)
