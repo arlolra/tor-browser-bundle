@@ -1,3 +1,25 @@
+Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
+ * All Platforms
+   * Update Firefox to 24.8.0esr
+   * Update Tor Launcher to 0.2.7.0
+     * Bug 11405: Remove firewall prompt from wizard.
+     * Bug 12895: Mention @riseup.net as a valid bridge request email address
+     * Bug 12444: Provide feedback when “Copy Tor Log” is clicked.
+     * Bug 11199: Improve error messages if Tor exits unexpectedly
+   * Update Torbutton to 1.6.12.1
+     * Bug 12684: New strings for canvas image extraction message
+   * Bug 12684: Improve Canvas image extraction permissions prompt
+   * Bug 7265: Only prompt for first party canvas access. Log all scripts
+               that attempt to extract canvas images to Browser console.
+   * Bug 12974: Disable NTLM and Negotiate HTTP Auth
+   * Bug 2874: Remove Components.* from content access (regression)
+   * Bug 4234: Automatic Update support (off by default)
+   * Bug 9881: Open popups in new tabs by default
+   * Meek Pluggable Transport:
+     * Use TLSv1.0 in meek-http-helper to blend in with Firefox 24
+ * Windows:
+   * Bug 10065: Enable DEP, ASLR, and SSP hardening options
+
 Tor Browser Bundle 4.0-alpha-1 -- Aug 8 2014
  * All Platforms
    * Ticket 10935: Include the Meek Pluggable Transport (version 0.10)
