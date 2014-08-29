@@ -29,6 +29,8 @@ remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
 files:
+- "binutils-linux32-utils.zip"
+- "binutils-linux64-utils.zip"
 - "python-linux32-utils.zip"
 - "python-linux64-utils.zip"
 - "re-dzip.sh"
@@ -62,6 +64,8 @@ script: |
   ln -sf $INSTDIR/python/bin/python2.7 $INSTDIR/python/bin/python
   export PATH=$INSTDIR/python/bin:$PATH
   #
+  unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
+  export PATH=$INSTDIR/binutils/bin:$PATH
   mkdir -p $INSTDIR/Browser/
   mkdir -p $INSTDIR/Debug/Browser/components
   #
@@ -100,8 +104,6 @@ script: |
   cd $INSTDIR
   for LIB in Browser/*.so Browser/webapprt-stub Browser/mozilla-xremote-client Browser/firefox Browser/plugin-container Browser/components/*.so # Browser/updater
   do
-    # Build-ID is sometimes non-deterministic, and we use debuglink anyway
-    objcopy --remove-section=.note.gnu.build-id $LIB
     objcopy --only-keep-debug $LIB Debug/$LIB
     strip $LIB
     objcopy --add-gnu-debuglink=./Debug/$LIB $LIB
