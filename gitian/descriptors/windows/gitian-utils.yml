@@ -31,6 +31,7 @@ files:
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
 - "gmp.tar.bz2"
+- "enable-reloc-section-ld.patch"
 - "peXXigen.patch"
 - "versions"
 - "dzip.sh"
@@ -47,15 +48,11 @@ script: |
   # XXX: This is needed due to bug 10102.
   sed 's/= extern_rt_rel_d;/= extern_rt_rel_d;\n  memset (extern_rt_rel_d, 0, PE_IDATA5_SIZE);/' -i ld/pe-dll.c
   # Zeroing timestamps in PE headers reliably, see bug 12753.
+  patch -p1 < ../enable-reloc-section-ld.patch
   patch -p1 < ../peXXigen.patch
   ./configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32 --disable-multilib
   make $MAKEOPTS
   make install
-  # XXX: We currently do this as we are not using our own compiler but only our
-  # own binutils for compiling tor. See bug 10077. Nevertheless, we need both
-  # for cross-compiling Tor Browser.
-  cd $INSTDIR
-  ~/build/dzip.sh binutils-$BINUTILS_VER-win32-utils.zip mingw-w64
   # Make sure our ld etc. is found and used.
   export PATH=$INSTDIR/mingw-w64/bin:$PATH
   cd ~/build
@@ -78,7 +75,7 @@ script: |
   sed 's/msvcrt/msvcr100/' -i gcc-*/gcc/config/i386/t-mingw-w32
   # LDFLAGS_FOR_TARGET does not work for some reason. Thus, we take
   # CFLAGS_FOR_TARGET.
-  export CFLAGS_FOR_TARGET="-specs=/home/ubuntu/build/msvcr100.spec"
+  export CFLAGS_FOR_TARGET="-specs=/home/ubuntu/build/msvcr100.spec -Wl,--nxcompat -Wl,--dynamicbase"
   gcc-*/configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32 --disable-multilib --enable-languages=c,c++
   make $MAKEOPTS all-gcc
   make install-gcc
@@ -99,8 +96,12 @@ script: |
   cd ..
   # Second stage of gcc compilation
   cd gcc
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
   make $MAKEOPTS
   make install
+  mkdir -p $INSTDIR/gcclibs
+  cp i686-w64-mingw32/libssp/.libs/libssp-0.dll $INSTDIR/gcclibs
+  cp i686-w64-mingw32/libgcc/shlib/libgcc_s_sjlj-1.dll $INSTDIR/gcclibs
   cd ..
 
   # XXX: Build the libraries we include into the bundles deterministically. As
@@ -111,12 +112,12 @@ script: |
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   # Building zlib
-  export CFLAGS="-mwindows"
-  export LDFLAGS="-mwindows"
+  export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
+  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
   cd zlib
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1
-  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 install
+  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
+  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" install
   cd ..
 
   # Building Libevent
@@ -133,7 +134,7 @@ script: |
   cd openssl-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit Windows.
-  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw --prefix=$INSTDIR/openssl
+  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw "-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" --prefix=$INSTDIR/openssl
   # Using $MAKEOPTS breaks the build. Might be the issue mentioned on
   # http://cblfs.cross-lfs.org/index.php/OpenSSL.
   make
@@ -156,4 +157,5 @@ script: |
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-win32-utils.zip libevent
   ~/build/dzip.sh openssl-$OPENSSL_VER-win32-utils.zip openssl
   ~/build/dzip.sh gmp-$GMP_VER-win32-utils.zip gmp
+  ~/build/dzip.sh gcclibs-$GCC_VER-win32-utils.zip gcclibs
   cp *-utils.zip $OUTDIR/

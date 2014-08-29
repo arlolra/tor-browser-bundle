@@ -10,7 +10,7 @@ import sys
 
 import common
 
-args = ["/usr/bin/i686-w64-mingw32-gcc"]
+args = ["/home/ubuntu/install/mingw-w64/bin/i686-w64-mingw32-gcc"]
 sys.argv.pop(0)
 while sys.argv:
     a = sys.argv.pop(0)

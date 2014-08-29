@@ -11,8 +11,6 @@ packages:
 - "swig"
 - "p7zip-full"
 - "m4"
-- "mingw-w64"
-- "g++-mingw-w64"
 - "python-dev"
 - "faketime"
 - "libtool"
@@ -50,8 +48,10 @@ files:
 - "go.tar.gz"
 - "dzip.sh"
 - "pyc-timestamp.sh"
+- "mingw-w64-win32-utils.zip"
 - "openssl-win32-utils.zip"
 - "gmp-win32-utils.zip"
+- "gcclibs-win32-utils.zip"
 script: |
   # Set the timestamp on every .pyc file in a zip file, and re-dzip the zip file.
   function py2exe_zip_timestomp {
@@ -75,13 +75,17 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
-  export CFLAGS="-mwindows"
-  export LDFLAGS="-mwindows"
+  export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
+  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs"
   umask 0022
 
+  unzip -d $INSTDIR mingw-w64-win32-utils.zip
   unzip -d $INSTDIR gmp-win32-utils.zip
   unzip -d $INSTDIR openssl-win32-utils.zip
+  unzip -d $INSTDIR gcclibs-win32-utils.zip
   cp $INSTDIR/gmp/bin/*dll* $INSTDIR/Tor
+
+  export PATH=$INSTDIR/mingw-w64/bin:$PATH
 
   # We need at least Wine 1.5.29 which is not in Ubuntu's main repository (see
   # below). Thus, we resort to a PPA and need therefore to determine the correct

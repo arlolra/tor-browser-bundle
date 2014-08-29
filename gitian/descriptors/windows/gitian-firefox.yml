@@ -19,10 +19,10 @@ files:
 - "mingw-w64-win32-utils.zip"
 - "re-dzip.sh"
 - "dzip.sh"
-# TODO: Hardening.
-#- "i686-w64-mingw32-gcc"
-#- "i686-w64-mingw32-g++"
-#- "i686-w64-mingw32-ld"
+- "gcclibs-win32-utils.zip"
+- "i686-w64-mingw32-gcc"
+- "i686-w64-mingw32-g++"
+- "i686-w64-mingw32-ld"
 - "msvcr100.dll"
 - "versions"
 script: |
@@ -37,8 +37,10 @@ script: |
   mkdir -p $INSTDIR/Browser/
   mkdir -p $OUTDIR/
   unzip -d $INSTDIR mingw-w64-win32-utils.zip
+  unzip -d $INSTDIR gcclibs-win32-utils.zip
   # Make sure our custom mingw gets used.
   export PATH=$INSTDIR/mingw-w64/bin:$PATH
+
   # We don't want to link against msvcrt.dll due to bug 9084.
   i686-w64-mingw32-g++ -dumpspecs > msvcr100.spec
   sed 's/msvcrt/msvcr100/' -i msvcr100.spec
@@ -72,22 +74,16 @@ script: |
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
-  # FIXME: MinGW doens't like being built with hardening, and Firefox doesn't
-  # like being configured with it
-  # XXX: These changes cause the exes to crash on launch.
-  #mkdir -p ~/build/bin/
-  #cp ~/build/i686* ~/build/bin/
-  #export PATH=~/build/bin:$PATH
-  # XXX: the path to ld is hardcoded in mingw.. This forces gcc's linking to
-  # use our flags:
-  #sudo mv /usr/bin/i686-w64-mingw32-ld /usr/bin/i686-w64-mingw32-ld.orig
-  #sudo cp ~/build/bin/i686-w64-mingw32-ld /usr/bin/
+  mkdir -p ~/build/bin/
+  cp ~/build/i686* ~/build/bin/
+  export PATH=~/build/bin:$PATH
   #
   make $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
   cp -a ~/build/msvcr100.dll $INSTDIR/Browser/
+  cp -a $INSTDIR/gcclibs/libssp-0.dll $INSTDIR/Browser/
   #
   # What the hell are these three bytes anyways?
   # FIXME: This was probably fixed by patching binutils. If we get matching

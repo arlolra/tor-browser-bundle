@@ -96,7 +96,7 @@ fi
 
 cd $GITIAN_DIR
 
-if [ ! -f inputs/binutils-$BINUTILS_VER-win32-utils.zip -o \
+if [ ! -f inputs/gcclibs-$GCC_VER-win32-utils.zip -o \
      ! -f inputs/mingw-w64-$GCC_VER-win32-utils.zip -o \
      ! -f inputs/zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip -o \
@@ -116,12 +116,12 @@ then
 
   cd inputs
   cp -a ../build/out/*-utils.zip .
-  ln -sf binutils-$BINUTILS_VER-win32-utils.zip binutils-win32-utils.zip
   ln -sf mingw-w64-$GCC_VER-win32-utils.zip mingw-w64-win32-utils.zip
   ln -sf zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip zlib-win32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip libevent-win32-utils.zip
   ln -sf openssl-$OPENSSL_VER-win32-utils.zip openssl-win32-utils.zip
   ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
+  ln -sf gcclibs-$GCC_VER-win32-utils.zip gcclibs-win32-utils.zip
   cd ..
   #cp -a result/utils-win-res.yml inputs/
 else
@@ -131,12 +131,12 @@ else
   # We might have built the utilities in the past but maybe the links are
   # pointing to the wrong version. Refresh them.
   cd inputs
-  ln -sf binutils-$BINUTILS_VER-win32-utils.zip binutils-win32-utils.zip
   ln -sf mingw-w64-$GCC_VER-win32-utils.zip mingw-w64-win32-utils.zip
   ln -sf zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip zlib-win32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip libevent-win32-utils.zip
   ln -sf openssl-$OPENSSL_VER-win32-utils.zip openssl-win32-utils.zip
   ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
+  ln -sf gcclibs-$GCC_VER-win32-utils.zip gcclibs-win32-utils.zip
   cd ..
 fi
 
