@@ -20,6 +20,8 @@ Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
      * Bug 12766: Use TLSv1.0 in meek-http-helper to blend in with Firefox 24
  * Windows:
    * Bug 10065: Enable DEP, ASLR, and SSP hardening options
+ * Linux:
+   * Bug 12103: Adding RELRO hardening back to browser binaries.
 
 Tor Browser Bundle 3.6.5 -- Sep 2 2014
  * All Platforms
@@ -35,6 +37,8 @@ Tor Browser Bundle 3.6.5 -- Sep 2 2014
    * Bug 12974: Disable NTLM and Negotiate HTTP Auth
    * Bug 2874: Remove Components.* from content access (regression)
    * Bug 9881: Open popups in new tabs by default
+ * Linux:
+   * Bug 12103: Adding RELRO hardening back to browser binaries.
 
 Tor Browser Bundle 4.0-alpha-1 -- Aug 8 2014
  * All Platforms
