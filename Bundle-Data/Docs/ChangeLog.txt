@@ -8,6 +8,7 @@ Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
      * Bug 11199: Improve error messages if Tor exits unexpectedly
    * Update Torbutton to 1.6.12.1
      * Bug 12684: New strings for canvas image extraction message
+     * Bug 8940: Move RecommendedTBBVersions file to www.torproject.org
    * Bug 12684: Improve Canvas image extraction permissions prompt
    * Bug 7265: Only prompt for first party canvas access. Log all scripts
                that attempt to extract canvas images to Browser console.
@@ -16,15 +17,17 @@ Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
    * Bug 4234: Automatic Update support (off by default)
    * Bug 9881: Open popups in new tabs by default
    * Meek Pluggable Transport:
-     * Use TLSv1.0 in meek-http-helper to blend in with Firefox 24
+     * Bug 12766: Use TLSv1.0 in meek-http-helper to blend in with Firefox 24
  * Windows:
    * Bug 10065: Enable DEP, ASLR, and SSP hardening options
 
 Tor Browser Bundle 3.6.5 -- Sep 2 2014
  * All Platforms
    * Update Firefox to 24.8.0esr
+   * Update HTTPS Everywhere to 4.0.0
    * Update Torbutton to 1.6.12.1
      * Bug 12684: New strings for canvas image extraction message
+     * Bug 8940: Move RecommendedTBBVersions file to www.torproject.org
      * Bug 9531: Workaround to avoid rare hangs during New Identity
    * Bug 12684: Improve Canvas image extraction permissions prompt
    * Bug 7265: Only prompt for first party canvas access. Log all scripts
