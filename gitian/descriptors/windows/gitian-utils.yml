@@ -152,6 +152,8 @@ script: |
 
   # Grabbing the remaining results
   cd $INSTDIR
+  # We might want to bump binutils independent of bumping mingw-w64.
+  touch binutils-$BINUTILS_VER-win32-utils.zip
   ~/build/dzip.sh mingw-w64-$GCC_VER-win32-utils.zip mingw-w64
   ~/build/dzip.sh zlib-${ZLIB_TAG#v}-win32-utils.zip zlib
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-win32-utils.zip libevent
