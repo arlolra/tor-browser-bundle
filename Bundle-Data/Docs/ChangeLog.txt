@@ -1,6 +1,7 @@
 Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
  * All Platforms
    * Update Firefox to 24.8.0esr
+   * Update NoScript to 2.6.8.39
    * Update Tor Launcher to 0.2.7.0
      * Bug 11405: Remove firewall prompt from wizard.
      * Bug 12895: Mention @riseup.net as a valid bridge request email address
@@ -26,6 +27,7 @@ Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
 Tor Browser Bundle 3.6.5 -- Sep 2 2014
  * All Platforms
    * Update Firefox to 24.8.0esr
+   * Update NoScript to 2.6.8.39
    * Update HTTPS Everywhere to 4.0.0
    * Update Torbutton to 1.6.12.1
      * Bug 12684: New strings for canvas image extraction message
