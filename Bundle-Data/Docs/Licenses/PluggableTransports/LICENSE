@@ -13,6 +13,15 @@ file LICENSE.PYTHON.
 
 ===============================================================================
 
+Go
+
+Some pluggable transports are written in Go and the binary packages include
+parts of the Go runtime library. A copy of the Go license (which itself
+includes the licenses of some of Go's components) is included in the file
+LICENSE.GO.
+
+===============================================================================
+
 OpenSSL
 
 (From http://openssl.org/source/license.html.)
