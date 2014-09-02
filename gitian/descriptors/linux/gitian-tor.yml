@@ -61,6 +61,8 @@ script: |
   cp $INSTDIR/openssl/lib/libcrypto.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/libevent/lib/libevent-2.0.so.5 $INSTDIR/Tor/
   chmod 700 $INSTDIR/Tor/*so*
+  # This is needed to make RPATH unavailable. See bug 9150.
+  export LD_LIBRARY_PATH="$INSTDIR/Tor/"
 
   # Building tor
   cd tor
