@@ -25,7 +25,7 @@ COPYRIGHT = "Tor Browser %s Copyright %s The Tor Project" % (TORBROWSER_VERSION,
 
 plist = plistlib.readPlist(sys.stdin)
 
-plist["CFBundleGetInfoString"] = "TorBrowser %s" % TORBROWSER_VERSION
+plist["CFBundleGetInfoString"] = "Tor Browser %s" % TORBROWSER_VERSION
 plist["CFBundleShortVersionString"] = TORBROWSER_VERSION
 plist["NSHumanReadableCopyright"] = COPYRIGHT
 
