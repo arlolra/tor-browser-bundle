@@ -82,8 +82,6 @@ script: |
     then
       git am ~/build/bug8402-master.patch
       git am ~/build/bug11200-hang-0.2.5.patch
-    else
-      git am ~/build/bug8402-master.patch
     fi
   fi
   mkdir -p $OUTDIR/src
