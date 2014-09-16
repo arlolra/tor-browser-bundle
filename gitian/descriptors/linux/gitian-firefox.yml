@@ -102,7 +102,7 @@ script: |
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
-  make $MAKEOPTS -f client.mk build
+  make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
   # Remove firefox-bin (we don't use it, see ticket #10126)

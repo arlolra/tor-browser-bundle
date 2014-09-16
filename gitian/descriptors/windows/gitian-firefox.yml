@@ -78,7 +78,7 @@ script: |
   cp ~/build/i686* ~/build/bin/
   export PATH=~/build/bin:$PATH
   #
-  make $MAKEOPTS -f client.mk build
+  make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
