@@ -22,6 +22,8 @@ packages:
 - "zlib1g-dev"
 - "libxml2-dev"
 - "libxslt-dev"
+# Needed for passing the Python related part of configure in ESR 31.
+- "libssl-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/libevent/libevent.git"
