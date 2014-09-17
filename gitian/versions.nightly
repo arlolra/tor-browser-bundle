@@ -16,7 +16,8 @@ HTTPSE_TAG=master
 NSIS_TAG=v0.2
 ZLIB_TAG=v1.2.8
 LIBEVENT_TAG=release-2.0.21-stable
-MINGW_TAG=9418eaa1854320b57f40e29ec5bbc4f5717ecd58 # tag v3.1.0
+# A mingw-w64 commit that works. The 3.1.0 tag is too old.
+MINGW_TAG=469ed5d227202b373409c8a3b4c1358be39b9983
 PYPTLIB_TAG=master
 OBFSPROXY_TAG=master
 FLASHPROXY_TAG=master
