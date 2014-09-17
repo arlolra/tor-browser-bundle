@@ -103,9 +103,9 @@ fi
 
 cd $GITIAN_DIR
 
-if [ ! -f inputs/openssl-$OPENSSL_VER-mac32-utils.zip -o \
-     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip -o \
-     ! -f inputs/gmp-$GMP_VER-mac32-utils.zip ];
+if [ ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
+     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip -o \
+     ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
@@ -119,9 +119,9 @@ then
 
   cd inputs
   cp -a ../build/out/*-utils.zip .
-  ln -sf openssl-$OPENSSL_VER-mac32-utils.zip openssl-mac32-utils.zip
-  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip libevent-mac32-utils.zip
-  ln -sf gmp-$GMP_VER-mac32-utils.zip gmp-mac32-utils.zip
+  ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
+  ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
   cd ..
   #cp -a result/utils-mac-res.yml inputs/
 else
@@ -132,13 +132,13 @@ else
   # We might have built the utilities in the past but maybe the links are
   # pointing to the wrong version. Refresh them.
   cd inputs
-  ln -sf openssl-$OPENSSL_VER-mac32-utils.zip openssl-mac32-utils.zip
-  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac32-utils.zip libevent-mac32-utils.zip
-  ln -sf gmp-$GMP_VER-mac32-utils.zip gmp-mac32-utils.zip
+  ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
+  ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
+  ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
   cd ..
 fi
 
-if [ ! -f inputs/tor-mac32-gbuilt.zip ];
+if [ ! -f inputs/tor-mac64-gbuilt.zip ];
 then
   echo
   echo "****** Starting Tor Component of Mac Bundle (2/5 for Mac) ******"
@@ -159,7 +159,7 @@ else
   echo
 fi
 
-if [ ! -f inputs/tor-browser-mac32-gbuilt.zip ];
+if [ ! -f inputs/tor-browser-mac64-gbuilt.zip ];
 then
   echo
   echo "****** Starting TorBrowser Component of Mac Bundle (3/5 for Mac) ******"
@@ -181,7 +181,7 @@ else
   echo
 fi
 
-if [ ! -f inputs/pluggable-transports-mac32-gbuilt.zip ];
+if [ ! -f inputs/pluggable-transports-mac64-gbuilt.zip ];
 then
   echo
   echo "****** Starting Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"

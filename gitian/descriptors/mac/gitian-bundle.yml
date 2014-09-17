@@ -30,9 +30,9 @@ remotes:
   "dir": "meek"
 files:
 # TODO: Can we use an env for this file+version??
-- "tor-browser-mac32-gbuilt.zip"
-- "tor-mac32-gbuilt.zip"
-- "pluggable-transports-mac32-gbuilt.zip"
+- "tor-browser-mac64-gbuilt.zip"
+- "tor-mac64-gbuilt.zip"
+- "pluggable-transports-mac64-gbuilt.zip"
 - "torrc-defaults-appendix-mac"
 - "bridge_prefs.js"
 - "meek-http-helper-user.js"
@@ -74,9 +74,6 @@ script: |
   # Extract the MAR tools.
   unzip -d ~/build ~/build/mar-tools-mac$GBUILD_BITS.zip
   MARTOOLS=~/build/mar-tools
-  #
-  # XXX: Find a better way to tell that we are having a 32bit build
-  GBUILD_BITS=32
   #
   mkdir -p $OUTDIR/
   mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
