@@ -1,3 +1,16 @@
+Tor Browser 4.0-alpha-3 -- Sep 21 2014
+ * All Platforms
+   * Update Tor to 0.2.5.7-rc
+   * Update meek to 0.11
+   * Update NoScript to 2.6.8.41
+   * Update Torbutton to 1.6.12.2
+     * Bug 13091: Use "Tor Browser" everywhere
+   * Bug 13091: Use "Tor Browser" everywhere
+   * Bug 13049: Browser update failure (self.update is undefined)
+   * Bug 13047: Updater should not send Kernel and GTK version
+ * Linux:
+   * Bug 9150: Make RPATH unavailable on Tor binary.
+
 Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
  * All Platforms
    * Update Firefox to 24.8.0esr
