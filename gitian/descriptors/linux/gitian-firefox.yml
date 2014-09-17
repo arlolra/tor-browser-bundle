@@ -26,6 +26,8 @@ packages:
 - "libgstreamer-plugins-base0.10-dev"
 # To pass configure since ESR 31.
 - "libpulse-dev"
+# We built GCC but not the libmpc2, thus we need to install it.
+- "libmpc2"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
@@ -33,6 +35,8 @@ remotes:
 files:
 - "binutils-linux32-utils.zip"
 - "binutils-linux64-utils.zip"
+- "gcc-linux32-utils.zip"
+- "gcc-linux64-utils.zip"
 - "python-linux32-utils.zip"
 - "python-linux64-utils.zip"
 - "re-dzip.sh"
@@ -60,12 +64,12 @@ script: |
   mkdir -p $INSTDIR/build/bin/
   ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
   export PATH=$PATH:$INSTDIR/build/bin
-  # Preparing Python for Firefox
+  # Preparing Python for Tor Browser
   unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
   # TODO: We might want to have a smarter solution than hard-coding the version.
   ln -sf $INSTDIR/python/bin/python2.7 $INSTDIR/python/bin/python
   export PATH=$INSTDIR/python/bin:$PATH
-  #
+  # Preparing Binutils and GCC for Tor Browser
   unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
   # Make sure gold is used with the hardening wrapper for full RELRO, see
   # #13031.
@@ -76,7 +80,16 @@ script: |
   ln -sf hardened-ld ld.gold
   ln -sf ld.gold ld
   cd ~/build
-  export PATH=$INSTDIR/binutils/bin:$PATH
+  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
+  export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  ARCH=""
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ARCH="64"
+  fi
+  # Make sure our GCC gets properly used.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib$ARCH
+  #
   mkdir -p $INSTDIR/Browser/
   mkdir -p $INSTDIR/Debug/Browser/components
   #
@@ -119,6 +132,9 @@ script: |
     strip $LIB
     objcopy --add-gnu-debuglink=./Debug/$LIB $LIB
   done
+  # We need to copy the libstdc++.so.6 for older Linux distros.
+  cp $INSTDIR/gcc/lib$ARCH/libstdc++.so.6 Browser
+  #
   ~/build/re-dzip.sh Browser/omni.ja
   ~/build/re-dzip.sh Browser/webapprt/omni.ja
   ~/build/re-dzip.sh Browser/browser/omni.ja

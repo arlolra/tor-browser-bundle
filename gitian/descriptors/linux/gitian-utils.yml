@@ -17,6 +17,8 @@ packages:
 - "hardening-wrapper"
 # Needed for compiling gold.
 - "bison"
+# Needed for compiling GCC.
+- "libmpc-dev"
 # These packages are needed for Python due to HTTPS-Everywhere >= 3.5.
 - "libsqlite3-dev"
 - "zlib1g-dev"
@@ -30,6 +32,7 @@ remotes:
   "dir": "libevent"
 files:
 - "binutils.tar.bz2"
+- "gcc.tar.bz2"
 - "openssl.tar.gz"
 - "python.tar.bz2"
 - "lxml.tar.gz"
@@ -39,8 +42,6 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -63,6 +64,21 @@ script: |
   make $MAKEOPTS
   make install
   cd ..
+
+  # Building GCC
+  tar xjf gcc.tar.bz2
+  cd gcc-*
+  ./configure --prefix=$INSTDIR/gcc --disable-multilib --enable-languages=c,c++
+  make $MAKEOPTS
+  make install
+  cd ..
+
+  # libfaketime gets into our way when building GCC 4.9.x. See:
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61314 for details. Thus, we
+  # avoid it for the toolchain and cross our fingers.
+  # TODO: Test a newer libfaketime than 0.8.
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  export FAKETIME=$REFERENCE_DATETIME
 
   # Building Libevent
   cd libevent
@@ -122,6 +138,7 @@ script: |
   # Grabbing the remaining results
   cd $INSTDIR
   ~/build/dzip.sh binutils-$BINUTILS_VER-linux$GBUILD_BITS-utils.zip binutils
+  ~/build/dzip.sh gcc-$GCC_VER-linux$GBUILD_BITS-utils.zip gcc
   ~/build/dzip.sh openssl-$OPENSSL_VER-linux$GBUILD_BITS-utils.zip openssl
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-linux$GBUILD_BITS-utils.zip libevent
   ~/build/dzip.sh python-$PYTHON_VER-linux$GBUILD_BITS-utils.zip python

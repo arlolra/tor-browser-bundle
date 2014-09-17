@@ -100,6 +100,8 @@ cd $GITIAN_DIR
 
 if [ ! -f inputs/binutils-$BINUTILS_VER-linux32-utils.zip -o \
      ! -f inputs/binutils-$BINUTILS_VER-linux64-utils.zip -o \
+     ! -f inputs/gcc-$GCC_VER-linux32-utils.zip -o \
+     ! -f inputs/gcc-$GCC_VER-linux64-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-linux32-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-linux64-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip -o \
@@ -126,6 +128,8 @@ then
   cp -a ../build/out/*-utils.zip .
   ln -sf binutils-$BINUTILS_VER-linux32-utils.zip binutils-linux32-utils.zip
   ln -sf binutils-$BINUTILS_VER-linux64-utils.zip binutils-linux64-utils.zip
+  ln -sf gcc-$GCC_VER-linux32-utils.zip gcc-linux32-utils.zip
+  ln -sf gcc-$GCC_VER-linux64-utils.zip gcc-linux64-utils.zip
   ln -sf openssl-$OPENSSL_VER-linux32-utils.zip openssl-linux32-utils.zip
   ln -sf openssl-$OPENSSL_VER-linux64-utils.zip openssl-linux64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip libevent-linux32-utils.zip
@@ -147,6 +151,8 @@ else
   cd inputs
   ln -sf binutils-$BINUTILS_VER-linux32-utils.zip binutils-linux32-utils.zip
   ln -sf binutils-$BINUTILS_VER-linux64-utils.zip binutils-linux64-utils.zip
+  ln -sf gcc-$GCC_VER-linux32-utils.zip gcc-linux32-utils.zip
+  ln -sf gcc-$GCC_VER-linux64-utils.zip gcc-linux64-utils.zip
   ln -sf openssl-$OPENSSL_VER-linux32-utils.zip openssl-linux32-utils.zip
   ln -sf openssl-$OPENSSL_VER-linux64-utils.zip openssl-linux64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip libevent-linux32-utils.zip
