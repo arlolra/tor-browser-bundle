@@ -30,7 +30,6 @@ files:
 - "bug9665.patch"
 - "bug8402.patch"
 - "bug8402-master.patch"
-- "bug11200-hang-0.2.5.patch"
 - "dzip.sh"
 - "openssl-linux32-utils.zip"
 - "openssl-linux64-utils.zip"
@@ -86,7 +85,6 @@ script: |
     elif [ ${TOR_TAG::9} == "tor-0.2.5" ];
     then
       git am ~/build/bug8402-master.patch
-      git am ~/build/bug11200-hang-0.2.5.patch
     fi
   fi
   mkdir -p $OUTDIR/src
