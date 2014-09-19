@@ -6,13 +6,10 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "git-core"
+- "faketime"
 - "unzip"
 - "zip"
-- "faketime"
-- "python"
-- "rnv"
-- "xz-utils"
+# Both packages are needed for assembling the HTTPS-Everywhere rules since 3.5.
 - "libxslt1.1"
 - "sqlite3"
 reference_datetime: "2000-01-01 00:00:00"

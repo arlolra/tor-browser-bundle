@@ -5,15 +5,12 @@ suites:
 architectures:
 - "i386"
 packages:
-- "git-core"
-- "unzip"
-- "zip"
-- "swig"
-- "p7zip-full"
-- "m4"
-- "python-dev"
 - "faketime"
-- "libtool"
+- "unzip"
+- "p7zip-full"
+# Needed by M2Crypto
+- "swig"
+- "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"

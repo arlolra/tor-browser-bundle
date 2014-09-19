@@ -5,12 +5,10 @@ suites:
 architectures:
 - "i386"
 packages:
-- "git-core"
+- "faketime"
 - "unzip"
 - "zip"
 - "nsis"
-- "faketime"
-- "python"
 # Both packages are needed for assembling the HTTPS-Everywhere rules since 3.5.
 - "python-lxml"
 - "sqlite3"

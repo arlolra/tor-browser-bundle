@@ -6,14 +6,10 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "git-core"
-- "unzip"
-- "zip"
-- "autoconf"
-- "autoconf2.13"
-- "automake"
 - "faketime"
+- "automake"
 - "libtool"
+- "zip"
 - "hardening-wrapper"
 # Needed for compiling gold.
 - "bison"

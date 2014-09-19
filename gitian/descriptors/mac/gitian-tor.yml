@@ -5,14 +5,10 @@ suites:
 architectures:
 - "i386"
 packages:
-- "git-core"
-- "unzip"
-- "zip"
-- "autoconf"
-- "autoconf2.13"
-- "automake"
 - "faketime"
-- "libtool"
+- "unzip"
+- "automake"
+- "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
