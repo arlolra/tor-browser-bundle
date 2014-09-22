@@ -9,12 +9,13 @@ packages:
 - "zip"
 - "autoconf"
 - "autoconf2.13"
-- "faketime"
 - "yasm"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 files:
 - "mingw-w64-win32-utils.zip"
 - "re-dzip.sh"
@@ -28,8 +29,6 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -40,6 +39,14 @@ script: |
   unzip -d $INSTDIR gcclibs-win32-utils.zip
   # Make sure our custom mingw gets used.
   export PATH=$INSTDIR/mingw-w64/bin:$PATH
+
+  # Building libfaketime
+  cd faketime
+  make
+  DESTDIR="$INSTDIR/faketime" make install
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME=$REFERENCE_DATETIME
+  cd ..
 
   # We don't want to link against msvcrt.dll due to bug 9084.
   i686-w64-mingw32-g++ -dumpspecs > msvcr100.spec
@@ -71,6 +78,10 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
+  # |configure| can't cope with nano seconds faked. And even if we would revert
+  # that feature it would hang sometimes for unknown but to libfaketime related
+  # reasons.
+  export LD_PRELOAD=""
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   #
@@ -78,6 +89,11 @@ script: |
   cp ~/build/i686* ~/build/bin/
   export PATH=~/build/bin:$PATH
   #
+  # We need libfaketime for all the timestamps e.g. written into the libraries.
+  # BUT we need to exclude |make build| from it. Otherwise the build fails close
+  # to the end, see #12811 comment 14 and #12461 comment 8 and later.
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME_SKIP_CMDS="make"
   make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true

@@ -168,7 +168,7 @@ then
   echo "****** Starting Torbrowser Component of Windows Bundle (3/5 for Windows) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG,faketime=$FAKETIME_TAG $DESCRIPTOR_DIR/windows/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-win32.log.`date +%Y%m%d%H%M%S`

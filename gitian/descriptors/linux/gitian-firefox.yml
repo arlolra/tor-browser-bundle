@@ -6,7 +6,6 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "faketime"
 - "unzip"
 - "zip"
 - "libglib2.0-dev"
@@ -32,6 +31,8 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 files:
 - "binutils-linux32-utils.zip"
 - "binutils-linux64-utils.zip"
@@ -49,8 +50,6 @@ script: |
   export CFLAGS="-frandom-seed=tor"
   export CXXFLAGS="-frandom-seed=tor"
   export TZ=UTC
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export LC_ALL=C
   umask 0022
   #
@@ -92,18 +91,42 @@ script: |
   #
   mkdir -p $INSTDIR/Browser/
   mkdir -p $INSTDIR/Debug/Browser/components
-  #
+
+  # Building libfaketime
+  cd faketime
+  make
+  DESTDIR="$INSTDIR/faketime" make install
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME=$REFERENCE_DATETIME
+  cd ..
+
   cd tor-browser
   # .git and the src takes up a lot of useless space, and we need the space to build
   rm -rf .git
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
+  # |configure| can't cope with nano seconds faked. And even if we would revert
+  # that feature it would hang sometimes for unknown but to libfaketime related
+  # reasons.
+  export LD_PRELOAD=""
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
+  # We need libfaketime for all the timestamps e.g. written into the libraries.
+  # BUT we need to exclude |make build| from it. Otherwise the build fails close
+  # to the end, see #12461 comment 8 and later. Additionally, we need to avoid
+  # breaking the ICU compilation. Exlcuding |bash| helps here. See #12461
+  # comment 13.
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME_SKIP_CMDS="bash,make"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  #
   make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
+  # Packaging is broken with libfaketime enabled, thus we disable it again. See
+  # #12461 comments 11 and 12 for details.
+  export LD_PRELOAD=""
   make -C obj-* package INNER_MAKE_PACKAGE=true
+  # Without libfaketime enabled we would get different omni.ja and *debug.zip
+  # files.
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
   # Remove firefox-bin (we don't use it, see ticket #10126)
   rm -f $INSTDIR/Browser/firefox-bin

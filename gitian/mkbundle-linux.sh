@@ -197,7 +197,7 @@ then
   echo "****** Starting TorBrowser Component of Linux Bundle (3/5 for Linux) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG,faketime=$FAKETIME_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-linux.log.`date +%Y%m%d%H%M%S`

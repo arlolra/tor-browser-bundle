@@ -294,6 +294,7 @@ libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG
 txsocksx              https://github.com/habnabit/txsocksx.git $TXSOCKSX_TAG
 goptlib               https://git.torproject.org/pluggable-transports/goptlib.git $GOPTLIB_TAG
 meek                  https://git.torproject.org/pluggable-transports/meek.git $MEEK_TAG
+faketime              https://github.com/wolfcw/libfaketime $FAKETIME_TAG
 EOF
 
 exit 0

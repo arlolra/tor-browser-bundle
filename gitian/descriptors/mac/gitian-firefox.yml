@@ -10,12 +10,13 @@ packages:
 - "zip"
 - "autoconf"
 - "autoconf2.13"
-- "faketime"
 - "yasm"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 files:
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "x86_64-apple-darwin10.tar.xz"
@@ -26,15 +27,21 @@ files:
 script: |
   INSTDIR="$HOME/install/"
   source versions
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
   #
   mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/
   mkdir -p $OUTDIR/
-  #
+
+  # Building libfaketime.
+  cd faketime
+  make
+  DESTDIR="$INSTDIR/faketime" make install
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME=$REFERENCE_DATETIME
+  cd ..
+
   sudo dpkg -i *.deb
   tar -xavf x86_64-apple-darwin10.tar.xz
   # XXX: Needed for the otool patch. But we should replace that one with a
@@ -57,9 +64,21 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
+  # |configure| can't cope with nano seconds faked. And even if we would revert
+  # that feature it would hang sometimes for unknown but to libfaketime related
+  # reasons.
+  export LD_PRELOAD=""
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  #
+  # We need libfaketime for all the timestamps e.g. written into the libraries.
+  # BUT we need to exclude |make build| from it. Otherwise the build fails close
+  # to the end, see #12812 comment 6 and #12461 comment 8 and later.
+  # Additionally, we need to exclude |rsync| due to #10153 which is reproducible
+  # reliably with the new libfaketime.
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  # XXX Order matters as for some reason the env variable has only the first
+  # command assigned when it comes to the rsync parts in the build process.
+  export FAKETIME_SKIP_CMDS="rsync,make"
   make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
   #
   make -C obj-macos package INNER_MAKE_PACKAGE=true
