@@ -60,11 +60,7 @@ script: |
   ./configure --prefix=$INSTDIR/binutils --disable-multilib --enable-gold
   make $MAKEOPTS
   make install
-  # Make sure gold is used and not ld.
-  cd $INSTDIR/binutils/bin
-  rm ld
-  ln -sf ld.gold ld
-  cd ~/build
+  cd ..
 
   # Building Libevent
   cd libevent

@@ -65,6 +65,15 @@ script: |
   export PATH=$INSTDIR/python/bin:$PATH
   #
   unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
+  # Make sure gold is used with the hardening wrapper for full RELRO, see
+  # #13031.
+  cd $INSTDIR/binutils/bin
+  rm ld
+  cp /usr/bin/hardened-ld ./
+  mv ld.gold ld.gold.real
+  ln -sf hardened-ld ld.gold
+  ln -sf ld.gold ld
+  cd ~/build
   export PATH=$INSTDIR/binutils/bin:$PATH
   mkdir -p $INSTDIR/Browser/
   mkdir -p $INSTDIR/Debug/Browser/components
