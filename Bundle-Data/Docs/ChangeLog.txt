@@ -1,4 +1,4 @@
-Tor Browser 4.0-alpha-3 -- Sep 21 2014
+Tor Browser 4.0-alpha-3 -- Sep 24 2014
  * All Platforms
    * Update Tor to 0.2.5.7-rc
    * Update meek to 0.11
@@ -10,6 +10,7 @@ Tor Browser 4.0-alpha-3 -- Sep 21 2014
    * Bug 13047: Updater should not send Kernel and GTK version
  * Linux:
    * Bug 9150: Make RPATH unavailable on Tor binary.
+   * Bug 13031: Add full RELRO protection.
 
 Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
  * All Platforms
