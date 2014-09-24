@@ -84,7 +84,7 @@ then
   # want to build from tags.
   NSIS_TAG=refs/tags/$NSIS_TAG
   #GITIAN_TAG=refs/tags/$GITIAN_TAG
-  TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
+  #TORLAUNCHER_TAG=refs/tags/$TORLAUNCHER_TAG
   TORBROWSER_TAG=refs/tags/$TORBROWSER_TAG
   TORBUTTON_TAG=refs/tags/$TORBUTTON_TAG
   TOR_TAG=refs/tags/$TOR_TAG
