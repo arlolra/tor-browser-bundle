@@ -10,7 +10,22 @@ Tor Browser 4.0-alpha-3 -- Sep 24 2014
    * Bug 13091: Use "Tor Browser" everywhere
    * Bug 13049: Browser update failure (self.update is undefined)
    * Bug 13047: Updater should not send Kernel and GTK version
+   * Bug 12998: Prevent intermediate certs from being written to disk
  * Linux:
+   * Bug 9150: Make RPATH unavailable on Tor binary.
+   * Bug 13031: Add full RELRO protection.
+
+Tor Browser Bundle 3.6.6 -- Sep 24 2014
+ * All Platforms
+   * Update Tor to tor-0.2.4.24
+   * Update Firefox to 24.8.1esr
+   * Update NoScript to 2.6.8.42
+   * Update HTTPS Everywhere to 4.0.1
+   * Bug 12998: Prevent intermediate certs from being written to disk
+   * Update Torbutton to 1.6.12.3
+     * Bug 13091: Use "Tor Browser" everywhere
+     * Bug 10804: Workaround fix for some cases of startup hang
+ * Linux
    * Bug 9150: Make RPATH unavailable on Tor binary.
    * Bug 13031: Add full RELRO protection.
 
