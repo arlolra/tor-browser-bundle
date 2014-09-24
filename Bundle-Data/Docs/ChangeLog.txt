@@ -22,6 +22,9 @@ Tor Browser Bundle 3.6.6 -- Sep 24 2014
    * Update NoScript to 2.6.8.42
    * Update HTTPS Everywhere to 4.0.1
    * Bug 12998: Prevent intermediate certs from being written to disk
+   * Update Torbutton to 1.6.12.3
+     * Bug 13091: Use "Tor Browser" everywhere
+     * Bug 10804: Workaround fix for some cases of startup hang
  * Linux
    * Bug 9150: Make RPATH unavailable on Tor binary.
    * Bug 13031: Add full RELRO protection.
