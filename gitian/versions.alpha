@@ -27,7 +27,7 @@ TXSOCKSX_TAG=216eb0894a1755872f4789f9458aa6cf543b8433 # unsigned habnabit/1.13.0
 GOPTLIB_TAG=0.2
 MEEK_TAG=0.11
 
-GITIAN_TAG=tor-browser-builder-3.x-6
+GITIAN_TAG=ae72871ea2e1c731ee34bba27a47fcce1b79786e #tor-browser-builder-3.x-6
 
 OPENSSL_VER=1.0.1i
 GMP_VER=5.1.3
