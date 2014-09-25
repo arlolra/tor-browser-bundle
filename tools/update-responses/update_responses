@@ -1,0 +1,169 @@
+#!/usr/bin/perl -w
+
+use strict;
+use FindBin;
+use YAML qw(LoadFile);
+use File::Slurp;
+use Digest::SHA;
+use XML::Writer;
+
+my $htdocsdir = "$FindBin::Bin/htdocs";
+my $config = LoadFile("$FindBin::Bin/config.yml");
+my %htdocsfiles = ( '.' => 1, '..' => 1, 'no-update.xml' => 1 );
+
+sub exit_error {
+    print STDERR "Error: ", $_[0], "\n";
+    exit (exists $_[1] ? $_[1] : 1);
+}
+
+sub build_target_by_os {
+    $config->{build_targets}{$_[0]} ? $config->{build_targets}{$_[0]} : $_[0];
+}
+
+sub write_htdocs {
+    my ($file, $content) = @_;
+    mkdir $htdocsdir unless -d $htdocsdir;
+    write_file("$htdocsdir/$file", $content);
+    $htdocsfiles{$file} = 1;
+}
+
+sub clean_htdocs {
+    opendir(my $d, $htdocsdir);
+    my @files = grep { ! $htdocsfiles{$_} } readdir $d;
+    closedir $d;
+    unlink map { "$htdocsdir/$_" } @files;
+}
+
+sub get_sha512_hex_of_file {
+    my ($file) = @_;
+    my $sha = Digest::SHA->new("512");
+    $sha->addfile($file);
+    return $sha->hexdigest;
+}
+
+sub get_version_files {
+    my ($config, $version) = @_;
+    return if $config->{versions}{$version}{files};
+    my $files = {};
+    my $vdir = "$FindBin::Bin/releases/$version";
+    opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
+    foreach my $file (readdir $d) {
+        next unless -f "$vdir/$file";
+        if ($file =~ m/^tor-browser-([^-]+)-${version}_(.+)\.mar$/) {
+            my ($os, $lang) = ($1, $2);
+            $files->{$os}{$lang}{complete} = {
+                type => 'complete',
+                URL => "$config->{versions}{$version}{download_url}/$file",
+                size => -s "$vdir/$file",
+                hashFunction => 'SHA512',
+                hashValue => get_sha512_hex_of_file("$vdir/$file"),
+            };
+            next;
+        }
+        if ($file =~ m/^tor-browser-([^-]+)-([^-]+)-${version}_(.+)\.mar$/) {
+            my ($os, $from_version, $lang) = ($1, $2, $3);
+            $files->{$os}{$lang}{partial}{$from_version} = {
+                type => 'partial',
+                URL => "$config->{versions}{$version}{download_url}/$file",
+                size => -s "$vdir/$file",
+                hashFunction => 'SHA512',
+                hashValue => get_sha512_hex_of_file("$vdir/$file"),
+            }
+        }
+    }
+    closedir $d;
+    $config->{versions}{$version}{files} = $files;
+}
+
+sub get_config {
+    my ($config, $version, $os, $name) = @_;
+    return $config->{versions}{$version}{$os}{$name}
+        // $config->{versions}{$version}{$name}
+        // $config->{$name};
+}
+
+sub get_response {
+    my ($config, $version, $os, @patches) = @_;
+    my $res;
+    my $writer = XML::Writer->new(OUTPUT => \$res, ENCODING => 'UTF-8');
+    $writer->xmlDecl;
+    $writer->startTag('updates');
+    if (get_config($config, $version, $os, 'unsupported')) {
+        $writer->startTag('update',
+            unsupported => 'true',
+            detailsURL => get_config($config, $version, $os, 'detailsURL'),
+        );
+        goto CLOSETAGS;
+    }
+    my $minversion = get_config($config, $version, $os, 'minSupportedOSVersion');
+    $writer->startTag('update',
+        type => 'minor',
+        displayVersion => $version,
+        appVersion => $version,
+        platformVersion => get_config($config, $version, $os, 'platformVersion'),
+        buildID => '20000101000000',
+        detailsURL => get_config($config, $version, $os, 'detailsURL'),
+        defined $minversion ? ( minSupportedOSVersion => $minversion ) : (),
+    );
+    foreach my $patch (@patches) {
+        $writer->startTag('patch', %$patch);
+        $writer->endTag('patch');
+    }
+    CLOSETAGS:
+    $writer->endTag('update');
+    $writer->endTag('updates');
+    $writer->end;
+    return $res;
+}
+
+sub write_responses {
+    my ($config) = @_;
+    foreach my $version (values %{$config->{channels}}) {
+        get_version_files($config, $version);
+        my $files = $config->{versions}{$version}{files};
+        foreach my $os (keys %$files) {
+            foreach my $lang (keys %{$files->{$os}}) {
+                my $resp = get_response($config, $version, $os,
+                                $files->{$os}{$lang}{complete});
+                write_htdocs("$version-$os-$lang.xml", $resp);
+                foreach my $from_version (keys %{$files->{$os}{$lang}{partial}}) {
+                    $resp = get_response($config, $version, $os,
+                                $files->{$os}{$lang}{complete},
+                                $files->{$os}{$lang}{partial}{$from_version});
+                    write_htdocs("$from_version-$version-$os-$lang.xml", $resp);
+                }
+            }
+        }
+    }
+}
+
+sub write_htaccess {
+    my ($config) = @_;
+    my $htaccess = "RewriteEngine On\n";
+    my $flags = "[last]";
+    foreach my $channel (keys %{$config->{channels}}) {
+        my $version = $config->{channels}{$channel};
+        my $files = $config->{versions}{$version}{files};
+        $htaccess .= "RewriteRule "
+                  .  "^$channel/[^\/]+/$version/ "
+                  .  "no-update.xml $flags\n";
+        foreach my $os (keys %$files) {
+            my $bt = build_target_by_os($os);
+            foreach my $lang (keys %{$files->{$os}}) {
+                foreach my $from_version (keys %{$files->{$os}{$lang}{partial}}) {
+                    $htaccess .= "RewriteRule ^$channel/$bt/$from_version/$lang "
+                              .  "$from_version-$version-$os-$lang.xml $flags\n";
+                }
+                $htaccess .= "RewriteRule ^$channel/$bt/[^\/]+/$lang "
+                          .  "$version-$os-$lang.xml $flags\n";
+            }
+            $htaccess .= "RewriteRule ^$channel/$bt "
+                      .  "$version-$os-en-US.xml $flags\n";
+        }
+    }
+    write_htdocs('.htaccess', $htaccess);
+}
+
+write_responses($config);
+write_htaccess($config);
+clean_htdocs;

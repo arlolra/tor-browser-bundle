@@ -1,0 +1,16 @@
+---
+build_targets:
+    linux32: Linux_x86-gcc3
+    linux64: Linux_x86_64-gcc3
+    win32: WINNT_x86-gcc3
+    osx32: Darwin_x86-gcc3
+channels:
+    alpha: 4.0-alpha-3
+versions:
+    4.0-alpha-3:
+        platformVersion: 24.8.1
+        detailsURL: https://www.torproject.org/projects/torbrowser.html.en
+        download_url: https://www.torproject.org/dist/torbrowser/4.0-alpha-3
+#       osx32:
+#          minSupportedOSVersion: 10.7
+#          unsupported: 1
