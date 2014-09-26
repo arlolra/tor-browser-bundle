@@ -162,6 +162,12 @@ script: |
     rm -rf defaults
     popd
 
+    # Set the update.locale (it is used to replace %LOCALE% within app.update.url).
+    pushd "Tor Browser"/Browser/
+    echo "$LANG" > update.locale
+    zip -Xm omni.ja update.locale
+    popd
+
     # Recreate precomplete file (needs to be accurate for full MAR updates).
     pushd "Tor Browser"/Browser/
     rm -f precomplete

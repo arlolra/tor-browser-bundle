@@ -227,6 +227,12 @@ script: |
     rm -rf defaults
     popd
 
+    # Set the update.locale (it is used to replace %LOCALE% within app.update.url).
+    pushd ~/build/dmg/$DEST.app/Contents/MacOS/
+    echo "$LANG" > update.locale
+    zip -Xm omni.ja update.locale
+    popd
+
     if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
        pushd ~/build/dmg/
        ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip $DEST.app
