@@ -11,6 +11,7 @@ Tor Browser 4.0-alpha-3 -- Sep 24 2014
    * Bug 13049: Browser update failure (self.update is undefined)
    * Bug 13047: Updater should not send Kernel and GTK version
    * Bug 12998: Prevent intermediate certs from being written to disk
+   * Bug 13245: Prevent non-english TBBs from upgrading to english version.
  * Linux:
    * Bug 9150: Make RPATH unavailable on Tor binary.
    * Bug 13031: Add full RELRO protection.
@@ -27,7 +28,6 @@ Tor Browser Bundle 3.6.6 -- Sep 24 2014
      * Bug 10804: Workaround fix for some cases of startup hang
  * Linux
    * Bug 9150: Make RPATH unavailable on Tor binary.
-   * Bug 13031: Add full RELRO protection.
 
 Tor Browser Bundle 4.0-alpha-2 -- Sep 2 2014
  * All Platforms
