@@ -45,7 +45,7 @@ sub get_version_files {
     my ($config, $version) = @_;
     return if $config->{versions}{$version}{files};
     my $files = {};
-    my $vdir = "$FindBin::Bin/releases/$version";
+    my $vdir = "$FindBin::Bin/../../gitian/$version";
     opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
     foreach my $file (readdir $d) {
         next unless -f "$vdir/$file";
