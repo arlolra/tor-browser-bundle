@@ -106,7 +106,8 @@ sub get_response {
         defined $minversion ? ( minSupportedOSVersion => $minversion ) : (),
     );
     foreach my $patch (@patches) {
-        $writer->startTag('patch', %$patch);
+        my @sorted_patch = map { $_ => $patch->{$_} } sort keys %$patch;
+        $writer->startTag('patch', @sorted_patch);
         $writer->endTag('patch');
     }
     CLOSETAGS:
@@ -141,16 +142,16 @@ sub write_htaccess {
     my ($config) = @_;
     my $htaccess = "RewriteEngine On\n";
     my $flags = "[last]";
-    foreach my $channel (keys %{$config->{channels}}) {
+    foreach my $channel (sort keys %{$config->{channels}}) {
         my $version = $config->{channels}{$channel};
         my $files = $config->{versions}{$version}{files};
         $htaccess .= "RewriteRule "
                   .  "^$channel/[^\/]+/$version/ "
                   .  "no-update.xml $flags\n";
-        foreach my $os (keys %$files) {
+        foreach my $os (sort keys %$files) {
             my $bt = build_target_by_os($os);
-            foreach my $lang (keys %{$files->{$os}}) {
-                foreach my $from_version (keys %{$files->{$os}{$lang}{partial}}) {
+            foreach my $lang (sort keys %{$files->{$os}}) {
+                foreach my $from_version (sort keys %{$files->{$os}{$lang}{partial}}) {
                     $htaccess .= "RewriteRule ^$channel/$bt/$from_version/$lang "
                               .  "$from_version-$version-$os-$lang.xml $flags\n";
                 }
