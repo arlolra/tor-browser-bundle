@@ -340,6 +340,10 @@ EOF
 # your password in the following line where the word “secret” is:
 setControlPortPasswd ${TOR_CONTROL_PASSWD:='"secret"'}
 
+# Set up custom bundled fonts. See fonts-conf(5).
+export FONTCONFIG_PATH="${HOME}/TorBrowser/Data/fontconfig"
+export FONTCONFIG_FILE="fonts.conf"
+
 cd "${HOME}"
 
 # We pass all additional command-line arguments we get to Firefox.
