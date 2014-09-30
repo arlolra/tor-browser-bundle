@@ -4,14 +4,6 @@
 // to stdout.
 user_pref("browser.dom.window.dump.enabled", true);
 
-// Make TLSv1.0 the maximum TLS version, as in stock Firefox 24. Since #11253,
-// Tor Browser overrides the maximum to TLSv1.2, which would cause us to look
-// unlike ordinary Firefox 24.
-// https://trac.torproject.org/projects/tor/ticket/11253
-// https://trac.torproject.org/projects/tor/ticket/12766
-// http://kb.mozillazine.org/Security.tls.version.*
-user_pref("security.tls.version.max", 1);
-
 // Enable TLS session tickets (disabled by default in Tor Browser). Otherwise
 // there is a missing TLS extension.
 // https://trac.torproject.org/projects/tor/ticket/11183#comment:9
