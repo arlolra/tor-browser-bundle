@@ -11,6 +11,7 @@ use File::Temp;
 use File::Find;
 use File::Which;
 use IO::CaptureOutput qw(capture_exec);
+use Parallel::ForkManager;
 
 my $htdocsdir = "$FindBin::Bin/htdocs";
 my $config = LoadFile("$FindBin::Bin/config.yml");
@@ -25,6 +26,14 @@ sub exit_error {
 
 sub build_target_by_os {
     $config->{build_targets}{$_[0]} ? $config->{build_targets}{$_[0]} : $_[0];
+}
+
+sub get_nbprocs {
+    return $ENV{NUM_PROCS} if defined $ENV{NUM_PROCS};
+    if (-f '/proc/cpuinfo') {
+        return scalar grep { m/^processor\s+:\s/ } read_file '/proc/cpuinfo';
+    }
+    return 4;
 }
 
 sub write_htdocs {
@@ -105,31 +114,38 @@ sub mar_filename {
 }
 
 sub create_incremental_mar {
-    my ($config, $from_version, $new_version, $os, $lang) = @_;
-    print "Creating incremental mar file ",
-          "$from_version -> $new_version ($os $lang)\n";
+    my ($config, $pm, $from_version, $new_version, $os, $lang) = @_;
+    my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.mar";
+    print "Starting $mar_file\n";
+    my $mar_file_path = "$releases_dir/$new_version/$mar_file";
+    my $finished_file = sub {
+        exit_error "Error creating $mar_file" unless $_[1] == 0;
+        print "Finished $mar_file\n";
+        $config->{versions}{$new_version}{files}{$os}{$lang}{partial}{$from_version} = {
+            type => 'partial',
+            URL => "$config->{versions}{$new_version}{download_url}/$mar_file",
+            size => -s $mar_file_path,
+            hashFunction => 'SHA512',
+            hashValue => get_sha512_hex_of_file($mar_file_path),
+        };
+    };
+    return if $pm->start($finished_file);
     my $tmpdir = File::Temp->newdir();
     extract_mar(mar_filename($from_version, $os, $lang), "$tmpdir/A");
     extract_mar(mar_filename($new_version, $os, $lang), "$tmpdir/B");
-    my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.mar";
-    my $mar_file_path = "$releases_dir/$new_version/$mar_file";
     my ($out, $err, $success) = capture_exec('make_incremental_update.sh',
                                    $mar_file_path, "$tmpdir/A", "$tmpdir/B");
     if (!$success) {
         unlink $mar_file_path if -f $mar_file_path;
         exit_error "making incremental mar:\n" . $err;
     }
-    $config->{versions}{$new_version}{files}{$os}{$lang}{partial}{$from_version} = {
-        type => 'partial',
-        URL => "$config->{versions}{$new_version}{download_url}/$mar_file",
-        size => -s $mar_file_path,
-        hashFunction => 'SHA512',
-        hashValue => get_sha512_hex_of_file($mar_file_path),
-    };
+    $pm->finish;
 }
 
 sub create_missing_incremental_mars {
     my ($config, $version) = @_;
+    my $pm = Parallel::ForkManager->new(get_nbprocs);
+    $pm->run_on_finish(sub { $_[2]->(@_) });
     my $v = $config->{versions}{$version};
     foreach my $from_version (@{$v->{incremental_from}}) {
         $config->{versions}{$from_version} //= { download_url => '' };
@@ -139,10 +155,11 @@ sub create_missing_incremental_mars {
             foreach my $lang (keys %{$v->{files}{$os}}) {
                 next if defined $v->{files}{$os}{$lang}{partial}{$from_version};
                 next unless defined $from_v->{files}{$os}{$lang}{complete};
-                create_incremental_mar($config, $from_version, $version, $os, $lang);
+                create_incremental_mar($config, $pm, $from_version, $version, $os, $lang);
             }
         }
     }
+    $pm->wait_all_children;
 }
 
 sub get_config {
