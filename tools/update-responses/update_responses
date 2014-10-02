@@ -60,7 +60,7 @@ sub get_version_files {
             };
             next;
         }
-        if ($file =~ m/^tor-browser-([^-]+)-([^-]+)-${version}_(.+)\.mar$/) {
+        if ($file =~ m/^tor-browser-([^-]+)-(.+)-${version}_(.+)\.mar$/) {
             my ($os, $from_version, $lang) = ($1, $2, $3);
             $files->{$os}{$lang}{partial}{$from_version} = {
                 type => 'partial',
