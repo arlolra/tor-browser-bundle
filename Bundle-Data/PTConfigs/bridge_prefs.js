@@ -16,14 +16,15 @@ pref("extensions.torlauncher.default_bridge.flashproxy.3", "flashproxy 0.0.1.0:3
 pref("extensions.torlauncher.default_bridge.flashproxy.4", "flashproxy 0.0.1.0:4");
 pref("extensions.torlauncher.default_bridge.flashproxy.5", "flashproxy 0.0.1.0:5");
 
-// <ipv4>
-pref("extensions.torlauncher.default_bridge.fte.1", "fte 54.244.94.118:80 6E6298B85B171FEA4E36ADB15D6FF95DA0B37C89");
-pref("extensions.torlauncher.default_bridge.fte.2", "fte 131.252.210.150:8080 0E858AC201BF0F3FA3C462F64844CBFFC7297A42");
-pref("extensions.torlauncher.default_bridge.fte.3", "fte 128.105.214.161:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
-pref("extensions.torlauncher.default_bridge.fte.4", "fte 128.105.214.162:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
-pref("extensions.torlauncher.default_bridge.fte.5", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
-pref("extensions.torlauncher.default_bridge.fte.6", "fte 79.125.3.12:8080 272465348803EE2546A9BB8EE37D462915531F09");
-// </ipv4>
+pref("extensions.torlauncher.default_bridge.fte.1", "fte 192.240.101.106:80 B629B0B607C8AC9349B5646C24E9D242184F5B6E");
+pref("extensions.torlauncher.default_bridge.fte.2", "fte 50.7.176.114:80 2BD466989944867075E872310EBAD65BC88C8AEF");
+pref("extensions.torlauncher.default_bridge.fte.3", "fte 131.252.210.150:8080 0E858AC201BF0F3FA3C462F64844CBFFC7297A42");
+pref("extensions.torlauncher.default_bridge.fte.4", "fte 128.105.214.161:8080 1E326AAFB3FCB515015250D8FCCC8E37F91A153B");
+pref("extensions.torlauncher.default_bridge.fte.5", "fte 128.105.214.162:8080 FC562097E1951DCC41B7D7F324D88157119BB56D");
+pref("extensions.torlauncher.default_bridge.fte.6", "fte 128.105.214.163:8080 A17A40775FBD2CA1184BF80BFC330A77ECF9D0E9");
+
+pref("extensions.torlauncher.default_bridge.fte-ipv6.1", "fte [2001:49f0:d002:1::2]:80 B629B0B607C8AC9349B5646C24E9D242184F5B6E");
+pref("extensions.torlauncher.default_bridge.fte-ipv6.2", "fte [2001:49f0:d00a:1::c]:80 2BD466989944867075E872310EBAD65BC88C8AEF");
 
 pref("extensions.torlauncher.default_bridge.scramblesuit.1", "scramblesuit 188.40.121.112:39707 5DE8D363D8F150C99E1A2D7237368D614838132C password=L5POGQONBPS2HZUR6GXBIDS4CMIYYOTI");
 pref("extensions.torlauncher.default_bridge.scramblesuit.2", "scramblesuit 188.226.213.208:54278 AA5A86C1490296EF4FACA946CC5A182FCD1C5B1E password=MD2VRP7WXAMSG7MKIGMHI4CB4BMSNO7T");
