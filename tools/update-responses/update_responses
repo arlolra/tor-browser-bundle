@@ -6,13 +6,20 @@ use YAML qw(LoadFile);
 use File::Slurp;
 use Digest::SHA;
 use XML::Writer;
+use Cwd;
+use File::Temp;
+use File::Find;
+use File::Which;
+use IO::CaptureOutput qw(capture_exec);
 
 my $htdocsdir = "$FindBin::Bin/htdocs";
 my $config = LoadFile("$FindBin::Bin/config.yml");
 my %htdocsfiles = ( '.' => 1, '..' => 1, 'no-update.xml' => 1 );
+my $releases_dir = "$FindBin::Bin/../../gitian";
 
 sub exit_error {
     print STDERR "Error: ", $_[0], "\n";
+    chdir '/';
     exit (exists $_[1] ? $_[1] : 1);
 }
 
@@ -45,7 +52,7 @@ sub get_version_files {
     my ($config, $version) = @_;
     return if $config->{versions}{$version}{files};
     my $files = {};
-    my $vdir = "$FindBin::Bin/../../gitian/$version";
+    my $vdir = "$releases_dir/$version";
     opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
     foreach my $file (readdir $d) {
         next unless -f "$vdir/$file";
@@ -73,6 +80,69 @@ sub get_version_files {
     }
     closedir $d;
     $config->{versions}{$version}{files} = $files;
+}
+
+sub extract_mar {
+    my ($mar_file, $dest_dir) = @_;
+    my $old_cwd = getcwd;
+    mkdir $dest_dir;
+    chdir $dest_dir or exit_error "Cannot enter $dest_dir";
+    my $res = system('mar', '-x', $mar_file);
+    exit_error "Error extracting $mar_file" if $res;
+    my $bunzip_file = sub {
+        return unless -f $File::Find::name;
+        rename $File::Find::name, "$File::Find::name.bz2";
+        system('bunzip2', "$File::Find::name.bz2") == 0
+                || exit_error "Error decompressing $File::Find::name";
+    };
+    find($bunzip_file, $dest_dir);
+    chdir $old_cwd;
+}
+
+sub mar_filename {
+    my ($version, $os, $lang) = @_;
+    "$releases_dir/$version/tor-browser-$os-${version}_$lang.mar";
+}
+
+sub create_incremental_mar {
+    my ($config, $from_version, $new_version, $os, $lang) = @_;
+    print "Creating incremental mar file ",
+          "$from_version -> $new_version ($os $lang)\n";
+    my $tmpdir = File::Temp->newdir();
+    extract_mar(mar_filename($from_version, $os, $lang), "$tmpdir/A");
+    extract_mar(mar_filename($new_version, $os, $lang), "$tmpdir/B");
+    my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.mar";
+    my $mar_file_path = "$releases_dir/$new_version/$mar_file";
+    my ($out, $err, $success) = capture_exec('make_incremental_update.sh',
+                                   $mar_file_path, "$tmpdir/A", "$tmpdir/B");
+    if (!$success) {
+        unlink $mar_file_path if -f $mar_file_path;
+        exit_error "making incremental mar:\n" . $err;
+    }
+    $config->{versions}{$new_version}{files}{$os}{$lang}{partial}{$from_version} = {
+        type => 'partial',
+        URL => "$config->{versions}{$new_version}{download_url}/$mar_file",
+        size => -s $mar_file_path,
+        hashFunction => 'SHA512',
+        hashValue => get_sha512_hex_of_file($mar_file_path),
+    };
+}
+
+sub create_missing_incremental_mars {
+    my ($config, $version) = @_;
+    my $v = $config->{versions}{$version};
+    foreach my $from_version (@{$v->{incremental_from}}) {
+        $config->{versions}{$from_version} //= { download_url => '' };
+        get_version_files($config, $from_version);
+        my $from_v = $config->{versions}{$from_version};
+        foreach my $os (keys %{$v->{files}}) {
+            foreach my $lang (keys %{$v->{files}{$os}}) {
+                next if defined $v->{files}{$os}{$lang}{partial}{$from_version};
+                next unless defined $from_v->{files}{$os}{$lang}{complete};
+                create_incremental_mar($config, $from_version, $version, $os, $lang);
+            }
+        }
+    }
 }
 
 sub get_config {
@@ -121,6 +191,7 @@ sub write_responses {
     my ($config) = @_;
     foreach my $version (values %{$config->{channels}}) {
         get_version_files($config, $version);
+        create_missing_incremental_mars($config, $version);
         my $files = $config->{versions}{$version}{files};
         foreach my $os (keys %$files) {
             foreach my $lang (keys %{$files->{$os}}) {
@@ -165,6 +236,13 @@ sub write_htaccess {
     write_htdocs('.htaccess', $htaccess);
 }
 
+sub check_deps {
+    foreach my $bin (qw(bunzip2 mar mbsdiff make_incremental_update.sh)) {
+        exit_error "Cannot find $bin in PATH" unless which($bin);
+    }
+}
+
+check_deps;
 write_responses($config);
 write_htaccess($config);
 clean_htdocs;

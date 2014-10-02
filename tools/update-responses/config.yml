@@ -16,6 +16,8 @@ versions:
         platformVersion: 24.8.1
         detailsURL: https://www.torproject.org/projects/torbrowser.html.en
         download_url: https://www.torproject.org/dist/torbrowser/4.0-alpha-3
+        incremental_from:
+            - 4.0-alpha-2
 #       osx32:
 #          minSupportedOSVersion: 10.7
 #          unsupported: 1
