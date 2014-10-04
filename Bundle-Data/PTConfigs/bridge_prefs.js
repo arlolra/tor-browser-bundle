@@ -32,3 +32,4 @@ pref("extensions.torlauncher.default_bridge.scramblesuit.3", "scramblesuit 83.21
 
 pref("extensions.torlauncher.default_bridge.meek-google.1", "meek 0.0.2.0:1 url=https://meek-reflect.appspot.com/ front=www.google.com");
 pref("extensions.torlauncher.default_bridge.meek-amazon.1", "meek 0.0.2.0:2 url=https://d2zfqthxsdq309.cloudfront.net/ front=a0.awsstatic.com");
+pref("extensions.torlauncher.default_bridge.meek-azure.1", "meek 0.0.2.0:3 url=https://az668014.vo.msecnd.net/ front=ajax.aspnetcdn.com");
