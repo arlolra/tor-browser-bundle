@@ -72,6 +72,12 @@ script: |
   ln -sf ld.gold ld
   cd ~/build
   unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
+  # Make sure we use the hardening wrapper when compiling Tor Browser.
+  cd $INSTDIR/gcc/bin
+  cp /usr/bin/hardened-cc ./
+  mv gcc gcc.real
+  ln -sf hardened-cc gcc
+  cd ~/build
   export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
   ARCH=""
   if [ $GBUILD_BITS == "64" ];
