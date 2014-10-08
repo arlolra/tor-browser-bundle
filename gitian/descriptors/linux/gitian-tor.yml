@@ -32,6 +32,8 @@ files:
 - "openssl-linux64-utils.zip"
 - "libevent-linux32-utils.zip"
 - "libevent-linux64-utils.zip"
+- "gcc-linux32-utils.zip"
+- "gcc-linux64-utils.zip"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -53,9 +55,23 @@ script: |
   mkdir -p $INSTDIR/Debug/Tor/
   unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
   unzip -d $INSTDIR libevent-linux$GBUILD_BITS-utils.zip
+  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
   cp $INSTDIR/openssl/lib/libssl.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/openssl/lib/libcrypto.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/libevent/lib/libevent-2.0.so.5 $INSTDIR/Tor/
+  # We need to copy the libstdc++.so.6 for Tor Browser on older Linux distros.
+  # Copying it into /Browser, which feels more natural, and amending
+  # LD_LIBRARY_PATH breaks updates from a Tor Browser with the old
+  # LD_LIBRARY_PATH value to the Tor Browser with the newer one. Thus, we copy
+  # the libstdc++ into the directory with the libs tor depends on, too. See bug
+  # 13359 for further details.
+  ARCH=""
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ARCH="64"
+  fi
+  cp $INSTDIR/gcc/lib$ARCH/libstdc++.so.6 $INSTDIR/Tor/
+
   chmod 700 $INSTDIR/Tor/*so*
   # This is needed to make RPATH unavailable. See bug 9150.
   export LD_LIBRARY_PATH="$INSTDIR/Tor/"

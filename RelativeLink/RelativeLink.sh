@@ -215,7 +215,7 @@ if [ $SYSARCHITECTURE -ne $TORARCHITECTURE ]; then
    exit 1
 fi
 
-LD_LIBRARY_PATH="${HOME}:${HOME}/TorBrowser/Tor/"
+LD_LIBRARY_PATH="${HOME}/TorBrowser/Tor/"
 export LD_LIBRARY_PATH
 
 function setControlPortPasswd() {

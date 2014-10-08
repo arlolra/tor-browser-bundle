@@ -155,8 +155,6 @@ script: |
     strip $LIB
     objcopy --add-gnu-debuglink=./Debug/$LIB $LIB
   done
-  # We need to copy the libstdc++.so.6 for older Linux distros.
-  cp $INSTDIR/gcc/lib$ARCH/libstdc++.so.6 Browser
   #
   ~/build/re-dzip.sh Browser/omni.ja
   ~/build/re-dzip.sh Browser/webapprt/omni.ja
