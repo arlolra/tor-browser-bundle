@@ -44,7 +44,7 @@ if [ $status = done ]; then
   echo "$0: renaming $DESTDIR -> $NEWDESTDIR" | tee -a $logfile
   mv $DESTDIR $NEWDESTDIR
   cd $NEWDESTDIR || exit 3
-  sha256sum *.tar.xz *.zip *.exe > sha256sums.txt
+  sha256sum *.tar.xz *.dmg *.exe > sha256sums.txt
   gpg -a --clearsign --local-user $PGPKEYID sha256sums.txt || exit 2
   cd ..
   D=$(basename $NEWDESTDIR)
