@@ -147,6 +147,6 @@ done
 
 
 cd "$INPUTS_DIR"
-#verify_git "." "$WRAPPER_DIR/gpg/torbutton.gpg" "$GITIAN_TAG"
+verify_git "." "$WRAPPER_DIR/gpg/torbutton.gpg" "$GITIAN_TAG"
 git checkout "$GITIAN_TAG"
 
