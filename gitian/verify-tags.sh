@@ -90,6 +90,7 @@ while read dir keyring tag; do
   verify_git "$dir" "$WRAPPER_DIR/gpg/$keyring" "$tag"
 done << EOF
 tbb-windows-installer tbb-windows-installer.gpg $NSIS_TAG
+tor-launcher          torbutton.gpg             $TORLAUNCHER_TAG
 tor-browser           torbutton.gpg             $TORBROWSER_TAG
 torbutton             torbutton.gpg             $TORBUTTON_TAG
 zlib                  zlib.gpg                  $ZLIB_TAG
@@ -111,7 +112,6 @@ libdmg-hfsplus          $LIBDMG_TAG
 libfte                  $LIBFTE_TAG
 fteproxy                $FTEPROXY_TAG
 txsocksx                $TXSOCKSX_TAG
-tor-launcher            $TORLAUNCHER_TAG
 EOF
 
 # Verify signatures on signed packages
