@@ -105,6 +105,15 @@ sub extract_mar {
                 || exit_error "Error decompressing $File::Find::name";
     };
     find($bunzip_file, $dest_dir);
+    my $manifest = -f 'updatev3.manifest' ? 'updatev3.manifest'
+                        : 'updatev2.manifest';
+    my @lines = read_file($manifest) if -f $manifest;
+    foreach my $line (@lines) {
+        if ($line =~ m/^addsymlink "(.+)" "(.+)"$/) {
+            exit_error "$mar_file: Could not create symlink $1 -> $2"
+                unless symlink $2, $1;
+        }
+    }
     chdir $old_cwd;
 }
 
