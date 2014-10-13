@@ -27,6 +27,9 @@ TXSOCKSX_TAG=216eb0894a1755872f4789f9458aa6cf543b8433 # unsigned habnabit/1.13.0
 GOPTLIB_TAG=0.2
 MEEK_TAG=0.11
 FAKETIME_TAG=70aa6b394d9341522dffe8a5a5cf5929e82cc6b9 # unsigned v0.9.6
+GOED25519_TAG=c4161f4c7483313562781c61b9a20aba73daf9de
+GOSIPHASH_TAG=42ba037e748c9062a75e0924705c43b893edefcd
+OBFS4_TAG=obfs4proxy-0.0.3
 
 GITIAN_TAG=tor-browser-builder-3.x-7
 
@@ -74,6 +77,8 @@ SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 LXML_PACKAGE=lxml-${LXML_VER}.tar.gz
 PARSLEY_PACKAGE=Parsley-${PARSLEY_VER}.tar.gz
 GO_PACKAGE=go${GO_VER}.src.tar.gz
+GOCRYPTO_PACKAGE=go.crypto-5478be1963aa.tar.bz2
+GONET_PACKAGE=go.net-9c0f9daaa74b.tar.bz2
 
 # Hashes for packages with weak sigs or no sigs
 OPENSSL_HASH=3c179f46ca77069a6a0bac70212a9b3b838b2f66129cb52d568837fc79d8fcc7
@@ -94,6 +99,8 @@ PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
 SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 PARSLEY_HASH=50d30cee70770fd44db7cea421cb2fb75af247c3a1cd54885c06b30a7c85dd23
 GO_HASH=1bb6fde89cfe8b9756a875af55d994cce0994861227b5dc0f268c143d91cd5ff
+GOCRYPTO_HASH=a8e301714f5724999321f0397b867a5670a5e5c4f808ba157bdd93ee0d028827
+GONET_HASH=1812fec55256e1a6fe546111cc658520b80972f38826c94ec11ef24315d32353
 
 ## Non-git package URLs
 OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -119,3 +126,5 @@ SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS
 LXML_URL=https://pypi.python.org/packages/source/l/lxml/${LXML_PACKAGE}
 PARSLEY_URL=https://pypi.python.org/packages/source/P/Parsley/${PARSLEY_PACKAGE}
 GO_URL=http://golang.org/dl/${GO_PACKAGE}
+GOCRYPTO_URL=https://people.torproject.org/~yawning/mirrors/sources/${GOCRYPTO_PACKAGE}
+GONET_URL=https://people.torproject.org/~yawning/mirrors/sources/${GONET_PACKAGE}

@@ -2,7 +2,11 @@
 ClientTransportPlugin fte exec ./TorBrowser/Tor/PluggableTransports/fteproxy.bin --managed
 
 ## obfsproxy configuration
-ClientTransportPlugin obfs2,obfs3,scramblesuit exec ./TorBrowser/Tor/PluggableTransports/obfsproxy.bin managed
+ClientTransportPlugin scramblesuit exec ./TorBrowser/Tor/PluggableTransports/obfsproxy.bin managed
+
+## obfs4proxy configuration
+ClientTransportPlugin obfs2,obfs3,obfs4 exec ./TorBrowser/Tor/PluggableTransports/obfs4proxy
+
 ## flash proxy configuration
 #
 # Change the second number here (9000) to the number of a port that can
