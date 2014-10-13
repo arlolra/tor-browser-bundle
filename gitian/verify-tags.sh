@@ -112,6 +112,7 @@ libdmg-hfsplus          $LIBDMG_TAG
 libfte                  $LIBFTE_TAG
 fteproxy                $FTEPROXY_TAG
 txsocksx                $TXSOCKSX_TAG
+faketime                $FAKETIME_TAG
 EOF
 
 # Verify signatures on signed packages
