@@ -76,7 +76,7 @@ sub get_version_files {
             };
             next;
         }
-        if ($file =~ m/^tor-browser-([^-]+)-(.+)-${version}_(.+)\.mar$/) {
+        if ($file =~ m/^tor-browser-([^-]+)-(.+)-${version}_(.+)\.incremental\.mar$/) {
             my ($os, $from_version, $lang) = ($1, $2, $3);
             $files->{$os}{$lang}{partial}{$from_version} = {
                 type => 'partial',
@@ -124,7 +124,7 @@ sub mar_filename {
 
 sub create_incremental_mar {
     my ($config, $pm, $from_version, $new_version, $os, $lang) = @_;
-    my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.mar";
+    my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.incremental.mar";
     print "Starting $mar_file\n";
     my $mar_file_path = "$releases_dir/$new_version/$mar_file";
     my $finished_file = sub {
