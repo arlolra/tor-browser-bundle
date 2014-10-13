@@ -2,7 +2,10 @@
 ClientTransportPlugin fte exec PluggableTransports/fteproxy.bin --managed
 
 ## obfsproxy configuration
-ClientTransportPlugin obfs2,obfs3,scramblesuit exec PluggableTransports/obfsproxy.bin managed
+ClientTransportPlugin scramblesuit exec PluggableTransports/obfsproxy.bin managed
+
+## obfs4proxy configuration
+ClientTransportPlugin obfs2,obfs3,obfs4 exec PluggableTransports/obfs4proxy
 
 ## flash proxy configuration
 #

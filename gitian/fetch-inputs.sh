@@ -6,6 +6,7 @@
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
 MIRROR_URL_DCF=https://people.torproject.org/~dcf/mirrors/sources/
 MIRROR_URL_ASN=https://people.torproject.org/~asn/mirrors/sources/
+MIRROR_URL_YAWNING=https://people.torproject.org/~yawning/mirrors/sources/
 set -e
 set -u
 umask 0022
@@ -179,6 +180,15 @@ do
   get "${!PACKAGE}" "${!URL}"
 done
 
+# XXX/Yawning.  As far as I can tell, this gitian thing doesn't support
+# fetching from hg repositories.
+for i in GOCRYPTO GONET
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${MIRROR_URL_YAWNING}${!PACKAGE}"
+  get "${!PACKAGE}" "${MIRROR_URL_YAWNING}${!PACKAGE}"
+done
+
 # Verify packages with weak or no signatures via multipath downloads
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
 # XXX: Google won't allow wget -N.. We need to re-download the whole
@@ -208,7 +218,7 @@ wget -U "" -N ${HTTPSE_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC GOCRYPTO GONET
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -262,6 +272,8 @@ ln -sf "$GMP_PACKAGE" gmp.tar.bz2
 ln -sf "$LXML_PACKAGE" lxml.tar.gz
 ln -sf "$PARSLEY_PACKAGE" parsley.tar.gz
 ln -sf "$GO_PACKAGE" go.tar.gz
+ln -sf "$GONET_PACKAGE" go.net.tar.bz2
+ln -sf "$GOCRYPTO_PACKAGE" go.crypto.tar.bz2
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
@@ -295,6 +307,9 @@ txsocksx              https://github.com/habnabit/txsocksx.git $TXSOCKSX_TAG
 goptlib               https://git.torproject.org/pluggable-transports/goptlib.git $GOPTLIB_TAG
 meek                  https://git.torproject.org/pluggable-transports/meek.git $MEEK_TAG
 faketime              https://github.com/wolfcw/libfaketime $FAKETIME_TAG
+ed25519               https://github.com/agl/ed25519.git $GOED25519_TAG
+siphash               https://github.com/dchest/siphash.git $GOSIPHASH_TAG
+obfs4                 https://git.torproject.org/pluggable-transports/obfs4.git $OBFS4_TAG
 EOF
 
 exit 0
