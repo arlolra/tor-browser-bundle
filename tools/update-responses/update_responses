@@ -268,6 +268,33 @@ sub check_deps {
     }
 }
 
+sub osname {
+    my ($osname) = capture_exec('uname', '-s');
+    my ($arch) = capture_exec('uname', '-m');
+    chomp($osname, $arch);
+    if ($osname eq 'Linux' && $arch eq 'x86_64') {
+        return 'linux64';
+    }
+    if ($osname eq 'Linux' && $arch =~ m/^i.86$/) {
+        return 'linux32';
+    }
+    exit_error 'Unknown OS';
+}
+
+my $martools_tmpdir;
+sub extract_martools {
+    my $osname = osname;
+    my $marzip = "$FindBin::Bin/../../../gitian-builder/inputs/mar-tools-$osname.zip";
+    $martools_tmpdir = File::Temp->newdir();
+    my $old_cwd = getcwd;
+    chdir $martools_tmpdir;
+    my (undef, undef, $success) = capture_exec('unzip', $marzip);
+    chdir $old_cwd;
+    exit_error "Error extracting $marzip" unless $success;
+    $ENV{PATH} .= ":$martools_tmpdir/mar-tools";
+}
+
+extract_martools;
 check_deps;
 write_responses($config);
 write_htaccess($config);
