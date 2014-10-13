@@ -1,3 +1,30 @@
+Tor Browser 4.0 -- Oct 14 2014
+ * All Platforms
+   * Update Firefox to 31.2.0esr
+   * Update Torbutton to 1.7.0.1
+      * Bug 13378: Prevent addon reordering in toolbars on first-run.
+      * Bug 10751: Adapt Torbutton to ESR31's Australis UI.
+      * Bug 13138: ESR31-about:tor shows "Tor is not working"
+      * Bug 12947: Adapt session storage blocker to ESR 31.
+      * Bug 10716: Take care of drag/drop events in ESR 31.
+      * Bug 13366: Fix cert exemption dialog when disk storage is enabled.
+   * Update Tor Launcher to 0.2.7.0.1
+     * Translation updates only
+   * Udate fteproxy to 0.2.19
+   * Update NoScript to 2.6.9
+   * Bug 13027: Spoof window.navigator useragent values in JS WebWorker threads
+   * Bug 13016: Hide CSS -moz-osx-font-smoothing values.
+   * Bug 13356: Meek and other symlinks missing after complete update.
+   * Bug 13025: Spoof screen orientation to landscape-primary.
+   * Bug 13346: Disable Firefox "slow to start" warnings and recordkeeping.
+   * Bug 13318: Minimize number of buttons on the browser toolbar.
+   * Bug 10715: Enable WebGL on Windows (still click-to-play via NoScript)
+   * Bug 13023: Disable the gamepad API.
+   * Bug 13021: Prompt before allowing Canvas isPointIn*() calls.
+   * Bug 12460: Several cross-compilation and gitian fixes (see child tickets)
+   * Bug 13186: Disable DOM Performance timers
+   * Bug 13028: Defense-in-depth checks for OCSP/Cert validation proxy usage
+
 Tor Browser 4.0-alpha-3 -- Sep 24 2014
  * All Platforms
    * Update Tor to 0.2.5.8-rc
