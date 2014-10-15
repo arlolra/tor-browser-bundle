@@ -1,4 +1,4 @@
-Tor Browser 4.0 -- Oct 14 2014
+Tor Browser 4.0 -- Oct 15 2014
  * All Platforms
    * Update Firefox to 31.2.0esr
    * Update Torbutton to 1.7.0.1
@@ -11,7 +11,8 @@ Tor Browser 4.0 -- Oct 14 2014
    * Update Tor Launcher to 0.2.7.0.1
      * Translation updates only
    * Udate fteproxy to 0.2.19
-   * Update NoScript to 2.6.9
+   * Update NoScript to 2.6.9.1
+   * Bug 13416: Defend against new SSLv3 attack (poodle).
    * Bug 13027: Spoof window.navigator useragent values in JS WebWorker threads
    * Bug 13016: Hide CSS -moz-osx-font-smoothing values.
    * Bug 13356: Meek and other symlinks missing after complete update.
@@ -24,6 +25,7 @@ Tor Browser 4.0 -- Oct 14 2014
    * Bug 12460: Several cross-compilation and gitian fixes (see child tickets)
    * Bug 13186: Disable DOM Performance timers
    * Bug 13028: Defense-in-depth checks for OCSP/Cert validation proxy usage
+
 
 Tor Browser 4.0-alpha-3 -- Sep 24 2014
  * All Platforms
