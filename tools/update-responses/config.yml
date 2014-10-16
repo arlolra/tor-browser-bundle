@@ -6,7 +6,7 @@ build_targets:
     osx32: Darwin_x86-gcc3
 channels:
     release: 4.0
-    alpha: 4.0-alpha-3
+    alpha: 4.0
 versions:
     4.0:
         platformVersion: 31.2.0
