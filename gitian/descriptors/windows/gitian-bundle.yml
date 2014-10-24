@@ -126,8 +126,6 @@ script: |
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
-  # The poodle hotfix
-  echo "pref(\"security.tls.version.min\", 1);" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   rm -rf defaults
   popd
@@ -158,8 +156,6 @@ script: |
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/
     echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
-    # The poodle hotfix
-    echo "pref(\"security.tls.version.min\", 1);" >> defaults/preferences/000-tor-browser.js
     zip -Xm omni.ja defaults/preferences/000-tor-browser.js
     rm -rf defaults
     popd
