@@ -1,5 +1,7 @@
 Tor Browser 4.0.1 -- Oct 30 2014
  * All Platforms
+   * Update Tor to 0.2.5.10
+   * Update NoScript to 2.6.9.3
    * Bug 13301: Prevent extensions incompatibility error after upgrades
    * Bug 13460: Fix MSVC compilation issue
  * Windows
