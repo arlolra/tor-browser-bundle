@@ -32,6 +32,21 @@ build-beta:
 	./mkbundle-mac.sh versions.beta
 	./hash-bundles.sh versions.beta
 
+incrementals:
+	../tools/update-responses/update_responses
+
+hash:
+	./hash-bundles.sh versions
+
+hash-alpha:
+	./hash-bundles.sh versions.alpha
+
+hash-beta:
+	./hash-bundles.sh versions.beta
+
+hash-nightly:
+	./hash-bundles.sh versions.nightly
+
 sign:
 	$(TORSOCKS) ./upload-signature.sh versions
 

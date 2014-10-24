@@ -18,8 +18,12 @@ fi
 export LC_ALL=C
 
 cd $TORBROWSER_VERSION
-rm -f sha256sums.txt
-sha256sum `ls -1 | sort` > sha256sums.txt
+rm -f sha256sums.txt sha256sums.incrementals.txt
+sha256sum `ls -1 | grep -v '\.incremental\.mar$' | sort` > sha256sums.txt
+if ls -1 | grep -q '\.incremental\.mar$'
+then
+    sha256sum `ls -1 | grep '\.incremental\.mar$' | sort` > sha256sums.incrementals.txt
+fi
 
 echo
 echo "If this is an official build, you should now sign your result with: "

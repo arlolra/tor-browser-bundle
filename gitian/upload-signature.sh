@@ -28,7 +28,14 @@ then
   popd
 fi
 
+if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ] \
+    && [ ! -f $TORBROWSER_VERSION/sha256sums.incrementals.txt.asc ]
+then
+  pushd $TORBROWSER_VERSION && gpg -abs sha256sums.incrementals.txt
+  popd
+fi
+
 
 ssh $HOST "mkdir -p $BASE_DIR/$TORBROWSER_VERSION" 
-scp $TORBROWSER_VERSION/sha256sums.txt* $HOST:$BASE_DIR/$TORBROWSER_VERSION/ 
+scp $TORBROWSER_VERSION/sha256sums*.txt* $HOST:$BASE_DIR/$TORBROWSER_VERSION/ 
 ssh $HOST "chmod 755 $BASE_DIR/$TORBROWSER_VERSION && chmod 644 $BASE_DIR/$TORBROWSER_VERSION/*"

@@ -26,6 +26,7 @@ fi
 . $VERSIONS_FILE
 
 VALID=""
+VALID_incrementals=""
 
 for u in $USERS
 do
@@ -49,14 +50,53 @@ do
 
   VALID="$u $VALID"
 done
+cd ../..
 
+if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ]
+then
+  for u in $USERS
+  do
+    cd $WRAPPER_DIR
+
+    # XXX: Is there a better way to store these and rename them?
+    mkdir -p $TORBROWSER_VERSION/$u
+    cd $TORBROWSER_VERSION/$u
+
+    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.incrementals.txt || continue
+    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.incrementals.txt.asc || continue
+
+    keyring="../../gpg/$u.gpg"
+
+    # XXX: Remove this dir
+    gpghome=$(mktemp -d)
+    GNUPGHOME="$gpghome" gpg --import "$keyring"
+    GNUPGHOME="$gpghome" gpg sha256sums.incrementals.txt.asc || exit 1
+
+    diff -u ../sha256sums.incrementals.txt sha256sums.incrementals.txt || exit 1
+
+    VALID_incrementals="$u $VALID_incrementals"
+  done
+fi
+cd ../..
+
+exit_val=0
 if [ -z "$VALID" ];
 then
   echo "No bundle hashes or sigs published for $TORBROWSER_VERSION."
   echo
-  exit 1
+  exit_val=1
 else
   echo "Matching bundles exist from the following users: $VALID"
-  exit 0
 fi
 
+if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ]
+then
+  if [ -z "$VALID_incrementals" ]
+  then
+    echo "No incremental mars hashes or sigs published for $TORBROWSER_VERSION."
+  else
+    echo "Matching incremental mars exist from the following users: $VALID_incrementals"
+  fi
+fi
+
+exit $exit_val
