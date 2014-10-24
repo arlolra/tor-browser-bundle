@@ -52,6 +52,7 @@ do
 done
 cd ../..
 
+# XXX: We should refactor this code into a shared function
 if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ]
 then
   for u in $USERS
@@ -94,6 +95,7 @@ then
   if [ -z "$VALID_incrementals" ]
   then
     echo "No incremental mars hashes or sigs published for $TORBROWSER_VERSION."
+    exit_val=1
   else
     echo "Matching incremental mars exist from the following users: $VALID_incrementals"
   fi
