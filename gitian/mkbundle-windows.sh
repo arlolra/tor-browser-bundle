@@ -223,6 +223,7 @@ then
   mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
   cp -a build/out/*.exe $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
+  cp -a inputs/tor-win32-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   touch inputs/bundle-windows.gbuilt
 else
   echo
