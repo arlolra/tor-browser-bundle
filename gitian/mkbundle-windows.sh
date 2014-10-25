@@ -74,6 +74,7 @@ die_msg() {
 
 LIBEVENT_TAG_ORIG=$LIBEVENT_TAG
 ZLIB_TAG_ORIG=$ZLIB_TAG
+TOR_TAG_ORIG=$TOR_TAG
 
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
@@ -223,7 +224,7 @@ then
   mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
   cp -a build/out/*.exe $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
-  cp -a inputs/tor-win32-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_VERSION/tor-win32-${TOR_TAG}.zip || exit 1
+  cp -a inputs/tor-win32-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_VERSION/tor-win32-${TOR_TAG_ORIG}.zip || exit 1
   touch inputs/bundle-windows.gbuilt
 else
   echo
