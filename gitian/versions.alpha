@@ -1,4 +1,4 @@
-TORBROWSER_VERSION=4.5-alpha-1
+TORBROWSER_VERSION_TYPE=alpha
 BUNDLE_LOCALES="ar de es-ES fa fr it ko nl pl pt-PT ru tr vi zh-CN"
 BUILD_PT_BUNDLES=1
 

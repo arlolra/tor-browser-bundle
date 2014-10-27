@@ -21,21 +21,22 @@ if ! [ -e $VERSIONS_FILE ]; then
 fi
 
 . $VERSIONS_FILE
+eval $(./get-tb-version $TORBROWSER_VERSION_TYPE)
 
-if [ ! -f $TORBROWSER_VERSION/sha256sums.txt.asc ];
+if [ ! -f $TORBROWSER_BUILDDIR/sha256sums.txt.asc ];
 then
-  pushd $TORBROWSER_VERSION && gpg -abs sha256sums.txt 
+  pushd $TORBROWSER_BUILDDIR && gpg -abs sha256sums.txt 
   popd
 fi
 
-if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ] \
-    && [ ! -f $TORBROWSER_VERSION/sha256sums.incrementals.txt.asc ]
+if [ -f $TORBROWSER_BUILDDIR/sha256sums.incrementals.txt ] \
+    && [ ! -f $TORBROWSER_BUILDDIR/sha256sums.incrementals.txt.asc ]
 then
-  pushd $TORBROWSER_VERSION && gpg -abs sha256sums.incrementals.txt
+  pushd $TORBROWSER_BUILDDIR && gpg -abs sha256sums.incrementals.txt
   popd
 fi
 
 
-ssh $HOST "mkdir -p $BASE_DIR/$TORBROWSER_VERSION" 
-scp $TORBROWSER_VERSION/sha256sums*.txt* $HOST:$BASE_DIR/$TORBROWSER_VERSION/ 
-ssh $HOST "chmod 755 $BASE_DIR/$TORBROWSER_VERSION && chmod 644 $BASE_DIR/$TORBROWSER_VERSION/*"
+ssh $HOST "mkdir -p $BASE_DIR/$TORBROWSER_BUILDDIR" 
+scp $TORBROWSER_BUILDDIR/sha256sums*.txt* $HOST:$BASE_DIR/$TORBROWSER_BUILDDIR/ 
+ssh $HOST "chmod 755 $BASE_DIR/$TORBROWSER_BUILDDIR && chmod 644 $BASE_DIR/$TORBROWSER_BUILDDIR/*"

@@ -14,10 +14,11 @@ if ! [ -e $VERSIONS_FILE ]; then
 fi
 
 . $VERSIONS_FILE
+eval $(./get-tb-version $TORBROWSER_VERSION_TYPE)
 
 export LC_ALL=C
 
-cd $TORBROWSER_VERSION
+cd $TORBROWSER_BUILDDIR
 rm -f sha256sums.txt sha256sums.incrementals.txt
 sha256sum `ls -1 | grep -v '\.incremental\.mar$' | sort` > sha256sums.txt
 if ls -1 | grep -q '\.incremental\.mar$'
