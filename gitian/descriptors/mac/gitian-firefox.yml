@@ -95,9 +95,6 @@ script: |
   zip -r mar-tools-mac${GBUILD_BITS}.zip mar-tools
   cp -p mar-tools-mac${GBUILD_BITS}.zip $OUTDIR/
   #
-  # XXX: Find a better way to tell that we are having a 32bit build
-  GBUILD_BITS=32
-  #
   cd $INSTDIR
   # Adjust the Info.plist file
   INFO_PLIST=TorBrowser.app/Contents/Info.plist

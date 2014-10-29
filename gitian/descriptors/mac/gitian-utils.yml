@@ -34,10 +34,12 @@ script: |
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
   # For OpenSSL
   ln -s ~/build/apple-osx/bin/apple-osx-gcc ~/build/apple-osx/bin/i686-apple-darwin11-cc
+  #For gmp, need to trick it so it knows we're doing a 64 bit build
+  for i in ~/build/apple-osx/bin/i686-apple-darwin11-*; do j=`echo $i | sed 's/i686/x86_64/'`; ln -s $i $j; done;
 
   # XXX Clean up these flags?
-  export CFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
-  export CXXFLAGS="-I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -mmacosx-version-min=10.5"
+  export CFLAGS="-m64 -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
+  export CXXFLAGS="-m64 -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -mmacosx-version-min=10.5"
   export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
 
   # Building Libevent
@@ -54,7 +56,7 @@ script: |
   cd openssl-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit OS X.
-  ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin-i386-cc --prefix=$INSTDIR/openssl
+  ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin64-x86_64-cc --prefix=$INSTDIR/openssl enable-ec_nistp_64_gcc_128
   # Using $MAKEOPTS breaks the build. Might be the issue mentioned on
   # http://cblfs.cross-lfs.org/index.php/OpenSSL.
   make
@@ -65,15 +67,15 @@ script: |
   tar xjf gmp.tar.bz2
   cd gmp-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  ./configure --host=i686-apple-darwin11 --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+  ./configure --host=x86_64-apple-darwin11 --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
   make
   make install
   cd ..
 
   # Grabbing the results
   cd $INSTDIR
-  ~/build/dzip.sh openssl-$OPENSSL_VER-mac32-utils.zip openssl
-  ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-mac32-utils.zip libevent
-  ~/build/dzip.sh gmp-$GMP_VER-mac32-utils.zip gmp
+  ~/build/dzip.sh openssl-$OPENSSL_VER-mac64-utils.zip openssl
+  ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-mac64-utils.zip libevent
+  ~/build/dzip.sh gmp-$GMP_VER-mac64-utils.zip gmp
 
   cp *utils.zip $OUTDIR/
