@@ -23,6 +23,7 @@ files:
 - "bug9665.patch"
 - "bug8402.patch"
 - "bug8402-master.patch"
+- "bug8405.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
 - "mingw-w64-win32-utils.zip"
@@ -60,23 +61,12 @@ script: |
   export GIT_COMMITTER_NAME="nobody"
   export GIT_COMMITTER_EMAIL="nobody@localhost"
   export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
-  if [ ${TOR_TAG::9} == "tor-0.2.4" ];
+  if [ ${TOR_TAG::9} == "tor-0.2.5" ];
   then
-    git am ~/build/bug10297.patch
-  fi
-  if [ $BUILD_PT_BUNDLES ]; then
-    if [ ${TOR_TAG::9} == "tor-0.2.4" ];
-    then
-      git am ~/build/bug5018.patch
-      git am ~/build/bug11069.patch
-      git am ~/build/bug11156.patch
-      git am ~/build/bug9665.patch
-      git am ~/build/bug11200.patch
-      git am ~/build/bug8402.patch
-    elif [ ${TOR_TAG::9} == "tor-0.2.5" ];
-    then
+      git am ~/build/bug8405.patch
       git am ~/build/bug8402-master.patch
-    fi
+  else # 0.2.6 and master
+      git am ~/build/bug8405.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
