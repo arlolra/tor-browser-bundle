@@ -12,6 +12,7 @@ Tor Browser 4.5-alpha-1 -- Nov 3 2014
      * Bug 13019: Synchronize locale spoofing pref with our Firefox patch
      * Bug 3455: Use SOCKS user+pass to isolate all requests from the same url domain
      * Bug 8641: Create browser UI to indicate current tab's Tor circuit IPs
+   * Bug 13586: Make meek use TLS session tickets (to look like stock Firefox).
    * Include obfs4proxy pluggable transport
  * Windows
    * Bug 13443: Re-enable DirectShow; fix crash with mingw patch.
