@@ -219,6 +219,14 @@ sub write_responses {
         get_version_files($config, $version);
         create_missing_incremental_mars($config, $version);
         my $files = $config->{versions}{$version}{files};
+        my $migrate_archs = $config->{versions}{$version}{migrate_archs} // {};
+        foreach my $old_os (keys %$migrate_archs) {
+            my $new_os = $migrate_archs->{$old_os};
+            foreach my $lang (keys %{$files->{$new_os}}) {
+                $files->{$old_os}{$lang}{complete} =
+                        $files->{$new_os}{$lang}{complete};
+            }
+        }
         foreach my $os (keys %$files) {
             foreach my $lang (keys %{$files->{$os}}) {
                 my $resp = get_response($config, $version, $os,
