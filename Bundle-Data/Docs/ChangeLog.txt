@@ -1,4 +1,4 @@
-Tor Browser 4.5-alpha-1 -- Nov 3 2014
+Tor Browser 4.5-alpha-1 -- Nov 13 2014
  * All Platforms
    * Bug 3455: Patch Firefox SOCKS and proxy filters to allow user+pass isolation
    * Bug 11955: Backport HTTPS Certificate Pinning patches from Firefox 32
