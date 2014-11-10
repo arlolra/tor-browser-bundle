@@ -2,12 +2,14 @@ Tor Browser 4.5-alpha-1 -- Nov 3 2014
  * All Platforms
    * Bug 3455: Patch Firefox SOCKS and proxy filters to allow user+pass isolation
    * Bug 11955: Backport HTTPS Certificate Pinning patches from Firefox 32
+   * Bug 13684: Backport Mozilla bug #1066190 (pinning issue fixed in Firefox 33)
    * Bug 13019: Make JS engine use English locale if a pref is set by Torbutton
    * Bug 13301: Prevent extensions incompatibility error after upgrades
    * Bug 13460: Fix MSVC compilation issue
-   * Update Tor to 0.2.6.0-alpha
+   * Bug 13504: Remove stale bridges from default bridge set
+   * Update Tor to 0.2.6.1-alpha
    * Update NoScript to 2.6.9.3
-   * Update Torbutton to 1.8.0.2
+   * Update Torbutton to 1.8.0.3
      * Bug 9387: Provide a "Security Slider" for vulnerability surface reduction
      * Bug 13019: Synchronize locale spoofing pref with our Firefox patch
      * Bug 3455: Use SOCKS user+pass to isolate all requests from the same url domain
