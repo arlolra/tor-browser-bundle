@@ -10,7 +10,7 @@ Tor Browser 4.5-alpha-1 -- Nov 14 2014
    * Bug 13742: Fix domain isolation for content cache and disk-enabled browsing mode
    * Update Tor to 0.2.6.1-alpha
    * Update NoScript to 2.6.9.3
-   * Update Torbutton to 1.8.1.0
+   * Update Torbutton to 1.8.1.1
      * Bug 9387: Provide a "Security Slider" for vulnerability surface reduction
      * Bug 13019: Synchronize locale spoofing pref with our Firefox patch
      * Bug 3455: Use SOCKS user+pass to isolate all requests from the same url domain
@@ -19,10 +19,12 @@ Tor Browser 4.5-alpha-1 -- Nov 14 2014
      * Bug 13666: Various circuit status UI fixes
      * Bug 13742: Remove cache isolation code in favor of direct C++ patch
      * Bug 13746: Properly update third party isolation pref if disabled from UI
+     * Bug 13751: Get rid of remaining SafeCache parts
    * Bug 13586: Make meek use TLS session tickets (to look like stock Firefox).
-   * Include obfs4proxy pluggable transport
+   * Bug 12903: Include obfs4proxy pluggable transport
  * Windows
    * Bug 13443: Re-enable DirectShow; fix crash with mingw patch.
+   * Bug 13558: Fix crash on Windows XP during download folder changing
    * Bug 13091: Make app name "Tor Browser" instead of "Tor"
    * Bug 13594: Fix update failure for Windows XP users
  * Mac
