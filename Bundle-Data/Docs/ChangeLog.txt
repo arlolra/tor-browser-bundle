@@ -17,9 +17,8 @@ Tor Browser 4.5-alpha-1 -- Nov 14 2014
      * Bug 8641: Create browser UI to indicate current tab's Tor circuit IPs
      * Bug 13651: Prevent circuit-status related UI hang.
      * Bug 13666: Various circuit status UI fixes
-     * Bug 13742: Remove cache isolation code in favor of direct C++ patch
+     * Bugs 13742+13751: Remove cache isolation code in favor of direct C++ patch
      * Bug 13746: Properly update third party isolation pref if disabled from UI
-     * Bug 13751: Get rid of remaining SafeCache parts
    * Bug 13586: Make meek use TLS session tickets (to look like stock Firefox).
    * Bug 12903: Include obfs4proxy pluggable transport
  * Windows
