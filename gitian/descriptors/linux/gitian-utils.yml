@@ -128,7 +128,9 @@ script: |
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
   # during compile time.
-  ./configure --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+  # --enable-fat makes the binaries slightly bigger but fixes reproducibility
+  # issues when compiling on LXC. See bug 12238 comment 4.
+  ./configure --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx --enable-fat
   make
   make install
   cd ..
