@@ -19,13 +19,6 @@ remotes:
   "dir": "tor"
 files:
 - "versions"
-- "bug10297.patch"
-- "bug5018.patch"
-- "bug11156.patch"
-- "bug11200.patch"
-- "bug11069.patch"
-- "bug9665.patch"
-- "bug8402.patch"
 - "bug8402-master.patch"
 - "bug8405.patch"
 - "dzip.sh"
