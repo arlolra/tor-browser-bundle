@@ -88,7 +88,8 @@ script: |
   unzip -d $INSTDIR gmp-win32-utils.zip
   unzip -d $INSTDIR openssl-win32-utils.zip
   unzip -d $INSTDIR gcclibs-win32-utils.zip
-  cp $INSTDIR/gmp/bin/*dll* $INSTDIR/Tor
+  # FTE only needs libgmp-10.dll and no libgmpxx anymore.
+  cp $INSTDIR/gmp/bin/libgmp-10.dll $INSTDIR/Tor
 
   export PATH=$INSTDIR/mingw-w64/bin:$PATH
 
@@ -281,7 +282,7 @@ script: |
   # Building libfte
   cd libfte
   ln -s $INSTDIR/gmp thirdparty/gmp
-  cp -a $INSTDIR/gmp/bin/libgmp-*.dll .
+  cp -a $INSTDIR/gmp/bin/libgmp-10.dll .
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= WINDOWS_BUILD=1 CROSS_COMPILE=1 PYTHON=$INSTPYTHON make
   LD_PRELOAD= $INSTPYTHON setup.py install

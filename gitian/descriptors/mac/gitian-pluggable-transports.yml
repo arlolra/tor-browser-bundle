@@ -71,7 +71,8 @@ script: |
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
   unzip -d $INSTDIR gmp-mac64-utils.zip
   unzip -d $INSTDIR openssl-mac64-utils.zip
-  cp $INSTDIR/gmp/lib/*dylib* $TBDIR/Tor/
+  # FTE only needs libgmp.10.dylib and no libgmpxx anymore.
+  cp $INSTDIR/gmp/lib/libgmp.10.dylib $TBDIR/Tor/
 
   #
   export AR=$HOME/build/apple-osx/bin/i686-apple-darwin11-ar

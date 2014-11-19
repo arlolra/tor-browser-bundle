@@ -141,6 +141,8 @@ script: |
   tar xjf gmp.tar.bz2
   cd gmp-*
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
+  # during compile time.
   ./configure --prefix=$INSTDIR/gmp --host=i686-w64-mingw32 --enable-cxx --disable-static --enable-shared
   make
   make install
