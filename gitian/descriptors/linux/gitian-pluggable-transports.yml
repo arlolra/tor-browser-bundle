@@ -74,8 +74,8 @@ script: |
 
   unzip -d $INSTDIR gmp-linux$GBUILD_BITS-utils.zip
   unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
-  # FTE only needs libgmp-10.so and no libgmpxx anymore.
-  cp $INSTDIR/gmp/lib/libgmp-10.so $INSTDIR/Tor
+  # FTE only needs libgmp.10.so and no libgmpxx anymore.
+  cp $INSTDIR/gmp/lib/libgmp.10.so $INSTDIR/Tor
 
   # Building go
   # http://golang.org/doc/install/source#environment
