@@ -8,6 +8,7 @@ Tor Browser 4.5-alpha-2 -- Dec 5 2014
      * Bug 13671: Make bridges visible on circuit display
      * Bug 9387: Incorporate user feedback
      * Bug 13784: Remove third party authentication tokens
+   * Bug 13435: Remove our custom POODLE fix (fixed by Mozilla in ESR 31.3.0)
 
 Tor Browser 4.0.2 -- Dec 2 2014
  * All Platforms
