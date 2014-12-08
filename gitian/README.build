@@ -82,6 +82,10 @@ Detailed Explanation of Scripts:
        alpha packages
      - incrementals-beta: The equivalent to the 'incrementals' rule for
        beta packages
+     - update_responses-alpha: The equivalent to the 'update_responses' rule
+       for alpha packages
+     - update_responses-beta: The equivalent to the 'update_responses' rule
+       for beta packages
      - signmars-nightly: The equivalent to the 'signmars' rule for nightly packages
      - signmars-alpha: The equivalent to the 'signmars' rule for alpha packages
      - signmars-beta: The equivalent to the 'signmars' rule for beta packages

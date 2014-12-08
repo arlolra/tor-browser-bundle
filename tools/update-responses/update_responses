@@ -24,7 +24,7 @@ setlocale(LC_ALL, "C");
 
 my $htdocsdir = "$FindBin::Bin/htdocs";
 my $config = LoadFile("$FindBin::Bin/config.yml");
-my %htdocsfiles = ( '.' => 1, '..' => 1, 'no-update.xml' => 1 );
+my %htdocsfiles;
 my $releases_dir = "$FindBin::Bin/../../gitian";
 
 sub exit_error {
@@ -46,17 +46,21 @@ sub get_nbprocs {
 }
 
 sub write_htdocs {
-    my ($file, $content) = @_;
+    my ($channel, $file, $content) = @_;
     mkdir $htdocsdir unless -d $htdocsdir;
-    write_file("$htdocsdir/$file", $content);
-    $htdocsfiles{$file} = 1;
+    mkdir "$htdocsdir/$channel" unless -d "$htdocsdir/$channel";
+    write_file("$htdocsdir/$channel/$file", $content);
+    $htdocsfiles{$channel}->{$file} = 1;
 }
 
 sub clean_htdocs {
-    opendir(my $d, $htdocsdir);
-    my @files = grep { ! $htdocsfiles{$_} } readdir $d;
-    closedir $d;
-    unlink map { "$htdocsdir/$_" } @files;
+    my (@channels) = @_;
+    foreach my $channel (@channels) {
+        opendir(my $d, "$htdocsdir/$channel");
+        my @files = grep { ! $htdocsfiles{$channel}->{$_} } readdir $d;
+        closedir $d;
+        unlink map { "$htdocsdir/$channel/$_" } @files;
+    }
 }
 
 sub get_sha512_hex_of_file {
@@ -233,8 +237,10 @@ sub get_response {
 }
 
 sub write_responses {
-    my ($config) = @_;
-    foreach my $version (values %{$config->{channels}}) {
+    my ($config, @channels) = @_;
+    @channels = keys %{$config->{channels}} unless @channels;
+    foreach my $channel (@channels) {
+        my $version = $config->{channels}{$channel};
         get_version_files($config, $version);
         my $files = $config->{versions}{$version}{files};
         my $migrate_archs = $config->{versions}{$version}{migrate_archs} // {};
@@ -249,43 +255,44 @@ sub write_responses {
             foreach my $lang (keys %{$files->{$os}}) {
                 my $resp = get_response($config, $version, $os,
                                 $files->{$os}{$lang}{complete});
-                write_htdocs("$version-$os-$lang.xml", $resp);
+                write_htdocs($channel, "$version-$os-$lang.xml", $resp);
                 foreach my $from_version (keys %{$files->{$os}{$lang}{partial}}) {
                     $resp = get_response($config, $version, $os,
                                 $files->{$os}{$lang}{complete},
                                 $files->{$os}{$lang}{partial}{$from_version});
-                    write_htdocs("$from_version-$version-$os-$lang.xml", $resp);
+                    write_htdocs($channel, "$from_version-$version-$os-$lang.xml", $resp);
                 }
             }
         }
+        write_htdocs($channel, 'no-update.xml',
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            . "\n<updates></updates>\n");
     }
 }
 
 sub write_htaccess {
-    my ($config) = @_;
-    my $htaccess = "RewriteEngine On\n";
+    my ($config, @channels) = @_;
+    @channels = keys %{$config->{channels}} unless @channels;
     my $flags = "[last]";
-    foreach my $channel (sort keys %{$config->{channels}}) {
+    foreach my $channel (@channels) {
+        my $htaccess = "RewriteEngine On\n";
         my $version = $config->{channels}{$channel};
         my $files = $config->{versions}{$version}{files};
-        $htaccess .= "RewriteRule "
-                  .  "^$channel/[^\/]+/$version/ "
-                  .  "no-update.xml $flags\n";
+        $htaccess .= "RewriteRule ^[^\/]+/$version/ no-update.xml $flags\n";
         foreach my $os (sort keys %$files) {
             my $bt = build_target_by_os($os);
             foreach my $lang (sort keys %{$files->{$os}}) {
                 foreach my $from_version (sort keys %{$files->{$os}{$lang}{partial}}) {
-                    $htaccess .= "RewriteRule ^$channel/$bt/$from_version/$lang "
+                    $htaccess .= "RewriteRule ^$bt/$from_version/$lang "
                               .  "$from_version-$version-$os-$lang.xml $flags\n";
                 }
-                $htaccess .= "RewriteRule ^$channel/$bt/[^\/]+/$lang "
+                $htaccess .= "RewriteRule ^$bt/[^\/]+/$lang "
                           .  "$version-$os-$lang.xml $flags\n";
             }
-            $htaccess .= "RewriteRule ^$channel/$bt "
-                      .  "$version-$os-en-US.xml $flags\n";
+            $htaccess .= "RewriteRule ^$bt $version-$os-en-US.xml $flags\n";
         }
+        write_htdocs($channel, '.htaccess', $htaccess);
     }
-    write_htdocs('.htaccess', $htaccess);
 }
 
 sub check_deps {
@@ -322,9 +329,16 @@ sub extract_martools {
 
 my %actions = (
     update_responses => sub {
-        write_responses(@_);
-        write_htaccess(@_);
-        clean_htdocs;
+        my ($config) = @_;
+        my @channels = @ARGV ? @ARGV : keys %{$config->{channels}};
+        foreach my $channel (@channels) {
+            exit_error "Unknown channel $channel"
+                unless $config->{channels}{$channel};
+            $htdocsfiles{$channel} = { '.' => 1, '..' => 1 };
+        }
+        write_responses($config, @channels);
+        write_htaccess($config, @channels);
+        clean_htdocs(@channels);
     },
     gen_incrementals => sub {
         my ($config) = @_;

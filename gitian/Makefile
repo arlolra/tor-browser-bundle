@@ -54,7 +54,13 @@ signmars-nightly:
 	./signmars.sh versions.nightly
 
 update_responses:
-	../tools/update-responses/update_responses
+	../tools/update-responses/update_responses release
+
+update_responses-alpha:
+	../tools/update-responses/update_responses alpha
+
+update_responses-beta:
+	../tools/update-responses/update_responses beta
 
 hash:
 	./hash-bundles.sh versions
