@@ -33,7 +33,13 @@ build-beta:
 	./hash-bundles.sh versions.beta
 
 incrementals:
-	../tools/update-responses/gen_incrementals
+	../tools/update-responses/gen_incrementals release
+
+incrementals-alpha:
+	../tools/update-responses/gen_incrementals alpha
+
+incrementals-beta:
+	../tools/update-responses/gen_incrementals beta
 
 signmars:
 	./signmars.sh versions

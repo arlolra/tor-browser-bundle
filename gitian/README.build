@@ -78,6 +78,10 @@ Detailed Explanation of Scripts:
      - hash-nightly: The equivalent to the 'hash' rule for nightly packages
      - hash-alpha: The equivalent to the 'hash' rule for alpha packages
      - hash-beta: The equivalent to the 'hash' rule for beta packages
+     - incrementals-alpha: The equivalent to the 'incrementals' rule for
+       alpha packages
+     - incrementals-beta: The equivalent to the 'incrementals' rule for
+       beta packages
      - signmars-nightly: The equivalent to the 'signmars' rule for nightly packages
      - signmars-alpha: The equivalent to the 'signmars' rule for alpha packages
      - signmars-beta: The equivalent to the 'signmars' rule for beta packages

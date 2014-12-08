@@ -180,19 +180,21 @@ sub create_missing_incremental_mars_for_version {
     $pm->wait_all_children;
 }
 
-sub create_all_missing_incremental_mars {
-    my ($config) = @_;
-    foreach my $version (values %{$config->{channels}}) {
-        get_version_files($config, $version);
-        create_missing_incremental_mars_for_version($config, $version);
-    }
-}
-
 sub get_config {
     my ($config, $version, $os, $name) = @_;
     return $config->{versions}{$version}{$os}{$name}
         // $config->{versions}{$version}{$name}
         // $config->{$name};
+}
+
+sub channel_to_version {
+    my ($config, @channels) = @_;
+    return values %{$config->{channels}} unless @channels;
+    foreach my $channel (@channels) {
+        exit_error "Unknown channel $channel"
+                unless $config->{channels}{$channel};
+    }
+    return map { $config->{channels}{$_} } @channels;
 }
 
 sub get_response {
@@ -325,9 +327,13 @@ my %actions = (
         clean_htdocs;
     },
     gen_incrementals => sub {
+        my ($config) = @_;
         extract_martools;
         check_deps;
-        create_all_missing_incremental_mars(@_);
+        foreach my $version (channel_to_version($config, @ARGV)) {
+            get_version_files($config, $version);
+            create_missing_incremental_mars_for_version($config, $version);
+        }
     },
 );
 
