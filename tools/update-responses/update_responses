@@ -10,8 +10,15 @@ use Cwd;
 use File::Temp;
 use File::Find;
 use File::Which;
+use POSIX qw(setlocale LC_ALL);
 use IO::CaptureOutput qw(capture_exec);
 use Parallel::ForkManager;
+
+# Set umask and locale to provide a consistent environment for MAR file
+# generation, etc.
+umask(0022);
+$ENV{"LC_ALL"} = "C";
+setlocale(LC_ALL, "C");
 
 my $htdocsdir = "$FindBin::Bin/htdocs";
 my $config = LoadFile("$FindBin::Bin/config.yml");
