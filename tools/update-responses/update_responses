@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
+use English;
 use FindBin;
 use YAML qw(LoadFile);
 use File::Slurp;
@@ -13,6 +14,7 @@ use File::Which;
 use POSIX qw(setlocale LC_ALL);
 use IO::CaptureOutput qw(capture_exec);
 use Parallel::ForkManager;
+use File::Basename;
 
 # Set umask and locale to provide a consistent environment for MAR file
 # generation, etc.
@@ -158,7 +160,7 @@ sub create_incremental_mar {
     $pm->finish;
 }
 
-sub create_missing_incremental_mars {
+sub create_missing_incremental_mars_for_version {
     my ($config, $version) = @_;
     my $pm = Parallel::ForkManager->new(get_nbprocs);
     $pm->run_on_finish(sub { $_[2]->(@_) });
@@ -176,6 +178,14 @@ sub create_missing_incremental_mars {
         }
     }
     $pm->wait_all_children;
+}
+
+sub create_all_missing_incremental_mars {
+    my ($config) = @_;
+    foreach my $version (values %{$config->{channels}}) {
+        get_version_files($config, $version);
+        create_missing_incremental_mars_for_version($config, $version);
+    }
 }
 
 sub get_config {
@@ -224,7 +234,6 @@ sub write_responses {
     my ($config) = @_;
     foreach my $version (values %{$config->{channels}}) {
         get_version_files($config, $version);
-        create_missing_incremental_mars($config, $version);
         my $files = $config->{versions}{$version}{files};
         my $migrate_archs = $config->{versions}{$version}{migrate_archs} // {};
         foreach my $old_os (keys %$migrate_archs) {
@@ -309,8 +318,19 @@ sub extract_martools {
     $ENV{PATH} .= ":$martools_tmpdir/mar-tools";
 }
 
-extract_martools;
-check_deps;
-write_responses($config);
-write_htaccess($config);
-clean_htdocs;
+my %actions = (
+    update_responses => sub {
+        write_responses(@_);
+        write_htaccess(@_);
+        clean_htdocs;
+    },
+    gen_incrementals => sub {
+        extract_martools;
+        check_deps;
+        create_all_missing_incremental_mars(@_);
+    },
+);
+
+my $action = fileparse($PROGRAM_NAME);
+exit_error "Unknown action $action" unless $actions{$action};
+$actions{$action}->($config);

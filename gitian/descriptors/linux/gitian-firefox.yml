@@ -136,12 +136,23 @@ script: |
   rm -f $INSTDIR/Browser/*.chk
   #
   # Make MAR-based update tools available for use during the bundle phase.
+  # Note that mar and mbsdiff are standalone tools, compiled for the build
+  # host's architecture.  We also include signmar, certutil, and the libraries
+  # they require; these utilities and libraries are built for the target
+  # architecture.
   MARTOOLS=~/build/mar-tools
   mkdir -p $MARTOOLS
   cp -p config/createprecomplete.py $MARTOOLS/
   cp -p tools/update-packaging/*.sh $MARTOOLS/
   cp -p obj-*/dist/host/bin/mar $MARTOOLS/
   cp -p obj-*/dist/host/bin/mbsdiff $MARTOOLS/
+  cp -p obj-*/modules/libmar/tool/signmar $MARTOOLS/
+  cp -p obj-*/security/nss/cmd/certutil/certutil $MARTOOLS/
+  NSS_LIBS="libfreebl3.so libmozsqlite3.so libnss3.so libnssdbm3.so libnssutil3.so libsmime3.so libsoftokn3.so libssl3.so"
+  NSPR_LIBS="libnspr4.so libplc4.so libplds4.so"
+  for LIB in $NSS_LIBS $NSPR_LIBS; do
+    cp -p obj-*/dist/bin/$LIB $MARTOOLS/
+  done
   cd ~/build
   zip -r mar-tools-linux${GBUILD_BITS}.zip mar-tools
   cp -p mar-tools-linux${GBUILD_BITS}.zip $OUTDIR/
