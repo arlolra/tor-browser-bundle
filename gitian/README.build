@@ -46,15 +46,19 @@ Detailed Explanation of Scripts:
  several helper scripts to make things easier.
 
  0. Makefile: The main Makefile. It has the following commands:
+     - all: The default. It calls the 'clean', 'prep' and 'build' rules
      - prep: Check OS prerequisites and download source dependency inputs
      - build: Build localized bundles for Linux, Windows, and Mac
      - clean: Remove prior partial build stages (see 'Partial Rebuilds' below
        for the usage of clean-* commands)
      - vmclean: Remove VM base images
-     - distclean: Remove source dependency inputs, and run clean and vmclean
-     - all: The default. It calls clean, prep, and then build.
-     - sign: Signs your build output and uploads it to people.torproject.org
-     - match: Checks your build output against public signed hashes
+     - distclean: Remove source dependency inputs, and run 'clean' and 'vmclean'
+     - sign: Sign your build output and uploads it to people.torproject.org
+     - match: Check your build output against public signed hashes
+     - hash: Create the SHA256 sums
+     - incrementals: Create the incremental update (.mar) files
+     - update_responses: Create .xml and .htaccess files for the updater
+     - signmars: Create the signatures for the update (.mar) files
     To build beta/alpha/nightly bundles, alternate targets are provided:
      - nightly: The equivalent to the 'all' rule for nightly packages
      - alpha: The equivalent to the 'all' rule for alpha packages
@@ -71,6 +75,12 @@ Detailed Explanation of Scripts:
      - match-nightly: The equivalent to the 'match' rule for nightly packages
      - match-alpha: The equivalent to the 'match' rule for alpha packages
      - match-beta: The equivalent to the 'match' rule for beta packages
+     - hash-nightly: The equivalent to the 'hash' rule for nightly packages
+     - hash-alpha: The equivalent to the 'hash' rule for alpha packages
+     - hash-beta: The equivalent to the 'hash' rule for beta packages
+     - signmars-nightly: The equivalent to the 'signmars' rule for nightly packages
+     - signmars-alpha: The equivalent to the 'signmars' rule for alpha packages
+     - signmars-beta: The equivalent to the 'signmars' rule for beta packages
 
  1. check-prerequisites.sh: This script checks if your system is capable of
     running Gitian, and if it is not, it tells you what you need to do.
@@ -119,7 +129,13 @@ Detailed Explanation of Scripts:
 
  12. upload-signature.sh: This script signs and uploads your 'sha256sums.txt'
      file (for use if you are an official builder).
-
+ 13. signmars.sh: This script generates the signatures on the update (.mar)
+     files. It expects an nssdb directory, containing the key, in the same
+     directory (i.e. tor-browser-bundle/gitian where it is located, too) and
+     a certificate with "marsigner" as nickname. Both the default nssdb
+     directory and the default certificate nickname can get overwritten by
+     exporting 'NSS_DB_DIR' and 'NSS_CERTNAME' pointing to the directory and
+     the nickname to be used instead.
 
 Partial Rebuilds:
 
@@ -174,22 +190,14 @@ Known Issues and Quirks:
      creation hangs in the future (or help us write a wrapper script that
      tests VMs and re-runs the VM creation step if they don't boot).
 
-  2. One out of every 50 builds or so, 'make' locks up at some point during a
-     build, probably due to timestamp issues inside the Gitian VM. The
-     symptoms of this are a hung build where the VM or LXC container processes
-     are consuming no CPU.
-
-     Simply re-running 'make build' will resume the appropriate bundle
-     component for you.
-
-  3. If you use git branches for any repos instead of tags (for example, for
+  2. If you use git branches for any repos instead of tags (for example, for
      a development or nightly build), fresh commits will need to be
      merged manually (or better git-fu is needed in ./fetch-inputs.sh, as
      it is currently meant to deal with tags only).
 
-  4. Running more than one instance of Gitian at a time is not supported.
+  3. Running more than one instance of Gitian at a time is not supported.
 
-  5. Related: If you perform a fresh Gitian checkout for purposes of
+  4. Related: If you perform a fresh Gitian checkout for purposes of
      verification, be sure to kill any stray qemu VM processes before starting
      the new build (because the new Gitian checkout will not have the PID or
      SSH keys of the previous instances' VM, and VM startup will either hang
