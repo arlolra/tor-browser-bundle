@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
 
 use strict;
+use feature "state";
 use English;
 use FindBin;
 use YAML qw(LoadFile);
@@ -15,6 +16,8 @@ use POSIX qw(setlocale LC_ALL);
 use IO::CaptureOutput qw(capture_exec);
 use Parallel::ForkManager;
 use File::Basename;
+use XML::LibXML '1.70';
+use LWP::Simple;
 
 # Set umask and locale to provide a consistent environment for MAR file
 # generation, etc.
@@ -26,6 +29,7 @@ my $htdocsdir = "$FindBin::Bin/htdocs";
 my $config = LoadFile("$FindBin::Bin/config.yml");
 my %htdocsfiles;
 my $releases_dir = "$FindBin::Bin/../../gitian";
+my @check_errors;
 
 sub exit_error {
     print STDERR "Error: ", $_[0], "\n";
@@ -327,6 +331,107 @@ sub extract_martools {
     $ENV{PATH} .= ":$martools_tmpdir/mar-tools";
 }
 
+sub log_step {
+    my ($url, $step, $status, $details) = @_;
+    state $u;
+    if (!defined $u || $url ne $u) {
+        print "\n" if $u;
+        print "$url\n";
+        $u = $url;
+    }
+    print '  ', $step, $status ? ': OK' : ': ERROR',
+          $details ? " - $details\n" : "\n";
+    return if $status;
+    push @check_errors, { url => $url, step => $step, details => $details };
+}
+
+sub get_remote_xml {
+    my ($url) = @_;
+    my $content = get $url;
+    log_step($url, 'get', defined $content);
+    return undef unless defined $content;
+    my $dom = eval { XML::LibXML->load_xml(string => $content) };
+    log_step($url, 'parse_xml', defined $dom, $@);
+    return $dom;
+}
+
+sub check_get_version {
+    my ($dom) = @_;
+    my @updates = $dom->documentElement()->getChildrenByLocalName('update');
+    return undef unless @updates;
+    return $updates[0]->getAttribute('appVersion');
+}
+
+sub check_no_update {
+    my ($dom) = @_;
+    my @updates = $dom->documentElement()->getChildrenByLocalName('update');
+    return @updates == 0;
+}
+
+sub check_has_incremental {
+    my ($dom) = @_;
+    my @updates = $dom->documentElement()->getChildrenByLocalName('update');
+    return undef unless @updates;
+    my @patches = $updates[0]->getChildrenByLocalName('patch');
+    foreach my $patch (@patches) {
+        return 1 if $patch->getAttribute('type') eq 'partial';
+    }
+    return undef;
+}
+
+sub check_update_responses_channel {
+    my ($config, $base_url, $channel) = @_;
+    my $channel_version = $config->{channels}{$channel};
+    foreach my $build_target (values %{$config->{build_targets}}) {
+        foreach my $lang (qw(en-US de)) {
+            my $url = "$base_url/$channel/$build_target/1.0/$lang";
+            my $dom = get_remote_xml($url);
+            if ($dom) {
+                my $version = check_get_version($dom);
+                log_step($url, 'version', $version eq $channel_version,
+                         "expected: $channel_version received: $version");
+            }
+            $url = "$base_url/$channel/$build_target/$channel_version/$lang";
+            $dom = get_remote_xml($url);
+            log_step($url, 'no_update', check_no_update($dom)) if $dom;
+            my @inc = @{$config->{versions}{$channel_version}{incremental_from}}
+                      if $config->{versions}{$channel_version}{incremental_from};
+            foreach my $inc_from (@inc) {
+                my $url = "$base_url/$channel/$build_target/$inc_from/$lang";
+                $dom = get_remote_xml($url);
+                next unless $dom;
+                my $version = check_get_version($dom);
+                log_step($url, 'version', $version eq $channel_version,
+                         "expected: $channel_version received: $version");
+                log_step($url, 'has_incremental', check_has_incremental($dom));
+            }
+        }
+    }
+}
+
+sub check_update_responses {
+    my ($config) = @_;
+    exit_error "usage: $PROGRAM_NAME <base_url> [channels...]" unless @ARGV;
+    my ($base_url, @channels) = @ARGV;
+    foreach my $channel (@channels ? @channels : keys %{$config->{channels}}) {
+        check_update_responses_channel($config, $base_url, $channel);
+    }
+    if (!@check_errors) {
+        print "\n\nNo errors\n";
+        return;
+    }
+    print "\n\nErrors list:\n";
+    my $url = '';
+    foreach my $error (@check_errors) {
+        if ($url ne $error->{url}) {
+            $url = $error->{url};
+            print "$url\n";
+        }
+        print "  $error->{step}",
+              $error->{details} ? " - $error->{details}\n" : "\n";
+    }
+}
+
 my %actions = (
     update_responses => sub {
         my ($config) = @_;
@@ -349,6 +454,7 @@ my %actions = (
             create_missing_incremental_mars_for_version($config, $version);
         }
     },
+    check_update_responses_deployement => \&check_update_responses,
 );
 
 my $action = fileparse($PROGRAM_NAME);
