@@ -110,7 +110,7 @@ script: |
   # that feature it would hang sometimes for unknown but to libfaketime related
   # reasons.
   export LD_PRELOAD=""
-  make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
+  make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
   # We need libfaketime for all the timestamps e.g. written into the libraries.
   # BUT we need to exclude |make build| from it. Otherwise the build fails close
   # to the end, see #12461 comment 8 and later. Additionally, we need to avoid
