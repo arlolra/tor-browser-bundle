@@ -1,0 +1,53 @@
+#!/usr/bin/perl -w
+use strict;
+
+sub run_cmd {
+    my @cmd = @_;
+    my $pid = open(my $fh, '-|');
+    if (!$pid) {
+        exec(@cmd);
+    }
+    my @res = <$fh>;
+    waitpid($pid, 0);
+    die "Error running " . join(' ', @cmd) if $?;
+    chomp @res;
+    return @res;
+}
+
+my %types = (
+    release => qr/tbb-([^ab]+)-build(.+)$/,
+    beta => qr/tbb-(.+b.+)-build(.+)$/,
+    alpha => qr/tbb-(.+a.+)-build(.+)$/,
+);
+my $type = $ARGV[0] ? $ARGV[0] : 'release';
+exit 0 if $type eq 'nightly';
+die "Unknown type $type" unless $types{$type};
+my %tags;
+foreach my $tag (run_cmd('git', 'tag')) {
+    if ($tag =~ m/$types{$type}/) {
+        my ($commit) = run_cmd('git', 'show', '-s', '--format=%H',
+                               "$tag^{commit}");
+        $tags{$commit} = [ $1, $2 ];
+    }
+}
+
+my ($current_commit) = run_cmd('git', 'show', '-s', '--format=%H');
+if ($tags{$current_commit}) {
+    print "TORBROWSER_VERSION=$tags{$current_commit}->[0]\n";
+    print 'TORBROWSER_BUILDDIR=', $tags{$current_commit}->[0], '-build',
+          $tags{$current_commit}->[1], "\n";
+    print "TORBROWSER_SYMLINK_VERSION=1\n";
+    exit 0;
+}
+
+foreach my $commit (run_cmd('git', 'log', '-s', '--format=%H', '-200')) {
+    next unless $tags{$commit};
+    print "TORBROWSER_VERSION=$tags{$commit}->[0]\n";
+    print "TORBROWSER_BUILDDIR=$tags{$commit}->[0]-",
+          substr($commit, 0, 12), "\n";
+    print "TORBROWSER_SYMLINK_VERSION=0\n";
+    exit 0;
+}
+
+print STDERR "Could not find TORBROWSER version from tags\n";
+exit 1;

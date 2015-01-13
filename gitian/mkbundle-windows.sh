@@ -16,6 +16,7 @@ if ! [ -e $VERSIONS_FILE ]; then
 fi
 
 . $VERSIONS_FILE
+eval $(./get-tb-version $TORBROWSER_VERSION_TYPE)
 
 WRAPPER_DIR=$PWD
 GITIAN_DIR=$PWD/../../gitian-builder
@@ -44,6 +45,7 @@ export PATH=$PATH:$PWD/libexec
 
 echo "$TORBROWSER_VERSION" > $GITIAN_DIR/inputs/bare-version
 cp -a $WRAPPER_DIR/$VERSIONS_FILE $GITIAN_DIR/inputs/versions
+echo "TORBROWSER_VERSION=$TORBROWSER_VERSION" >> $GITIAN_DIR/inputs/versions
 
 cp -r $WRAPPER_DIR/build-helpers/* $GITIAN_DIR/inputs/
 cp $WRAPPER_DIR/patches/* $GITIAN_DIR/inputs/
@@ -222,15 +224,21 @@ then
     exit 1
   fi
 
-  mkdir -p $WRAPPER_DIR/$TORBROWSER_VERSION/
-  cp -a build/out/*.exe $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
-  cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_VERSION/ || exit 1
-  cp -a inputs/tor-win32-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_VERSION/tor-win32-${TOR_TAG_ORIG:4}.zip || exit 1
+  mkdir -p $WRAPPER_DIR/$TORBROWSER_BUILDDIR/
+  cp -a build/out/*.exe $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
+  cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
+  cp -a inputs/tor-win32-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/tor-win32-${TOR_TAG_ORIG:4}.zip || exit 1
   touch inputs/bundle-windows.gbuilt
 else
   echo
   echo "****** SKIPPING Bundling+Localization of Windows Bundle (5/5 for Windows) ******"
   echo
+fi
+
+cd $WRAPPER_DIR
+if [ "$TORBROWSER_SYMLINK_VERSION" == '1' ]
+then
+    ln -sf $TORBROWSER_BUILDDIR $TORBROWSER_VERSION
 fi
 
 echo

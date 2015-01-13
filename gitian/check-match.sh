@@ -24,6 +24,7 @@ if ! [ -e $VERSIONS_FILE ]; then
 fi
 
 . $VERSIONS_FILE
+eval $(./get-tb-version $TORBROWSER_VERSION_TYPE)
 
 VALID=""
 VALID_incrementals=""
@@ -33,11 +34,11 @@ do
   cd $WRAPPER_DIR
 
   # XXX: Is there a better way to store these and rename them?
-  mkdir -p $TORBROWSER_VERSION/$u
-  cd $TORBROWSER_VERSION/$u
+  mkdir -p $TORBROWSER_BUILDDIR/$u
+  cd $TORBROWSER_BUILDDIR/$u
 
-  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.txt || continue
-  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.txt.asc || continue
+  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.txt || continue
+  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.txt.asc || continue
 
   keyring="../../gpg/$u.gpg"
 
@@ -53,18 +54,18 @@ done
 cd ../..
 
 # XXX: We should refactor this code into a shared function
-if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ]
+if [ -f $TORBROWSER_BUILDDIR/sha256sums.incrementals.txt ]
 then
   for u in $USERS
   do
     cd $WRAPPER_DIR
 
     # XXX: Is there a better way to store these and rename them?
-    mkdir -p $TORBROWSER_VERSION/$u
-    cd $TORBROWSER_VERSION/$u
+    mkdir -p $TORBROWSER_BUILDDIR/$u
+    cd $TORBROWSER_BUILDDIR/$u
 
-    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.incrementals.txt || continue
-    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_VERSION/sha256sums.incrementals.txt.asc || continue
+    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.incrementals.txt || continue
+    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.incrementals.txt.asc || continue
 
     keyring="../../gpg/$u.gpg"
 
@@ -83,18 +84,18 @@ cd ../..
 exit_val=0
 if [ -z "$VALID" ];
 then
-  echo "No bundle hashes or sigs published for $TORBROWSER_VERSION."
+  echo "No bundle hashes or sigs published for $TORBROWSER_BUILDDIR."
   echo
   exit_val=1
 else
   echo "Matching bundles exist from the following users: $VALID"
 fi
 
-if [ -f $TORBROWSER_VERSION/sha256sums.incrementals.txt ]
+if [ -f $TORBROWSER_BUILDDIR/sha256sums.incrementals.txt ]
 then
   if [ -z "$VALID_incrementals" ]
   then
-    echo "No incremental mars hashes or sigs published for $TORBROWSER_VERSION."
+    echo "No incremental mars hashes or sigs published for $TORBROWSER_BUILDDIR."
     exit_val=1
   else
     echo "Matching incremental mars exist from the following users: $VALID_incrementals"
