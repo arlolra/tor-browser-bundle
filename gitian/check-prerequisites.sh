@@ -35,7 +35,7 @@ then
     echo
     echo "Please run"
     echo " sudo apt-get install torsocks tor"
-    echo " sudo torsocks apt-get install ruby git apt-cacher-ng qemu-kvm virt-what lxc lxctl fakeroot zip unzip"
+    echo " sudo torsocks apt-get install ruby git apt-cacher-ng qemu-kvm virt-what lxc lxctl fakeroot zip unzip python-cheetah debootstrap parted kpartx rsync"
     exit 1
   fi
 
