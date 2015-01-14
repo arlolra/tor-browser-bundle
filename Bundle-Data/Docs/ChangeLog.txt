@@ -1,3 +1,34 @@
+Tor Browser 4.5-alpha-3 -- Jan 16 2015
+ * All Platforms
+   * Update Firefox to 31.4.0esr
+   * Update Tor to 0.2.6.2-alpha
+   * Update NoScript to 2.6.9.10
+   * Update HTTPS Everywhere to 5.0development.2
+   * Update meek to 0.15
+   * Update Torbutton to 1.8.1.3
+     * Bug 13998: Handle changes in NoScript 2.6.9.8+
+     * Bug 14100: Option to hide NetworkSettings menuitem
+     * Bug 13079: Option to skip control port verification
+     * Bug 13835: Option to change default Tor Browser homepage
+     * Bug 11449: Fix new identity error if NoScript is not enabled
+     * Bug 13881: Localize strings for tor circuit display
+     * Bug 9387: Incorporate user feedback
+     * Bug 13671: Fixup for circuit display if bridges are used
+     * Translation updates
+  * Update Tor Launcher to 0.2.7.1
+    * Translation updates
+  * Bug 13379: Sign our MAR files
+  * Bug 13788: Fix broken meek in 4.5-alpha series
+  * Bug 13439: No canvas prompt for content callers
+
+Tor Browser 4.0.3 -- Jan 13 2015
+ * All Platforms
+   * Update Firefox to 31.4.0esr
+   * Update NoScript to 2.6.9.10
+   * Update meek to 0.15
+   * Update Tor Launcher to 0.2.7.0.2
+     * Translation updates only
+
 Tor Browser 4.5-alpha-2 -- Dec 5 2014
  * All Platforms
    * Update Firefox to 31.3.0esr
