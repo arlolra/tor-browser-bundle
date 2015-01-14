@@ -1,6 +1,6 @@
 QuickStart:
 
- On an Ubuntu 12.04+ machine or VM, run:
+ On an Ubuntu 12.04+/Debian Wheezy+ machine or VM, run:
 
  $ make
 
