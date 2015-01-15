@@ -6,12 +6,12 @@ build_targets:
     osx32: Darwin_x86-gcc3
     osx64: Darwin_x86_64-gcc3
 channels:
-    alpha: 4.5-alpha-3
+    alpha: 4.5a3
 versions:
-    4.5-alpha-3:
+    4.5a3:
         platformVersion: 31.4.0
         detailsURL: https://www.torproject.org/projects/torbrowser.html.en
-        download_url: https://www.torproject.org/dist/torbrowser/4.5-alpha-3
+        download_url: https://www.torproject.org/dist/torbrowser/4.5a3
         incremental_from:
           - 4.5-alpha-2
         migrate_archs:
