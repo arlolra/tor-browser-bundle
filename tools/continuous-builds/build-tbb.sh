@@ -51,7 +51,7 @@ while [ $status != done ]; do
   date | tee -a $logfile
   killall qemu-system-i386 qemu-system-x86_64
   make $MAKE_TARGET > build-$(date -u +%s).log && status=done
-  printf "%s: Tried building $TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
+  printf "%s: Tried building $MAKE_TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
   MAKE_TARGET=build-$TARGET
   [ $n -ge $N ] && break
 done
