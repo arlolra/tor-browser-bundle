@@ -18,12 +18,29 @@ BUILDDIR=$4; [ -z "$BUILDDIR" ] && BUILDDIR=~/usr/src/tor-browser-bundle/gitian
 DESTDIR=$5; [ -z "$DESTDIR" ] && DESTDIR=$BUILDDIR/tbb-$TARGET
 N=$6; [ -z "$N" ] && N=16
 
-[ -z "$PGPKEYID" ] && PGPKEYID=0x984496E7
+# Set PGPKEYID="--local-user KEY-ID" to override default PGP key used
+# for signing.
+[ -z "$PGPKEYID" ] && PGPKEYID=""
 
+# mail(1) from Debian package bsd-mailx lost `-f envelope-sender' in
+# DSA-3104-1. Install package heirloom-mailx and set
+# MAILX=/usr/bin/heirloom-mailx in order to override envelope sender
+# using `-r' in LOGSENDER.
+[ -z "$MAILX" ] && MAILX=""
+
+# Name of log file.
 logfile=$(date -u +%s).log
-logrecipients="gk@torproject.org linus@torproject.org"
 
-. ~/setup-gitian-build-env.sh
+# LOGRECIPIENTS is a space separated list of email addresses or an
+# empty string.
+[ -z "$LOGRECIPIENTS" ] && LOGRECIPIENTS=""
+
+# Set LOGSENDER to "-r user@domain" to override envelope sender. If
+# empty the default envelope sender is used.
+[ -z "$LOGSENDER" ] && LOGSENDER=""
+
+[ -f ~/setup-gitian-build-env.sh ] && . ~/setup-gitian-build-env.sh
+
 cd $BUILDDIR || exit 1
 status=init
 n=0
@@ -45,11 +62,17 @@ if [ $status = done ]; then
   mv $DESTDIR $NEWDESTDIR
   cd $NEWDESTDIR || exit 3
   sha256sum *.tar.xz *.zip *.dmg *.exe > sha256sums.txt
-  gpg -a --clearsign --local-user $PGPKEYID sha256sums.txt || exit 2
+  gpg -a --clearsign $PGPKEYID sha256sums.txt || exit 2
   cd ..
   D=$(basename $NEWDESTDIR)
   tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe $D/*.dmg | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
-  tail -n 50 $logfile ../../gitian-builder/var/build.log ../../gitian-builder/var/target.log | mail -s "Nightly build failure -- $(date +%F)" $logrecipients
+  if [ -n "$LOGRECIPIENTS" ]; then
+      FILES="$logfile \
+             ../../gitian-builder/var/build.log \
+             ../../gitian-builder/var/target.log"
+      tail -n 50 $FILES | $MAILX -E -s "Nightly build failure -- $(date +%F)" \
+                                 $sender -- $LOGRECIPIENTS
+  fi
 fi
