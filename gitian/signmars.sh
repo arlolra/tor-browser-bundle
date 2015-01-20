@@ -30,6 +30,7 @@ if ! [ -e $VERSIONS_FILE ]; then
 fi
 
 . $VERSIONS_FILE
+eval $(./get-tb-version $TORBROWSER_VERSION_TYPE)
 
 export LC_ALL=C
 
