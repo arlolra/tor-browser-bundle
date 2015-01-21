@@ -309,6 +309,7 @@ meek                  https://git.torproject.org/pluggable-transports/meek.git $
 faketime              https://github.com/wolfcw/libfaketime $FAKETIME_TAG
 ed25519               https://github.com/agl/ed25519.git $GOED25519_TAG
 siphash               https://github.com/dchest/siphash.git $GOSIPHASH_TAG
+goxcrypto             https://go.googlesource.com/crypto  $GO_X_CRYPTO_TAG
 obfs4                 https://git.torproject.org/pluggable-transports/obfs4.git $OBFS4_TAG
 EOF
 

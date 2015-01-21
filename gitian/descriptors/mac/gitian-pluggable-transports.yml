@@ -34,6 +34,8 @@ remotes:
   "dir": "ed25519"
 - "url": "https://github.com/dchest/siphash.git"
   "dir": "siphash"
+- "url": "https://go.googlesource.com/crypto"
+  "dir": "goxcrypto"
 - "url": "https://git.torproject.org/pluggable-transports/obfs4.git"
   "dir": "obfs4"
 files:
@@ -270,7 +272,17 @@ script: |
   go install github.com/dchest/siphash
   cd ..
 
-  # Building go.crypto
+  # Building golang.org/x/crypto (obfs4proxy > 0.0.3 || Go >= 1.4)
+  cd goxcrypto
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/golang.org/x/"
+  ln -sf "$PWD" "$GOPATH/src/golang.org/x/crypto"
+  go install golang.org/x/crypto/curve25519
+  go install golang.org/x/crypto/hkdf
+  go install golang.org/x/crypto/nacl/secretbox
+  cd ..
+
+  # Building go.crypto (obfs4proxy <= 0.0.3)
   tar xjf go.crypto.tar.bz2
   cd go.crypto
   find -type f | xargs touch --date="$REFERENCE_DATETIME"
