@@ -120,12 +120,12 @@ goxcrypto               $GO_X_CRYPTO_TAG
 EOF
 
 # Verify signatures on signed packages
-for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
+for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
   if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o \
-       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" ]; then
+       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
