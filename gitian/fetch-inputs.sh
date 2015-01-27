@@ -112,30 +112,13 @@ update_git() {
 }
 
 ##############################################################################
-# Get package files from mirror
-
 # Get+verify sigs that exist
-for i in OPENSSL # OBFSPROXY
-do
-  PACKAGE="${i}_PACKAGE"
-  URL="${MIRROR_URL}${!PACKAGE}"
-  SUFFIX="asc"
-  get "${!PACKAGE}" "$URL"
-  get "${!PACKAGE}.$SUFFIX" "$URL.$SUFFIX"
-
-  if ! verify "${!PACKAGE}" "$WRAPPER_DIR/gpg/$i.gpg" $SUFFIX; then
-    echo "$i: GPG signature is broken for ${URL}"
-    mv "${!PACKAGE}" "${!PACKAGE}.badgpg"
-    exit 1
-  fi
-done
-
-for i in BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
+for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
   if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o \
-       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" ]; then
+       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -188,29 +171,6 @@ do
   URL="${MIRROR_URL_YAWNING}${!PACKAGE}"
   get "${!PACKAGE}" "${MIRROR_URL_YAWNING}${!PACKAGE}"
 done
-
-# Verify packages with weak or no signatures via multipath downloads
-# (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-# XXX: Google won't allow wget -N.. We need to re-download the whole
-# TOOLCHAIN4 each time. Rely only on SHA256 for now..
-mkdir -p verify
-cd verify
-for i in OPENSSL OSXSDK
-do
-  URL="${i}_URL"
-  PACKAGE="${i}_PACKAGE"
-  if ! wget -U "" -N --no-remove-listing "${!URL}"; then
-    echo "$i url ${!URL} is broken!"
-    mv "${!PACKAGE}" "${!PACKAGE}.removed"
-    exit 1
-  fi
-  if ! diff "${!PACKAGE}" "../${!PACKAGE}"; then
-    echo "Package ${!PACKAGE} differs from our mirror's version!"
-    exit 1
-  fi
-done
-
-cd ..
 
 # NoScript and HTTPS-Everywhere are magikal and special:
 wget -U "" -N ${NOSCRIPT_URL}
