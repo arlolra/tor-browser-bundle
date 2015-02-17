@@ -1,11 +1,8 @@
 ## fteproxy configuration
 ClientTransportPlugin fte exec ./TorBrowser/Tor/PluggableTransports/fteproxy.bin --managed
 
-## obfsproxy configuration
-ClientTransportPlugin scramblesuit exec ./TorBrowser/Tor/PluggableTransports/obfsproxy.bin managed
-
 ## obfs4proxy configuration
-ClientTransportPlugin obfs2,obfs3,obfs4 exec ./TorBrowser/Tor/PluggableTransports/obfs4proxy
+ClientTransportPlugin obfs2,obfs3,obfs4,scramblesuit exec ./TorBrowser/Tor/PluggableTransports/obfs4proxy
 
 ## flash proxy configuration
 #
