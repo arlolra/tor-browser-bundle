@@ -57,7 +57,6 @@ files:
 - "openssl-win32-utils.zip"
 - "gmp-win32-utils.zip"
 - "gcclibs-win32-utils.zip"
-- "go.crypto.tar.bz2"
 - "go.net.tar.bz2"
 script: |
   # Set the timestamp on every .pyc file in a zip file, and re-dzip the zip file.
@@ -358,17 +357,6 @@ script: |
   go install golang.org/x/crypto/curve25519
   go install golang.org/x/crypto/hkdf
   go install golang.org/x/crypto/nacl/secretbox
-  cd ..
-
-  # Building go.crypto (obfs4proxy <= 0.0.3)
-  tar xjf go.crypto.tar.bz2
-  cd go.crypto
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  mkdir -p "$GOPATH/src/code.google.com/p/"
-  ln -sf "$PWD" "$GOPATH/src/code.google.com/p/go.crypto"
-  go install code.google.com/p/go.crypto/curve25519
-  go install code.google.com/p/go.crypto/hkdf
-  go install code.google.com/p/go.crypto/nacl/secretbox
   cd ..
 
   # Building go.net
