@@ -5,20 +5,28 @@
 #
 # To run in debug mode simply pass --debug
 #
-# Copyright 2014 The Tor Project.  See LICENSE for licensing information.
+# Copyright 2015 The Tor Project.  See LICENSE for licensing information.
 
-complain_dialog_title="Tor Browser Bundle"
+complain_dialog_title="Tor Browser"
 
 # First, make sure DISPLAY is set.  If it isn't, we're hosed; scream
 # at stderr and die.
 if [ "x$DISPLAY" = "x" ]; then
-	echo "$complain_dialog_title must be run within the X Window System." >&2
-	echo "Exiting." >&2
-	exit 1
+    echo "$complain_dialog_title must be run within the X Window System." >&2
+    echo "Exiting." >&2
+    exit 1
 fi
 
-# Do not (try to) connect to the session manager 
-unset SESSION_MANAGER 
+# Second, make sure this script wasn't started as 'sh start-tor-browser' or
+# similar.
+if [ "x$BASH" = "x" ]; then
+    echo "$complain_dialog_title should be started as './start-tor-browser'"
+    echo "Exiting." >&2
+    exit 1;
+fi
+
+# Do not (try to) connect to the session manager
+unset SESSION_MANAGER
 
 # Determine whether we are running in a terminal.  If we are, we
 # should send our error messages to stderr...
