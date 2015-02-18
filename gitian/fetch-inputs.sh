@@ -165,7 +165,7 @@ done
 
 # XXX/Yawning.  As far as I can tell, this gitian thing doesn't support
 # fetching from hg repositories.
-for i in GOCRYPTO GONET
+for i in GONET
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL_YAWNING}${!PACKAGE}"
@@ -178,7 +178,7 @@ wget -U "" -N ${HTTPSE_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC GOCRYPTO GONET
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC GONET
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -233,7 +233,6 @@ ln -sf "$LXML_PACKAGE" lxml.tar.gz
 ln -sf "$PARSLEY_PACKAGE" parsley.tar.gz
 ln -sf "$GO_PACKAGE" go.tar.gz
 ln -sf "$GONET_PACKAGE" go.net.tar.bz2
-ln -sf "$GOCRYPTO_PACKAGE" go.crypto.tar.bz2
 
 # Fetch latest gitian-builder itself
 # XXX - this is broken if a non-standard inputs dir is selected using the command line flag.
