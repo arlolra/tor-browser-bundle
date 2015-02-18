@@ -61,12 +61,12 @@ Tor Browser 4.5a3 -- Jan 19 2015
      * Bug 9387: Incorporate user feedback
      * Bug 13671: Fixup for circuit display if bridges are used
      * Translation updates
-  * Update Tor Launcher to 0.2.7.1
-    * Bug 14122: Hide logo if TOR_HIDE_BROWSER_LOGO set
-    * Translation updates
-  * Bug 13379: Sign our MAR files
-  * Bug 13788: Fix broken meek in 4.5-alpha series
-  * Bug 13439: No canvas prompt for content callers
+   * Update Tor Launcher to 0.2.7.1
+     * Bug 14122: Hide logo if TOR_HIDE_BROWSER_LOGO set
+     * Translation updates
+   * Bug 13379: Sign our MAR files
+   * Bug 13788: Fix broken meek in 4.5-alpha series
+   * Bug 13439: No canvas prompt for content callers
 
 Tor Browser 4.0.3 -- Jan 13 2015
  * All Platforms
@@ -96,10 +96,8 @@ Tor Browser 4.0.2 -- Dec 2 2014
    * Update Torbutton to 1.7.0.2
      * Bug 13019: Synchronize locale spoofing pref with our Firefox patch
      * Bug 13746: Properly link Torbutton UI to thirdparty pref.
-   * Bug 13742: Fix domain isolation for content cache and disk-enabled
-browsing mode
-   * Bug 5926: Prevent JS engine locale leaks (by setting the C library
-locale)
+   * Bug 13742: Fix domain isolation for content cache and disk-enabled browsing mode
+   * Bug 5926: Prevent JS engine locale leaks (by setting the C library locale)
    * Bug 13504: Remove unreliable/unreachable non-public bridges
    * Bug 13435: Remove our custom POODLE fix
  * Windows
