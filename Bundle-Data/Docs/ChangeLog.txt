@@ -1,3 +1,49 @@
+Tor Browser 4.5a4 -- Feb 24 2015
+ * All Platforms
+   * Update Firefox to 31.5.0esr
+   * Update OpenSSL to 1.0.1l
+   * Update obfs4proxy to 0.0.4
+     * Use obfs4proxy for ScrambleSuit bridges
+   * Update Torbutton to 1.9.0.0
+     * Bug 13882: Fix display of bridges after bridge settings have been changed
+     * Bug 5698: Use "Tor Browser" branding in "About Tor Browser" dialog
+     * Bug 10280: Strings and pref for preventing plugin initialization.
+     * Bug 14866: Show correct circuit when more than one exists for a given domain
+     * Bug 9442: Add New Circuit button to Torbutton menu
+     * Bug 9906: Warn users before closing all windows and performing new identity.
+     * Bug 8400: Prompt for restart if disk records are enabled/disabled.
+     * Bug 14630: Hide Torbutton's proxy settings tab.
+     * Bug 14632: Disable Cookie Manager until we get it working.
+     * Bug 11175: Remove "About Torbutton" from onion menu.
+     * Bug 13900: Remove remaining SafeCache code in favor of C++ patch
+     * Bug 14490: Use Disconnect search in about:tor search box
+     * Bug 14392: Don't steal input focus in about:tor search box
+     * Bug 11236: Don't set omnibox order in Torbutton (to prevent translation)
+     * Bug 13406: Stop directing users to download-easy.html.en on update
+     * Bug 9387: Handle "custom" mode better in Security Slider
+     * Bug 12430: Bind jar: pref to Security Slider
+     * Bug 14448: Restore Torbutton menu operation on non-English localizations
+     * Translation updates
+   * Update Tor Launcher to 0.2.7.2
+     * Bug 13271: Display Bridge Configuration wizard pane before Proxy pane
+     * Bug 14336: Fix navigation button display issues on some wizard panes
+     * Translation updates
+   * Bug 14203: Prevent meek from displaying an extra update notification
+   * Bug 14849: Remove new NoScript menu option to make permissions permanent
+   * Bug 14851: Set NoScript pref to disable permanent permissions
+   * Bug 14490: Make Disconnect the default omnibox search engine
+   * Bug 11236: Fix omnibox order for non-English builds
+     * Also remove Amazon, eBay and bing; add Youtube and Twitter
+   * Bug 10280: Don't load any plugins into the address space.
+   * Bug 14392: Make about:tor hide itself from the URL bar
+   * Bug 12430: Provide a preference to disable remote jar: urls
+   * Bug 13900: Remove 3rd party HTTP auth tokens via Firefox patch
+   * Bug 5698: Fix branding in "About Torbrowser" window
+ * Windows:
+   * Bug 13169: Don't use /dev/random on Windows for SSP
+ * Linux:
+   * Bug 13717: Make sure we use the bash shell on Linux
+
 Tor Browser 4.5a3 -- Jan 19 2015
  * All Platforms
    * Update Firefox to 31.4.0esr
