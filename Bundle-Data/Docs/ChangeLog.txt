@@ -2,6 +2,7 @@ Tor Browser 4.5a4 -- Feb 24 2015
  * All Platforms
    * Update Firefox to 31.5.0esr
    * Update OpenSSL to 1.0.1l
+   * Update NoScript to 2.6.9.14
    * Update obfs4proxy to 0.0.4
      * Use obfs4proxy for ScrambleSuit bridges
    * Update Torbutton to 1.9.0.0
