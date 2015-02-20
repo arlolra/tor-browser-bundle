@@ -58,9 +58,6 @@ script: |
   then
       git am ~/build/bug8405.patch
       git am ~/build/bug8402-master.patch
-  elif [ ${TOR_TAG::9} == "tor-0.2.6" ];
-  then
-      git am ~/build/bug8405.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
