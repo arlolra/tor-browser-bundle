@@ -92,7 +92,7 @@ script: |
   cp -p obj-*/dist/host/bin/mar $MARTOOLS/
   cp -p obj-*/dist/host/bin/mbsdiff $MARTOOLS/
   cd ~/build
-  zip -r mar-tools-mac${GBUILD_BITS}.zip mar-tools
+   ~/build/dzip.sh mar-tools-mac${GBUILD_BITS}.zip mar-tools
   cp -p mar-tools-mac${GBUILD_BITS}.zip $OUTDIR/
   #
   cd $INSTDIR

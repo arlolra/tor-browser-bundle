@@ -116,7 +116,7 @@ script: |
   cp -p obj-*/dist/host/bin/mar $MARTOOLS/
   cp -p obj-*/dist/host/bin/mbsdiff $MARTOOLS/
   cd ~/build
-  zip -r mar-tools-win32.zip mar-tools
+  ~/build/dzip.sh mar-tools-win32.zip mar-tools
   cp mar-tools-win32.zip $OUTDIR/
 
   # Making the .ja files deterministic and grabbing the results

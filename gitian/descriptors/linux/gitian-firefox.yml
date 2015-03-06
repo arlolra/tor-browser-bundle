@@ -154,7 +154,7 @@ script: |
     cp -p obj-*/dist/bin/$LIB $MARTOOLS/
   done
   cd ~/build
-  zip -r mar-tools-linux${GBUILD_BITS}.zip mar-tools
+  ~/build/dzip.sh mar-tools-linux${GBUILD_BITS}.zip mar-tools
   cp -p mar-tools-linux${GBUILD_BITS}.zip $OUTDIR/
   #
   # Strip and generate debuginfo for the firefox binary that we keep, all *.so
