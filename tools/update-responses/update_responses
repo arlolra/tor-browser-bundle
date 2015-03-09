@@ -168,7 +168,7 @@ sub create_incremental_mar {
     $pm->finish;
 }
 
-sub create_missing_incremental_mars_for_version {
+sub create_incremental_mars_for_version {
     my ($config, $version) = @_;
     my $pm = Parallel::ForkManager->new(get_nbprocs);
     $pm->run_on_finish(sub { $_[2]->(@_) });
@@ -179,7 +179,6 @@ sub create_missing_incremental_mars_for_version {
         my $from_v = $config->{versions}{$from_version};
         foreach my $os (keys %{$v->{files}}) {
             foreach my $lang (keys %{$v->{files}{$os}}) {
-                next if defined $v->{files}{$os}{$lang}{partial}{$from_version};
                 next unless defined $from_v->{files}{$os}{$lang}{complete};
                 create_incremental_mar($config, $pm, $from_version, $version, $os, $lang);
             }
@@ -451,7 +450,7 @@ my %actions = (
         check_deps;
         foreach my $version (channel_to_version($config, @ARGV)) {
             get_version_files($config, $version);
-            create_missing_incremental_mars_for_version($config, $version);
+            create_incremental_mars_for_version($config, $version);
         }
     },
     check_update_responses_deployement => \&check_update_responses,
