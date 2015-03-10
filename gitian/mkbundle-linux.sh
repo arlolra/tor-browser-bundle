@@ -257,7 +257,7 @@ then
   mkdir -p $WRAPPER_DIR/$TORBROWSER_BUILDDIR/
   cp -a build/out/tor-browser-linux*xz* $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
-  #cp -a inputs/mar-tools-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
+  cp -a inputs/mar-tools-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/*debug.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   touch inputs/bundle-linux.gbuilt
 else
