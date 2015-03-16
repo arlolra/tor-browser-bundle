@@ -29,10 +29,12 @@ build-alpha:
 	./mkbundle-mac.sh versions.alpha
 
 incrementals:
-	../tools/update-responses/gen_incrementals release || echo 'Warning: could not generate incremental MARs.' >&2
+	$(TORSOCKS) ../tools/update-responses/download_missing_versions release
+	../tools/update-responses/gen_incrementals release
 
 incrementals-alpha:
-	../tools/update-responses/gen_incrementals alpha || echo 'Warning: could not generate incremental MARs.' >&2
+	$(TORSOCKS) ../tools/update-responses/download_missing_versions alpha
+	../tools/update-responses/gen_incrementals alpha
 
 signmars:
 	./signmars.sh versions

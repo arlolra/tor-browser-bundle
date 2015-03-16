@@ -1,4 +1,7 @@
 ---
+download:
+    archive_url: https://archive.torproject.org/tor-package-archive/torbrowser
+    gpg_keyring: ../../gitian/gpg/torbrowser.gpg
 build_targets:
     linux32: Linux_x86-gcc3
     linux64: Linux_x86_64-gcc3

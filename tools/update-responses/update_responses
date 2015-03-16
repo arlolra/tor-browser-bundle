@@ -6,9 +6,10 @@ use English;
 use FindBin;
 use YAML qw(LoadFile);
 use File::Slurp;
-use Digest::SHA;
+use Digest::SHA qw(sha256_hex);
 use XML::Writer;
 use Cwd;
+use File::Copy;
 use File::Temp;
 use File::Find;
 use File::Which;
@@ -408,6 +409,55 @@ sub check_update_responses_channel {
     }
 }
 
+sub download_version {
+    my ($config, $version) = @_;
+    my $tmpdir = File::Temp->newdir();
+    my $destdir = "$releases_dir/$version";
+    my $urldir = "$config->{download}{archive_url}/$version";
+    print "Downloading version $version\n";
+    foreach my $file (qw(sha256sums.txt sha256sums.txt.asc)) {
+        if (getstore("$urldir/$file", "$tmpdir/$file") != 200) {
+            exit_error "Error downloading $urldir/$file";
+        }
+    }
+    if (system('gpg', '--no-default-keyring', '--keyring',
+            $config->{download}{gpg_keyring}, '--verify',
+            "$tmpdir/sha256sums.txt.asc", "$tmpdir/sha256sums.txt")) {
+        exit_error "Error checking gpg signature for version $version";
+    }
+    mkdir $destdir;
+    move "$tmpdir/sha256sums.txt.asc", "$destdir/sha256sums.txt.asc";
+    move "$tmpdir/sha256sums.txt", "$destdir/sha256sums.txt";
+    my %sums = map { chomp; reverse split '  ', $_ } read_file "$destdir/sha256sums.txt";
+    foreach my $file (sort grep { $_ =~ m/\.mar$/ } keys %sums) {
+        print "Downloading $file\n";
+        exit_error "Error downloading $urldir/$file\n"
+                unless getstore("$urldir/$file", "$tmpdir/$file") == 200;
+        if ($sums{$file} ne sha256_hex(read_file("$tmpdir/$file"))) {
+            exit_error "Error unsigning $file"
+                if system('signmar', '-r', "$tmpdir/$file", "$tmpdir/$file.u");
+            exit_error "Wrong checksum for $file"
+                unless $sums{$file} eq sha256_hex(read_file("$tmpdir/$file.u"));
+            move "$tmpdir/$file.u", "$tmpdir/$file";
+        }
+        move "$tmpdir/$file", "$destdir/$file";
+    }
+}
+
+sub download_missing_versions {
+    my ($config, @channels) = @_;
+    foreach my $channel (@channels) {
+        exit_error "Unknown channel $channel"
+                unless $config->{channels}{$channel};
+        my $cversion = $config->{channels}{$channel};
+        next unless $config->{versions}{$cversion}{incremental_from};
+        foreach my $version (@{$config->{versions}{$cversion}{incremental_from}}) {
+            next if -d "$releases_dir/$version";
+            download_version($config, $version);
+        }
+    }
+}
+
 sub check_update_responses {
     my ($config) = @_;
     exit_error "usage: $PROGRAM_NAME <base_url> [channels...]" unless @ARGV;
@@ -452,6 +502,12 @@ my %actions = (
             get_version_files($config, $version);
             create_incremental_mars_for_version($config, $version);
         }
+    },
+    download_missing_versions => sub {
+        my ($config) = @_;
+        my @channels = @ARGV ? @ARGV : keys %{$config->{channels}};
+        extract_martools;
+        download_missing_versions($config, @channels);
     },
     check_update_responses_deployement => \&check_update_responses,
 );
