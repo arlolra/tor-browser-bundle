@@ -116,7 +116,7 @@ script: |
   cd ~/build/
   #
   unzip relativelink-src.zip
-  cp RelativeLink/RelativeLink.sh tor-browser/Browser/start-tor-browser
+  cp RelativeLink/* tor-browser/Browser/
   #
   cd tor-browser
   ln -s Browser/start-tor-browser
