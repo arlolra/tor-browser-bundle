@@ -215,6 +215,13 @@ else
 	export HOME
 fi
 
+# Fix up .desktop Icon and Exec Paths, and update the .desktop file from the
+# canonical version if it was changed by the updater.
+cp start-tor-browser.desktop ../
+sed -i -e "s,^Name=.*,Name=Tor Browser,g" ../start-tor-browser.desktop
+sed -i -e "s,^Icon=.*,Icon=$HOME/browser/icons/mozicon128.png,g" ../start-tor-browser.desktop
+sed -i -e "s,^Exec=.*,Exec=sh -c '\"$HOME/start-tor-browser\" || ([ ! -x \"$HOME/start-tor-browser\" ] \&\& \"\$(dirname \"\$*\")\"/Browser/start-tor-browser)' dummy %k,g" ../start-tor-browser.desktop
+
 SYSARCHITECTURE=$(getconf LONG_BIT)
 TORARCHITECTURE=$(expr "$(file TorBrowser/Tor/tor)" : '.*ELF \([[:digit:]]*\)')
 

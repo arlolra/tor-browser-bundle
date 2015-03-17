@@ -119,7 +119,7 @@ script: |
   cp RelativeLink/* tor-browser/Browser/
   #
   cd tor-browser
-  ln -s Browser/start-tor-browser
+  cp Browser/start-tor-browser.desktop ./
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
   cd Browser/TorBrowser
   unzip ~/build/tor-linux$GBUILD_BITS-gbuilt.zip
