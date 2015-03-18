@@ -99,23 +99,20 @@ if [ "`id -u`" -eq 0 ]; then
 fi
 
 debug=0
-usage_message="usage: $0 [--debug]"
+show_usage=0
 # !!! We may have more than one argument, changed -eq to -ge in if & elif clauses below
 if [ "$#" -ge 1 -a \( "x$1" = "x--debug" -o "x$1" = "x-debug" \) ]; then
 	debug=1
 	shift # pop the debug argument
 	printf "\nDebug enabled.\n\n"
 elif [ "$#" -ge 1 -a \( "x$1" = "x--help" -o "x$1" = "x-help" \) ]; then
-	echo "$usage_message"
-	exit 0
-fi
-
-# If the user hasn't requested 'debug mode', close stdout and stderr,
-# to keep Firefox and the stuff loaded by/for it (including the
-# system's shared-library loader) from printing messages to
-# $HOME/.xsession-errors or other files. (Users wouldn't have seen
-# messages there anyway.)
-if [ "$debug" -ne 1 ]; then
+    show_usage=1
+else
+    # If the user hasn't requested 'debug mode' or --help, close stdout and stderr,
+    # to keep Firefox and the stuff loaded by/for it (including the
+    # system's shared-library loader) from printing messages to
+    # $HOME/.xsession-errors or other files. (Users wouldn't have seen
+    # messages there anyway.)
     exec >/dev/null
     exec 2>/dev/null
 fi
@@ -268,7 +265,6 @@ EOF
 # your password in the following line where the word “secret” is:
 setControlPortPasswd ${TOR_CONTROL_PASSWD:='"secret"'}
 
-printf "Launching Tor Browser for Linux in ${HOME}...\n"
 cd "${HOME}"
 
 # We pass all command-line arguments we got (except --debug) to Firefox.  Use
@@ -279,12 +275,19 @@ cd "${HOME}"
 # When passed the --debug option, we log all the output that goes to the
 # parent terminal stdout and stderr to a file ('tor-browser-debug.log' in Tor
 # Browser's $HOME directory).
-if [ "$debug" -ne 1 ] ; then
+if [ "$show_usage" -eq 1 ]; then
+    TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
+        -profile TorBrowser/Data/Browser/profile.default "${@}" 2>/dev/null
+    printf "\nTor Browser Script Options\n"
+    printf "  --debug  Display Tor and Firefox output and record in tor-browser-debug.log\n"
+elif [ "$debug" -ne 1 ] ; then
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
         -profile TorBrowser/Data/Browser/profile.default "${@}" > /dev/null 2>&1 </dev/null &
     disown "$!"
 else
-    logfile=$(dirname ${HOME} )/tor-browser-debug.log
+    # Place logfile in the tbb root dir.
+    logfile=../tor-browser-debug.log
+    printf "Launching Tor Browser for Linux in ${HOME}...\n"
     printf "Logging Tor Browser debug information to file: %s\n" "$logfile"
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
         -profile TorBrowser/Data/Browser/profile.default "${@}" -jsconsole 2>&1 </dev/null | \
