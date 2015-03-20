@@ -247,7 +247,7 @@ cd inputs
 while read dir url tag; do
   update_git "$dir" "$url" "$tag"
 done << EOF
-tbb-windows-installer https://github.com/MarkCSmith/tbb-windows-installer.git $NSIS_TAG
+tbb-windows-installer https://github.com/moba/tbb-windows-installer.git $NSIS_TAG
 zlib                  https://github.com/madler/zlib.git       $ZLIB_TAG
 libevent              https://github.com/libevent/libevent.git $LIBEVENT_TAG
 tor                   https://git.torproject.org/tor.git              $TOR_TAG
