@@ -36,6 +36,8 @@ remotes:
   "dir": "siphash"
 - "url": "https://go.googlesource.com/crypto"
   "dir": "goxcrypto"
+- "url": "https://go.googlesource.com/net"
+  "dir": "goxnet"
 - "url": "https://git.torproject.org/pluggable-transports/obfs4.git"
   "dir": "obfs4"
 files:
@@ -281,7 +283,15 @@ script: |
   go install golang.org/x/crypto/nacl/secretbox
   cd ..
 
-  # Building go.net
+  # Building golang.org/x/net (obfs4proxy > 0.0.4)
+  cd goxnet
+  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/golang.org/x/"
+  ln -sf "$PWD" "$GOPATH/src/golang.org/x/net"
+  go install golang.org/x/net/proxy
+  cd ..
+
+  # Building go.net (obfs4proxy <= 0.0.4)
   tar xjf go.net.tar.bz2
   cd go.net
   find -type f | xargs touch --date="$REFERENCE_DATETIME"

@@ -117,6 +117,7 @@ faketime                $FAKETIME_TAG
 ed25519                 $GOED25519_TAG
 siphash                 $GOSIPHASH_TAG
 goxcrypto               $GO_X_CRYPTO_TAG
+goxnet                  $GO_X_NET_TAG
 EOF
 
 # Verify signatures on signed packages
