@@ -4,6 +4,7 @@ Tor Browser 4.5a5 -- Mar 31 2015
    * Update OpenSSL to 1.0.1m
    * Update Tor to 0.2.6.6
    * Update NoScript to 2.6.9.19
+   * Update HTTPS-Everywhere to 5.0
    * Update meek to 0.16
    * Update Tor Launcher to 0.2.7.3
      * Bug 13983: Directory search path fix for Tor Messanger+TorBirdy
