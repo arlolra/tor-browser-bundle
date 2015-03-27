@@ -38,7 +38,7 @@ Tor Browser 4.5a5 -- Mar 31 2015
    * Bug 12827: Create preference to disable SVG images (for security slider)
    * Bug 13548: Create preference to disable MathML (for security slider)
    * Bug 14631: Improve startup error messages for filesystem permissions issues
-   * Bug 13766: Keep content window Tor circuits open for 2 hours
+   * Bug 15482: Don't allow circuits to change while a site is in use
  * Linux
    * Bug 13375: Create a hybrid GUI/desktop/shell launcher wrapper
    * Bug 12468: Only print/write log messages if launched with --debug
