@@ -25,11 +25,10 @@ Tor Browser 4.5a5 -- Mar 31 2015
      * Bug 14937: Show meek and flashproxy bridges in tor circuit display
      * Bugs 13891+15207: Fix exceptions/errors in circuit display with bridges
      * Bug 13019: Change locale hiding pref to boolean
-     * Bug 7255: Warn users about maximizing windows (off by default)
+     * Bug 7255: Warn users about maximizing windows
    * Pluggable Transport Dependency Updates:
      * Bug 15448: Use golang 1.4.2 for meek and obs4proxy
      * Bug 15265: Switch go.net repo to golang.org/x/net
-     * Bug 12535: Use a SOCKS5 listener instead of a SOCKS4a for goptlib
    * Bug 14937: Hard-code meek and flashproxy node fingerprints
    * Bug 13019: Prevent Javascript from leaking system locale
    * Bug 10280: Improved fix to prevent loading plugins into address space
