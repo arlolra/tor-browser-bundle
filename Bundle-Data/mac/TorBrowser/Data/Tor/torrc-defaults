@@ -8,4 +8,3 @@ Log notice stdout
 SocksPort 9150
 ControlPort 9151
 CookieAuthentication 1
-MaxCircuitDirtiness 7199
