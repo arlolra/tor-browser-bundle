@@ -5,6 +5,8 @@ Tor Browser 4.5a5 -- Mar 31 2015
    * Update Tor to 0.2.6.6
    * Update NoScript to 2.6.9.19
    * Update meek to 0.16
+   * Update Tor Launcher to 0.2.7.3
+     * Bug 13983: Directory search path fix for Tor Messanger+TorBirdy
    * Update Torbutton to 1.9.1.0
      * Bug 9387: "Security Slider 1.0"
        * Include descriptions and tooltip hints for security levels
