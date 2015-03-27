@@ -1,0 +1,32 @@
+From a9c7e6dc3508e78f4b296e38603dd34174e2a14c Mon Sep 17 00:00:00 2001
+From: Mike Perry <mikeperry-git@torproject.org>
+Date: Thu, 26 Mar 2015 22:38:45 -0700
+Subject: [PATCH] Bug 15482: Don't abandon circuits that are still being used
+ by TBB.
+
+Reset timestamp_dirty every time we get a new stream request so that circuits
+are not abandoned while still in use.
+---
+ src/or/circuituse.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/or/circuituse.c b/src/or/circuituse.c
+index d0d31ad..fff46cd 100644
+--- a/src/or/circuituse.c
++++ b/src/or/circuituse.c
+@@ -2264,8 +2264,10 @@ connection_ap_handshake_attach_chosen_circuit(entry_connection_t *conn,
+ 
+   base_conn->state = AP_CONN_STATE_CIRCUIT_WAIT;
+ 
+-  if (!circ->base_.timestamp_dirty)
+-    circ->base_.timestamp_dirty = time(NULL);
++  /* For Tor Browser, we want to avoid surprising the user by giving up on
++   * circuits while they are still being used, so we always reset the
++   * dirtiness timestamp. */
++  circ->base_.timestamp_dirty = time(NULL);
+ 
+   pathbias_count_use_attempt(circ);
+ 
+-- 
+1.9.1
+
