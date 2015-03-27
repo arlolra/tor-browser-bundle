@@ -1,7 +1,52 @@
-Tor Browser 4.0.6 -- Mar 31 2015
+Tor Browser 4.5a5 -- Mar 31 2015
  * All Platforms
    * Update Firefox to 31.6.0esr
    * Update OpenSSL to 1.0.1m
+   * Update Tor to 0.2.6.6
+   * Update NoScript to 2.6.9.19
+   * Update meek to 0.16
+   * Update Torbutton to 1.9.1.0
+     * Bug 9387: "Security Slider 1.0"
+       * Include descriptions and tooltip hints for security levels
+       * Notify users that the security slider exists
+       * Flip slider so that "low" is on the bottom
+       * Make use of new SVG and MathML prefs
+     * Bug 13766: Set a 10 minute circuit lifespan for non-content requests
+     * Bug 15460: Ensure FTP urls use content-window circuit isolation
+     * Bug 13650: Clip initial window height to 1000px
+     * Bug 14429: Ensure windows can only be resized to 200x100px multiples
+     * Bug 15334: Display Cookie Protections menu if disk records are enabled
+     * Bug 14324: Show HS circuit in Tor circuit display
+     * Bug 15086: Handle RTL text in Tor circuit display
+     * Bug 15085: Fix about:tor RTL text alignment problems
+     * Bug 10216: Add a pref to disable the local tor control port test
+     * Bug 14937: Show meek and flashproxy bridges in tor circuit display
+     * Bugs 13891+15207: Fix exceptions/errors in circuit display with bridges
+     * Bug 13019: Change locale hiding pref to boolean
+     * Bug 7255: Warn users about maximizing windows (off by default)
+   * Pluggable Transport Dependency Updates:
+     * Bug 15448: Use golang 1.4.2 for meek and obs4proxy
+     * Bug 15265: Switch go.net repo to golang.org/x/net
+     * Bug 12535: Use a SOCKS5 listener instead of a SOCKS4a for goptlib
+   * Bug 14937: Hard-code meek and flashproxy node fingerprints
+   * Bug 13019: Prevent Javascript from leaking system locale
+   * Bug 10280: Improved fix to prevent loading plugins into address space
+   * Bug 15406: Only include addons in incremental updates if they actually update
+   * Bug 15029: Don't prompt to include missing plugins
+   * Bug 12827: Create preference to disable SVG images (for security slider)
+   * Bug 13548: Create preference to disable MathML (for security slider)
+   * Bug 14631: Improve startup error messages for filesystem permissions issues
+   * Bug 13766: Keep content window Tor circuits open for 2 hours
+ * Linux
+   * Bug 13375: Create a hybrid GUI/desktop/shell launcher wrapper
+   * Bug 12468: Only print/write log messages if launched with --debug
+ * Windows
+   * Bug 15201: Disable 'runas Administrator' codepaths in updater
+   * Bug 14688: Create shortcuts to desktop and start menu by default (optional)
+
+Tor Browser 4.0.6 -- Mar 31 2015
+ * All Platforms
+   * Update Firefox to 31.6.0esr
    * Update meek to 0.16
 
 Tor Browser 4.0.5 -- Mar 23 2015
