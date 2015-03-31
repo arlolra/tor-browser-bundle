@@ -52,6 +52,7 @@ Tor Browser 4.0.6 -- Mar 31 2015
  * All Platforms
    * Update Firefox to 31.6.0esr
    * Update meek to 0.16
+   * Update OpenSSL to 1.0.1m
 
 Tor Browser 4.0.5 -- Mar 23 2015
  * All Platforms
