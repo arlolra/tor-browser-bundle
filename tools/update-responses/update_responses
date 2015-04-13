@@ -283,6 +283,10 @@ sub write_htaccess {
         my $version = $config->{channels}{$channel};
         my $files = $config->{versions}{$version}{files};
         $htaccess .= "RewriteRule ^[^\/]+/$version/ no-update.xml $flags\n";
+        my $noup_for = $config->{no_update_for}{$channel};
+        for my $noup_ver (ref $noup_for eq 'ARRAY' ? @$noup_for : ()) {
+            $htaccess .= "RewriteRule ^[^\/]+/$noup_ver/ no-update.xml $flags\n";
+        }
         foreach my $os (sort keys %$files) {
             my $bt = build_target_by_os($os);
             foreach my $lang (sort keys %{$files->{$os}}) {
