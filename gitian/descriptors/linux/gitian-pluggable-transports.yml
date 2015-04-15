@@ -56,7 +56,6 @@ files:
 - "gmp-linux64-utils.zip"
 - "openssl-linux32-utils.zip"
 - "openssl-linux64-utils.zip"
-- "go.net.tar.bz2"
 script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
@@ -261,15 +260,6 @@ script: |
   mkdir -p "$GOPATH/src/golang.org/x/"
   ln -sf "$PWD" "$GOPATH/src/golang.org/x/net"
   go install golang.org/x/net/proxy
-  cd ..
-
-  # Building go.net (obfs4proxy <= 0.0.4)
-  tar xjf go.net.tar.bz2
-  cd go.net
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  mkdir -p "$GOPATH/src/code.google.com/p/"
-  ln -sf "$PWD" "$GOPATH/src/code.google.com/p/go.net"
-  go install code.google.com/p/go.net/proxy
   cd ..
 
   # Building obfs4proxy

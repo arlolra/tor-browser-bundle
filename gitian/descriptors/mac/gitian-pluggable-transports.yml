@@ -52,7 +52,6 @@ files:
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
-- "go.net.tar.bz2"
 - "gmp-mac64-utils.zip"
 - "openssl-mac64-utils.zip"
 script: |
@@ -289,15 +288,6 @@ script: |
   mkdir -p "$GOPATH/src/golang.org/x/"
   ln -sf "$PWD" "$GOPATH/src/golang.org/x/net"
   go install golang.org/x/net/proxy
-  cd ..
-
-  # Building go.net (obfs4proxy <= 0.0.4)
-  tar xjf go.net.tar.bz2
-  cd go.net
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
-  mkdir -p "$GOPATH/src/code.google.com/p/"
-  ln -sf "$PWD" "$GOPATH/src/code.google.com/p/go.net"
-  go install code.google.com/p/go.net/proxy
   cd ..
 
   # Building obfs4proxy

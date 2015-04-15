@@ -31,7 +31,7 @@ GOED25519_TAG=c4161f4c7483313562781c61b9a20aba73daf9de
 GOSIPHASH_TAG=42ba037e748c9062a75e0924705c43b893edefcd
 GO_X_CRYPTO_TAG=4ed45ec682102c643324fae5dff8dab085b6c300
 GO_X_NET_TAG=7dbad50ab5b31073856416cdcfeb2796d682f844
-OBFS4_TAG=obfs4proxy-0.0.4
+OBFS4_TAG=obfs4proxy-0.0.5
 
 GITIAN_TAG=tor-browser-builder-3.x-7
 
@@ -79,7 +79,6 @@ SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 LXML_PACKAGE=lxml-${LXML_VER}.tar.gz
 PARSLEY_PACKAGE=Parsley-${PARSLEY_VER}.tar.gz
 GO_PACKAGE=go${GO_VER}.src.tar.gz
-GONET_PACKAGE=go.net-9c0f9daaa74b.tar.bz2
 
 # Hashes for packages with weak sigs or no sigs
 OPENSSL_HASH=095f0b7b09116c0c5526422088058dc7e6e000aa14d22acca6a4e2babcdfef74
@@ -101,7 +100,6 @@ SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 PARSLEY_HASH=50d30cee70770fd44db7cea421cb2fb75af247c3a1cd54885c06b30a7c85dd23
 GO_HASH=299a6fd8f8adfdce15bc06bde926e7b252ae8e24dd5b16b7d8791ed79e7b5e9b
 GCC_HASH=d334781a124ada6f38e63b545e2a3b8c2183049515a1abab6d513f109f1d717e
-GONET_HASH=1812fec55256e1a6fe546111cc658520b80972f38826c94ec11ef24315d32353
 
 ## Non-git package URLs
 OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -127,4 +125,3 @@ SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS
 LXML_URL=https://pypi.python.org/packages/source/l/lxml/${LXML_PACKAGE}
 PARSLEY_URL=https://pypi.python.org/packages/source/P/Parsley/${PARSLEY_PACKAGE}
 GO_URL=https://golang.org/dl/${GO_PACKAGE}
-GONET_URL=https://people.torproject.org/~yawning/mirrors/sources/${GONET_PACKAGE}
