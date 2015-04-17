@@ -164,11 +164,10 @@ done
 
 # NoScript and HTTPS-Everywhere are magikal and special:
 wget -U "" -N ${NOSCRIPT_URL}
-wget -U "" -N ${HTTPSE_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -204,7 +203,6 @@ done
 cd ..
 
 ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
-ln -sf "$HTTPSE_PACKAGE" https-everywhere@eff.org.xpi
 ln -sf "$OPENSSL_PACKAGE" openssl.tar.gz
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
