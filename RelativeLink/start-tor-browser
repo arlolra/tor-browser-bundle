@@ -3,8 +3,6 @@
 # GNU/Linux does not really require something like RelativeLink.c
 # However, we do want to have the same look and feel with similar features.
 #
-# To run in debug mode simply pass --debug
-#
 # Copyright 2015 The Tor Project.  See LICENSE for licensing information.
 
 complain_dialog_title="Tor Browser"
@@ -35,8 +33,8 @@ complain () {
 	# Trim leading newlines, to avoid breaking formatting in some dialogs.
 	complain_message="`echo "$1" | sed '/./,$!d'`"
 
-	# If we're being run in debug mode, complain to stderr.
-	if [ "$debug" -eq 1 ]; then
+	# If we're being run in debug/verbose mode, complain to stderr.
+	if [ "$show_output" -eq 1 ]; then
 		echo "$complain_message" >&2
 		return
 	fi
@@ -98,30 +96,82 @@ if [ "`id -u`" -eq 0 ]; then
 	exit 1
 fi
 
-debug=0
+tbb_usage () {
+    printf "\nTor Browser Script Options\n"
+    printf "  --verbose         Display Tor and Firefox output in the terminal\n"
+    printf "  --log [file]      Record Tor and Firefox output in file (default: tor-browser.log)\n"
+    printf "  --detach          Detach from terminal and run Tor Browser in the background.\n"
+    printf "  --register-app    Register Tor Browser as a desktop app for this user\n"
+    printf "  --unregister-app  Unregister Tor Browser as a desktop app for this user\n"
+}
+log_output=0
+show_output=0
+detach=0
 show_usage=0
 register_desktop_app=0
-# !!! We may have more than one argument, changed -eq to -ge in if & elif clauses below
-if [ "$#" -ge 1 -a \( "x$1" = "x--debug" -o "x$1" = "x-debug" \) ]; then
-	debug=1
-	shift # pop the debug argument
-	printf "\nDebug enabled.\n\n"
-elif [ "$#" -ge 1 -a \( "x$1" = "x--register-app" -o "x$1" = "x-register-app" \) ]; then
-	register_desktop_app=1
-	shift # pop the register arg
-elif [ "$#" -ge 1 -a \( "x$1" = "x--unregister-app" -o "x$1" = "x-unregister-app" \) ]; then
-	register_desktop_app=-1
-	shift # pop the register arg
-elif [ "$#" -ge 1 -a \( "x$1" = "x--help" -o "x$1" = "x-help" \) ]; then
-    show_usage=1
-else
+logfile=/dev/null
+while :
+do
+    case "$1" in
+      --detach)
+          detach=1
+          shift
+          ;;
+      -v | --verbose | -d | --debug)
+          show_output=1
+          verbose_arg="$2"
+          shift
+          ;;
+      -h | "-?" | --help | -help)
+          show_usage=1
+          show_output=1
+          shift
+          ;;
+      -l | --log)
+          if [ -z "$2" -o "${2:0:1}" == "-" ]; then
+             printf "Logging Tor Browser debug information to tor-browser.log\n"
+             logfile="../tor-browser.log"
+          elif [ "${2:0:1}" == "/" -o "${2:0:1}" == "~" ]; then
+             printf "Logging Tor Browser debug information to %s\n" "$2"
+             logfile="$2"
+             shift
+          else
+             printf "Logging Tor Browser debug information to %s\n" "$2"
+             logfile="../$2"
+             shift
+          fi
+          log_output=1
+          shift
+          ;;
+      --register-app)
+          register_desktop_app=1
+          show_output=1
+          shift
+          ;;
+      --unregister-app)
+          register_desktop_app=-1
+          show_output=1
+          shift
+          ;;
+      *) # No more options
+          break
+          ;;
+    esac
+done
+
+# We can't detach and show output at the same time..
+if [ "$show_output" -eq 1 -a "$detach" -eq 1 ]; then
+    detach=0
+fi
+
+if [ "$show_output" -eq 0 ]; then
     # If the user hasn't requested 'debug mode' or --help, close stdout and stderr,
     # to keep Firefox and the stuff loaded by/for it (including the
     # system's shared-library loader) from printing messages to
     # $HOME/.xsession-errors or other files. (Users wouldn't have seen
     # messages there anyway.)
-    exec >/dev/null
-    exec 2>/dev/null
+    exec > "$logfile"
+    exec 2> "$logfile"
 fi
 
 # If XAUTHORITY is unset, set it to its default value of $HOME/.Xauthority
@@ -186,7 +236,7 @@ fi
 cp start-tor-browser.desktop ../
 sed -i -e "s,^Name=.*,Name=Tor Browser,g" ../start-tor-browser.desktop
 sed -i -e "s,^Icon=.*,Icon=$PWD/browser/icons/mozicon128.png,g" ../start-tor-browser.desktop
-sed -i -e "s,^Exec=.*,Exec=sh -c '\"$PWD/start-tor-browser\" || ([ ! -x \"$PWD/start-tor-browser\" ] \&\& \"\$(dirname \"\$*\")\"/Browser/start-tor-browser)' dummy %k,g" ../start-tor-browser.desktop
+sed -i -e "s,^Exec=.*,Exec=sh -c '\"$PWD/start-tor-browser\" --detach || ([ !  -x \"$PWD/start-tor-browser\" ] \&\& \"\$(dirname \"\$*\")\"/Browser/start-tor-browser --detach)' dummy %k,g" ../start-tor-browser.desktop
 
 if [ "$register_desktop_app" -eq 1 ]; then
 	mkdir -p "$HOME/.local/share/applications/"
@@ -292,33 +342,29 @@ setControlPortPasswd ${TOR_CONTROL_PASSWD:='"secret"'}
 
 cd "${HOME}"
 
-# We pass all command-line arguments we got (except --debug) to Firefox.  Use
-# at your own risk!
+# We pass all additional command-line arguments we get to Firefox.
 #
 # The --class parameter was added to fix bug 11102.
-#
-# When passed the --debug option, we log all the output that goes to the
-# parent terminal stdout and stderr to a file ('tor-browser-debug.log' in Tor
-# Browser's $HOME directory).
+
 if [ "$show_usage" -eq 1 ]; then
+    # Display Firefox help, then our help
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
-        -profile TorBrowser/Data/Browser/profile.default "${@}" 2>/dev/null
-    printf "\nTor Browser Script Options\n"
-    printf "  --debug           Display Tor and Firefox output and record in tor-browser-debug.log\n"
-    printf "  --register-app    Register Tor Browser as a desktop app for this user\n"
-    printf "  --unregister-app  Unregister Tor Browser as a desktop app for this user\n"
-elif [ "$debug" -ne 1 ] ; then
+        -profile TorBrowser/Data/Browser/profile.default --help 2>/dev/null
+    tbb_usage
+elif [ "$detach" -eq 1 ] ; then
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
-        -profile TorBrowser/Data/Browser/profile.default "${@}" > /dev/null 2>&1 </dev/null &
+       -profile TorBrowser/Data/Browser/profile.default "${@}" > "$logfile" 2>&1 </dev/null &
     disown "$!"
-else
-    # Place logfile in the tbb root dir.
-    logfile=../tor-browser-debug.log
-    printf "Launching Tor Browser for Linux in ${HOME}...\n"
-    printf "Logging Tor Browser debug information to file: %s\n" "$logfile"
+elif [ "$log_output" -eq 1 -a "$show_output" -eq 1 ]; then
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
-        -profile TorBrowser/Data/Browser/profile.default "${@}" -jsconsole 2>&1 </dev/null | \
-        tee $logfile
+        -profile TorBrowser/Data/Browser/profile.default "${@}" 2>&1 </dev/null | \
+        tee "$logfile"
+elif [ "$show_output" -eq 1 ]; then
+    TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
+        -profile TorBrowser/Data/Browser/profile.default "${@}" < /dev/null
+else
+    TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
+        -profile TorBrowser/Data/Browser/profile.default "${@}" > "$logfile" 2>&1 </dev/null
 fi
 
 exit $?
