@@ -100,11 +100,18 @@ fi
 
 debug=0
 show_usage=0
+register_desktop_app=0
 # !!! We may have more than one argument, changed -eq to -ge in if & elif clauses below
 if [ "$#" -ge 1 -a \( "x$1" = "x--debug" -o "x$1" = "x-debug" \) ]; then
 	debug=1
 	shift # pop the debug argument
 	printf "\nDebug enabled.\n\n"
+elif [ "$#" -ge 1 -a \( "x$1" = "x--register-app" -o "x$1" = "x-register-app" \) ]; then
+	register_desktop_app=1
+	shift # pop the register arg
+elif [ "$#" -ge 1 -a \( "x$1" = "x--unregister-app" -o "x$1" = "x-unregister-app" \) ]; then
+	register_desktop_app=-1
+	shift # pop the register arg
 elif [ "$#" -ge 1 -a \( "x$1" = "x--help" -o "x$1" = "x-help" \) ]; then
     show_usage=1
 else
@@ -160,6 +167,13 @@ fi
 mydir="`dirname "$myname"`"
 test -d "$mydir" && cd "$mydir"
 
+# If ${PWD} results in a zero length string, we can try something else...
+if [ ! "${PWD}" ]; then
+	# "hacking around some braindamage"
+	PWD="`pwd`"
+	surveysays="This system has a messed up shell.\n"
+fi
+
 # This is a fix for an ibus issue on some Linux systems. See #9353 for more
 # details. The symlink needs to be created before we change HOME.
 if [ ! -d ".config/ibus" ]; then
@@ -167,23 +181,34 @@ if [ ! -d ".config/ibus" ]; then
   ln -nsf ~/.config/ibus/bus .config/ibus
 fi
 
-# If ${PWD} results in a zero length HOME, we can try something else...
-if [ ! "${PWD}" ]; then
-	# "hacking around some braindamage"
-	HOME="`pwd`"
-	export HOME
-	surveysays="This system has a messed up shell.\n"
-else
-	HOME="${PWD}"
-	export HOME
-fi
-
 # Fix up .desktop Icon and Exec Paths, and update the .desktop file from the
 # canonical version if it was changed by the updater.
 cp start-tor-browser.desktop ../
 sed -i -e "s,^Name=.*,Name=Tor Browser,g" ../start-tor-browser.desktop
-sed -i -e "s,^Icon=.*,Icon=$HOME/browser/icons/mozicon128.png,g" ../start-tor-browser.desktop
-sed -i -e "s,^Exec=.*,Exec=sh -c '\"$HOME/start-tor-browser\" || ([ ! -x \"$HOME/start-tor-browser\" ] \&\& \"\$(dirname \"\$*\")\"/Browser/start-tor-browser)' dummy %k,g" ../start-tor-browser.desktop
+sed -i -e "s,^Icon=.*,Icon=$PWD/browser/icons/mozicon128.png,g" ../start-tor-browser.desktop
+sed -i -e "s,^Exec=.*,Exec=sh -c '\"$PWD/start-tor-browser\" || ([ ! -x \"$PWD/start-tor-browser\" ] \&\& \"\$(dirname \"\$*\")\"/Browser/start-tor-browser)' dummy %k,g" ../start-tor-browser.desktop
+
+if [ "$register_desktop_app" -eq 1 ]; then
+	mkdir -p "$HOME/.local/share/applications/"
+	cp ../start-tor-browser.desktop "$HOME/.local/share/applications/"
+	update-desktop-database "$HOME/.local/share/applications/"
+	printf "Tor Browser has been registered as a desktop app for this user in ~/.local/share/applications/\n"
+	exit 0
+fi
+
+if [ "$register_desktop_app" -eq -1 ]; then
+	if [ -e "$HOME/.local/share/applications/start-tor-browser.desktop" ]; then
+		rm -f "$HOME/.local/share/applications/start-tor-browser.desktop"
+		update-desktop-database "$HOME/.local/share/applications/"
+		printf "Tor Browser has been removed as a user desktop app (from ~/.local/share/applications/)\n"
+	else
+		printf "Tor Browser does not appear to be a desktop app (not present in ~/.local/share/applications/)\n"
+	fi
+	exit 0
+fi
+
+HOME="${PWD}"
+export HOME
 
 SYSARCHITECTURE=$(getconf LONG_BIT)
 TORARCHITECTURE=$(expr "$(file TorBrowser/Tor/tor)" : '.*ELF \([[:digit:]]*\)')
@@ -279,7 +304,9 @@ if [ "$show_usage" -eq 1 ]; then
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
         -profile TorBrowser/Data/Browser/profile.default "${@}" 2>/dev/null
     printf "\nTor Browser Script Options\n"
-    printf "  --debug  Display Tor and Firefox output and record in tor-browser-debug.log\n"
+    printf "  --debug           Display Tor and Firefox output and record in tor-browser-debug.log\n"
+    printf "  --register-app    Register Tor Browser as a desktop app for this user\n"
+    printf "  --unregister-app  Unregister Tor Browser as a desktop app for this user\n"
 elif [ "$debug" -ne 1 ] ; then
     TOR_CONTROL_PASSWD=${TOR_CONTROL_PASSWD} ./firefox --class "Tor Browser" \
         -profile TorBrowser/Data/Browser/profile.default "${@}" > /dev/null 2>&1 </dev/null &
