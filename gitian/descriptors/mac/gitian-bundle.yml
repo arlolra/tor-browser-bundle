@@ -8,8 +8,10 @@ packages:
 - "faketime"
 - "unzip"
 - "zip"
-# Both packages are needed for assembling the HTTPS-Everywhere rules since 3.5.
+# These three packages are needed for assembling the HTTPS-Everywhere rules
+# since 5.0.
 - "python-lxml"
+- "libxml2-utils"
 - "sqlite3"
 # Needed for the .dmgs
 - "genisoimage"
@@ -42,7 +44,6 @@ files:
 - "dmg-desktop.tar.xz"
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
-- "https-everywhere@eff.org.xpi"
 - "dzip.sh"
 - "ddmg.sh"
 - "background-plist.py"
@@ -103,13 +104,13 @@ script: |
   ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
-  # cd https-everywhere
+  cd https-everywhere
   # XXX: Bloody hack to workaround a bug in HTTPS_E's git hash extraction in
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
-  # rm -f .git/refs/heads/master
-  # ./makexpi.sh
-  # cp pkg/*.xpi ../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
-  # cd ..
+  rm -f .git/refs/heads/master
+  ./makexpi.sh
+  cp pkg/*.xpi ../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cd ..
   #
   cp *.xpi ./$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/
   cd $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/

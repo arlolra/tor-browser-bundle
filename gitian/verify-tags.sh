@@ -102,8 +102,8 @@ flashproxy            flashproxy.gpg            $FLASHPROXY_TAG
 goptlib               goptlib.gpg               $GOPTLIB_TAG
 meek                  meek.gpg                  $MEEK_TAG
 obfs4                 obfs4proxy.gpg            $OBFS4_TAG
+https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
 EOF
-#https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
 
 while read dir commit; do
   check_git_hash "$dir" "$commit"
@@ -141,7 +141,7 @@ done
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK is not signed at all)
-for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT HTTPSE MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
+for i in OSXSDK TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
