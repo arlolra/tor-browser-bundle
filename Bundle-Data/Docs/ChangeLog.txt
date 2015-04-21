@@ -1,3 +1,35 @@
+Tor Browser 4.5 -- Apr 28 2015
+ * All Platforms
+   * Update Tor to 0.2.6.7 with additional patches:
+     * Bug 15482: Reset timestamp_dirty each time a SOCKSAuth circuit is used
+   * Update NoScript to 2.6.9.22
+   * Update HTTPS-Everywhere to 5.0.2
+     * Bug 15689: Resume building HTTPS-Everywhere from git tags
+   * Update meek to 0.17
+   * Update obfs4proxy to 0.0.5
+   * Update Tor Launcher to 0.2.7.4
+     * Bug 15704: Do not enable network if wizard is opened
+     * Bug 11879: Stop bootstrap if Cancel or Open Settings is clicked
+     * Bug 13576: Don't strip "bridge" from the middle of bridge lines
+     * Bug 15657: Display the host:port of any connection faiures in bootstrap
+   * Update Torbutton to 1.9.2.0
+     * Bug 15562: Bind SharedWorkers to thirdparty pref
+     * Bug 15533: Restore default security level when restoring defaults
+     * Bug 15510: Close Tor Circuit UI control port connections on New Identity
+     * Bug 15472: Make node text black in circuit status UI
+     * Bug 15502: Wipe blob URIs on New Identity
+   * Bug 4100: Raise HTTP Keep-Alive back to 115 second default
+   * Bug 13875: Spoof window.devicePixelRatio to avoid DPI fingerprinting
+   * Bug 15411: Remove old (and unused) cacheDomain cache isolation mechanism
+   * Bug 14716: Fix issues with HTTP Auth usage and TLS connection info display
+   * Bug 15562: Disable Javascript SharedWorkers due to third party tracking
+ * Linux
+   * Bug 15747: Improve start-tor-browser argument handling
+   * Bug 15672: Provide desktop app registration+unregistration for Linux
+ * Windows
+   * Bug 15539: Make installer exe signatures reproducibly removable
+   * Bug 10761: Fix instances of shutdown crashes
+
 Tor Browser 4.5a5 -- Mar 31 2015
  * All Platforms
    * Update Firefox to 31.6.0esr
