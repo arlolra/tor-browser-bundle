@@ -109,6 +109,8 @@ script: |
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   rm -f .git/refs/heads/master
   ./makexpi.sh
+  # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
+  rm ./pkg/*-amo.xpi
   cp pkg/*.xpi ../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
