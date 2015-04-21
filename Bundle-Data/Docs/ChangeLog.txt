@@ -23,6 +23,8 @@ Tor Browser 4.5 -- Apr 28 2015
    * Bug 15411: Remove old (and unused) cacheDomain cache isolation mechanism
    * Bug 14716: Fix issues with HTTP Auth usage and TLS connection info display
    * Bug 15562: Disable Javascript SharedWorkers due to third party tracking
+   * Bug 15757: Disable Mozilla video statistics API extensions
+   * Bug 15758: Disable Device Sensor APIs
  * Linux
    * Bug 15747: Improve start-tor-browser argument handling
    * Bug 15672: Provide desktop app registration+unregistration for Linux
