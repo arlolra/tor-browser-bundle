@@ -9,6 +9,9 @@ packages:
 - "unzip"
 - "zip"
 - "nsis"
+# Needed to compensate NSIS's failure of regenerating the PE-file checksum and
+# proper padding.
+- "python-pefile"
 # These three packages are needed for assembling the HTTPS-Everywhere rules
 # since 5.0.
 - "python-lxml"
@@ -43,6 +46,7 @@ files:
 - "versions"
 - "mar-tools-win32.zip"
 - "tbb-docs.zip"
+- "pe_checksum_fix.py"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -145,6 +149,11 @@ script: |
   MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_en-US.mar
   MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
   makensis torbrowser.nsi
+  # Working around NSIS braindamage
+  mv torbrowser-install.exe torbrowser-install-tmp.exe
+  python ~/build/pe_checksum_fix.py
+  mv torbrowser-install-tmp2.exe torbrowser-install.exe
+  rm torbrowser-install-tmp.exe
   mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_en-US.exe
   #
   unzip ../win32-langpacks.zip
@@ -181,6 +190,11 @@ script: |
     MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_$LANG.mar
     MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
     makensis torbrowser.nsi
+    # Working around NSIS braindamage
+    mv torbrowser-install.exe torbrowser-install-tmp.exe
+    python ~/build/pe_checksum_fix.py
+    mv torbrowser-install-tmp2.exe torbrowser-install.exe
+    rm torbrowser-install-tmp.exe
     mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
     rm "Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd win32-langpacks
