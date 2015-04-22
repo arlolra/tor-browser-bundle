@@ -12,7 +12,7 @@ Tor Browser 4.5 -- Apr 28 2015
      * Bug 11879: Stop bootstrap if Cancel or Open Settings is clicked
      * Bug 13576: Don't strip "bridge" from the middle of bridge lines
      * Bug 15657: Display the host:port of any connection faiures in bootstrap
-   * Update Torbutton to 1.9.2.0
+   * Update Torbutton to 1.9.2.1
      * Bug 15562: Bind SharedWorkers to thirdparty pref
      * Bug 15533: Restore default security level when restoring defaults
      * Bug 15510: Close Tor Circuit UI control port connections on New Identity
@@ -22,7 +22,7 @@ Tor Browser 4.5 -- Apr 28 2015
    * Bug 4100: Raise HTTP Keep-Alive back to 115 second default
    * Bug 13875: Spoof window.devicePixelRatio to avoid DPI fingerprinting
    * Bug 15411: Remove old (and unused) cacheDomain cache isolation mechanism
-   * Bug 14716: Fix issues with HTTP Auth usage and TLS connection info display
+   * Bugs 14716+13254: Fix issues with HTTP Auth usage and TLS connection info display
    * Bug 15502: Isolate blob URI scope to URL domain; block WebWorker access
    * Bug 15562: Disable Javascript SharedWorkers due to third party tracking
    * Bug 15757: Disable Mozilla video statistics API extensions
