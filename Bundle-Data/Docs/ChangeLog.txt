@@ -18,6 +18,7 @@ Tor Browser 4.5 -- Apr 28 2015
      * Bug 15510: Close Tor Circuit UI control port connections on New Identity
      * Bug 15472: Make node text black in circuit status UI
      * Bug 15502: Wipe blob URIs on New Identity
+     * Bug 14429: Disable automatic window resizing for now
    * Bug 4100: Raise HTTP Keep-Alive back to 115 second default
    * Bug 13875: Spoof window.devicePixelRatio to avoid DPI fingerprinting
    * Bug 15411: Remove old (and unused) cacheDomain cache isolation mechanism
