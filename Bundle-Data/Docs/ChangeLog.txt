@@ -22,6 +22,7 @@ Tor Browser 4.5 -- Apr 28 2015
    * Bug 13875: Spoof window.devicePixelRatio to avoid DPI fingerprinting
    * Bug 15411: Remove old (and unused) cacheDomain cache isolation mechanism
    * Bug 14716: Fix issues with HTTP Auth usage and TLS connection info display
+   * Bug 15502: Isolate blob URI scope to URL domain; block WebWorker access
    * Bug 15562: Disable Javascript SharedWorkers due to third party tracking
    * Bug 15757: Disable Mozilla video statistics API extensions
    * Bug 15758: Disable Device Sensor APIs
