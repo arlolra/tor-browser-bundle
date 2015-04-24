@@ -3,7 +3,7 @@ Tor Browser 4.5 -- Apr 28 2015
    * Update Tor to 0.2.6.7 with additional patches:
      * Bug 15482: Reset timestamp_dirty each time a SOCKSAuth circuit is used
    * Update NoScript to 2.6.9.22
-   * Update HTTPS-Everywhere to 5.0.2
+   * Update HTTPS-Everywhere to 5.0.3
      * Bug 15689: Resume building HTTPS-Everywhere from git tags
    * Update meek to 0.17
    * Update obfs4proxy to 0.0.5
@@ -12,18 +12,20 @@ Tor Browser 4.5 -- Apr 28 2015
      * Bug 11879: Stop bootstrap if Cancel or Open Settings is clicked
      * Bug 13576: Don't strip "bridge" from the middle of bridge lines
      * Bug 15657: Display the host:port of any connection faiures in bootstrap
-   * Update Torbutton to 1.9.2.1
+   * Update Torbutton to 1.9.2.2
      * Bug 15562: Bind SharedWorkers to thirdparty pref
      * Bug 15533: Restore default security level when restoring defaults
      * Bug 15510: Close Tor Circuit UI control port connections on New Identity
      * Bug 15472: Make node text black in circuit status UI
      * Bug 15502: Wipe blob URIs on New Identity
+     * Bug 15795: Some security slider prefs do not trigger custom checkbox
      * Bug 14429: Disable automatic window resizing for now
    * Bug 4100: Raise HTTP Keep-Alive back to 115 second default
    * Bug 13875: Spoof window.devicePixelRatio to avoid DPI fingerprinting
    * Bug 15411: Remove old (and unused) cacheDomain cache isolation mechanism
    * Bugs 14716+13254: Fix issues with HTTP Auth usage and TLS connection info display
    * Bug 15502: Isolate blob URI scope to URL domain; block WebWorker access
+   * Bug 15794: Crash on some pages with SVG images if SVG is disabled
    * Bug 15562: Disable Javascript SharedWorkers due to third party tracking
    * Bug 15757: Disable Mozilla video statistics API extensions
    * Bug 15758: Disable Device Sensor APIs
