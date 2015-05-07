@@ -61,3 +61,4 @@ pref("noscript.cascadePermissions", true);
 pref("noscript.restrictSubdocScripting", true);
 pref("noscript.showVolatilePrivatePermissionsToggle", false);
 pref("noscript.volatilePrivatePermissions", true);
+pref("noscript.clearClick", 0);
