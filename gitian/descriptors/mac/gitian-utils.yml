@@ -45,7 +45,7 @@ script: |
   # Building Libevent
   cd libevent
   ./autogen.sh
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   ./configure --disable-static --host=i686-apple-darwin11 --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
@@ -54,7 +54,7 @@ script: |
   # Building OpenSSL
   tar xzf openssl.tar.gz
   cd openssl-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit OS X.
   ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin64-x86_64-cc --prefix=$INSTDIR/openssl enable-ec_nistp_64_gcc_128
   # Using $MAKEOPTS breaks the build. Might be the issue mentioned on
@@ -66,7 +66,7 @@ script: |
   # Building GMP
   tar xjf gmp.tar.bz2
   cd gmp-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
   # during compile time.
   ./configure --host=x86_64-apple-darwin11 --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx

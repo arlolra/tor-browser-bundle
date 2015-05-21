@@ -163,20 +163,20 @@ script: |
   # Building setuptools
   tar xzf setuptools.tar.gz
   cd setuptools-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
 
   # Bulding pyptlib
   cd pyptlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
 
   # Building PyCrypto
   tar xzf pycrypto.tar.gz
   cd pycrypto-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # This is bogus, that we run the configure script in the build environment,
   # but it seems to work. https://bugs.launchpad.net/pycrypto/+bug/1096207 for
   # ac_cv_func_malloc_0_nonnull.
@@ -188,14 +188,14 @@ script: |
   # Building argparse
   tar xzf argparse.tar.gz
   cd argparse-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
 
   # Building Zope interfaces
   unzip zope.interface.zip
   cd zope.interface-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   # Must create this file in order for py2exe to find the package.
@@ -205,14 +205,14 @@ script: |
   # Building PyYAML
   tar xzf pyyaml.tar.gz
   cd PyYAML-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
 
   # Building Twisted
   tar xjf twisted.tar.bz2
   cd Twisted-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # twisted/internet/iocpreactor/iocpsupport/iocpsupport.c includes "python.h"
   # rather than "Python.h".
   ln -sf Python.h $INSTDIR/python/include/python.h
@@ -231,13 +231,13 @@ script: |
   # Building Parsley
   tar xzf parsley.tar.gz
   cd Parsley-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py install
   cd ..
 
   # Building txsocksx
   cd txsocksx
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # Let's pretend we have the setup dependency already as we don't want to get
   # it downloaded during building. Just pretending and thus avoiding another
   # dependency should be fine here as txsocksx catches the exception due to
@@ -251,7 +251,7 @@ script: |
 
   # Building obfsproxy
   cd obfsproxy
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_py2exe.py py2exe
   LD_PRELOAD= $INSTPYTHON setup.py install
   py2exe_zip_timestomp py2exe_bundle/dist/obfsproxy.zip
@@ -263,7 +263,7 @@ script: |
   # Building M2Crypto
   tar xzf m2crypto.tar.gz
   cd M2Crypto-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --openssl $INSTDIR/openssl/ -lssl.dll,crypto.dll
   LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
   cd ..
@@ -273,7 +273,7 @@ script: |
 
   # Building flashproxy
   cd flashproxy
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   make dist-exe DISTNAME=flashproxy-client PYTHON="LD_PRELOAD= $INSTPYTHON"
   py2exe_zip_timestomp dist/flashproxy-client-win32/py2exe-flashproxy.zip
   cp -an dist/flashproxy-client-win32/{*.pyd,*.exe,*.zip} $PTDIR/
@@ -285,7 +285,7 @@ script: |
   cd libfte
   ln -s $INSTDIR/gmp thirdparty/gmp
   cp -a $INSTDIR/gmp/bin/libgmp-10.dll .
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= WINDOWS_BUILD=1 CROSS_COMPILE=1 PYTHON=$INSTPYTHON make
   LD_PRELOAD= $INSTPYTHON setup.py install
   mkdir -p $INSTDIR/Docs/libfte
@@ -295,7 +295,7 @@ script: |
 
   # Building fteproxy
   cd fteproxy
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LD_PRELOAD= $INSTPYTHON setup_tbb.py py2exe
   py2exe_zip_timestomp dist/fteproxy.zip
   cp -an dist/{*.pyd,*.exe,*.zip} $PTDIR/
@@ -309,7 +309,7 @@ script: |
 
   # Building goptlib
   cd goptlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
   ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/goptlib.git"
   go install git.torproject.org/pluggable-transports/goptlib.git
@@ -317,7 +317,7 @@ script: |
 
   # Building meek
   cd meek
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   cd meek-client
   go build -ldflags '-s'
   cp -a meek-client.exe $PTDIR
@@ -336,7 +336,7 @@ script: |
 
   # Building go ed25519
   cd ed25519
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/github.com/agl/"
   ln -sf "$PWD" "$GOPATH/src/github.com/agl/ed25519"
   go install github.com/agl/ed25519/extra25519
@@ -344,7 +344,7 @@ script: |
 
   # Building go siphash
   cd siphash
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/github.com/dchest/"
   ln -sf "$PWD" "$GOPATH/src/github.com/dchest/siphash"
   go install github.com/dchest/siphash
@@ -352,7 +352,7 @@ script: |
 
   # Building golang.org/x/crypto (obfs4proxy > 0.0.3 || Go >= 1.4)
   cd goxcrypto
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/golang.org/x/"
   ln -sf "$PWD" "$GOPATH/src/golang.org/x/crypto"
   go install golang.org/x/crypto/curve25519
@@ -362,7 +362,7 @@ script: |
 
   # Building golang.org/x/net (obfs4proxy > 0.0.4)
   cd goxnet
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/golang.org/x/"
   ln -sf "$PWD" "$GOPATH/src/golang.org/x/net"
   go install golang.org/x/net/proxy
@@ -370,7 +370,7 @@ script: |
 
   # Building obfs4proxy
   cd obfs4
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
   ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/obfs4.git"
   cd obfs4proxy

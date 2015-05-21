@@ -97,7 +97,7 @@ script: |
   cd ..
   # Second stage of gcc compilation
   cd gcc
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   make $MAKEOPTS
   make install
   mkdir -p $INSTDIR/gcclibs
@@ -116,7 +116,7 @@ script: |
   export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
   export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
   cd zlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
   make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" install
   cd ..
@@ -124,7 +124,7 @@ script: |
   # Building Libevent
   cd libevent
   ./autogen.sh
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   ./configure --disable-static --host=i686-w64-mingw32 --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
@@ -133,7 +133,7 @@ script: |
   # Building OpenSSL
   tar xzf openssl.tar.gz
   cd openssl-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit Windows.
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw "-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" --prefix=$INSTDIR/openssl
   # Using $MAKEOPTS breaks the build. Might be the issue mentioned on
@@ -145,7 +145,7 @@ script: |
   # Building GMP
   tar xjf gmp.tar.bz2
   cd gmp-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
   # during compile time.
   ./configure --prefix=$INSTDIR/gmp --host=i686-w64-mingw32 --enable-cxx --disable-static --enable-shared

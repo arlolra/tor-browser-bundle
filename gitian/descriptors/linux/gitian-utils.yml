@@ -79,7 +79,7 @@ script: |
   # Building Libevent
   cd libevent
   ./autogen.sh
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   ./configure --disable-static --prefix=$INSTDIR/libevent
   make $MAKEOPTS
   make install
@@ -88,7 +88,7 @@ script: |
   # Building OpenSSL
   tar xzf openssl.tar.gz
   cd openssl-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   if [ $GBUILD_BITS == "64" ];
   then
     ./config -shared --prefix=$INSTDIR/openssl enable-ec_nistp_64_gcc_128
@@ -125,7 +125,7 @@ script: |
   # Building GMP
   tar xjf gmp.tar.bz2
   cd gmp-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
   # during compile time.
   # --enable-fat makes the binaries slightly bigger but fixes reproducibility
