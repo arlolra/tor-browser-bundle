@@ -102,6 +102,7 @@ cd $GITIAN_DIR
 
 if [ ! -f inputs/binutils-$BINUTILS_VER-win32-utils.zip -o \
      ! -f inputs/gcclibs-$GCC_VER-win32-utils.zip -o \
+     ! -f inputs/gcc-$GCC_VER-linux32-precise-utils.zip -o \
      ! -f inputs/mingw-w64-$GCC_VER-win32-utils.zip -o \
      ! -f inputs/zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip -o \
@@ -127,6 +128,7 @@ then
   ln -sf openssl-$OPENSSL_VER-win32-utils.zip openssl-win32-utils.zip
   ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
   ln -sf gcclibs-$GCC_VER-win32-utils.zip gcclibs-win32-utils.zip
+  ln -sf gcc-$GCC_VER-linux32-precise-utils.zip gcc-linux32-precise-utils.zip
   cd ..
   #cp -a result/utils-win-res.yml inputs/
 else
@@ -142,6 +144,7 @@ else
   ln -sf openssl-$OPENSSL_VER-win32-utils.zip openssl-win32-utils.zip
   ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
   ln -sf gcclibs-$GCC_VER-win32-utils.zip gcclibs-win32-utils.zip
+  ln -sf gcc-$GCC_VER-linux32-precise-utils.zip gcc-linux32-precise-utils.zip
   cd ..
 fi
 

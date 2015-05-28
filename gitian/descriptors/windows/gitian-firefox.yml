@@ -4,8 +4,8 @@ suites:
 architectures:
 - "i386"
 packages:
-- "autoconf2.13"
 - "unzip"
+- "autoconf2.13"
 - "yasm"
 - "zip"
 reference_datetime: "2000-01-01 00:00:00"
@@ -15,6 +15,7 @@ remotes:
 - "url": "https://github.com/wolfcw/libfaketime"
   "dir": "faketime"
 files:
+- "gcc-linux32-precise-utils.zip"
 - "mingw-w64-win32-utils.zip"
 - "re-dzip.sh"
 - "dzip.sh"
@@ -33,10 +34,15 @@ script: |
   #
   mkdir -p $INSTDIR/Browser/
   mkdir -p $OUTDIR/
+  unzip -d $INSTDIR gcc-linux32-precise-utils.zip
+  # We need a link to our GCC, otherwise the system cc gets used which points to
+  # /usr/bin/gcc.
+  ln -s gcc $INSTDIR/gcc/bin/cc
   unzip -d $INSTDIR mingw-w64-win32-utils.zip
   unzip -d $INSTDIR gcclibs-win32-utils.zip
-  # Make sure our custom mingw gets used.
-  export PATH=$INSTDIR/mingw-w64/bin:$PATH
+  # Make sure our custom mingw and GCC (as host compiler) get used.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib
+  export PATH=$INSTDIR/mingw-w64/bin:$INSTDIR/gcc/bin:$PATH
 
   # Building libfaketime
   cd faketime
@@ -90,23 +96,16 @@ script: |
   # We need libfaketime for all the timestamps e.g. written into the libraries.
   # BUT we need to exclude |make build| from it. Otherwise the build fails close
   # to the end, see #12811 comment 14 and #12461 comment 8 and later.
+  # Additionally, we need to exclude |python2.7| as well as the build would
+  # stall otherwise right at the beginning. See #13877 for details.
   export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME_SKIP_CMDS="make"
+  export FAKETIME_SKIP_CMDS="python2.7,make"
   make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
   cp -a ~/build/msvcr100.dll $INSTDIR/Browser/
   cp -a $INSTDIR/gcclibs/libssp-0.dll $INSTDIR/Browser/
-  #
-  # What the hell are these three bytes anyways?
-  # FIXME: This was probably fixed by patching binutils. If we get matching
-  # builds without it, remove these two:
-  #sed 's/\x94\x0C\xE7\x6A\xB8\x0C\xE7\x6A\x08...\x04\xBA\xCB\x7E/\x94\x0c\xe7\x6a\xb8\x0c\xe7\x6a\x08\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/Browser/xul.dll
-  #sed 's/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8...\x04\xba\xcb\x7e/\x94\xb1\x24\x65\xb8\xb1\x24\x65\xf8\x23\x23\x23\x04\xba\xcb\x7e/M' -i $INSTDIR/Browser/gkmedias.dll
-  # Stripping again updates the PE header checksums to be correct
-  i686-w64-mingw32-strip $INSTDIR/Browser/gkmedias.dll
-  i686-w64-mingw32-strip $INSTDIR/Browser/xul.dll
 
   # Make MAR-based update tools available for use during the bundle phase.
   MARTOOLS=~/build/mar-tools

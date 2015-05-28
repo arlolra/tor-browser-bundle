@@ -38,6 +38,15 @@ script: |
   export LC_ALL=C
   umask 0022
 
+  # Building GCC to use it as the host compiler. Firefox 38 needs GCC >= 4.7 but
+  # Ubuntu Precise is only shipping with GCC 4.6.x.
+  tar xjf gcc.tar.bz2
+  cd gcc-*
+  ./configure --prefix=$INSTDIR/gcc --disable-multilib --enable-languages=c,c++
+  make $MAKEOPTS
+  make install
+  cd ..
+
   # Building binutils
   tar xjf binutils.tar.bz2
   cd binutils*
@@ -157,6 +166,7 @@ script: |
   cd $INSTDIR
   # We might want to bump binutils independent of bumping mingw-w64.
   touch binutils-$BINUTILS_VER-win32-utils.zip
+  ~/build/dzip.sh gcc-$GCC_VER-linux32-precise-utils.zip gcc
   ~/build/dzip.sh mingw-w64-$GCC_VER-win32-utils.zip mingw-w64
   ~/build/dzip.sh zlib-${ZLIB_TAG#v}-win32-utils.zip zlib
   ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-win32-utils.zip libevent
