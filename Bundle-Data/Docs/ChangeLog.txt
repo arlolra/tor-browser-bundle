@@ -1,3 +1,22 @@
+Tor Browser 5.0a2 -- June 12 2015
+ * All Platforms
+   * Update Tor to 0.2.7.1-alpha
+   * Update HTTPS-Everywhere to 5.0.5
+   * Update NoScript to 2.6.9.26
+   * Update meek to 0.19
+   * Update Torbutton to 1.9.2.7
+     * Bug 15984: Disabling Torbutton breaks the Add-ons Manager
+     * Bug 14429: Make sure the automatic resizing is enabled
+     * Translation updates
+   * Bug 16130: Defend against logjam attack
+   * Bug 15984: Disabling Torbutton breaks the Add-ons Manager
+ * Windows
+   * Bug 16014: Staged update fails if meek is enabled
+   * Bug 16269: repeated add-on compatibility check after update (meek enabled)
+ * Linux
+   * Bug 16026: Fix crash in GStreamer
+   * Bug 16083: Update comment in start-tor-browser
+
 Tor Browser 4.5.2 -- June 12 2015
  * All Platforms
    * Update Tor to 0.2.6.8
