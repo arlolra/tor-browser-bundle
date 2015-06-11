@@ -1,4 +1,4 @@
-Tor Browser 5.0a2 -- June 12 2015
+Tor Browser 5.0a2 -- June 15 2015
  * All Platforms
    * Update Tor to 0.2.7.1-alpha
    * Update HTTPS-Everywhere to 5.0.5
@@ -18,7 +18,7 @@ Tor Browser 5.0a2 -- June 12 2015
    * Bug 16026: Fix crash in GStreamer
    * Bug 16083: Update comment in start-tor-browser
 
-Tor Browser 4.5.2 -- June 12 2015
+Tor Browser 4.5.2 -- June 15 2015
  * All Platforms
    * Update Tor to 0.2.6.9
    * Update HTTPS-Everywhere to 5.0.5
