@@ -2,6 +2,7 @@ Tor Browser 5.0a2 -- June 12 2015
  * All Platforms
    * Update Tor to 0.2.7.1-alpha
    * Update HTTPS-Everywhere to 5.0.5
+   * Update OpenSSL to 1.0.1n
    * Update NoScript to 2.6.9.26
    * Update meek to 0.19
    * Update Torbutton to 1.9.2.7
@@ -19,8 +20,9 @@ Tor Browser 5.0a2 -- June 12 2015
 
 Tor Browser 4.5.2 -- June 12 2015
  * All Platforms
-   * Update Tor to 0.2.6.8
+   * Update Tor to 0.2.6.9
    * Update HTTPS-Everywhere to 5.0.5
+   * Update OpenSSL to 1.0.1n
    * Update NoScript to 2.6.9.26
    * Update Torbutton to 1.9.2.6
      * Bug 15984: Disabling Torbutton breaks the Add-ons Manager
