@@ -121,6 +121,7 @@ done
 TMPMAR="$SIGNED_DIR/tmp.mar"
 trap "rm -f $TMPMAR" EXIT
 cd "$UNSIGNED_DIR"
+echo "Starting the signing..."
 COUNT=0
 for marfile in *.mar; do
   if [ ! -f "$marfile" ]; then
@@ -130,6 +131,7 @@ for marfile in *.mar; do
       "$marfile" "$TMPMAR"
   mv "$TMPMAR" "$SIGNED_DIR/$marfile"
   COUNT=$((COUNT + 1))
+  echo "Signed MAR file $COUNT"
 done
 
 echo "The $COUNT MAR files located in $SIGNED_DIR/ have been signed."
