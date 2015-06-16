@@ -105,7 +105,7 @@ script: |
 
   # Building pyptlib
   cd pyptlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/pyptlib $PTDIR/
   cd ..
@@ -113,7 +113,7 @@ script: |
   # Building PyCrypto
   tar xzf pycrypto.tar.gz
   cd pycrypto-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # https://bugs.launchpad.net/pycrypto/+bug/1096207 for ac_cv_func_malloc_0_nonnull.
   ac_cv_func_malloc_0_nonnull=yes sh configure --host=i686-apple-darwin11
   LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers
@@ -124,7 +124,7 @@ script: |
   # Building argparse
   tar xzf argparse.tar.gz
   cd argparse-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/argparse.py $PTDIR/
   cd ..
@@ -132,7 +132,7 @@ script: |
   # Building Zope interfaces
   unzip zope.interface.zip
   cd zope.interface-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/zope $PTDIR/
   cd ..
@@ -140,7 +140,7 @@ script: |
   # Building PyYAML
   tar xzf pyyaml.tar.gz
   cd PyYAML-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/yaml $PTDIR/
   cd ..
@@ -148,7 +148,7 @@ script: |
   # Building Twisted
   tar xjf twisted.tar.bz2
   cd Twisted-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers
   python setup.py build --build-lib build
   cp -a build/twisted $PTDIR/
@@ -157,7 +157,7 @@ script: |
   # Building Parsley
   tar xzf parsley.tar.gz
   cd Parsley-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/parsley.py $PTDIR/
   cp -a build/ometa $PTDIR/
@@ -166,7 +166,7 @@ script: |
 
   # Building txsocksx
   cd txsocksx
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # Let's pretend we have the setup dependency already as we don't want to get
   # it downloaded during building. Just pretending and thus avoiding another
   # dependency should be fine here as txsocksx catches the exception due to
@@ -178,7 +178,7 @@ script: |
 
   # Building obfsproxy
   cd obfsproxy
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   python setup.py build --build-lib build
   cp -a build/obfsproxy $PTDIR/
   cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
@@ -191,7 +191,7 @@ script: |
   # Building M2Crypto
   tar xzf m2crypto.tar.gz
   cd M2Crypto-*
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # We have to put $INSTDIR/openssl at the beginning of the header and library
   # search paths (build_ext otherwise puts it at the end, after CFLAGS and
   # LDFLAGS). The reason for this is that /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr
@@ -205,7 +205,7 @@ script: |
 
   # Building flashproxy
   cd flashproxy
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   make dist DISTNAME=flashproxy-client
   cp -a dist/flashproxy-client/{flashproxy,flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
   mkdir -p $TBDIR/Docs/FlashProxy
@@ -214,7 +214,7 @@ script: |
 
   # Building libfte
   cd libfte
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CFLAGS" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CXXFLAGS" make
   cp -ra fte $PTDIR/
   mkdir -p $TBDIR/Docs/libfte
@@ -224,7 +224,7 @@ script: |
 
   # Building fteproxy
   cd fteproxy
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   cp -a bin/fteproxy $PTDIR/fteproxy.bin
   cp -ra fteproxy $PTDIR/
   mkdir -p $TBDIR/Docs/fteproxy
@@ -233,7 +233,7 @@ script: |
 
   # Building goptlib
   cd goptlib
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
   ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/goptlib.git"
   go install git.torproject.org/pluggable-transports/goptlib.git
@@ -241,7 +241,7 @@ script: |
 
   # Building meek
   cd meek
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   cd meek-client
   # https://code.google.com/p/go/issues/detail?id=4714#c7
   # We need cgo for crypto/x509 support on mac.
@@ -258,7 +258,7 @@ script: |
 
   # Building go ed25519
   cd ed25519
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/github.com/agl/"
   ln -sf "$PWD" "$GOPATH/src/github.com/agl/ed25519"
   go install github.com/agl/ed25519/extra25519
@@ -266,7 +266,7 @@ script: |
 
   # Building go siphash
   cd siphash
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/github.com/dchest/"
   ln -sf "$PWD" "$GOPATH/src/github.com/dchest/siphash"
   go install github.com/dchest/siphash
@@ -274,7 +274,7 @@ script: |
 
   # Building golang.org/x/crypto (obfs4proxy > 0.0.3 || Go >= 1.4)
   cd goxcrypto
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/golang.org/x/"
   ln -sf "$PWD" "$GOPATH/src/golang.org/x/crypto"
   go install golang.org/x/crypto/curve25519
@@ -284,7 +284,7 @@ script: |
 
   # Building golang.org/x/net (obfs4proxy > 0.0.4)
   cd goxnet
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/golang.org/x/"
   ln -sf "$PWD" "$GOPATH/src/golang.org/x/net"
   go install golang.org/x/net/proxy
@@ -292,7 +292,7 @@ script: |
 
   # Building obfs4proxy
   cd obfs4
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/git.torproject.org/pluggable-transports"
   ln -sf "$PWD" "$GOPATH/src/git.torproject.org/pluggable-transports/obfs4.git"
   cd obfs4proxy

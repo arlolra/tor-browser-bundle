@@ -59,7 +59,7 @@ script: |
   # .git and the src takes up a lot of useless space, and we need the space to build
   #git archive HEAD | tar -x -C $OUTDIR/src
   rm -rf .git
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
   # |configure| can't cope with nano seconds faked. And even if we would revert
@@ -67,7 +67,7 @@ script: |
   # reasons.
   export LD_PRELOAD=""
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL}"
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # We need libfaketime for all the timestamps e.g. written into the libraries.
   # BUT we need to exclude |make build| from it. Otherwise the build fails close
   # to the end, see #12812 comment 6 and #12461 comment 8 and later.

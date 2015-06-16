@@ -87,7 +87,7 @@ script: |
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
-  find -type f | xargs touch --date="$REFERENCE_DATETIME"
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   ./configure --disable-asciidoc --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR
   make $MAKEOPTS
   make install
