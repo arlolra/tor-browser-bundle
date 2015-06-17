@@ -35,10 +35,10 @@ QuickStart:
 
  $ export NUM_PROCS=4
 
- To set the amount of RAM to use inside the VMs to 4000 MiB (the default is
- 2000 MiB), use:
+ To set the amount of RAM to use inside the VMs to 8000 MiB (the default is
+ 4000 MiB), use:
 
- $ export VM_MEMORY=4000
+ $ export VM_MEMORY=8000
 
 Detailed Explanation of Scripts:
 

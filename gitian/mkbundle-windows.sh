@@ -35,7 +35,7 @@ fi
 
 if [ -z "$VM_MEMORY" ];
 then
-  export VM_MEMORY=2000
+  export VM_MEMORY=4000
 fi
 
 ./make-vms.sh
