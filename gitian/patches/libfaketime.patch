@@ -1,0 +1,54 @@
+From 3ea3df1129a9918dea7efdf3a529227f16b237aa Mon Sep 17 00:00:00 2001
+From: Georg Koppen <gk@torproject.org>
+Date: Thu, 21 May 2015 07:32:16 +0000
+Subject: [PATCH] Allow more than one command being skipped
+
+---
+ src/libfaketime.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
+
+diff --git a/src/libfaketime.c b/src/libfaketime.c
+index ecda143..ad45857 100644
+--- a/src/libfaketime.c
++++ b/src/libfaketime.c
+@@ -1455,17 +1455,29 @@ void __attribute__ ((constructor)) ftpl_init(void)
+   /* We can prevent faking time for specified commands */
+   if ((tmp_env = getenv("FAKETIME_SKIP_CMDS")) != NULL)
+   {
+-    char *skip_cmd, *saveptr;
+-    skip_cmd = strtok_r(tmp_env, ",", &saveptr);
+-    while (skip_cmd != NULL)
++    char *skip_cmd, *saveptr, *tmpvar;
++    /* Don't mess with the env variable directly. */
++    tmpvar = strdup(tmp_env);
++    if (tmpvar != NULL)
+     {
+-      if (0 == strcmp(progname, skip_cmd))
++      skip_cmd = strtok_r(tmpvar, ",", &saveptr);
++      while (skip_cmd != NULL)
+       {
+-        ft_mode = FT_NOOP;
+-        dont_fake = true;
+-        break;
++        if (0 == strcmp(progname, skip_cmd))
++        {
++          ft_mode = FT_NOOP;
++          dont_fake = true;
++          break;
++        }
++        skip_cmd = strtok_r(NULL, ",", &saveptr);
+       }
+-      skip_cmd = strtok_r(NULL, ",", &saveptr);
++      free(tmpvar);
++      tmpvar = NULL;
++    }
++    else
++    {
++      fprintf(stderr, "Error: Could not copy the environment variable value.\n");
++      exit(EXIT_FAILURE);
+     }
+   }
+ 
+-- 
+2.1.4
+

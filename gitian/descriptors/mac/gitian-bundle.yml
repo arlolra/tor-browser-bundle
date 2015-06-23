@@ -64,13 +64,8 @@ script: |
   export TORBROWSER_VERSION=`cat bare-version`
   export LC_ALL=C
   umask 0022
-  if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
-    export TORBROWSER_APP="TorBrowserBundle"
-    export TORBROWSER_NAME="TorBrowserBundle"
-  else
-    export TORBROWSER_APP="TorBrowser"
-    export TORBROWSER_NAME="TorBrowserBundle"
-  fi
+  export TORBROWSER_APP="TorBrowser"
+  export TORBROWSER_NAME="TorBrowserBundle"
   #
   # Extract the MAR tools.
   unzip -d ~/build ~/build/mar-tools-mac$GBUILD_BITS.zip
@@ -161,7 +156,7 @@ script: |
   tar -Jxvf ~/build/dmg-applications.tar.xz
   cd ..
   #
-  pushd $TORBROWSER_NAME.app/Contents/MacOS/browser/
+  pushd $TORBROWSER_NAME.app/Contents/Resources/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
@@ -179,27 +174,21 @@ script: |
   unzip ~/build/TorBrowser.app.meek-http-helper.zip
   popd
   #
-  if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
-    cp -a ~/build/$TORBROWSER_NAME.app ~/build/${TORBROWSER_NAME}_en-US.app
-    ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.zip ${TORBROWSER_NAME}_en-US.app
-    rm -rf ~/build/${TORBROWSER_NAME}_en-US.app
-  else
-    # XXX: We need to insert these placeholders because otherwise mkisofs won't
-    # include these otherwise empty dirs:
-    touch ~/build/$TORBROWSER_NAME.app/TorBrowser/Data/Browser/Caches/placeholder.txt
-    # Recreate precomplete file (needs to be accurate for full MAR updates).
-    pushd ~/build/$TORBROWSER_NAME.app/
-    rm -f precomplete
-    python $MARTOOLS/createprecomplete.py
-    popd
-    #
-    # Create full MAR file and disk image.
-    MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.mar
-    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/$TORBROWSER_NAME.app
-    cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
-    ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.dmg ~/build/dmg
-    rm -rf ~/build/dmg/$TORBROWSER_APP.app
-  fi
+  # XXX: We need to insert these placeholders because otherwise mkisofs won't
+  # include these otherwise empty dirs:
+  touch ~/build/$TORBROWSER_NAME.app/TorBrowser/Data/Browser/Caches/placeholder.txt
+  # Recreate precomplete file (needs to be accurate for full MAR updates).
+  pushd ~/build/$TORBROWSER_NAME.app/Contents/Resources/
+  rm -f precomplete
+  python $MARTOOLS/createprecomplete.py
+  popd
+  #
+  # Create full MAR file and disk image.
+  MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.mar
+  MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/$TORBROWSER_NAME.app
+  cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
+  ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.dmg ~/build/dmg
+  rm -rf ~/build/dmg/$TORBROWSER_APP.app
   mv $TORBROWSER_NAME.app ${TORBROWSER_NAME}_plain.app
   #
   unzip mac-langpacks.zip
@@ -207,16 +196,12 @@ script: |
   for LANG in $BUNDLE_LOCALES
   do
     xpi=$LANG.xpi
-    if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
-      DEST=${TORBROWSER_APP}_$LANG
-    else
-      DEST=$TORBROWSER_APP
-    fi
+    DEST=$TORBROWSER_APP
     cp -a ../${TORBROWSER_NAME}_plain.app ~/build/dmg/$DEST.app
     cp $xpi ~/build/dmg/$DEST.app/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
     cd ..
 
-    pushd ~/build/dmg/$DEST.app/Contents/MacOS/browser/
+    pushd ~/build/dmg/$DEST.app/Contents/Resources/browser/
     mkdir -p defaults/preferences
     cp ~/build/000-tor-browser.js defaults/preferences/
     # Set the locale of the bundle.
@@ -225,28 +210,19 @@ script: |
     rm -rf defaults
     popd
 
-    # Set the update.locale (it is used to replace %LOCALE% within app.update.url).
-    pushd ~/build/dmg/$DEST.app/Contents/MacOS/
+    # Set the update.locale (it is used to replace %LOCALE% within
+    # app.update.url) and recreate the precomplete file (needs to be accurate
+    # for full MAR updates).
+    pushd ~/build/dmg/$DEST.app/Contents/Resources/
     echo "$LANG" > update.locale
     zip -Xm omni.ja update.locale
+    rm -f precomplete
+    python $MARTOOLS/createprecomplete.py
     popd
-
-    if [ ${TORBROWSER_VERSION::3} == "3.5" ]; then
-       pushd ~/build/dmg/
-       ~/build/dzip.sh $OUTDIR/TorBrowserBundle-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.zip $DEST.app
-       rm -rf TorBrowserBundle_$LANG.app
-       popd
-    else
-      # Recreate precomplete file (needs to be accurate for full MAR updates).
-      pushd ~/build/dmg/$DEST.app/
-      rm -f precomplete
-      python $MARTOOLS/createprecomplete.py
-      popd
-      #
-      MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
-      MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/dmg/$DEST.app
-       ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.dmg ~/build/dmg/
-       rm -rf ~/build/dmg/$DEST.app
-    fi
+    #
+    MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
+    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/dmg/$DEST.app
+     ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.dmg ~/build/dmg/
+    rm -rf ~/build/dmg/$DEST.app
     cd mac-langpacks
   done

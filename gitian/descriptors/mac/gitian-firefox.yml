@@ -16,11 +16,13 @@ remotes:
 - "url": "https://github.com/wolfcw/libfaketime"
   "dir": "faketime"
 files:
-- "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
+- "gcc-linux64-precise-utils.zip"
+- "MacOSX10.7.sdk.tar.gz"
 - "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
 - "dzip.sh"
 - "fix-info-plist.py"
+- "libfaketime.patch"
 - "versions"
 script: |
   INSTDIR="$HOME/install/"
@@ -34,25 +36,26 @@ script: |
 
   # Building libfaketime.
   cd faketime
+  export GIT_COMMITTER_NAME="nobody"
+  export GIT_COMMITTER_EMAIL="nobody@localhost"
+  export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
+  git am ~/build/libfaketime.patch
   make
   DESTDIR="$INSTDIR/faketime" make install
   export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
   export FAKETIME=$REFERENCE_DATETIME
   cd ..
 
-  sudo dpkg -i *.deb
-  tar -xavf x86_64-apple-darwin10.tar.xz
-  # XXX: Needed for the otool patch. But we should replace that one with a
-  # better solution. See: comment 15 in
-  # https://bugzilla.mozilla.org/show_bug.cgi?id=936115
-  export PATH=$PATH:/home/ubuntu/build/x-tools/x86_64-apple-darwin10/bin
-  # FIXME: path hacks:
-  sudo mkdir -p /System/Library/
-  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk /usr/lib/apple/SDKs/MacOSX10.5.sdk
-  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk /usr/lib/apple/SDKs/MacOSX10.5.sdk
-  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/ /System/Library/
-  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/PrivateFrameworks/ /System/Library/
-  sudo ln -s /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/libstdc++.6.dylib /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/libstdc++.dylib
+  unzip -d $INSTDIR ~/build/gcc-linux64-precise-utils.zip
+  # We need a link to our GCC, otherwise the system cc gets used which points to
+  # /usr/bin/gcc.
+  ln -s gcc $INSTDIR/gcc/bin/cc
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib64
+  # XXX: cross-compiler path is needed for ICU
+  export PATH=/home/ubuntu/build/x-tools/x86_64-apple-darwin10/bin:$INSTDIR/gcc/bin:$PATH
+
+  tar xaf x86_64-apple-darwin10.tar.xz
+  tar xaf MacOSX10.7.sdk.tar.gz
   #
   cd tor-browser
   mv .mozconfig-mac .mozconfig
@@ -72,11 +75,10 @@ script: |
   # BUT we need to exclude |make build| from it. Otherwise the build fails close
   # to the end, see #12812 comment 6 and #12461 comment 8 and later.
   # Additionally, we need to exclude |rsync| due to #10153 which is reproducible
-  # reliably with the new libfaketime.
+  # reliably with the new libfaketime and |python2.7| as well as the build would
+  # stall otherwise right at the beginning. See #13877 for details.
   export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  # XXX Order matters as for some reason the env variable has only the first
-  # command assigned when it comes to the rsync parts in the build process.
-  export FAKETIME_SKIP_CMDS="rsync,make"
+  export FAKETIME_SKIP_CMDS="python2.7,rsync,make"
   make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
   #
   make -C obj-macos package INNER_MAKE_PACKAGE=true
@@ -101,11 +103,9 @@ script: |
   mv $INFO_PLIST tmp.plist
   ~/build/fix-info-plist.py $TORBROWSER_VERSION < tmp.plist > $INFO_PLIST
   rm -f tmp.plist
-  ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/omni.ja
-  ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/webapprt/omni.ja
-  if [ -f TorBrowser.app/Contents/MacOS/browser/omni.ja  ]; then # FF24 includes a third .ja
-    ~/build/re-dzip.sh TorBrowser.app/Contents/MacOS/browser/omni.ja
-  fi
+  ~/build/re-dzip.sh TorBrowser.app/Contents/Resources/omni.ja
+  ~/build/re-dzip.sh TorBrowser.app/Contents/Resources/webapprt/omni.ja
+  ~/build/re-dzip.sh TorBrowser.app/Contents/Resources/browser/omni.ja
   cd TorBrowser.app/
   ~/build/dzip.sh tor-browser-mac${GBUILD_BITS}-gbuilt.zip ./Contents
   cp tor-browser-mac${GBUILD_BITS}-gbuilt.zip $OUTDIR

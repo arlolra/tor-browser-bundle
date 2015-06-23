@@ -106,7 +106,8 @@ fi
 
 cd $GITIAN_DIR
 
-if [ ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
+if [ ! -f inputs/gcc-$GCC_VER-linux64-precise-utils.zip -o \
+     ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];
 then
@@ -122,6 +123,7 @@ then
 
   cd inputs
   cp -a ../build/out/*-utils.zip .
+  ln -sf gcc-$GCC_VER-linux64-precise-utils.zip gcc-linux64-precise-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
   ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
@@ -135,6 +137,7 @@ else
   # We might have built the utilities in the past but maybe the links are
   # pointing to the wrong version. Refresh them.
   cd inputs
+  ln -sf gcc-$GCC_VER-linux64-precise-utils.zip gcc-linux64-precise-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
   ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
