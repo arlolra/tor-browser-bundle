@@ -1,4 +1,4 @@
 #!/bin/sh
 # Hardened mingw gcc wrapper
 
-/home/ubuntu/install/mingw-w64/bin/i686-w64-mingw32-ld --dynamicbase --nxcompat --enable-reloc-section -lssp -L$INSTDIR/gcclibs/ "$@"
+/home/ubuntu/install/mingw-w64/bin/i686-w64-mingw32-ld --dynamicbase --nxcompat --enable-reloc-section --no-insert-timestamp -lssp -L$INSTDIR/gcclibs/ "$@"
