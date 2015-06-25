@@ -18,6 +18,7 @@ files:
 - "bug8402-master.patch"
 - "bug8405.patch"
 - "bug15482.patch"
+- "bug16430.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
 - "mingw-w64-win32-utils.zip"
@@ -61,6 +62,7 @@ script: |
       git am ~/build/bug8402-master.patch
   else
       git am ~/build/bug15482.patch
+      git am ~/build/bug16430.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src

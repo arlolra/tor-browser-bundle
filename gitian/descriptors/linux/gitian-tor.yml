@@ -22,6 +22,7 @@ files:
 - "bug8402-master.patch"
 - "bug8405.patch"
 - "bug15482.patch"
+- "bug16430.patch"
 - "dzip.sh"
 - "openssl-linux32-utils.zip"
 - "openssl-linux64-utils.zip"
@@ -83,6 +84,7 @@ script: |
       git am ~/build/bug8402-master.patch
   else
       git am ~/build/bug15482.patch
+      git am ~/build/bug16430.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src

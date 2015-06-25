@@ -18,6 +18,7 @@ files:
 - "bug8402-master.patch"
 - "bug8405.patch"
 - "bug15482.patch"
+- "bug16430.patch"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
@@ -61,6 +62,7 @@ script: |
       git am ~/build/bug8402-master.patch
   else
       git am ~/build/bug15482.patch
+      git am ~/build/bug16430.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
