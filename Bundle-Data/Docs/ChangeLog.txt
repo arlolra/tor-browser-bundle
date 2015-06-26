@@ -9,6 +9,9 @@ Tor Browser 4.5.3 -- June 30 2015
      * Translation updates
    * Bug 16397: Fix crash related to disabling SVG
    * Bug 16403: Set search parameters for Disconnect
+   * Bug 16446: Update FTE bridge #1 fingerprint
+   * Tor patch backport
+     * Bug 16430: Allow DNS names with _ characters in them (fixes nytimes.com)
 
 Tor Browser 5.0a2 -- June 15 2015
  * All Platforms
