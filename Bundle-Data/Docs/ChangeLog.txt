@@ -1,3 +1,42 @@
+Tor Browser 5.0a3 -- June 30 2015
+ * All Platforms
+   * Update Firefox to 38.1.0esr
+   * Update OpenSSL to 1.0.1o
+   * Update NoScript to 2.6.9.27
+   * Tor patch backport
+     * Bug 16430: Allow DNS names with _ characters in them (fixes nytimes.com)
+   * Update Torbutton to 1.9.3.0
+     * Bug 16403: Set search parameters for Disconnect
+     * Bug 14429: Make sure the automatic resizing is disabled
+     * Bug 16427: Use internal update URL to block updates (instead of 127.0.0.1)
+     * Bug 16200: Update Cache API usage and prefs for FF38
+     * Bug 16357: Use Mozilla API to wipe permissions db
+     * Translation updates
+   * Update Tor Launcher to 0.2.6.7
+     * Bug 16427: Use internal update URL to block updates (instead of 127.0.0.1)
+     * Bug 15145: Visually distinguish "proxy" and "bridge" screens.
+     * Translation updates
+   * Bug 16397: Fix crash related to disabling SVG
+   * Bug 16403: Set search parameters for Disconnect
+   * Bug 16446: Update FTE bridge #1 fingerprint
+   * Bug 15646: Prevent keyboard layout fingerprinting in KeyboardEvent
+   * Bug 16005: Relax WebGL minimal mode
+   * Bug 16300: Isolate Broadcast Channels to first party
+   * Bug 16439: Remove Roku screencasting code
+   * Bug 16285: Disabling EME bits
+   * Bug 16206: Enforce certificate pinning
+   * Bug 15910: Disable GMPs for now
+   * Bug 13670: Isolate OCSP requests by first party domain
+   * Bug 16448: Isolate favicon requests by first party
+   * Bug 7561: Disable FTP caching
+ * Mac OS
+   * Use OSX 10.7 SDK
+ * Windows
+   * Bug 13419: Fix cross-compiling for mingw-64
+ * Build System
+   * Bug 16351: Upgrade our toolchain to use GCC 5.1 and Binutils 2.25
+   * Bug 15772 and child tickets: Update build system for Firefox 38
+
 Tor Browser 4.5.3 -- June 30 2015
  * All Platforms
    * Update Firefox to 31.8.0esr
