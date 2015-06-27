@@ -28,11 +28,11 @@ Tor Browser 5.0a3 -- June 30 2015
    * Bug 15910: Disable GMPs for now
    * Bug 13670: Isolate OCSP requests by first party domain
    * Bug 16448: Isolate favicon requests by first party
-   * Bug 7561: Disable FTP caching
+   * Bug 7561: Disable FTP request caching
+   * Bug 6503: Fix single-word URL bar searching
+   * Bug 15526: ES6 page crashes Tor Browser
  * Mac OS
    * Use OSX 10.7 SDK
- * Windows
-   * Bug 13419: Fix cross-compiling for mingw-64
  * Build System
    * Bug 16351: Upgrade our toolchain to use GCC 5.1 and Binutils 2.25
    * Bug 15772 and child tickets: Update build system for Firefox 38
