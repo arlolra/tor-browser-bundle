@@ -28,6 +28,7 @@ files:
 - "gmp.tar.bz2"
 - "enable-reloc-section-ld.patch"
 - "peXXigen.patch"
+- "gcc-dev-random.patch"
 - "versions"
 - "dzip.sh"
 script: |
@@ -74,6 +75,8 @@ script: |
   cd gcc
   tar -xjvf ../gcc.tar.bz2
   cd gcc-*
+  # Don't use /dev/random on Windows. See bug 13169 for details.
+  patch -p1 < ../../gcc-dev-random.patch
   cd ..
   # We don't want to link against msvcrt.dll due to bug 9084.
   i686-w64-mingw32-g++ -dumpspecs > ~/build/msvcr100.spec
