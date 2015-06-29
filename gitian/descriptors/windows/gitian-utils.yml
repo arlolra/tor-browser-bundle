@@ -82,7 +82,7 @@ script: |
   sed 's/msvcrt/msvcr100/' -i gcc-*/gcc/config/i386/t-mingw-w32
   # LDFLAGS_FOR_TARGET does not work for some reason. Thus, we take
   # CFLAGS_FOR_TARGET.
-  export CFLAGS_FOR_TARGET="-specs=/home/ubuntu/build/msvcr100.spec -Wl,--nxcompat -Wl,--dynamicbase -Wl,--no-insert-timestamp"
+  export CFLAGS_FOR_TARGET="-specs=/home/ubuntu/build/msvcr100.spec -Wl,--nxcompat -Wl,--dynamicbase"
   gcc-*/configure --prefix=$INSTDIR/mingw-w64 --target=i686-w64-mingw32 --disable-multilib --enable-languages=c,c++
   make $MAKEOPTS all-gcc
   make install-gcc
@@ -120,11 +120,11 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   # Building zlib
   export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
-  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -Wl,--no-insert-timestamp -lssp -L$INSTDIR/gcclibs/"
+  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
   cd zlib
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -Wl,--no-insert-timestamp -lssp -L$INSTDIR/gcclibs/"
-  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -Wl,--no-insert-timestamp -lssp -L$INSTDIR/gcclibs/" install
+  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
+  make BINARY_PATH=$INSTDIR/zlib/lib INCLUDE_PATH=$INSTDIR/zlib/include LIBRARY_PATH=$INSTDIR/zlib/lib -f win32/Makefile.gcc PREFIX=i686-w64-mingw32- $MAKEOPTS SHARED_MODE=1 LOC="-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" install
   cd ..
 
   # Building Libevent
@@ -141,7 +141,7 @@ script: |
   cd openssl-*
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit Windows.
-  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw "-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -Wl,--no-insert-timestamp -lssp -L$INSTDIR/gcclibs/" --prefix=$INSTDIR/openssl
+  ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw "-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" --prefix=$INSTDIR/openssl
   # Using $MAKEOPTS breaks the build. Might be the issue mentioned on
   # http://cblfs.cross-lfs.org/index.php/OpenSSL.
   make

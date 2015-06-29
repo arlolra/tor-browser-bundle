@@ -83,7 +83,7 @@ script: |
   export TZ=UTC
   export LC_ALL=C
   export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
-  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -Wl,--no-insert-timestamp -lssp -L$INSTDIR/gcclibs"
+  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs"
   umask 0022
 
   unzip -d $INSTDIR mingw-w64-win32-utils.zip
