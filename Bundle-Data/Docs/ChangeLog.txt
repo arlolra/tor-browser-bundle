@@ -35,8 +35,10 @@ Tor Browser 5.0a3 -- June 30 2015
    * Bug 16222: Disable WebIDE to prevent remote debugging and addon downloads.
    * Bug 13024: Disable DOM Resource Timing API
    * Bug 16340: Disable User Timing API
+   * Bug 14952: Disable HTTP/2
  * Mac OS
    * Use OSX 10.7 SDK
+   * Bug 16253: Tor Browser menu on OS X is broken with ESR 38
  * Build System
    * Bug 16351: Upgrade our toolchain to use GCC 5.1
    * Bug 15772 and child tickets: Update build system for Firefox 38
