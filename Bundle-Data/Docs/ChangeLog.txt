@@ -13,7 +13,7 @@ Tor Browser 5.0a3 -- June 30 2015
      * Bug 16357: Use Mozilla API to wipe permissions db
      * Translation updates
    * Update Tor Launcher to 0.2.6.7
-     * Bug 16427: Use internal update URL to block updates (instead of 127.0.0.1)
+     * Bug 16428: Use internal update URL to block updates (instead of 127.0.0.1)
      * Bug 15145: Visually distinguish "proxy" and "bridge" screens.
      * Translation updates
    * Bug 16397: Fix crash related to disabling SVG
@@ -31,6 +31,10 @@ Tor Browser 5.0a3 -- June 30 2015
    * Bug 7561: Disable FTP request caching
    * Bug 6503: Fix single-word URL bar searching
    * Bug 15526: ES6 page crashes Tor Browser
+   * Bug 16254: Disable GeoIP-based search results.
+   * Bug 16222: Disable WebIDE to prevent remote debugging and addon downloads.
+   * Bug 13024: Disable DOM Resource Timing API
+   * Bug 16340: Disable User Timing API
  * Mac OS
    * Use OSX 10.7 SDK
  * Build System
