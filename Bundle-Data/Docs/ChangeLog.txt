@@ -3,6 +3,7 @@ Tor Browser 5.0a3 -- June 30 2015
    * Update Firefox to 38.1.0esr
    * Update OpenSSL to 1.0.1o
    * Update NoScript to 2.6.9.27
+   * Update meek to 0.20
    * Tor patch backport
      * Bug 16430: Allow DNS names with _ characters in them (fixes nytimes.com)
    * Update Torbutton to 1.9.3.0
@@ -16,6 +17,7 @@ Tor Browser 5.0a3 -- June 30 2015
      * Bug 16428: Use internal update URL to block updates (instead of 127.0.0.1)
      * Bug 15145: Visually distinguish "proxy" and "bridge" screens.
      * Translation updates
+   * Bug 13247: Fix meek profile error after bowser restarts
    * Bug 16397: Fix crash related to disabling SVG
    * Bug 16403: Set search parameters for Disconnect
    * Bug 16446: Update FTE bridge #1 fingerprint
