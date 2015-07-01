@@ -71,6 +71,7 @@ for f in `ls *.exe`; do
     cd tmp
     if ! [ "$SHA256_TXT" = "`sha256sum $f`" ]
     then
+      echo "$f does not have the SHA 256 sum of the unsigned bundle!"
       BADSIGNED_BUNDLES=`expr $BADSIGNED_BUNDLES + 1`
     fi
     cd ..
