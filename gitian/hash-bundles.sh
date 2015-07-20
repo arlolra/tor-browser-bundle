@@ -19,11 +19,11 @@ eval $(./get-tb-version $TORBROWSER_VERSION_TYPE)
 export LC_ALL=C
 
 cd $TORBROWSER_BUILDDIR
-rm -f sha256sums.txt sha256sums.incrementals.txt
-sha256sum `ls -1 | grep -v '\.incremental\.mar$' | sort` > sha256sums.txt
+rm -f sha256sums-unsigned-build.txt sha256sums-unsigned-build.incrementals.txt
+sha256sum `ls -1 | grep -v '\.incremental\.mar$' | sort` > sha256sums-unsigned-build.txt
 if ls -1 | grep -q '\.incremental\.mar$'
 then
-    sha256sum `ls -1 | grep '\.incremental\.mar$' | sort` > sha256sums.incrementals.txt
+    sha256sum `ls -1 | grep '\.incremental\.mar$' | sort` > sha256sums-unsigned-build.incrementals.txt
     echo
     echo "If this is an official build, you should now sign your result with: "
     echo "  make sign"
@@ -42,4 +42,11 @@ else
     echo "  make incrementals && make hash"
 fi
 
+cat > .htaccess <<EOF
+RewriteEngine On
+RewriteRule ^sha256sums.txt$ sha256sums-unsigned-build.txt
+RewriteRule ^sha256sums.txt.asc$ sha256sums-unsigned-build.txt.asc
+RewriteRule ^sha256sums.incrementals.txt$ sha256sums-unsigned-build.incrementals.txt
+RewriteRule ^sha256sums.incrementals.txt.asc$ sha256sums-unsigned-build.incrementals.txt.asc
+EOF
 

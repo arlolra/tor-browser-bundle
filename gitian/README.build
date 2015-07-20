@@ -118,14 +118,15 @@ Detailed Explanation of Scripts:
     inputs for inclusion in the 'Docs/sources' subdirectory of the bundles
     themselves.
 
- 10. hash-bundles.sh: This script generates a 'sha256sums.txt' file in sorted,
-     reproducible order.
+ 10. hash-bundles.sh: This script generates a 'sha256sums-unsigned-build.txt'
+     file in sorted, reproducible order.
 
- 11. check-match.sh: This script checks your 'sha256sums.txt' file against
-     any signed, published builds.
+ 11. check-match.sh: This script checks your 'sha256sums-unsigned-build.txt'
+     file against any signed, published builds.
 
- 12. upload-signature.sh: This script signs and uploads your 'sha256sums.txt'
-     file (for use if you are an official builder).
+ 12. upload-signature.sh: This script signs and uploads your
+     'sha256sums-unsigned-build.txt' file (for use if you are an official
+     builder).
  13. signmars.sh: This script generates the signatures on the update (.mar)
      files. It expects an nssdb directory, containing the key, in the same
      directory (i.e. tor-browser-bundle/gitian where it is located, too) and

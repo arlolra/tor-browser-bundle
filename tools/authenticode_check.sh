@@ -32,7 +32,7 @@
 
 # Usage:
 # 1) Let OSSLSIGNCODE point to your osslsigncode binary
-# 2) Change into the directory containing the .exe files and the sha256sums.txt
+# 2) Change into the directory containing the .exe files and the sha256sums-unsigned-build.txt
 # 3) Run /path/to/authenticode_check.sh
 
 if [ -z "$OSSLSIGNCODE" ]
@@ -47,7 +47,7 @@ BADSIGNED_BUNDLES=0
 mkdir tmp
 
 for f in `ls *.exe`; do
-  SHA256_TXT=`grep "$f" sha256sums.txt`
+  SHA256_TXT=`grep "$f" sha256sums-unsigned-build.txt`
 
   # Test 1: Is the .exe file still unsigned? I.e. does its SHA 256 sum still
   # match the one we had before we signed the .exe file? If so, notify us

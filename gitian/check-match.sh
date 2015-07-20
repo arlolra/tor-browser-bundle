@@ -37,24 +37,24 @@ do
   mkdir -p $TORBROWSER_BUILDDIR/$u
   cd $TORBROWSER_BUILDDIR/$u
 
-  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.txt || continue
-  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.txt.asc || continue
+  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums-unsigned-build.txt || continue
+  wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums-unsigned-build.txt.asc || continue
 
   keyring="../../gpg/$u.gpg"
 
   # XXX: Remove this dir
   gpghome=$(mktemp -d)
   GNUPGHOME="$gpghome" gpg --import "$keyring"
-  GNUPGHOME="$gpghome" gpg sha256sums.txt.asc || exit 1
+  GNUPGHOME="$gpghome" gpg sha256sums-unsigned-build.txt.asc || exit 1
 
-  diff -u ../sha256sums.txt sha256sums.txt || exit 1
+  diff -u ../sha256sums-unsigned-build.txt sha256sums-unsigned-build.txt || exit 1
 
   VALID="$u $VALID"
 done
 cd ../..
 
 # XXX: We should refactor this code into a shared function
-if [ -f $TORBROWSER_BUILDDIR/sha256sums.incrementals.txt ]
+if [ -f $TORBROWSER_BUILDDIR/sha256sums-unsigned-build.incrementals.txt ]
 then
   for u in $USERS
   do
@@ -64,17 +64,17 @@ then
     mkdir -p $TORBROWSER_BUILDDIR/$u
     cd $TORBROWSER_BUILDDIR/$u
 
-    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.incrementals.txt || continue
-    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums.incrementals.txt.asc || continue
+    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums-unsigned-build.incrementals.txt || continue
+    wget -U "" -N https://$HOST/~$u/builds/$TORBROWSER_BUILDDIR/sha256sums-unsigned-build.incrementals.txt.asc || continue
 
     keyring="../../gpg/$u.gpg"
 
     # XXX: Remove this dir
     gpghome=$(mktemp -d)
     GNUPGHOME="$gpghome" gpg --import "$keyring"
-    GNUPGHOME="$gpghome" gpg sha256sums.incrementals.txt.asc || exit 1
+    GNUPGHOME="$gpghome" gpg sha256sums-unsigned-build.incrementals.txt.asc || exit 1
 
-    diff -u ../sha256sums.incrementals.txt sha256sums.incrementals.txt || exit 1
+    diff -u ../sha256sums-unsigned-build.incrementals.txt sha256sums-unsigned-build.incrementals.txt || exit 1
 
     VALID_incrementals="$u $VALID_incrementals"
   done
@@ -91,7 +91,7 @@ else
   echo "Matching bundles exist from the following users: $VALID"
 fi
 
-if [ -f $TORBROWSER_BUILDDIR/sha256sums.incrementals.txt ]
+if [ -f $TORBROWSER_BUILDDIR/sha256sums-unsigned-build.incrementals.txt ]
 then
   if [ -z "$VALID_incrementals" ]
   then
