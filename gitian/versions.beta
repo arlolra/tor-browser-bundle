@@ -26,6 +26,7 @@ LIBDMG_TAG=dfd5e5cc3dc1191e37d3c3a6118975afdd1d7014
 TXSOCKSX_TAG=216eb0894a1755872f4789f9458aa6cf543b8433 # unsigned habnabit/1.13.0.2
 GOPTLIB_TAG=0.2
 MEEK_TAG=0.18
+NOTOFONTS_TAG=720e34851382ee3c1ef024d8dffb68ffbfb234c2
 
 GITIAN_TAG=tor-browser-builder-3.x-6
 
@@ -47,6 +48,7 @@ SETUPTOOLS_VER=1.4
 LXML_VER=3.3.5
 PARSLEY_VER=1.2
 GO_VER=1.4.2
+NOTOCJKFONT_VER=1.004
 
 ## File names for the source packages
 OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -72,6 +74,7 @@ SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 LXML_PACKAGE=lxml-${LXML_VER}.tar.gz
 PARSLEY_PACKAGE=Parsley-${PARSLEY_VER}.tar.gz
 GO_PACKAGE=go${GO_VER}.src.tar.gz
+NOTOCJKFONT_PACKAGE=NotoSansCJKsc-Regular.otf
 
 # Hashes for packages with weak sigs or no sigs
 OPENSSL_HASH=53cb818c3b90e507a8348f4f5eaedb05d8bfe5358aabb508b7263cc670c3e028
@@ -92,6 +95,7 @@ PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
 SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 PARSLEY_HASH=50d30cee70770fd44db7cea421cb2fb75af247c3a1cd54885c06b30a7c85dd23
 GO_HASH=299a6fd8f8adfdce15bc06bde926e7b252ae8e24dd5b16b7d8791ed79e7b5e9b
+NOTOCJKFONT_HASH=1652500938055a232cfbfa321de6ebaadfc5635dd9f75e369bc991d14a6512dd
 
 ## Non-git package URLs
 OPENSSL_URL=https://www.openssl.org/source/${OPENSSL_PACKAGE}
@@ -116,3 +120,4 @@ SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS
 LXML_URL=https://pypi.python.org/packages/source/l/lxml/${LXML_PACKAGE}
 PARSLEY_URL=https://pypi.python.org/packages/source/P/Parsley/${PARSLEY_PACKAGE}
 GO_URL=https://golang.org/dl/${GO_PACKAGE}
+NOTOCJKFONT_URL=https://github.com/googlei18n/noto-cjk/raw/f36eda03dfa5582a6d49abbfb5c83d0209584158/${NOTOCJKFONT_PACKAGE}

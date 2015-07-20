@@ -118,6 +118,7 @@ ed25519                 $GOED25519_TAG
 siphash                 $GOSIPHASH_TAG
 goxcrypto               $GO_X_CRYPTO_TAG
 goxnet                  $GO_X_NET_TAG
+noto-fonts              $NOTO_FONTS_TAG
 EOF
 
 # Verify signatures on signed packages
@@ -141,7 +142,7 @@ done
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK + OSXSDK_OLD are not signed at all)
-for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
+for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC NOTOCJKFONT
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"

@@ -155,7 +155,7 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_ASN}${!PACKAGE}"
 done
 
-for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY GO
+for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY GO NOTOCJKFONT
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
@@ -167,7 +167,7 @@ wget -U "" -N ${NOSCRIPT_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK + OSXSDK_OLD are not signed at all)
-for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC
+for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC NOTOCJKFONT
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -258,6 +258,7 @@ siphash               https://github.com/dchest/siphash.git $GOSIPHASH_TAG
 goxcrypto             https://go.googlesource.com/crypto  $GO_X_CRYPTO_TAG
 goxnet                https://go.googlesource.com/net  $GO_X_NET_TAG
 obfs4                 https://git.torproject.org/pluggable-transports/obfs4.git $OBFS4_TAG
+noto-fonts            https://github.com/googlei18n/noto-fonts $NOTOFONTS_TAG
 EOF
 
 exit 0
