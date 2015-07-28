@@ -118,7 +118,7 @@ ed25519                 $GOED25519_TAG
 siphash                 $GOSIPHASH_TAG
 goxcrypto               $GO_X_CRYPTO_TAG
 goxnet                  $GO_X_NET_TAG
-noto-fonts              $NOTO_FONTS_TAG
+noto-fonts              $NOTOFONTS_TAG
 EOF
 
 # Verify signatures on signed packages
