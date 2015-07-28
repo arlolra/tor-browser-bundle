@@ -6,9 +6,10 @@ Tor Browser 5.0a4 -- August 3 2015
    * Update NoScript to 2.6.9.31
    * Tor patch backport
      * Bug 16674: Allow trailing '.' in FQDNs
+     * Bug 16430: Allow DNS names with _ characters in them (fixes nytimes.com)
    * Update Torbutton to 1.9.3.1
      * Bug 16268: Show Tor Browser logo on About page
-     * Bug 16639: Check for Updates menu item can cause update failure
+     * Bug 16639: Check for Updates menu item can cause update download failure
      * Bug 15781: Remove the sessionstore filter
      * Bug 15656: Sync privacy.resistFingerprinting with Torbutton pref
      * Translation updates
