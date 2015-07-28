@@ -1,3 +1,33 @@
+Tor Browser 5.0a4 -- August 3 2015
+ * All Platforms
+   * Update Tor to 0.2.7.2
+   * Update OpenSSL to 1.0.1p
+   * Update HTTPS-Everywhere to 5.0.7
+   * Update NoScript to 2.6.9.31
+   * Tor patch backport
+     * Bug 16674: Allow trailing '.' in FQDNs
+   * Update Torbutton to 1.9.3.1
+     * Bug 16268: Show Tor Browser logo on About page
+     * Bug 16639: Check for Updates menu item can cause update failure
+     * Bug 15781: Remove the sessionstore filter
+     * Bug 15656: Sync privacy.resistFingerprinting with Torbutton pref
+     * Translation updates
+   * Bug 16884: Prefer IPv6 if available in Tor Browser
+   * Bug 16488: Remove "Sign in to Sync" from the menu
+   * Bug 13313: Enable bundle fonts
+   * Bug 15646: Prevent keyboard layout fingerprinting in KeyboardEvent (fixup)
+   * Bug 15703: Isolate mediasource URIs and media streams to first party
+   * Bug 16429+16416: Isolate blob URIs to first party
+   * Bug 16632: Turn on the background updater
+   * Bug 16528: Prevent indexedDB Modernizr breakage
+   * Bug 16523: Chrome JavaScript debugger is broken
+   * Bug 16236: Windows updater: avoid writing to the registry
+   * Bug 16005: Restrict WebGL minimal mode a bit (fixup)
+   * Bug 16625: Fully disable network prediction
+   * Bug 16495: Tor Browser 5.0a3 crashes with security level set to "High"
+ * Build System
+   * Bug 15864: rename sha256sums.txt to sha256sums-unsigned-build.txt
+
 Tor Browser 5.0a3 -- June 30 2015
  * All Platforms
    * Update Firefox to 38.1.0esr
