@@ -217,7 +217,7 @@ then
 
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libdmg-hfsplus=$LIBDMG_TAG,https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,meek=$MEEK_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libdmg-hfsplus=$LIBDMG_TAG,https-everywhere=$HTTPSE_TAG,torbutton=$TORBUTTON_TAG,tor-launcher=$TORLAUNCHER_TAG,meek=$MEEK_TAG,noto-fonts=$NOTOFONTS_TAG $DESCRIPTOR_DIR/mac/gitian-bundle.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./bundle-fail-mac.log.`date +%Y%m%d%H%M%S`
