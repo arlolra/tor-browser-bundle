@@ -15,6 +15,7 @@ Tor Browser 5.0a4 -- August 3 2015
    * Bug 16884: Prefer IPv6 if available in Tor Browser
    * Bug 16488: Remove "Sign in to Sync" from the menu
    * Bug 13313: Enable bundle fonts
+   * Bug 16662: Enable network.http.spdy.* prefs in meek-http-helper
    * Bug 15646: Prevent keyboard layout fingerprinting in KeyboardEvent (fixup)
    * Bug 15703: Isolate mediasource URIs and media streams to first party
    * Bug 16429+16416: Isolate blob URIs to first party
