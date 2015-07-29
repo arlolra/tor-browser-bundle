@@ -1,8 +1,7 @@
 Tor Browser 5.0a4 -- August 3 2015
  * All Platforms
-   * Update Tor to 0.2.7.2-alpha with backported patches:
-     * Bug 16674: Allow trailing '.' in FQDNs
-     * Bug 16430: Allow DNS names with _ characters in them (fixes nytimes.com)
+   * Update Tor to 0.2.7.2-alpha with patches:
+     * Bug 15482: Don't allow circuits to change while a site is in use
    * Update OpenSSL to 1.0.1p
    * Update HTTPS-Everywhere to 5.0.7
    * Update NoScript to 2.6.9.31
