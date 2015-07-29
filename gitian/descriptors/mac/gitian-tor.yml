@@ -57,14 +57,13 @@ script: |
   export GIT_COMMITTER_NAME="nobody"
   export GIT_COMMITTER_EMAIL="nobody@localhost"
   export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
-  if [ ${TOR_TAG::9} == "tor-0.2.5" ];
+  if [ ${TOR_TAG::9} == "tor-0.2.6" ];
   then
-      git am ~/build/bug8405.patch
-      git am ~/build/bug8402-master.patch
-  else
       git am ~/build/bug15482.patch
       git am ~/build/bug16430.patch
       git am ~/build/bug16674.patch
+  else
+      git am ~/build/bug15482.patch
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
