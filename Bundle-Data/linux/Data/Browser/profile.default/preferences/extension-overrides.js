@@ -45,6 +45,7 @@ pref("noscript.subscription.lastCheck", -142148139);
 pref("noscript.temp", "");
 pref("noscript.untrusted", "");
 pref("noscript.forbidMedia", false);
+pref("noscript.allowWhitelistUpdates", false);
 // Now handled by plugins.click_to_play
 pref("noscript.forbidFlash", false);
 pref("noscript.forbidSilverlight", false);
