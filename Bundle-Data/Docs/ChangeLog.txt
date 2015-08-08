@@ -15,6 +15,7 @@ Tor Browser 5.5a1 -- August 11 2015
    * Bug 16715: Use ThreadsafeIsCallerChrome() instead of IsCallerChrome()
    * Bug 16572: Verify cache isolation for XMLHttpRequests in Web Workers
    * Bug 16311: Fix navigation timing in ESR 38
+   * Bug 15646: Prevent keyboard layout fingerprinting in KeyboardEvent (fixup)
 
 Tor Browser 5.0 -- August 11 2015
  * All Platforms
