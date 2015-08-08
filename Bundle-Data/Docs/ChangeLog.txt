@@ -14,6 +14,7 @@ Tor Browser 5.5a1 -- August 11 2015
    * Bug 16730: Prevent NoScript from updating the default whitelist
    * Bug 16715: Use ThreadsafeIsCallerChrome() instead of IsCallerChrome()
    * Bug 16572: Verify cache isolation for XMLHttpRequests in Web Workers
+   * Bug 16311: Fix navigation timing in ESR 38
 
 Tor Browser 5.0 -- August 11 2015
  * All Platforms
@@ -77,6 +78,7 @@ Tor Browser 5.0 -- August 11 2015
    * Bug 14952: Disable HTTP/2
    * Bug 1517: Reduce precision of time for Javascript
    * Bug 13670: Ensure OCSP & favicons respect URL bar domain isolation
+   * Bug 16311: Fix navigation timing in ESR 38
  * Windows
    * Bug 16014: Staged update fails if meek is enabled
    * Bug 16269: repeated add-on compatibility check after update (meek enabled)
