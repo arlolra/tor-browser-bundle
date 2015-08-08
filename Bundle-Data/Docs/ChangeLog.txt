@@ -22,8 +22,10 @@ Tor Browser 5.0 -- August 11 2015
    * Update HTTPS-Everywhere to 5.0.7
    * Update NoScript to 2.6.9.34
    * Update meek to 0.20
-   * Tor patch backport
+   * Update Tor to 0.2.6.10 with patches:
      * Bug 16674: Allow FQDNs ending with a single '.' in our SOCKS host name checks.
+     * Bug 16430: Allow DNS names with _ characters in them (fixes nytimes.com)
+     * Bug 15482: Don't allow circuits to change while a site is in use
    * Update Torbutton to 1.9.3.2
      * Bug 16731: TBB 5.0 a3/a4 fails to download a file on right click
      * Bug 16730: Reset NoScript whitelist on upgrade
@@ -54,7 +56,6 @@ Tor Browser 5.0 -- August 11 2015
    * Bug 16528: Prevent indexedDB Modernizr site breakage on Twitter and elsewhere
    * Bug 16523: Fix in-browser JavaScript debugger
    * Bug 16236: Windows updater: avoid writing to the registry
-   * Bug 16005: Restrict WebGL minimal mode a bit (fixup)
    * Bug 16625: Fully disable network connection prediction
    * Bug 16495: Fix SVG crash when security level is set to "High"
    * Bug 13247: Fix meek profile error after bowser restarts
@@ -63,7 +64,7 @@ Tor Browser 5.0 -- August 11 2015
    * Bug 16439: Remove Roku screencasting code
    * Bug 16285: Disabling EME bits
    * Bug 16206: Enforce certificate pinning
-   * Bug 15910: Disable GMPs for now
+   * Bug 15910: Disable Gecko Media Plugins for now
    * Bug 13670: Isolate OCSP requests by first party domain
    * Bug 16448: Isolate favicon requests by first party
    * Bug 7561: Disable FTP request caching
@@ -76,7 +77,6 @@ Tor Browser 5.0 -- August 11 2015
    * Bug 14952: Disable HTTP/2
    * Bug 1517: Reduce precision of time for Javascript
    * Bug 13670: Ensure OCSP & favicons respect URL bar domain isolation
-   * Bug 13875: Improve the spoofing of window.devicePixelRatio
  * Windows
    * Bug 16014: Staged update fails if meek is enabled
    * Bug 16269: repeated add-on compatibility check after update (meek enabled)
