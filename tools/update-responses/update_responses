@@ -226,6 +226,8 @@ sub get_response {
         platformVersion => get_config($config, $version, $os, 'platformVersion'),
         buildID => '20000101000000',
         detailsURL => get_config($config, $version, $os, 'detailsURL'),
+        actions => 'showURL',
+        openURL => get_config($config, $version, $os, 'detailsURL'),
         defined $minversion ? ( minSupportedOSVersion => $minversion ) : (),
     );
     foreach my $patch (@patches) {
