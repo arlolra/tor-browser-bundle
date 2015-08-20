@@ -31,3 +31,4 @@ Categories=Network;WebBrowser;Security;
 Exec=sh -c '"$(dirname "$*")"/Browser/start-tor-browser --detach || ([ ! -x "$(dirname "$*")"/Browser/start-tor-browser ] && "$(dirname "$*")"/start-tor-browser --detach)' dummy %k
 X-TorBrowser-ExecShell=./Browser/start-tor-browser --detach
 Icon=web-browser
+StartupWMClass=Tor Browser
