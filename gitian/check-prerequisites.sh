@@ -106,14 +106,20 @@ fi
 
 if [ "z$USE_LXC" != "z1" ];
 then
-  groups | grep libvirtd > /dev/null
+  if [ $DISTRO = "Debian" ];
+  then
+    libvirt_group=libvirt
+  else
+    libvirt_group=libvirtd
+  fi
+  groups | grep $libvirt_group > /dev/null
   if [ $? -ne 0 ];
   then
-    echo "You need to be in the libvirtd group to run Gitian."
+    echo "You need to be in the $libvirt_group group to run Gitian."
     echo
     echo "Please run:"
-    echo " sudo adduser $USER libvirtd"
-    echo " newgrp libvirtd"
+    echo " sudo adduser $USER $libvirt_group"
+    echo " newgrp $libvirt_group"
     exit 1
   fi
   if [ -z "$DISPLAY" ];
