@@ -60,6 +60,23 @@ else
   exit 1
 fi
 
+update_responses_pkg="libyaml-perl libfile-slurp-perl libxml-writer-perl libio-captureoutput-perl libfile-which-perl libparallel-forkmanager-perl libxml-libxml-perl libwww-perl"
+missing_pkg=''
+for pkg in $update_responses_pkg
+do
+    if ! dpkg -s $pkg 2>/dev/null >/dev/null
+    then
+        missing_pkg="$missing_pkg $pkg"
+    fi
+done
+if [ -n "$missing_pkg" ]
+then
+    echo "You are missing one or more dependencies for the update_responses script"
+    echo "Please run"
+    echo " sudo apt-get install $missing_pkg"
+    exit 1
+fi
+
 if [ ! -f ../../gitian-builder/bin/gbuild ];
 then
   echo "Gitian not found. You need a Gitian checkout in ../../gitian-builder"
