@@ -60,7 +60,7 @@ else
   exit 1
 fi
 
-update_responses_pkg="libyaml-perl libfile-slurp-perl libxml-writer-perl libio-captureoutput-perl libfile-which-perl libparallel-forkmanager-perl libxml-libxml-perl libwww-perl"
+update_responses_pkg="libyaml-perl libfile-slurp-perl libxml-writer-perl libio-captureoutput-perl libfile-which-perl libparallel-forkmanager-perl libxml-libxml-perl libwww-perl libjson-perl"
 missing_pkg=''
 for pkg in $update_responses_pkg
 do

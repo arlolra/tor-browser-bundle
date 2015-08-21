@@ -14,7 +14,7 @@ Dependencies
 The following perl modules need to be installed to run the script:
   FindBin YAML File::Slurp Digest::SHA XML::Writer File::Temp
   IO::CaptureOutput File::Which Parallel::ForkManager XML::LibXML
-  LWP
+  LWP JSON
 
 On Debian / Ubuntu you can install them with:
 
@@ -23,7 +23,7 @@ On Debian / Ubuntu you can install them with:
                     libdigest-sha-perl libxml-writer-perl \
                     libio-captureoutput-perl libfile-which-perl \
                     libparallel-forkmanager-perl libxml-libxml-perl \
-                    libwww-perl
+                    libwww-perl libjson-perl
 ```
 
 On Red Hat / Fedora you can install them with:
@@ -31,7 +31,7 @@ On Red Hat / Fedora you can install them with:
 ```
   # for module in FindBin YAML File::Slurp Digest::SHA XML::Writer \
                   File::Temp IO::CaptureOutput File::Which \
-                  Parallel::ForkManager XML::LibXML LWP
+                  Parallel::ForkManager XML::LibXML LWP JSON
     do yum install "perl($module)"; done
 ```
 

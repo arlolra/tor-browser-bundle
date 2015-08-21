@@ -19,6 +19,7 @@ use Parallel::ForkManager;
 use File::Basename;
 use XML::LibXML '1.70';
 use LWP::Simple;
+use JSON;
 
 # Set umask and locale to provide a consistent environment for MAR file
 # generation, etc.
@@ -107,6 +108,32 @@ sub get_version_files {
     }
     closedir $d;
     $config->{versions}{$version}{files} = $files;
+}
+
+sub get_version_downloads {
+    my ($config, $version) = @_;
+    my $downloads = {};
+    my $vdir = "$releases_dir/$version";
+    opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
+    foreach my $file (readdir $d) {
+        next unless -f "$vdir/$file";
+        my ($os, $lang);
+        if ($file =~ m/^TorBrowser-$version-osx64_(.+).dmg$/) {
+            ($os, $lang) = ('osx64', $1);
+        } elsif ($file =~ m/^tor-browser-(linux32|linux64)-${version}_(.+).tar.xz$/) {
+            ($os, $lang) = ($1, $2);
+        } elsif ($file =~ m/^torbrowser-install-${version}_(.+).exe$/) {
+            ($os, $lang) = ('win32', $1);
+        } else {
+            next;
+        }
+        $downloads->{$os}{$lang} = {
+            binary => "$config->{versions}{$version}{download_url}/$file",
+            sig => "$config->{versions}{$version}{download_url}/$file.asc",
+        };
+    }
+    closedir $d;
+    $config->{versions}{$version}{downloads} = $downloads;
 }
 
 sub extract_mar {
@@ -298,6 +325,19 @@ sub write_htaccess {
             $htaccess .= "RewriteRule ^$bt $version-$os-en-US.xml $flags\n";
         }
         write_htdocs($channel, '.htaccess', $htaccess);
+    }
+}
+
+sub write_downloads_json {
+    my ($config, @channels) = @_;
+    @channels = keys %{$config->{channels}} unless @channels;
+    foreach my $channel (@channels) {
+        my $version = $config->{channels}{$channel};
+        my $data = {
+            version => $version,
+            downloads => get_version_downloads($config, $version),
+        };
+        write_htdocs($channel, 'downloads.json', encode_json($data));
     }
 }
 
@@ -501,6 +541,7 @@ my %actions = (
         }
         write_responses($config, @channels);
         write_htaccess($config, @channels);
+        write_downloads_json($config, @channels);
         clean_htdocs(@channels);
     },
     gen_incrementals => sub {
