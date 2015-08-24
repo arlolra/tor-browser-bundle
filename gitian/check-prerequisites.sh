@@ -88,10 +88,16 @@ then
   exit 1
 fi
 
-kvm-ok > /dev/null
+if [ $DISTRO = "Debian" ];
+then
+    kvm_ok=../tools/kvm-ok
+else
+    kvm_ok=kvm-ok
+fi
+$kvm_ok > /dev/null
 if [ $? -ne 0 -a "z$USE_LXC" != "z1" ];
 then
-  kvm-ok
+  $kvm_ok
   echo
   echo "Most likely, this means you will need to use LXC."
   echo
