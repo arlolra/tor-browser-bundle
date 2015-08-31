@@ -25,7 +25,7 @@ versions:
             detailsURL: https://blog.torproject.org/blog/end-life-plan-tor-browser-32-bit-macs#updating
     5.5a2:
         platformVersion: 38.2.1
-        detailsURL: https://www.torproject.org/projects/torbrowser.html.en
+        detailsURL: https://blog.torproject.org/blog/tor-browser-55a2-released
         download_url: https://www.torproject.org/dist/torbrowser/5.5a2
         incremental_from:
           - 5.5a1
