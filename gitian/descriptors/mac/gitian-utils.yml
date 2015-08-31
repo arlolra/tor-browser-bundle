@@ -16,6 +16,8 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 files:
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
@@ -24,6 +26,7 @@ files:
 - "gmp.tar.bz2"
 - "versions"
 - "dzip.sh"
+- "libfaketime.patch"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -44,8 +47,17 @@ script: |
     ~/build/dzip.sh gcc-$GCC_VER-linux64-precise-utils.zip gcc
     cp *utils.zip $OUTDIR/
   else
-    export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+    # Building libfaketime.
+    cd faketime
+    export GIT_COMMITTER_NAME="nobody"
+    export GIT_COMMITTER_EMAIL="nobody@localhost"
+    export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
+    git am ~/build/libfaketime.patch
+    make
+    DESTDIR="$INSTDIR/faketime" make install
+    export FAKETIME_SKIP_CMDS="make"
     export FAKETIME=$REFERENCE_DATETIME
+    cd ..
 
     sudo dpkg -i *.deb
     tar xaf multiarch-darwin*tar.xz
@@ -65,6 +77,7 @@ script: |
     ./autogen.sh
     find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
     ./configure --disable-static --host=i686-apple-darwin11 --prefix=$INSTDIR/libevent
+    export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
     make $MAKEOPTS
     make install
     cd ..
@@ -84,10 +97,15 @@ script: |
     # Building GMP
     tar xjf gmp.tar.bz2
     cd gmp-*
+    # |configure| can't cope with nano seconds faked. And even if we would revert
+    # that feature it would hang sometimes for unknown but to libfaketime related
+    # reasons.
+    export LD_PRELOAD=""
     find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
     # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
     # during compile time.
     ./configure --host=x86_64-apple-darwin11 --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+    export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
     make
     make install
     cd ..

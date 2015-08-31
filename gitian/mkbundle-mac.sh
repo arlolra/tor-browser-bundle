@@ -114,7 +114,7 @@ then
   echo
   echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
   echo
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG,faketime=$FAKETIME_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./utils-fail-mac.log.`date +%Y%m%d%H%M%S`
