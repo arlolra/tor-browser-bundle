@@ -182,7 +182,8 @@ script: |
   #
   unzip linux-langpacks.zip
   cd linux-langpacks
-  for LANG in $BUNDLE_LOCALES
+  LINUX_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_LINUX"
+  for LANG in $LINUX_LOCALES
   do
     xpi=$LANG.xpi
     cp -a ../tor-browser ../tor-browser_$LANG

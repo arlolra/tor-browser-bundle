@@ -208,7 +208,8 @@ script: |
   #
   unzip mac-langpacks.zip
   cd mac-langpacks
-  for LANG in $BUNDLE_LOCALES
+  MAC_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_MAC"
+  for LANG in $MAC_LOCALES
   do
     xpi=$LANG.xpi
     DEST=$TORBROWSER_APP

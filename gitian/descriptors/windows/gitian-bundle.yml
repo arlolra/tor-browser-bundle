@@ -173,7 +173,8 @@ script: |
   #
   unzip ../win32-langpacks.zip
   cd win32-langpacks
-  for LANG in $BUNDLE_LOCALES
+  WIN32_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_WIN32"
+  for LANG in $WIN32_LOCALES
   do
     xpi=$LANG.xpi
     cp $xpi ../"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi

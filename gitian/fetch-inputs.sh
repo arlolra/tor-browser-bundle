@@ -177,6 +177,7 @@ do
    fi
 done
 
+# Fetch the common langpacks first, then the platform specific ones if any.
 mkdir -p langpacks-$FIREFOX_LANG_VER/linux-langpacks
 mkdir -p langpacks-$FIREFOX_LANG_VER/win32-langpacks
 mkdir -p langpacks-$FIREFOX_LANG_VER/mac-langpacks
@@ -191,6 +192,25 @@ do
   cd win32-langpacks
   wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/win32/xpi/$i.xpi"
   cd ..
+  cd mac-langpacks
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/mac/xpi/$i.xpi"
+  cd ..
+done
+
+for i in $BUNDLE_LOCALES_LINUX
+do
+  cd linux-langpacks
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/linux-i686/xpi/$i.xpi"
+  cd ..
+done
+for i in $BUNDLE_LOCALES_WIN32
+do
+  cd win32-langpacks
+  wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/win32/xpi/$i.xpi"
+  cd ..
+done
+for i in $BUNDLE_LOCALES_MAC
+do
   cd mac-langpacks
   wget -U "" -N "https://ftp.mozilla.org/pub/mozilla.org/firefox/candidates/${FIREFOX_LANG_VER}-candidates/${FIREFOX_LANG_BUILD}/mac/xpi/$i.xpi"
   cd ..
