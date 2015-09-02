@@ -44,7 +44,7 @@ foreach my $commit (run_cmd('git', 'log', '-s', '--format=%H', '-200')) {
     next unless $tags{$commit};
     print "TORBROWSER_VERSION=$tags{$commit}->[0]\n";
     print "TORBROWSER_BUILDDIR=$tags{$commit}->[0]-",
-          substr($commit, 0, 12), "\n";
+          substr($current_commit, 0, 12), "\n";
     print "TORBROWSER_SYMLINK_VERSION=0\n";
     exit 0;
 }
