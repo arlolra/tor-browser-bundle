@@ -49,5 +49,6 @@ foreach my $commit (run_cmd('git', 'log', '-s', '--format=%H', '-200')) {
     exit 0;
 }
 
-print STDERR "Could not find TORBROWSER version from tags\n";
+print STDERR "Could not find TORBROWSER version from tags. Does your git repo have tags?\n";
+print "exit 1\n";
 exit 1;
