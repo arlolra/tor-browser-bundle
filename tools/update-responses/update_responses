@@ -331,6 +331,11 @@ sub extract_martools {
     chdir $old_cwd;
     exit_error "Error extracting $marzip" unless $success;
     $ENV{PATH} .= ":$martools_tmpdir/mar-tools";
+    if ($ENV{LD_LIBRARY_PATH}) {
+        $ENV{LD_LIBRARY_PATH} .= ":$martools_tmpdir/mar-tools";
+    } else {
+        $ENV{LD_LIBRARY_PATH} = "$martools_tmpdir/mar-tools";
+    }
 }
 
 sub log_step {
