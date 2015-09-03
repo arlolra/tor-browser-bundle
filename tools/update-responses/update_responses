@@ -423,7 +423,7 @@ sub download_version {
         }
     }
     if (system('gpg', '--no-default-keyring', '--keyring',
-            $config->{download}{gpg_keyring}, '--verify',
+            "$FindBin::Bin/$config->{download}{gpg_keyring}", '--verify',
             "$tmpdir/sha256sums-unsigned-build.txt.asc",
             "$tmpdir/sha256sums-unsigned-build.txt")) {
         exit_error "Error checking gpg signature for version $version";
