@@ -49,7 +49,6 @@ files:
 - "mar-tools-win32.zip"
 - "tbb-docs.zip"
 - "pe_checksum_fix.py"
-- "NotoSansCJKsc-Regular.otf"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -115,15 +114,14 @@ script: |
   #
   # Install fonts.
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/fonts
-  NOTO_FONTS_HINTED="NotoNaskhArabic-Regular.ttf NotoSansArmenian-Regular.ttf NotoSansBengali-Regular.ttf NotoSansDevanagari-Regular.ttf NotoSansEthiopic-Regular.ttf NotoSansGeorgian-Regular.ttf NotoSansGujarati-Regular.ttf NotoSansGurmukhi-Regular.ttf NotoSansHebrew-Regular.ttf NotoSansKannada-Regular.ttf NotoSansKhmer-Regular.ttf NotoSansLao-Regular.ttf NotoSansMalayalam-Regular.ttf NotoSansMyanmar-Regular.ttf NotoSansOriya-Regular.ttf NotoSansSinhala-Regular.ttf NotoSansTamil-Regular.ttf NotoSansTelugu-Regular.ttf NotoSansThaana-Regular.ttf NotoSansThai-Regular.ttf NotoSansTibetan-Regular.ttf NotoSerifArmenian-Regular.ttf NotoSerifKhmer-Regular.ttf NotoSerifLao-Regular.ttf NotoSerifThai-Regular.ttf"
+  NOTO_FONTS_HINTED="NotoSansKhmer-Regular.ttf NotoSansLao-Regular.ttf NotoSansMyanmar-Regular.ttf"
   for fontfile in $NOTO_FONTS_HINTED; do
     cp "noto-fonts/hinted/$fontfile" tbb-windows-installer/"Tor Browser"/Browser/fonts/
   done
-  NOTO_FONTS_UNHINTED="NotoSansCanadianAboriginal-Regular.ttf NotoSansBuginese-Regular.ttf NotoSansCherokee-Regular.ttf NotoSansMongolian-Regular.ttf NotoSansYi-Regular.ttf"
+  NOTO_FONTS_UNHINTED="NotoSansBuginese-Regular.ttf NotoSansYi-Regular.ttf"
   for fontfile in $NOTO_FONTS_UNHINTED; do
     cp "noto-fonts/unhinted/$fontfile" tbb-windows-installer/"Tor Browser"/Browser/fonts/
   done
-  cp NotoSansCJKsc-Regular.otf tbb-windows-installer/"Tor Browser"/Browser/fonts/
   #
   cd tbb-windows-installer/"Tor Browser"
   unzip ~/build/tor-browser-win32-gbuilt.zip
