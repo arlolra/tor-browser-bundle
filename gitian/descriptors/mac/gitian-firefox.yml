@@ -58,6 +58,8 @@ script: |
   tar xaf MacOSX10.7.sdk.tar.gz
   #
   cd tor-browser
+  TB_COMMIT_DATE=$(git show -s --format='%ci')
+  COPYRIGHT_YEAR=${TB_COMMIT_DATE%%-*}
   mv .mozconfig-mac .mozconfig
   # .git and the src takes up a lot of useless space, and we need the space to build
   #git archive HEAD | tar -x -C $OUTDIR/src
@@ -101,7 +103,7 @@ script: |
   # Adjust the Info.plist file
   INFO_PLIST=TorBrowser.app/Contents/Info.plist
   mv $INFO_PLIST tmp.plist
-  ~/build/fix-info-plist.py $TORBROWSER_VERSION < tmp.plist > $INFO_PLIST
+  ~/build/fix-info-plist.py $TORBROWSER_VERSION $COPYRIGHT_YEAR < tmp.plist > $INFO_PLIST
   rm -f tmp.plist
   ~/build/re-dzip.sh TorBrowser.app/Contents/Resources/omni.ja
   ~/build/re-dzip.sh TorBrowser.app/Contents/Resources/webapprt/omni.ja

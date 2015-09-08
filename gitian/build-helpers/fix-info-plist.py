@@ -10,17 +10,17 @@ import plistlib
 import sys
 
 def usage():
-    print >> sys.stderr, "usage: %s TORBROWSER_VERSION < Info.plist > FixedInfo.plist" % sys.argv[0]
+    print >> sys.stderr, "usage: %s TORBROWSER_VERSION YEAR < Info.plist > FixedInfo.plist" % sys.argv[0]
     sys.exit(2)
 
 _, args = getopt.gnu_getopt(sys.argv[1:], "")
 
-if len(args) != 1:
+if len(args) != 2:
     usage()
 
 TORBROWSER_VERSION = args[0]
+YEAR = args[1]
 
-YEAR = "2014"
 COPYRIGHT = "Tor Browser %s Copyright %s The Tor Project" % (TORBROWSER_VERSION, YEAR)
 
 plist = plistlib.readPlist(sys.stdin)
