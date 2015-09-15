@@ -17,13 +17,14 @@ pref("extensions.https_everywhere.toolbar_hint_shown", true);
 
 # NoScript Preferences:
 pref("capability.policy.maonoscript.javascript.enabled", "allAccess");
-pref("capability.policy.maonoscript.sites", "about: chrome: resource:");
+pref("capability.policy.maonoscript.sites", "about: chrome: resource: blob: mediasource: moz-safe-about:");
+pref("noscript.default", "about: chrome: resource: blob: mediasource: moz-safe-about:");
+pref("noscript.mandatory", "about: chrome: resource: blob: mediasource: moz-safe-about:");
 pref("noscript.ABE.enabled", false);
 pref("noscript.ABE.notify", false);
 pref("noscript.ABE.wanIpAsLocal", false);
 pref("noscript.confirmUnblock", false);
 pref("noscript.contentBlocker", true);
-pref("noscript.default", "about: chrome: resource:");
 pref("noscript.firstRunRedirection", false);
 pref("noscript.global", true);
 pref("noscript.gtemp", "");
