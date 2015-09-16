@@ -231,11 +231,12 @@ script: |
     popd
 
     # Set the update.locale (it is used to replace %LOCALE% within
-    # app.update.url) and recreate the precomplete file (needs to be accurate
-    # for full MAR updates).
+    # app.update.url), remove the en-US spellchecking dictionary, and recreate
+    # the precomplete file (needs to be accurate for full MAR updates).
     pushd ~/build/dmg/$DEST.app/Contents/Resources/
     echo "$LANG" > update.locale
     zip -Xm omni.ja update.locale
+    rm -rf dictionaries
     rm -f precomplete
     python $MARTOOLS/createprecomplete.py
     popd
