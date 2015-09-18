@@ -1,3 +1,73 @@
+Tor Browser 5.5a3 -- September 22 2015
+ * All Platforms
+   * Update Firefox to 38.3.0esr
+   * Update libevent to 2.0.22-stable
+   * Update HTTPS-Everywhere to 5.1.1
+   * Update Torbutton to 1.9.4
+     * Bug 16937: Don't translate the hompepage/spellchecker dictionary string
+     * Bug 16735: about:tor should accommodate different fonts/font sizes
+     * Bug 16887: Update intl.accept_languages value
+     * Bug 15493: Update circuit display on new circuit info
+     * Bug 16797: brandShorterName is missing from brand.properties
+     * Translation updates
+   * Bug 10140: Add new Tor Browser locale (Japanese)
+   * Bug 17102: Don't crash while opening a second Tor Browser
+   * Bug 16983: Isolate favicon requests caused by the tab list dropdown
+   * Bug 16909: Adapt to HTTPS-Everywhere build changes
+   * Bug 13512: Load a static tab with change notes after an update
+   * Bug 16937: Remove the en-US dictionary from non en-US Tor Browser bundles
+   * Bug 7446: Tor Browser should not "fix up" .onion domains (or any domains)
+   * Bug 16837: Disable Firefox Hotfix updates
+   * Bug 16855: Allow blobs to be download on first-party pages (fixes mega.nz)
+   * Bug 16781: Allow saving pdf files in built-in pdf viewer
+   * Bug 16842: Restore Media tab on Page information dialog
+   * Bug 16727: Disable about:healthreport page
+   * Bug 16783: Normalize NoScript default whitelist
+   * Bug 16775: Fix preferences dialog with security slider set to "High"
+   * Bug 13579: Update download progress bar automatically
+   * Bug 15646: Reduce keyboard layout fingerprinting in KeyboardEvent
+   * Bug 17046: Event.timeStamp should not reveal startup time
+   * Bug 16872: Fix warnings when opening about:downloads
+   * Bug 17097: Fix intermittent crashes when using the print dialog
+ * Windows
+  * Bug 16906: Fix Mingw-w64 compilation/Don't depend on Windows crypto DLLs
+  * Bug 16707: Allow more system fonts to get used on Windows
+ * OS X
+  * Bug 16910: Update copyright year in OS X bundles
+  * Bug 16707: Allow more system fonts to get used on OS X
+ * Linux
+  * Bug 16672: Don't use font whitelisting for Linux users
+ * Build system
+   * Bug 16909: Bump Ubuntu host reqirement to 14.04+
+   * Bug 12240+12237: Make LXC builds reproducible
+
+Tor Browser 5.0.3 -- September 22 2015
+ * All Platforms
+   * Update Firefox to 38.3.0esr
+   * Update Torbutton to 1.9.3.4
+     * Bug 16887: Update intl.accept_languages value
+     * Bug 15493: Update circuit display on new circuit info
+     * Bug 16797: brandShorterName is missing from brand.properties
+     * Bug 14429: Make sure the automatic resizing is disabled
+     * Translation updates
+   * Bug 7446: Tor Browser should not "fix up" .onion domains (or any domains)
+   * Bug 16837: Disable Firefox Hotfix updates
+   * Bug 16855: Allow blobs to be download on first-party pages (fixes mega.nz)
+   * Bug 16781: Allow saving pdf files in built-in pdf viewer
+   * Bug 16842: Restore Media tab on Page information dialog
+   * Bug 16727: Disable about:healthreport page
+   * Bug 16783: Normalize NoScript default whitelist
+   * Bug 16775: Fix preferences dialog with security slider set to "High"
+   * Bug 13579: Update download progress bar automatically
+   * Bug 15646: Reduce keyboard layout fingerprinting in KeyboardEvent
+   * Bug 17046: Event.timeStamp should not reveal startup time
+   * Bug 16872: Fix warnings when opening about:downloads
+   * Bug 17097: Fix intermittent crashes when using the print dialog
+ * Windows
+  * Bug 16906: Fix Mingw-w64 compilation breakage
+ * OS X
+  * Bug 16910: Update copyright year in OS X bundles
+
 Tor Browser 5.5a2 -- August 28 2015
  * All Platforms:
    * Update Firefox to 38.2.1esr
