@@ -10,7 +10,7 @@ BUILD_PT_BUNDLES=1
 
 VERIFY_TAGS=0
 
-FIREFOX_VERSION=38.2.1esr
+FIREFOX_VERSION=38.3.0esr
 
 TORBROWSER_UPDATE_CHANNEL=default
 
@@ -21,7 +21,7 @@ TORBUTTON_TAG=master
 HTTPSE_TAG=master
 NSIS_TAG=v0.3
 ZLIB_TAG=v1.2.8
-LIBEVENT_TAG=release-2.0.21-stable
+LIBEVENT_TAG=release-2.0.22-stable
 MINGW_TAG=a883b47a45ff74ced41dfbd9f748d5c2c61f3c01 # due to bug 1156131
 PYPTLIB_TAG=master
 OBFSPROXY_TAG=master
@@ -40,7 +40,7 @@ GO_X_NET_TAG=master
 OBFS4_TAG=master
 NOTOFONTS_TAG=720e34851382ee3c1ef024d8dffb68ffbfb234c2
 
-GITIAN_TAG=tor-browser-builder-3.x-7
+GITIAN_TAG=tor-browser-builder-3.x-8-gpgsux
 
 OPENSSL_VER=1.0.1p
 GMP_VER=5.1.3
