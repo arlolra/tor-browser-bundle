@@ -65,7 +65,7 @@ script: |
   MARTOOLS=~/build/mar-tools
   #
   mkdir -p $OUTDIR/
-  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/Caches
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Docs/sources
@@ -90,16 +90,10 @@ script: |
   cd ../../../
   #
   cd https-everywhere
-  # We are invoking the build script with a particular tag to avoid #10066. This
-  # does not work for nightlies as there is no "master" tag in that sense. But
-  # we don't need to care about that as we don't need reproducibility for
-  # nightly builds.
-  if [ $HTTPSE_TAG != "master" ];
-  then
-    ./makexpi.sh $HTTPSE_TAG
-  else
-    ./makexpi.sh
-  fi
+  # XXX: Bloody hack to workaround a bug in HTTPS_E's git hash extraction in
+  # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
+  rm -f .git/refs/heads/master
+  ./makexpi.sh
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
   rm ./pkg/*-amo.xpi
   cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
@@ -108,7 +102,7 @@ script: |
   cp *.xpi tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
   cd tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
-  cd https-everywhere-eff@eff.org
+  cd https-everywhere@eff.org
   unzip ../https-everywhere@eff.org.xpi
   rm ../https-everywhere@eff.org.xpi
   cd ~/build/
