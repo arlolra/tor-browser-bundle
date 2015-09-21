@@ -65,20 +65,38 @@ script: |
   fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
-  # Let's avoid the console window popping up.
-  export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
-  export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs"
-  ./autogen.sh
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  ./configure --disable-asciidoc --host=i686-w64-mingw32 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
-  make $MAKEOPTS
-  make install
-  cd ..
-  install -s $INSTDIR/bin/tor.exe $INSTDIR/Tor/
-  cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
-  cp $INSTDIR/share/tor/geoip6 $INSTDIR/Data/Tor/
+  # We are building normal bundles without the console popping up and expert
+  # ones with. See bug 13819 for the request and details.
+  mkdir build
+  BUILDS="normal expert"
+  for BUILD in $BUILDS
+  do
+    if [ "$BUILD" == "expert" ]
+    then
+      FLAG=""
+      BUNDLE="expert-"
+    else
+      FLAG="-mwindows"
+      BUNDLE=""
+    fi
+    export CFLAGS="$FLAG -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
+    export LDFLAGS="$FLAG -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs"
+    ./autogen.sh
+    find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+    cd build
+    ../configure --disable-asciidoc --host=i686-w64-mingw32 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR --with-zlib-dir=$INSTDIR/zlib/
+    make $MAKEOPTS
+    make install
+    cd ../..
+    install -s $INSTDIR/bin/tor.exe $INSTDIR/Tor/
+    cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
+    cp $INSTDIR/share/tor/geoip6 $INSTDIR/Data/Tor/
 
-  # Grabbing the result
-  cd $INSTDIR
-  ~/build/dzip.sh tor-win32-gbuilt.zip Tor/ Data/
-  cp tor-win32-gbuilt.zip $OUTDIR/
+    # Grabbing the result
+    cd $INSTDIR
+    ~/build/dzip.sh tor-win32-${BUNDLE}gbuilt.zip Tor/ Data/
+    cp tor-win32-${BUNDLE}gbuilt.zip $OUTDIR/
+    cd ~/build/tor
+    # Remove artifacts of the previous build
+    rm -rf build/*
+  done

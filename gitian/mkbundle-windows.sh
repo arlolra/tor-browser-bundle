@@ -148,7 +148,8 @@ else
   cd ..
 fi
 
-if [ ! -f inputs/tor-win32-gbuilt.zip ];
+if [ ! -f inputs/tor-win32-gbuilt.zip -o \
+     ! -f inputs/tor-win32-expert-gbuilt.zip ];
 then
   echo
   echo "****** Starting Tor Component of Windows Bundle (2/5 for Windows) ******"
@@ -161,7 +162,7 @@ then
     exit 1
   fi
 
-  cp -a build/out/tor-win32-gbuilt.zip inputs/
+  cp -a build/out/tor-win32-*gbuilt.zip inputs/
   #cp -a result/tor-windows-res.yml inputs/
 else
   echo
@@ -230,7 +231,7 @@ then
   mkdir -p $WRAPPER_DIR/$TORBROWSER_BUILDDIR/
   cp -a build/out/*.exe $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
-  cp -a inputs/tor-win32-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/tor-win32-${TOR_TAG_ORIG:4}.zip || exit 1
+  cp -a inputs/tor-win32-expert-gbuilt.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/tor-win32-${TOR_TAG_ORIG:4}.zip || exit 1
   touch inputs/bundle-windows.gbuilt
 else
   echo
