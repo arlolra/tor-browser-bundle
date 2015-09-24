@@ -35,8 +35,6 @@ Tor Browser 5.5a3 -- September 22 2015
   * Bug 16707: Allow more system fonts to get used on OS X
  * Linux
   * Bug 16672: Don't use font whitelisting for Linux users
- * Build system
-   * Bug 12240+12237: Make LXC builds reproducible
 
 Tor Browser 5.0.3 -- September 22 2015
  * All Platforms
