@@ -101,6 +101,9 @@ script: |
   cd ../../../
   #
   cd https-everywhere
+  # Workaround for git not knowing `git submodule -f` in the version shipped in
+  # 10.04.
+  sed 's/recursive -f/recursive/' -i makexpi.sh
   # We are invoking the build script with a particular tag to avoid #10066. This
   # does not work for nightlies as there is no "master" tag in that sense. But
   # we don't need to care about that as we don't need reproducibility for
