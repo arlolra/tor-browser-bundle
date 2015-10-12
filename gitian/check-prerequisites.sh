@@ -6,7 +6,7 @@ if [ ! -f /etc/debian_version ];
 then
   echo "Gitian is dependent upon the Ubuntu Virtualization Tools."
   echo
-  echo "You need to run Ubuntu 12.04 LTS/Debian Wheezy or newer."
+  echo "You need to run Ubuntu 14.04 LTS/Debian Wheezy or newer."
   exit 1
 fi
 
@@ -14,15 +14,22 @@ DISTRO=`cat /etc/issue | grep -Eo 'Ubuntu|Debian*'`
 
 if [ $DISTRO = "Ubuntu" ];
 then
-  dpkg -s ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion torsocks tor 2>/dev/null >/dev/null
-
-  if [ $? -ne 0 ];
+  VERSION=`cat /etc/issue | grep -Eo '[0-9]{2}' | head -1`
+  if [ "$VERSION" -ge "14" ];
   then
-    echo "You are missing one or more Gitian build tool dependencies."
-    echo
-    echo "Please run:"
-    echo " sudo apt-get install torsocks tor"
-    echo " sudo torsocks apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion"
+    dpkg -s ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion torsocks tor 2>/dev/null >/dev/null
+
+    if [ $? -ne 0 ];
+    then
+      echo "You are missing one or more Gitian build tool dependencies."
+      echo
+      echo "Please run:"
+      echo " sudo apt-get install torsocks tor"
+      echo " sudo torsocks apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm virt-what lxc lxctl fakeroot faketime zip unzip subversion"
+      exit 1
+    fi
+  else
+    echo "Your Ubuntu is too old. You need Ubuntu 14.04 LTS or newer to build Tor Browser with Gitian."
     exit 1
   fi
 elif [ $DISTRO = "Debian" ];
