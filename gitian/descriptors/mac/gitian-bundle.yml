@@ -56,6 +56,7 @@ files:
 - "mar-tools-mac64.zip"
 - "tbb-docs.zip"
 - "mac-tor.sh"
+- "STIXv1.1.1-latex.zip"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -133,6 +134,8 @@ script: |
   for fontfile in $NOTO_FONTS_UNHINTED; do
     cp "noto-fonts/unhinted/$fontfile" $TORBROWSER_NAME.app/Contents/Resources/fonts/
   done
+  unzip -o STIXv1.1.1-latex.zip -d STIX
+  cp "STIX/Fonts/fonts/opentype/public/stix/STIXMath-Regular.otf" $TORBROWSER_NAME.app/Contents/Resources/fonts/
   #
   unzip tor-mac$GBUILD_BITS-gbuilt.zip
   if [ $BUILD_PT_BUNDLES ]; then
