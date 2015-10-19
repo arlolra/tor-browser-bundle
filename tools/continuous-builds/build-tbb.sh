@@ -29,7 +29,7 @@ N=$6; [ -z "$N" ] && N=16
 [ -z "$MAILX" ] && MAILX=""
 
 # Name of log file.
-logfile=$(date -u +%s).log
+logfile=build-logs/$(date -u +%s).log
 
 # LOGRECIPIENTS is a space separated list of email addresses or an
 # empty string.
@@ -50,7 +50,7 @@ while [ $status != done ]; do
   printf "%s: Starting build number %d. target=$TARGET.\n" $0 $n | tee -a $logfile
   date | tee -a $logfile
   killall qemu-system-i386 qemu-system-x86_64
-  make $MAKE_TARGET > build-$(date -u +%s).log && status=done
+  make $MAKE_TARGET > build-logs/build-$(date -u +%s).log && status=done
   printf "%s: Tried building $MAKE_TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
   MAKE_TARGET=build-$TARGET
   [ $n -ge $N ] && break
