@@ -154,6 +154,30 @@ script: |
   # Copy reproducibility info
   cp ../versions "Tor Browser"/Browser/TorBrowser/Docs/sources/
   cp ../bundle.inputs "Tor Browser"/Browser/TorBrowser/Docs/sources/
+
+  unzip ../win32-langpacks.zip
+  WIN32_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_WIN32"
+  PKG_LOCALE="en-US"
+  # If we are building a multi-lingual package, add all of the language packs
+  # and use "ALL" in the package name and as the locale for update purposes.
+  if [ "z$MULTI_LINGUAL" = "z1" ]; then
+    PKG_LOCALE="ALL"
+    pushd win32-langpacks
+    for LANG in $WIN32_LOCALES
+    do
+      xpi=$LANG.xpi
+      cp $xpi ../"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    done
+    popd
+
+    # Set the update.locale to ALL (it is used to replace %LOCALE% within
+    # app.update.url).
+    pushd "Tor Browser"/Browser/
+    echo $PKG_LOCALE > update.locale
+    zip -Xm omni.ja update.locale
+    popd
+  fi
+
   #
   pushd "Tor Browser"/Browser/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
@@ -173,7 +197,7 @@ script: |
   # Create full MAR file and installer.
   # Strangely, mbsdiff is linked as mbsdiff.exe even though it is a host
   # (e.g., Linux) executable.
-  MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_en-US.mar
+  MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_${PKG_LOCALE}.mar
   MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
   makensis torbrowser.nsi
   # Working around NSIS braindamage
@@ -181,51 +205,47 @@ script: |
   python ~/build/pe_checksum_fix.py
   mv torbrowser-install-tmp2.exe torbrowser-install.exe
   rm torbrowser-install-tmp.exe
-  mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_en-US.exe
-  #
-  unzip ../win32-langpacks.zip
-  cd win32-langpacks
-  WIN32_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_WIN32"
-  for LANG in $WIN32_LOCALES
-  do
-    xpi=$LANG.xpi
-    cp $xpi ../"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
-    cd ..
+  mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_${PKG_LOCALE}.exe
 
-    pushd "Tor Browser"/Browser/browser/
-    mkdir -p defaults/preferences
-    cp ~/build/000-tor-browser.js defaults/preferences/
-    echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
-    zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    rm -rf defaults
-    popd
+  # If we did not create a multi-lingual package above, create a package for
+  # each locale.
+  if [ "z$MULTI_LINGUAL" != "z1" ]; then
+    for LANG in $WIN32_LOCALES
+    do
+      xpi=win32-langpacks/$LANG.xpi
+      cp $xpi "Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
 
-    # Set the update.locale (it is used to replace %LOCALE% within
-    # app.update.url) and remove the en-US spellchecking dictionary.
-    pushd "Tor Browser"/Browser/
-    echo "$LANG" > update.locale
-    zip -Xm omni.ja update.locale
-    rm -rf dictionaries
-    popd
+      pushd "Tor Browser"/Browser/browser/
+      mkdir -p defaults/preferences
+      cp ~/build/000-tor-browser.js defaults/preferences/
+      echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+      zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+      rm -rf defaults
+      popd
 
-    # Recreate precomplete file (needs to be accurate for full MAR updates).
-    pushd "Tor Browser"/Browser/
-    rm -f precomplete
-    python $MARTOOLS/createprecomplete.py
-    popd
+      # Set the update.locale (it is used to replace %LOCALE% within
+      # app.update.url), remove the en-US spellchecking dictionary, and
+      # recreate precomplete file (needs to be accurate for full MAR updates).
+      pushd "Tor Browser"/Browser/
+      echo "$LANG" > update.locale
+      zip -Xm omni.ja update.locale
+      rm -rf dictionaries
+      rm -f precomplete
+      python $MARTOOLS/createprecomplete.py
+      popd
 
-    # Create full MAR file and installer for this locale.
-    # Strangely, mbsdiff is linked as mbsdiff.exe even though it is a host
-    # (e.g., Linux) executable.
-    MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_$LANG.mar
-    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
-    makensis torbrowser.nsi
-    # Working around NSIS braindamage
-    mv torbrowser-install.exe torbrowser-install-tmp.exe
-    python ~/build/pe_checksum_fix.py
-    mv torbrowser-install-tmp2.exe torbrowser-install.exe
-    rm torbrowser-install-tmp.exe
-    mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
-    rm "Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
-    cd win32-langpacks
-  done
+      # Create full MAR file and installer for this locale.
+      # Strangely, mbsdiff is linked as mbsdiff.exe even though it is a host
+      # (e.g., Linux) executable.
+      MAR_FILE=tor-browser-win32-${TORBROWSER_VERSION}_$LANG.mar
+      MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff.exe $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE "Tor Browser"/Browser
+      makensis torbrowser.nsi
+      # Working around NSIS braindamage
+      mv torbrowser-install.exe torbrowser-install-tmp.exe
+      python ~/build/pe_checksum_fix.py
+      mv torbrowser-install-tmp2.exe torbrowser-install.exe
+      rm torbrowser-install-tmp.exe
+      mv torbrowser-install.exe $OUTDIR/torbrowser-install-${TORBROWSER_VERSION}_$LANG.exe
+      rm "Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    done
+  fi

@@ -8,6 +8,10 @@ BUNDLE_LOCALES_WIN32="ja"
 BUNDLE_LOCALES_MAC="ja-JP-mac"
 BUILD_PT_BUNDLES=1
 
+# If you remove MULTI_LINGUAL=1, be sure to use a version of Tor Launcher
+# that does not include the language prompt.
+MULTI_LINGUAL=1
+
 VERIFY_TAGS=0
 
 FIREFOX_VERSION=38.3.0esr

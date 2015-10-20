@@ -203,6 +203,29 @@ script: |
   ~/build/background-plist.py ../../../Contents/Info.plist > TorBrowser.app.meek-http-helper/Contents/Info.plist
   unzip ~/build/TorBrowser.app.meek-http-helper.zip
   popd
+
+  unzip mac-langpacks.zip
+  MAC_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_MAC"
+  PKG_LOCALE="en-US"
+  # If we are building a multi-lingual package, add all of the language packs
+  # and use "ALL" in the package name and as the locale for update purposes.
+  if [ "z$MULTI_LINGUAL" = "z1" ]; then
+    PKG_LOCALE="ALL"
+    pushd mac-langpacks
+    for LANG in $MAC_LOCALES
+    do
+      xpi=$LANG.xpi
+      cp $xpi ~/build/$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    done
+    popd
+
+    # Set the update.locale to ALL (it is used to replace %LOCALE% within
+    # app.update.url).
+    pushd ~/build/$TORBROWSER_NAME.app/Contents/Resources/
+    echo $PKG_LOCALE > update.locale
+    zip -Xm omni.ja update.locale
+    popd
+  fi
   #
   # XXX: We need to insert these placeholders because otherwise mkisofs won't
   # include these otherwise empty dirs:
@@ -214,47 +237,46 @@ script: |
   popd
   #
   # Create full MAR file and disk image.
-  MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.mar
+  MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_${PKG_LOCALE}.mar
   MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/$TORBROWSER_NAME.app
   cp -a ~/build/$TORBROWSER_NAME.app ~/build/dmg/$TORBROWSER_APP.app
-  ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_en-US.dmg ~/build/dmg
+  ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_${PKG_LOCALE}.dmg ~/build/dmg
   rm -rf ~/build/dmg/$TORBROWSER_APP.app
   mv $TORBROWSER_NAME.app ${TORBROWSER_NAME}_plain.app
-  #
-  unzip mac-langpacks.zip
-  cd mac-langpacks
-  MAC_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_MAC"
-  for LANG in $MAC_LOCALES
-  do
-    xpi=$LANG.xpi
-    DEST=$TORBROWSER_APP
-    cp -a ../${TORBROWSER_NAME}_plain.app ~/build/dmg/$DEST.app
-    cp $xpi ~/build/dmg/$DEST.app/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
-    cd ..
 
-    pushd ~/build/dmg/$DEST.app/Contents/Resources/browser/
-    mkdir -p defaults/preferences
-    cp ~/build/000-tor-browser.js defaults/preferences/
-    # Set the locale of the bundle.
-    echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
-    zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    rm -rf defaults
-    popd
+  # If we did not create a multi-lingual package above, create a package for
+  # each locale.
+  if [ "z$MULTI_LINGUAL" != "z1" ]; then
+    for LANG in $MAC_LOCALES
+    do
+      xpi=mac-langpacks/$LANG.xpi
+      DEST=$TORBROWSER_APP
+      cp -a ${TORBROWSER_NAME}_plain.app ~/build/dmg/$DEST.app
+      cp $xpi ~/build/dmg/$DEST.app/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
 
-    # Set the update.locale (it is used to replace %LOCALE% within
-    # app.update.url), remove the en-US spellchecking dictionary, and recreate
-    # the precomplete file (needs to be accurate for full MAR updates).
-    pushd ~/build/dmg/$DEST.app/Contents/Resources/
-    echo "$LANG" > update.locale
-    zip -Xm omni.ja update.locale
-    rm -rf dictionaries
-    rm -f precomplete
-    python $MARTOOLS/createprecomplete.py
-    popd
-    #
-    MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
-    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/dmg/$DEST.app
-     ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.dmg ~/build/dmg/
-    rm -rf ~/build/dmg/$DEST.app
-    cd mac-langpacks
-  done
+      pushd ~/build/dmg/$DEST.app/Contents/Resources/browser/
+      mkdir -p defaults/preferences
+      cp ~/build/000-tor-browser.js defaults/preferences/
+      # Set the locale of the bundle.
+      echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+      zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+      rm -rf defaults
+      popd
+
+      # Set the update.locale (it is used to replace %LOCALE% within
+      # app.update.url), remove the en-US spellchecking dictionary, and recreate
+      # the precomplete file (needs to be accurate for full MAR updates).
+      pushd ~/build/dmg/$DEST.app/Contents/Resources/
+      echo "$LANG" > update.locale
+      zip -Xm omni.ja update.locale
+      rm -rf dictionaries
+      rm -f precomplete
+      python $MARTOOLS/createprecomplete.py
+      popd
+      #
+      MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
+      MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/dmg/$DEST.app
+      ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.dmg ~/build/dmg/
+      rm -rf ~/build/dmg/$DEST.app
+    done
+  fi

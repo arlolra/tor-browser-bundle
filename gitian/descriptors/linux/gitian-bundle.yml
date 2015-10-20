@@ -75,10 +75,14 @@ script: |
   cd ..
 
   mkdir -p $OUTDIR/
-  mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
-  mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
-  mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/Caches
-  mkdir -p tor-browser/Browser/TorBrowser/Docs/sources/
+  # When we build with MULTI_LINGUAL=1, the browser will be packaged inside a
+  # directory named tor-browser (instead of tor-browser_en-US). Therefore we
+  # stage everything under tor-browser-stage to avoid a conflict.
+  TB_STAGE_DIR=tor-browser-stage
+  mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
+  mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
+  mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/Caches
+  mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Docs/sources/
   # Preparing Python for HTTPS-Everywhere.
   unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
   export PATH=$INSTDIR/python/bin:$PATH
@@ -95,7 +99,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
+  ~/build/dzip.sh ../../../${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
@@ -105,7 +109,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
+  ~/build/dzip.sh ../../../${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
   cd ../../../
   #
   cd https-everywhere
@@ -124,11 +128,11 @@ script: |
   fi
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
   rm ./pkg/*-amo.xpi
-  cp pkg/*.xpi ../tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cp pkg/*.xpi ../${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
   cd ..
   #
-  cp *.xpi tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/
-  cd tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions
+  cp *.xpi ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/
+  cd ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere-eff@eff.org/
   unzip ../https-everywhere@eff.org.xpi
@@ -136,27 +140,27 @@ script: |
   cd ~/build
   #
   cd meek/firefox
-  ~/build/dzip.sh ../../tor-browser/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions/meek-http-helper@bamsoftware.com.xpi .
+  ~/build/dzip.sh ../../${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions/meek-http-helper@bamsoftware.com.xpi .
   cd ~/build/
   #
   # Install fonts.
-  mkdir -p tor-browser/Browser/fonts
+  mkdir -p ${TB_STAGE_DIR}/Browser/fonts
   NOTO_FONTS_HINTED="Arimo-Regular.ttf Arimo-Bold.ttf Arimo-Italic.ttf Arimo-BoldItalic.ttf Cousine-Regular.ttf Tinos-Regular.ttf Tinos-Bold.ttf Tinos-Italic.ttf Tinos-BoldItalic.ttf NotoNaskhArabic-Regular.ttf NotoSansArmenian-Regular.ttf NotoSansBengali-Regular.ttf NotoSansDevanagari-Regular.ttf NotoSansEthiopic-Regular.ttf NotoSansGeorgian-Regular.ttf NotoSansGujarati-Regular.ttf NotoSansGurmukhi-Regular.ttf NotoSansHebrew-Regular.ttf NotoSansKannada-Regular.ttf NotoSansKhmer-Regular.ttf NotoSansLao-Regular.ttf NotoSansMalayalam-Regular.ttf NotoSansMyanmar-Regular.ttf NotoSansOriya-Regular.ttf NotoSansSinhala-Regular.ttf NotoSansTamil-Regular.ttf NotoSansTelugu-Regular.ttf NotoSansThaana-Regular.ttf NotoSansThai-Regular.ttf NotoSansTibetan-Regular.ttf NotoSerifArmenian-Regular.ttf NotoSerifKhmer-Regular.ttf NotoSerifLao-Regular.ttf NotoSerifThai-Regular.ttf"
   for fontfile in $NOTO_FONTS_HINTED; do
-    cp "noto-fonts/hinted/$fontfile" tor-browser/Browser/fonts/
+    cp "noto-fonts/hinted/$fontfile" ${TB_STAGE_DIR}/Browser/fonts/
   done
   NOTO_FONTS_UNHINTED="NotoSansCanadianAboriginal-Regular.ttf NotoSansBuginese-Regular.ttf NotoSansCherokee-Regular.ttf NotoSansMongolian-Regular.ttf NotoSansYi-Regular.ttf"
   for fontfile in $NOTO_FONTS_UNHINTED; do
-    cp "noto-fonts/unhinted/$fontfile" tor-browser/Browser/fonts/
+    cp "noto-fonts/unhinted/$fontfile" ${TB_STAGE_DIR}/Browser/fonts/
   done
-  cp NotoSansCJKsc-Regular.otf tor-browser/Browser/fonts/
+  cp NotoSansCJKsc-Regular.otf ${TB_STAGE_DIR}/Browser/fonts/
   unzip -o STIXv1.1.1-latex.zip -d STIX
-  cp "STIX/Fonts/fonts/opentype/public/stix/STIXMath-Regular.otf" tor-browser/Browser/fonts/
+  cp "STIX/Fonts/fonts/opentype/public/stix/STIXMath-Regular.otf" ${TB_STAGE_DIR}/Browser/fonts/
   #
   unzip relativelink-src.zip
-  cp RelativeLink/* tor-browser/Browser/
+  cp RelativeLink/* ${TB_STAGE_DIR}/Browser/
   #
-  cd tor-browser
+  cd ${TB_STAGE_DIR}
   cp Browser/start-tor-browser.desktop ./
   unzip ~/build/tor-browser-linux$GBUILD_BITS-gbuilt.zip
   cd Browser/TorBrowser
@@ -174,12 +178,23 @@ script: |
   cd ../../..
   #
   # Copy reproducibility info
-  cp versions tor-browser/Browser/TorBrowser/Docs/sources/
-  cp bundle.inputs tor-browser/Browser/TorBrowser/Docs/sources/
+  cp versions ${TB_STAGE_DIR}/Browser/TorBrowser/Docs/sources/
+  cp bundle.inputs ${TB_STAGE_DIR}/Browser/TorBrowser/Docs/sources/
+
+  # Create en-US or multi-lingual package.
+  PKG_LOCALE="en-US"
+  PKG_DIR="tor-browser_${PKG_LOCALE}"
+  # If we are building a multi-lingual package, use "ALL" in the package name
+  # and as the locale for update purposes. We do not include "ALL" in the name
+  # of the directory that is inside the package (in other words, users will
+  # not see tor-browser_ALL after they install Tor Browser).
+  if [ "z$MULTI_LINGUAL" = "z1" ]; then
+    PKG_LOCALE="ALL"
+    PKG_DIR="tor-browser"
+  fi
+  cp -a ${TB_STAGE_DIR} ${PKG_DIR}
   #
-  cp -a tor-browser tor-browser_en-US
-  #
-  pushd tor-browser_en-US/Browser/browser/
+  pushd ${PKG_DIR}/Browser/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
@@ -188,56 +203,72 @@ script: |
   rm -rf defaults
   popd
   #
+  unzip linux-langpacks.zip
+  LINUX_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_LINUX"
+  # If we are building a multi-lingual package, add all of the language packs.
+  if [ "z$MULTI_LINGUAL" = "z1" ]; then
+    pushd linux-langpacks
+    for LANG in $LINUX_LOCALES
+    do
+      xpi=$LANG.xpi
+      cp $xpi ../${PKG_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+    done
+    popd
+
+    # Set the update.locale (it is used to replace %LOCALE% within
+    # app.update.url).
+    pushd ${PKG_DIR}/Browser/
+    echo ${PKG_LOCALE} > update.locale
+    zip -Xm omni.ja update.locale
+    popd
+  fi
+
   # Recreate precomplete file (needs to be accurate for full MAR updates).
-  pushd tor-browser_en-US/Browser
+  pushd ${PKG_DIR}/Browser
   rm -f precomplete
   python $MARTOOLS/createprecomplete.py
   popd
   #
   # Create full MAR file and compressed package.
-  MAR_FILE=tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.mar
-  MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE tor-browser_en-US/Browser
-  ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_en-US.tar.xz tor-browser_en-US
-  rm -rf tor-browser_en-US
+  MAR_FILE=tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_${PKG_LOCALE}.mar
+  MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ${PKG_DIR}/Browser
+  ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_${PKG_LOCALE}.tar.xz ${PKG_DIR}
+  rm -rf ${PKG_DIR}
   #
-  unzip linux-langpacks.zip
-  cd linux-langpacks
-  LINUX_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_LINUX"
-  for LANG in $LINUX_LOCALES
-  do
-    xpi=$LANG.xpi
-    cp -a ../tor-browser ../tor-browser_$LANG
-    cp $xpi ../tor-browser_$LANG/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
-    cd ..
+  # If we did not create a multi-lingual package above, create a package for
+  # each locale.
+  if [ "z$MULTI_LINGUAL" != "z1" ]; then
+    for LANG in $LINUX_LOCALES
+    do
+      xpi=linux-langpacks/$LANG.xpi
+      cp -a ${TB_STAGE_DIR} tor-browser_$LANG
+      cp $xpi tor-browser_$LANG/Browser/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
 
-    pushd tor-browser_$LANG/Browser/browser/
-    mkdir -p defaults/preferences
-    cp ~/build/000-tor-browser.js defaults/preferences/
-    # Set the locale of the bundle.
-    echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
-    zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-    rm -rf defaults
-    popd
+      pushd tor-browser_$LANG/Browser/browser/
+      mkdir -p defaults/preferences
+      cp ~/build/000-tor-browser.js defaults/preferences/
+      # Set the locale of the bundle.
+      echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+      zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+      rm -rf defaults
+      popd
 
-    # Set the update.locale (it is used to replace %LOCALE% within
-    # app.update.url) and remove the en-US spellchecking dictionary.
-    pushd tor-browser_$LANG/Browser/
-    echo "$LANG" > update.locale
-    zip -Xm omni.ja update.locale
-    rm -rf dictionaries
-    popd
+      # Set the update.locale (it is used to replace %LOCALE% within
+      # app.update.url), remove the en-US spellchecking dictionary, and
+      # recreate precomplete file (needs to be accurate for full MAR updates).
+      pushd tor-browser_$LANG/Browser/
+      echo "$LANG" > update.locale
+      zip -Xm omni.ja update.locale
+      rm -rf dictionaries
+      rm -f precomplete
+      python $MARTOOLS/createprecomplete.py
+      popd
 
-    # Recreate precomplete file (needs to be accurate for full MAR updates).
-    pushd tor-browser_$LANG/Browser
-    rm -f precomplete
-    python $MARTOOLS/createprecomplete.py
-    popd
+      # Create full MAR file and compressed package for this locale.
+      MAR_FILE=tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
+      MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE tor-browser_$LANG/Browser
+      ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
 
-    # Create full MAR file and compressed package for this locale.
-    MAR_FILE=tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
-    MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE tor-browser_$LANG/Browser
-    ~/build/dtar.sh $OUTDIR/tor-browser-linux${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.tar.xz tor-browser_$LANG
-
-    rm -rf tor-browser_$LANG
-    cd linux-langpacks
-  done
+      rm -rf tor-browser_$LANG
+    done
+  fi
