@@ -5,7 +5,6 @@ suites:
 architectures:
 - "i386"
 packages:
-- "faketime"
 - "unzip"
 - "zip"
 - "nsis"
@@ -31,6 +30,8 @@ remotes:
   "dir": "meek"
 - "url": "https://github.com/googlei18n/noto-fonts.git"
   "dir": "noto-fonts"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-win32-gbuilt.zip"
@@ -53,13 +54,20 @@ script: |
   INSTDIR="$HOME/install"
   source versions
   export LIBRARY_PATH="$INSTDIR/lib"
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export TORBROWSER_VERSION=`cat bare-version`
   export LC_ALL=C
   umask 0022
-  #
+
+  # Building libfaketime
+  cd faketime
+  make
+  DESTDIR="$INSTDIR/faketime" make install
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME=$REFERENCE_DATETIME
+  export FAKETIME_SKIP_CMDS="rsync"
+  cd ..
+
   # Extract the MAR tools.
   unzip -d ~/build ~/build/mar-tools-win32.zip
   MARTOOLS=~/build/mar-tools

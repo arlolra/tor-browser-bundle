@@ -6,7 +6,6 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "faketime"
 - "unzip"
 - "zip"
 # These three packages are needed for assembling the HTTPS-Everywhere rules
@@ -26,6 +25,8 @@ remotes:
   "dir": "meek"
 - "url": "https://github.com/googlei18n/noto-fonts.git"
   "dir": "noto-fonts"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 files:
 # TODO: Can we use an env for this file+version??
 - "tor-browser-linux32-gbuilt.zip"
@@ -59,13 +60,20 @@ script: |
   INSTDIR="$HOME/install"
   source versions
   export LIBRARY_PATH="$INSTDIR/lib"
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   export TORBROWSER_VERSION=`cat bare-version`
   umask 0022
-  #
+
+  # Building libfaketime
+  cd faketime
+  make
+  DESTDIR="$INSTDIR/faketime" make install
+  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
+  export FAKETIME=$REFERENCE_DATETIME
+  export FAKETIME_SKIP_CMDS="rsync"
+  cd ..
+
   mkdir -p $OUTDIR/
   mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
   mkdir -p tor-browser/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
