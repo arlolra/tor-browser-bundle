@@ -276,6 +276,10 @@ script: |
       #
       MAR_FILE=tor-browser-osx${GBUILD_BITS}-${TORBROWSER_VERSION}_$LANG.mar
       MAR=$MARTOOLS/mar MBSDIFF=$MARTOOLS/mbsdiff $MARTOOLS/make_full_update.sh -q $OUTDIR/$MAR_FILE ~/build/dmg/$DEST.app
+      # Rename the Japanese bundle to not confuse users
+      if [ "$LANG" = "ja-JP-mac" ]; then
+        LANG="ja"
+      fi
       ~/build/ddmg.sh $OUTDIR/TorBrowser-${TORBROWSER_VERSION}-osx${GBUILD_BITS}_$LANG.dmg ~/build/dmg/
       rm -rf ~/build/dmg/$DEST.app
     done
