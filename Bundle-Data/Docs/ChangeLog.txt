@@ -3,7 +3,7 @@ Tor Browser 5.5a3 -- September 22 2015
    * Update Firefox to 38.3.0esr
    * Update libevent to 2.0.22-stable
    * Update Torbutton to 1.9.4
-     * Bug 16937: Don't translate the hompepage/spellchecker dictionary string
+     * Bug 16937: Don't translate the homepage/spellchecker dictionary string
      * Bug 16735: about:tor should accommodate different fonts/font sizes
      * Bug 16887: Update intl.accept_languages value
      * Bug 15493: Update circuit display on new circuit info
