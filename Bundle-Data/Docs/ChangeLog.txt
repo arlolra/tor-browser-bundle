@@ -1,3 +1,29 @@
+Tor Browser 5.5a4 -- November 3 2015
+ * All Platforms
+   * Update Firefox to 38.4.0esr
+   * Update Tor to 0.2.7.4-rc
+   * Update NoScript to 2.6.9.39
+   * Update HTTPS-Everywhere to 5.1.1
+   * Update Torbutton to 1.9.4.1
+     * Bug 9263: Spoof Referer when leaving a .onion domain
+     * Bug 16620: Remove old window.name handling code
+     * Bug 17164: Don't show text-select cursor on circuit display
+     * Bug 17351: Remove unused code
+     * Translation updates
+   * Bug 17207: Hide MIME types and plugins from websites
+   * Bug 16909+17383: Adapt to HTTPS-Everywhere build changes
+   * Bug 16620: Move window.name handling into a Firefox patch
+   * Bug 17220: Support math symbols in font whitelist
+   * Bug 10599+17305: Include updater and build patches needed for hardened builds
+   * Bug 17318: Remove dead ScrambleSuit bridge
+   * Bug 17428: Remove default Flashproxy bridges
+ * Windows
+   * Bug 17250: Add localized font names to font whitelist
+ * OS X
+   * Bug 17122: Rename Japanese OS X bundle
+ * Linux
+   * Bug 17329: Ensure that non-ASCII characters can be typed (fixup of #5926)
+
 Tor Browser 5.5a3 -- September 22 2015
  * All Platforms
    * Update Firefox to 38.3.0esr
