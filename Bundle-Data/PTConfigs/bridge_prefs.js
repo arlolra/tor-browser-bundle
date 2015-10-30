@@ -8,12 +8,6 @@ pref("extensions.torlauncher.default_bridge.obfs3.3", "obfs3 169.229.59.75:46328
 pref("extensions.torlauncher.default_bridge.obfs3.4", "obfs3 109.105.109.163:38980 1E05F577A0EC0213F971D81BF4D86A9E4E8229ED");
 pref("extensions.torlauncher.default_bridge.obfs3.5", "obfs3 109.105.109.163:47779 4C331FA9B3D1D6D8FB0D8FBBF0C259C360D97E6A");
 
-pref("extensions.torlauncher.default_bridge.flashproxy.1", "flashproxy 0.0.1.0:1 4D6C0DF6DEC9398A4DEF07084F3CD395A96DD2AD");
-pref("extensions.torlauncher.default_bridge.flashproxy.2", "flashproxy 0.0.1.0:2 4D6C0DF6DEC9398A4DEF07084F3CD395A96DD2AD");
-pref("extensions.torlauncher.default_bridge.flashproxy.3", "flashproxy 0.0.1.0:3 4D6C0DF6DEC9398A4DEF07084F3CD395A96DD2AD");
-pref("extensions.torlauncher.default_bridge.flashproxy.4", "flashproxy 0.0.1.0:4 4D6C0DF6DEC9398A4DEF07084F3CD395A96DD2AD");
-pref("extensions.torlauncher.default_bridge.flashproxy.5", "flashproxy 0.0.1.0:5 4D6C0DF6DEC9398A4DEF07084F3CD395A96DD2AD");
-
 pref("extensions.torlauncher.default_bridge.fte.1", "fte 192.240.101.106:80 FDC5BA65D93B6BCA5EBDF8EF8E4FA936B7F1F8E5");
 pref("extensions.torlauncher.default_bridge.fte.2", "fte 50.7.176.114:80 2BD466989944867075E872310EBAD65BC88C8AEF");
 pref("extensions.torlauncher.default_bridge.fte.3", "fte 131.252.210.150:8080 0E858AC201BF0F3FA3C462F64844CBFFC7297A42");
