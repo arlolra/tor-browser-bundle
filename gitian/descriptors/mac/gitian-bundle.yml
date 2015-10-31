@@ -111,16 +111,13 @@ script: |
   cd ../../../
   #
   cd https-everywhere
-   # We are invoking the build script with a particular tag to avoid #10066. This
-  # does not work for nightlies as there is no "master" tag in that sense. But
-  # we don't need to care about that as we don't need reproducibility for
-  # nightly builds.
-  if [ $HTTPSE_TAG != "master" ];
-  then
-    ./makexpi.sh $HTTPSE_TAG
-  else
-    ./makexpi.sh
-  fi
+  # XXX: Bloody hack to workaround a bug in HTTPS_E's git hash extraction in
+  # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
+  # The solution there does not work for us as doing something like
+  # |./makexpi.sh foo| to build tag |foo| is a) trying to download the sources
+  # during build time (again) and b) broken due to a certificate error.
+  rm -f .git/refs/heads/master
+  ./makexpi.sh
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
   rm ./pkg/*-amo.xpi
   cp pkg/*.xpi ../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
