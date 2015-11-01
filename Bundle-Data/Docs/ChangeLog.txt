@@ -17,6 +17,7 @@ Tor Browser 5.5a4 -- November 3 2015
    * Bug 10599+17305: Include updater and build patches needed for hardened builds
    * Bug 17318: Remove dead ScrambleSuit bridge
    * Bug 17428: Remove default Flashproxy bridges
+   * Bug 17473: Update meek-amazon fingerprint
  * Windows
    * Bug 17250: Add localized font names to font whitelist
  * OS X
