@@ -16,10 +16,10 @@ DSTDIR=tbb-nightly-$(date +%F)
 
 do_check() {
     [ -z "$1" ] || cd $1 || exit 5
-    [ -z "$V" ] || echo "Verifying sha256sums.txt"
-    gpg -q --verify sha256sums.txt.asc > /dev/null || exit 3
-    [ -z "$V" ] || echo "Checking sha256sums.txt"
-    sha256sum --strict --quiet -c sha256sums.txt || exit 4
+    [ -z "$V" ] || echo "Verifying sha256sums-unsigned-build.txt"
+    gpg -q --verify sha256sums-unsigned-build.txt.asc sha256sums-unsigned-build.txt > /dev/null || exit 3
+    [ -z "$V" ] || echo "Checking sha256sums-unsigned-build.txt"
+    sha256sum --strict --quiet -c sha256sums-unsigned-build.txt || exit 4
 }
 
 if [ -d $DIR/$DSTDIR ] && [ -e $DIR/$DSTDIR/tbb-nightly.stamp ]; then

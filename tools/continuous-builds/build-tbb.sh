@@ -61,8 +61,8 @@ if [ $status = done ]; then
   echo "$0: renaming $DESTDIR -> $NEWDESTDIR" | tee -a $logfile
   mv $DESTDIR $NEWDESTDIR
   cd $NEWDESTDIR || exit 3
-  sha256sum *.tar.xz *.zip *.dmg *.exe > sha256sums.txt
-  gpg -a --clearsign $PGPKEYID sha256sums.txt || exit 2
+  sha256sum *.tar.xz *.zip *.dmg *.exe > sha256sums-unsigned-build.txt
+  gpg $PGPKEYID -abs sha256sums-unsigned-build.txt || exit 2
   cd ..
   D=$(basename $NEWDESTDIR)
   tar cf - $D/sha256sums* $D/*.tar.xz $D/*.zip $D/*.exe $D/*.dmg | ssh -i $PUBLISH_SSH_KEY $PUBLISH_HOST | tee -a $logfile
