@@ -5,7 +5,7 @@ Tor Browser 5.5a4 -- November 3 2015
    * Update NoScript to 2.6.9.39
    * Update HTTPS-Everywhere to 5.1.1
    * Update Torbutton to 1.9.4.1
-     * Bug 9263: Spoof Referer when leaving a .onion domain
+     * Bug 9623: Spoof Referer when leaving a .onion domain
      * Bug 16620: Remove old window.name handling code
      * Bug 17164: Don't show text-select cursor on circuit display
      * Bug 17351: Remove unused code
