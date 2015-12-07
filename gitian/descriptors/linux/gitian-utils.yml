@@ -1,7 +1,8 @@
 ---
 name: "utils-linux"
+distro: "debian"
 suites:
-- "lucid"
+- "wheezy"
 architectures:
 - "i386"
 - "amd64"
@@ -22,6 +23,8 @@ packages:
 - "libxslt-dev"
 # Needed for passing the Python related part of configure in ESR 31.
 - "libssl-dev"
+# Needed for binutils (64bit) as we are building with PIE enabled.
+- "libstdc++6-4.7-pic"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/libevent/libevent.git"
@@ -40,6 +43,7 @@ script: |
   source versions
   export TZ=UTC
   export LC_ALL=C
+  export FAKETIME=$REFERENCE_DATETIME
   umask 0022
 
   # Config options for hardening-wrapper
@@ -51,16 +55,33 @@ script: |
 
   # Building Binutils
   tar xjf binutils.tar.bz2
+  # The libstdc++ shipped by default is non-PIC which breaks the binutils build
+  # if we build with DEB_BUILD_HARDENING_PIE=1. We need to install a PIC one AND
+  # make sure it gets used before the non-PIC one would.
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ln -s /usr/lib/gcc/x86_64-linux-gnu/4.7/libstdc++_pic.a libstdc++.a
+    export LDFLAGS="-L/home/debian -lstdc++"
+  fi
   cd binutils*
   # We want to use gold as the linker in our toolchain mainly as it is way
   # faster when linking Tor Browser code (especially libxul). But apart from
   # that it fixes #12103 and issues with ESR 31 and our Gitian setup as well
   # (see bug #12743).
-  ./configure --prefix=$INSTDIR/binutils --disable-multilib --enable-gold
+  ./configure --prefix=$INSTDIR/binutils --disable-multilib --enable-gold --enable-plugins
   make $MAKEOPTS
   make install
   cd ..
 
+  export LDFLAGS=""
+  # We need to disable `-Werror=format-security` as GCC does not build with it
+  # anymore. It seems it got audited for those problems already:
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=48817.
+  export DEB_BUILD_HARDENING_FORMAT=0
+  # libfaketime gets into our way when building GCC 4.9.x. See:
+  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61314 for details. Thus, we
+  # avoid it for the toolchain and cross our fingers.
+  # TODO: Test a newer libfaketime than 0.8.
   # Building GCC
   tar xjf gcc.tar.bz2
   cd gcc-*
@@ -69,13 +90,7 @@ script: |
   make install
   cd ..
 
-  # libfaketime gets into our way when building GCC 4.9.x. See:
-  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61314 for details. Thus, we
-  # avoid it for the toolchain and cross our fingers.
-  # TODO: Test a newer libfaketime than 0.8.
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
-
+  export DEB_BUILD_HARDENING_FORMAT=1
   # Building Libevent
   cd libevent
   ./autogen.sh
@@ -86,6 +101,7 @@ script: |
   cd ..
 
   # Building OpenSSL
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   tar xzf openssl.tar.gz
   cd openssl-*
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
@@ -111,6 +127,7 @@ script: |
   cd ..
 
   # Building lxml
+  export LD_PRELOAD=""
   tar xzf lxml.tar.gz
   cd lxml-*
   # Make sure we use our freshly built python binary here. Otherwise bad things
@@ -118,7 +135,9 @@ script: |
   # rules.
   $INSTDIR/python/bin/python2.7 setup.py build
   cd build/lib*
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   ~/build/dzip.sh lxml-$LXML_VER-linux$GBUILD_BITS-utils.zip lxml
+  export LD_PRELOAD=""
   cp *utils.zip $OUTDIR
   cd ../../../
 
@@ -135,7 +154,8 @@ script: |
   make install
   cd ..
 
-  # Grabbing the remaining results
+  # Grabbing the remaining results and making sure timestamps don't spoil them
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   cd $INSTDIR
   ~/build/dzip.sh binutils-$BINUTILS_VER-linux$GBUILD_BITS-utils.zip binutils
   ~/build/dzip.sh gcc-$GCC_VER-linux$GBUILD_BITS-utils.zip gcc

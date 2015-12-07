@@ -1,7 +1,8 @@
 ---
 name: "bundle-linux"
+distro: "debian"
 suites:
-- "lucid"
+- "wheezy"
 architectures:
 - "i386"
 - "amd64"
@@ -28,7 +29,6 @@ remotes:
 - "url": "https://github.com/wolfcw/libfaketime"
   "dir": "faketime"
 files:
-# TODO: Can we use an env for this file+version??
 - "tor-browser-linux32-gbuilt.zip"
 - "tor-browser-linux64-gbuilt.zip"
 - "tor-linux32-gbuilt.zip"
@@ -113,9 +113,6 @@ script: |
   cd ../../../
   #
   cd https-everywhere
-  # Workaround for git not knowing `git submodule -f` in the version shipped in
-  # 10.04.
-  sed 's/recursive -f/recursive/' -i makexpi.sh
   # XXX: Bloody hack to workaround a bug in HTTPS_E's git hash extraction in
   # makexpi.sh. See https://trac.torproject.org/projects/tor/ticket/10066
   # The solution there does not work for us as doing something like

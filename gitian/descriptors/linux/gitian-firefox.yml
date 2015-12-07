@@ -1,7 +1,8 @@
 ---
 name: "torbrowser-linux"
+distro: "debian"
 suites:
-- "lucid"
+- "wheezy"
 architectures:
 - "i386"
 - "amd64"
@@ -11,9 +12,10 @@ packages:
 - "autoconf2.13"
 - "libgtk2.0-dev"
 - "libdbus-glib-1-dev"
-- "yasm-1"
+- "yasm"
 - "libasound2-dev"
 - "libgstreamer-plugins-base0.10-dev"
+- "libxt-dev"
 - "hardening-wrapper"
 # To pass configure since ESR 31.
 - "libpulse-dev"
@@ -51,9 +53,6 @@ script: |
   export DEB_BUILD_HARDENING_FORMAT=1
   export DEB_BUILD_HARDENING_PIE=1
   #
-  mkdir -p $INSTDIR/build/bin/
-  ln -s /usr/bin/yasm-1 $INSTDIR/build/bin/yasm
-  export PATH=$PATH:$INSTDIR/build/bin
   # Preparing Python for Tor Browser
   unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
   # TODO: We might want to have a smarter solution than hard-coding the version.

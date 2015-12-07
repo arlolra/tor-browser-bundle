@@ -120,7 +120,7 @@ clean-bundle:
 vmclean:
 	rm -rf ../../gitian-builder/*.qcow2
 	rm -rf ../../gitian-builder/base-*
-	rm -rf ../../gitian-builder/target-{lucid,precise}*
+	rm -rf ../../gitian-builder/target-{lucid,wheezy,precise}*
 
 distclean: vmclean
 	rm -rf ../../gitian-builder/inputs/*

@@ -177,7 +177,7 @@ Known Issues and Quirks:
      where 'make vmclean' causes the rebuild of two VMs in a row.. This might
      trigger weird bugs in python-vm-builder.. To rebuild only one set of VMs,
      use either 'rm ../../gitian-builder/*precise*' (to remove the Windows/Mac
-     VMs) or 'rm ../../gitian-builder/*lucid*' (to remove the Linux VMs).
+     VMs) or 'rm ../../gitian-builder/*wheezy*' (to remove the Linux VMs).
 
      You probably want to make sure you have no stray qemu processes before
      rebuilding the VMs or starting a new build, too. 'killall qemu-kvm' is

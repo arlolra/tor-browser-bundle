@@ -1,7 +1,8 @@
 ---
 name: "tor-linux"
+distro: "debian"
 suites:
-- "lucid"
+- "wheezy"
 architectures:
 - "i386"
 - "amd64"
@@ -29,7 +30,6 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
@@ -93,7 +93,8 @@ script: |
     objcopy --add-gnu-debuglink=./Debug/Tor/$LIB $INSTDIR/Tor/$LIB
   done
 
-  # Grabbing the results
+  # Grabbing the results and making sure timestamps don't spoil them
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip Data/ Tor/
   ~/build/dzip.sh tor-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

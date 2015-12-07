@@ -33,7 +33,14 @@ build_and_test_vm() {
       export LXC_ARCH=$arch
       ./bin/make-base-vm --suite $dist --lxc --arch $arch
     else
-      ./bin/make-base-vm --suite $dist --arch $arch
+      if [ "$dist" = "wheezy" ];
+      then
+        export DISTRO=debian
+        ./bin/make-base-vm --distro debian --suite $dist --arch $arch
+      else
+        export DISTRO=ubuntu
+        ./bin/make-base-vm --suite $dist --arch $arch
+      fi
     fi
 
     make-clean-vm --suite $dist --arch $arch
@@ -56,21 +63,21 @@ build_and_test_vm() {
   return 0
 }
 
-while ! build_and_test_vm lucid i386 32
+while ! build_and_test_vm wheezy i386 32
 do
-  stop-target 32 lucid
-  rm ./base-lucid-i386*
+  stop-target 32 wheezy
+  rm ./base-wheezy-i386*
   echo
-  echo "Lucid i386 VM build failed... Trying again"
+  echo "Wheezy i386 VM build failed... Trying again"
   echo
 done
 
-while ! build_and_test_vm lucid amd64 64
+while ! build_and_test_vm wheezy amd64 64
 do
-  stop-target 64 lucid
-  rm ./base-lucid-amd64*
+  stop-target 64 wheezy
+  rm ./base-wheezy-amd64*
   echo
-  echo "Lucid amd64 VM build failed... Trying again"
+  echo "Wheezy amd64 VM build failed... Trying again"
   echo
 done
 
@@ -79,7 +86,7 @@ do
   stop-target 32 precise
   rm ./base-precise-i386*
   echo
-  echo "Lucid amd64 VM build failed... Trying again"
+  echo "Precise amd64 VM build failed... Trying again"
   echo
 done
 
@@ -88,7 +95,7 @@ do
   stop-target 64 precise
   rm ./base-precise-amd64*
   echo
-  echo "Lucid amd64 VM build failed... Trying again"
+  echo "Precise amd64 VM build failed... Trying again"
   echo
 done
 
