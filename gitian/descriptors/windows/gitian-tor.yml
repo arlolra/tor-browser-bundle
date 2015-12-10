@@ -15,11 +15,6 @@ remotes:
   "dir": "tor"
 files:
 - "versions"
-- "bug8402-master.patch"
-- "bug8405.patch"
-- "bug15482.patch"
-- "bug16430.patch"
-- "bug16674.patch"
 - "binutils.tar.bz2"
 - "dzip.sh"
 - "mingw-w64-win32-utils.zip"
@@ -54,15 +49,6 @@ script: |
   # Building tor
   cd tor
   git update-index --refresh -q
-  export GIT_COMMITTER_NAME="nobody"
-  export GIT_COMMITTER_EMAIL="nobody@localhost"
-  export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
-  if [ ${TOR_TAG::9} == "tor-0.2.6" ];
-  then
-      git am ~/build/bug15482.patch
-      git am ~/build/bug16430.patch
-      git am ~/build/bug16674.patch
-  fi
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   # We are building normal bundles without the console popping up and expert
