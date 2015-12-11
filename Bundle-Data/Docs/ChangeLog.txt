@@ -1,3 +1,36 @@
+Tor Browser 5.5a5 -- December 15 2015
+ * All Platforms
+   * Update Firefox to 38.5.0esr
+   * Update Tor to 0.2.7.6
+   * Update OpenSSL to 1.0.1q
+   * Update NoScript to 2.7
+   * Update Torbutton to 1.9.4.2
+     * Bug 16940: After update, load local change notes
+     * Bug 16990: Avoid matching '250 ' to the end of node name
+     * Bug 17565: Tor fundraising campaign donation banner
+     * Bug 17770: Fix alignments on donation banner
+     * Bug 17792: Include donation banner in some non en-US Tor Browsers
+     * Bug 17108: Polish about:tor appearance
+     * Bug 17568: Clean up tor-control-port.js
+     * Translation updates
+   * Update Tor Launcher to 0.2.8.1
+     * Bug 17344: enumerate available language packs for language prompt
+     * Code clean-up
+     * Translation updates
+   * Bug 9659: Avoid loop due to optimistic data socks code (fix of #3875)
+   * Bug 16940: After update, load local change notes
+   * Bug 17759: Apply whitelist to local fonts in @font-face (fix of #13313)
+   * Bug 17747: Add ndnop3 as new default obfs4 bridge
+   * Bug 17009: Shift and Alt keys leak physical keyboard layout (fix of #15646)
+   * Bug 17369: Disable RC4 fallback
+   * Bug 17442: Remove custom updater certificate pinning
+   * Bug 16863: Avoid confusing error when loop.enabled is false
+   * Bug 17502: Add a preference for hiding "Open with" on download dialog
+   * Bug 17446: Prevent canvas extraction by third parties (fixup of #6253)
+   * Bug 16441: Suppress "Reset Tor Browser" prompt
+ * Windows
+   * Bug 13819: Ship expert bundles with console
+
 Tor Browser 5.5a4 -- November 3 2015
  * All Platforms
    * Update Firefox to 38.4.0esr
@@ -889,7 +922,7 @@ Tor Browser Bundle 3.6-beta-2 -- Apr 8 2014
  * All Platforms
    * Update OpenSSL to 1.0.1g
    * Bug 9010: Add Turkish language support.
-   * Bug 9387 testing: Disable JS JIT, type inference, asmjs, and ion. 
+   * Bug 9387 testing: Disable JS JIT, type inference, asmjs, and ion.
    * Update fte transport to 0.2.12
    * Update NoScript to 2.6.8.19
    * Update Torbutton to 1.6.8.1
@@ -948,7 +981,7 @@ Tor Browser Bundle 3.6-beta-1 -- Mar 17 2014
      * Bug 5018: Don't launch Pluggable Transport helpers if not in use
      * Bug 9229: Eliminate 60 second stall during bootstrap with some PTs
      * Bug 11069: Detect and report Pluggable Transport bootstrap failures
-     * Bug 11156: Prevent spurious warning about missing pluggable transports 
+     * Bug 11156: Prevent spurious warning about missing pluggable transports
    * Bug 10237: Disable the media cache to prevent disk leaks for videos
    * Bug 10703: Force the default charset to avoid locale fingerprinting
    * Bug 10104: Update gitian to fix LXC build issues (for non-KVM/VT builders)
@@ -1039,7 +1072,7 @@ Tor Browser Bundle 3.0rc1 -- Nov 21 2013
  * All Platforms:
    * Update Firefox to 17.0.11esr
    * Update Tor to 0.2.4.18-rc
-   * Remove unsupported PDF.JS addon from the bundle 
+   * Remove unsupported PDF.JS addon from the bundle
    * Bug #7277: TBB's Tor client will now omit its timestamp in the TLS handshake.
    * Update Torbutton to 1.6.4.1
      * Bug #10002: Make the TBB3.0 blog tag our update download URL for now
@@ -1060,7 +1093,7 @@ Tor Browser Bundle 3.0beta1 -- Oct 31 2013
    * Bug #9173: Patch Tor Browser to auto-detect profile directory if
                 launched without the wrapper script.
    * Bug #9012: Hide Tor Browser infobar for missing plugins.
-   * Bug #8364: Change the default entry page for the addons tab to the 
+   * Bug #8364: Change the default entry page for the addons tab to the
                 installed addons page.
    * Bug #9867: Make flash objects really be click-to-play if flash is enabled.
    * Bug #8292: Make getFirstPartyURI log+handle errors internally to simplify
@@ -1090,7 +1123,7 @@ Tor Browser Bundle 3.0alpha4 -- Sep 24 2013
    * Update Tor to 0.2.4.17-rc
    * Update NoScript to 2.6.7.1
    * Update Tor-Launcher to 0.2.2-alpha
-     * Bug #9675: Provide feedback mechanism for clock-skew and other early 
+     * Bug #9675: Provide feedback mechanism for clock-skew and other early
                   startup issues
      * Bug #9445: Allow user to enter bridges with or without 'bridge' keyword
      * Bug #9593: Use UTF16 for Tor process launch to handle unicode paths.
