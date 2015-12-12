@@ -18,6 +18,7 @@ Tor Browser 5.5a5 -- December 15 2015
      * Code clean-up
      * Translation updates
    * Bug 9659: Avoid loop due to optimistic data socks code (fix of #3875)
+   * Bug 15564: Isolate SharedWorkers by first-party domain
    * Bug 16940: After update, load local change notes
    * Bug 17759: Apply whitelist to local fonts in @font-face (fix of #13313)
    * Bug 17747: Add ndnop3 as new default obfs4 bridge
@@ -28,8 +29,11 @@ Tor Browser 5.5a5 -- December 15 2015
    * Bug 17502: Add a preference for hiding "Open with" on download dialog
    * Bug 17446: Prevent canvas extraction by third parties (fixup of #6253)
    * Bug 16441: Suppress "Reset Tor Browser" prompt
+   * Bug 17250: Fix broken Japanese fonts
  * Windows
    * Bug 13819: Ship expert bundles with console
+ * OS X
+   * Bug 17661: Whitelist font .Helvetica Neue DeskInterface
 
 Tor Browser 5.5a4 -- November 3 2015
  * All Platforms
