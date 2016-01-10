@@ -108,10 +108,6 @@ if [ ! -f inputs/binutils-$BINUTILS_VER-linux32-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-linux64-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip -o \
-     ! -f inputs/python-$PYTHON_VER-linux32-utils.zip -o \
-     ! -f inputs/python-$PYTHON_VER-linux64-utils.zip -o \
-     ! -f inputs/lxml-$LXML_VER-linux32-utils.zip -o \
-     ! -f inputs/lxml-$LXML_VER-linux64-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-linux32-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-linux64-utils.zip ];
 then
@@ -136,10 +132,6 @@ then
   ln -sf openssl-$OPENSSL_VER-linux64-utils.zip openssl-linux64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip libevent-linux32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip libevent-linux64-utils.zip
-  ln -sf python-$PYTHON_VER-linux32-utils.zip python-linux32-utils.zip
-  ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
-  ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
-  ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
   ln -sf gmp-$GMP_VER-linux32-utils.zip gmp-linux32-utils.zip
   ln -sf gmp-$GMP_VER-linux64-utils.zip gmp-linux64-utils.zip
   cd ..
@@ -159,10 +151,6 @@ else
   ln -sf openssl-$OPENSSL_VER-linux64-utils.zip openssl-linux64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip libevent-linux32-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip libevent-linux64-utils.zip
-  ln -sf python-$PYTHON_VER-linux32-utils.zip python-linux32-utils.zip
-  ln -sf python-$PYTHON_VER-linux64-utils.zip python-linux64-utils.zip
-  ln -sf lxml-$LXML_VER-linux32-utils.zip lxml-linux32-utils.zip
-  ln -sf lxml-$LXML_VER-linux64-utils.zip lxml-linux64-utils.zip
   ln -sf gmp-$GMP_VER-linux32-utils.zip gmp-linux32-utils.zip
   ln -sf gmp-$GMP_VER-linux64-utils.zip gmp-linux64-utils.zip
   cd ..

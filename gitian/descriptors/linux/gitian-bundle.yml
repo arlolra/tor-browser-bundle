@@ -14,6 +14,7 @@ packages:
 - "libxslt1.1"
 - "libxml2-utils"
 - "sqlite3"
+- "python-lxml"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"
@@ -35,10 +36,6 @@ files:
 - "tor-linux64-gbuilt.zip"
 - "pluggable-transports-linux32-gbuilt.zip"
 - "pluggable-transports-linux64-gbuilt.zip"
-- "python-linux32-utils.zip"
-- "python-linux64-utils.zip"
-- "lxml-linux32-utils.zip"
-- "lxml-linux64-utils.zip"
 - "torrc-defaults-appendix-linux"
 - "bridge_prefs.js"
 - "meek-http-helper-user.js"
@@ -83,10 +80,6 @@ script: |
   mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/Caches
   mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Docs/sources/
-  # Preparing Python for HTTPS-Everywhere.
-  unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
-  export PATH=$INSTDIR/python/bin:$PATH
-  unzip -d $INSTDIR/python/lib/python2.7 lxml-linux$GBUILD_BITS-utils.zip
   #
   # Extract the MAR tools.
   unzip -d ~/build ~/build/mar-tools-linux${GBUILD_BITS}.zip

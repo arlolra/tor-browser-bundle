@@ -17,6 +17,7 @@ packages:
 - "libgstreamer-plugins-base0.10-dev"
 - "libxt-dev"
 - "hardening-wrapper"
+- "python-dev"
 # To pass configure since ESR 31.
 - "libpulse-dev"
 # We built GCC but not the libmpc2, thus we need to install it.
@@ -32,8 +33,6 @@ files:
 - "binutils-linux64-utils.zip"
 - "gcc-linux32-utils.zip"
 - "gcc-linux64-utils.zip"
-- "python-linux32-utils.zip"
-- "python-linux64-utils.zip"
 - "re-dzip.sh"
 - "dzip.sh"
 - "versions"
@@ -53,11 +52,6 @@ script: |
   export DEB_BUILD_HARDENING_FORMAT=1
   export DEB_BUILD_HARDENING_PIE=1
   #
-  # Preparing Python for Tor Browser
-  unzip -d $INSTDIR python-linux$GBUILD_BITS-utils.zip
-  # TODO: We might want to have a smarter solution than hard-coding the version.
-  ln -sf $INSTDIR/python/bin/python2.7 $INSTDIR/python/bin/python
-  export PATH=$INSTDIR/python/bin:$PATH
   # Preparing Binutils and GCC for Tor Browser
   unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
   # Make sure gold is used with the hardening wrapper for full RELRO, see

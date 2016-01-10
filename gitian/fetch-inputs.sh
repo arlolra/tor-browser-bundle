@@ -112,12 +112,11 @@ update_git() {
 
 ##############################################################################
 # Get+verify sigs that exist
-for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO PYTHON_MSI GMP LXML
+for i in OPENSSL BINUTILS GCC PYCRYPTO PYTHON_MSI GMP
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "PYTHON_MSI" -o \
-       "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
+  if [ "${i}" == "PYCRYPTO" -o "${i}" == "PYTHON_MSI" -o "${i}" == "OPENSSL" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -226,7 +225,6 @@ ln -sf "$NOSCRIPT_PACKAGE" noscript@noscript.net.xpi
 ln -sf "$OPENSSL_PACKAGE" openssl.tar.gz
 ln -sf "$BINUTILS_PACKAGE" binutils.tar.bz2
 ln -sf "$GCC_PACKAGE" gcc.tar.bz2
-ln -sf "$PYTHON_PACKAGE" python.tar.bz2
 ln -sf "$PYTHON_MSI_PACKAGE" python.msi
 ln -sf "$PYCRYPTO_PACKAGE" pycrypto.tar.gz
 ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
@@ -236,7 +234,6 @@ ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
 ln -sf "$PY2EXE_PACKAGE" py2exe.exe
 ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
 ln -sf "$GMP_PACKAGE" gmp.tar.bz2
-ln -sf "$LXML_PACKAGE" lxml.tar.gz
 ln -sf "$PARSLEY_PACKAGE" parsley.tar.gz
 ln -sf "$GO_PACKAGE" go.tar.gz
 
