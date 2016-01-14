@@ -112,12 +112,12 @@ update_git() {
 
 ##############################################################################
 # Get+verify sigs that exist
-for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
+for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO PYTHON_MSI GMP LXML
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o \
-       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "PYTHON_MSI" -o \
+       "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -167,7 +167,7 @@ wget -U "" -N ${NOSCRIPT_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK + OSXSDK_OLD are not signed at all)
-for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC NOTOCJKFONT STIXMATHFONT
+for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED SETUPTOOLS OPENSSL GMP PARSLEY GO GCC NOTOCJKFONT STIXMATHFONT
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -233,7 +233,6 @@ ln -sf "$ARGPARSE_PACKAGE" argparse.tar.gz
 ln -sf "$PYYAML_PACKAGE" pyyaml.tar.gz
 ln -sf "$ZOPEINTERFACE_PACKAGE" zope.interface.zip
 ln -sf "$TWISTED_PACKAGE" twisted.tar.bz2
-ln -sf "$M2CRYPTO_PACKAGE" m2crypto.tar.gz
 ln -sf "$PY2EXE_PACKAGE" py2exe.exe
 ln -sf "$SETUPTOOLS_PACKAGE" setuptools.tar.gz
 ln -sf "$GMP_PACKAGE" gmp.tar.bz2
@@ -265,7 +264,6 @@ tor-browser           https://git.torproject.org/tor-browser.git          $TORBR
 mingw-w64-git         http://git.code.sf.net/p/mingw-w64/mingw-w64        $MINGW_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG
-flashproxy            https://git.torproject.org/flashproxy.git $FLASHPROXY_TAG
 libfte                https://github.com/kpdyer/libfte.git $LIBFTE_TAG
 fteproxy              https://github.com/kpdyer/fteproxy.git $FTEPROXY_TAG
 libdmg-hfsplus        https://github.com/vasi/libdmg-hfsplus.git $LIBDMG_TAG

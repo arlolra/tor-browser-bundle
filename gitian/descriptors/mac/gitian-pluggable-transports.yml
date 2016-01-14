@@ -18,8 +18,6 @@ remotes:
   "dir": "pyptlib"
 - "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
   "dir": "obfsproxy"
-- "url": "https://git.torproject.org/flashproxy.git"
-  "dir": "flashproxy"
 - "url": "https://github.com/kpdyer/libfte.git"
   "dir": "libfte"
 - "url": "https://github.com/kpdyer/fteproxy.git"
@@ -46,7 +44,6 @@ files:
 - "pyyaml.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
-- "m2crypto.tar.gz"
 - "parsley.tar.gz"
 - "go.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
@@ -186,30 +183,6 @@ script: |
   cp -a {LICENSE,README} $TBDIR/Docs/Obfsproxy
   # XXX: Workaround for bug 11190
   sed 's/python2/python/' -i $PTDIR/obfsproxy.bin
-  cd ..
-
-  # Building M2Crypto
-  tar xzf m2crypto.tar.gz
-  cd M2Crypto-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  # We have to put $INSTDIR/openssl at the beginning of the header and library
-  # search paths (build_ext otherwise puts it at the end, after CFLAGS and
-  # LDFLAGS). The reason for this is that /usr/lib/apple/SDKs/MacOSX10.6.sdk/usr
-  # (part of CFLAGS and LDFLAGS) has its own openssl headers and library files.
-  # It also has necessary headers like stdio.h, so we can't remove it
-  # completely, but our locally built openssl must take precedence.
-  CFLAGS="-I$INSTDIR/openssl/include $CFLAGS" LDFLAGS="-L$INSTDIR/openssl/lib $LDFLAGS" LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build --openssl $INSTDIR/openssl -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers $SDK_INCLUDES
-  python setup.py build --build-lib build
-  cp -a build/M2Crypto $PTDIR/
-  cd ..
-
-  # Building flashproxy
-  cd flashproxy
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  make dist DISTNAME=flashproxy-client
-  cp -a dist/flashproxy-client/{flashproxy,flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
-  mkdir -p $TBDIR/Docs/FlashProxy
-  cp -a {doc/*,README,LICENSE,ChangeLog} $TBDIR/Docs/FlashProxy
   cd ..
 
   # Building libfte

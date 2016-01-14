@@ -20,8 +20,6 @@ remotes:
   "dir": "pyptlib"
 - "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
   "dir": "obfsproxy"
-- "url": "https://git.torproject.org/flashproxy.git"
-  "dir": "flashproxy"
 - "url": "https://github.com/kpdyer/libfte.git"
   "dir": "libfte"
 - "url": "https://github.com/kpdyer/fteproxy.git"
@@ -48,7 +46,6 @@ files:
 - "pyyaml.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
-- "m2crypto.tar.gz"
 - "parsley.tar.gz"
 - "go.tar.gz"
 - "dzip.sh"
@@ -165,24 +162,6 @@ script: |
   cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
   mkdir -p $INSTDIR/Docs/Obfsproxy
   cp -a {LICENSE,README} $INSTDIR/Docs/Obfsproxy
-  cd ..
-
-  # Building M2Crypto
-  tar xzf m2crypto.tar.gz
-  cd M2Crypto-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  $PYTHON setup.py build_ext --build-lib build --openssl $INSTDIR/openssl
-  $PYTHON setup.py build --build-lib build
-  cp -a build/M2Crypto $PTDIR/
-  cd ..
-
-  # Building flashproxy
-  cd flashproxy
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  make dist DISTNAME=flashproxy-client
-  cp -a dist/flashproxy-client/{flashproxy,flashproxy-client,flashproxy-reg-appspot,flashproxy-reg-email,flashproxy-reg-http,flashproxy-reg-url} $PTDIR/
-  mkdir -p $INSTDIR/Docs/FlashProxy
-  cp -a {doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
 
   # Building libfte

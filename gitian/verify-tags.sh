@@ -98,7 +98,6 @@ libevent              libevent.gpg              $LIBEVENT_TAG
 tor                   tor.gpg                   $TOR_TAG
 pyptlib               pyptlib.gpg               $PYPTLIB_TAG
 obfsproxy             obfsproxy.gpg             $OBFSPROXY_TAG
-flashproxy            flashproxy.gpg            $FLASHPROXY_TAG
 goptlib               goptlib.gpg               $GOPTLIB_TAG
 meek                  meek.gpg                  $MEEK_TAG
 obfs4                 obfs4proxy.gpg            $OBFS4_TAG
@@ -122,12 +121,12 @@ noto-fonts              $NOTOFONTS_TAG
 EOF
 
 # Verify signatures on signed packages
-for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO M2CRYPTO PYTHON_MSI GMP LXML
+for i in OPENSSL BINUTILS GCC PYTHON PYCRYPTO PYTHON_MSI GMP LXML
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "M2CRYPTO" -o \
-       "${i}" == "PYTHON_MSI" -o "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
+  if [ "${i}" == "PYTHON" -o "${i}" == "PYCRYPTO" -o "${i}" == "PYTHON_MSI" -o \
+       "${i}" == "LXML" -o "${i}" == "OPENSSL" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -142,7 +141,7 @@ done
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK + OSXSDK_OLD are not signed at all)
-for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED M2CRYPTO SETUPTOOLS OPENSSL GMP PARSLEY GO GCC NOTOCJKFONT STIXMATHFONT
+for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED SETUPTOOLS OPENSSL GMP PARSLEY GO GCC NOTOCJKFONT STIXMATHFONT
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"

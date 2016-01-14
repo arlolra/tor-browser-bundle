@@ -8,8 +8,6 @@ packages:
 - "faketime"
 - "unzip"
 - "p7zip-full"
-# Needed by M2Crypto
-- "swig"
 - "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
@@ -17,8 +15,6 @@ remotes:
   "dir": "pyptlib"
 - "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
   "dir": "obfsproxy"
-- "url": "https://git.torproject.org/flashproxy.git"
-  "dir": "flashproxy"
 - "url": "https://github.com/kpdyer/libfte.git"
   "dir": "libfte"
 - "url": "https://github.com/kpdyer/fteproxy.git"
@@ -46,7 +42,6 @@ files:
 - "pyyaml.tar.gz"
 - "zope.interface.zip"
 - "twisted.tar.bz2"
-- "m2crypto.tar.gz"
 - "parsley.tar.gz"
 - "ubuntu-wine.gpg"
 - "wine-wrappers"
@@ -258,27 +253,6 @@ script: |
   cp -an py2exe_bundle/dist/{*.pyd,*.exe,*.zip} $PTDIR/
   mkdir -p $INSTDIR/Docs/Obfsproxy
   cp {LICENSE,README} $INSTDIR/Docs/Obfsproxy
-  cd ..
-
-  # Building M2Crypto
-  tar xzf m2crypto.tar.gz
-  cd M2Crypto-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  LD_PRELOAD= $INSTPYTHON setup.py build_ext -c mingw32 --openssl $INSTDIR/openssl/ -lssl.dll,crypto.dll
-  LD_PRELOAD= $INSTPYTHON setup.py install --single-version-externally-managed --record /dev/null
-  cd ..
-  # py2exe byte-compiles to .pyc files, which embed the mtime of the parent .py
-  # file.
-  find $INSTDIR/python -type f | xargs touch --date="$REFERENCE_DATETIME"
-
-  # Building flashproxy
-  cd flashproxy
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  make dist-exe DISTNAME=flashproxy-client PYTHON="LD_PRELOAD= $INSTPYTHON"
-  py2exe_zip_timestomp dist/flashproxy-client-win32/py2exe-flashproxy.zip
-  cp -an dist/flashproxy-client-win32/{*.pyd,*.exe,*.zip} $PTDIR/
-  mkdir -p $INSTDIR/Docs/FlashProxy
-  cp dist/flashproxy-client-win32/{doc/*,README,LICENSE,ChangeLog} $INSTDIR/Docs/FlashProxy
   cd ..
 
   # Building libfte
