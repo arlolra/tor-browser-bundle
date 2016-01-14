@@ -20,7 +20,40 @@ Tor Browser 5.0.7 -- January 7 2016
    * Bug 17931: Tor Browser crashes in LogMessageToConsole()
    * Bug 17875: Discourage editing of torrc-defaults
 
-Tor Browser 5.5a5 -- December 15 2015
+Tor Browser 5.5a5-hardened -- December 18 2015
+ * All Platforms
+   * Update Firefox to 38.5.0esr
+   * Update Tor to 0.2.7.6
+   * Update OpenSSL to 1.0.1q
+   * Update NoScript to 2.7
+   * Update Torbutton to 1.9.4.2
+     * Bug 16940: After update, load local change notes
+     * Bug 16990: Avoid matching '250 ' to the end of node name
+     * Bug 17565: Tor fundraising campaign donation banner
+     * Bug 17770: Fix alignments on donation banner
+     * Bug 17792: Include donation banner in some non en-US Tor Browsers
+     * Bug 17108: Polish about:tor appearance
+     * Bug 17568: Clean up tor-control-port.js
+     * Translation updates
+   * Update Tor Launcher to 0.2.8.1
+     * Bug 17344: Enumerate available language packs for language prompt
+     * Code clean-up
+     * Translation updates
+   * Bug 12516: Compile Tor Browser with -fwrapv
+   * Bug 9659: Avoid loop due to optimistic data SOCKS code (fix of #3875)
+   * Bug 15564: Isolate SharedWorkers by first-party domain
+   * Bug 16940: After update, load local change notes
+   * Bug 17759: Apply whitelist to local fonts in @font-face (fix of #13313)
+   * Bug 17747: Add ndnop3 as new default obfs4 bridge
+   * Bug 17009: Shift and Alt keys leak physical keyboard layout (fix of #15646)
+   * Bug 17369: Disable RC4 fallback
+   * Bug 17442: Remove custom updater certificate pinning
+   * Bug 16863: Avoid confusing error when loop.enabled is false
+   * Bug 17502: Add a preference for hiding "Open with" on download dialog
+   * Bug 17446: Prevent canvas extraction by third parties (fixup of #6253)
+   * Bug 16441: Suppress "Reset Tor Browser" prompt
+
+Tor Browser 5.5a5 -- December 18 2015
  * All Platforms
    * Update Firefox to 38.5.0esr
    * Update Tor to 0.2.7.6
@@ -52,6 +85,31 @@ Tor Browser 5.5a5 -- December 15 2015
    * Bug 17250: Fix broken Japanese fonts
  * OS X
    * Bug 17661: Whitelist font .Helvetica Neue DeskInterface
+
+Tor Browser 5.0.6 -- December 18 2015
+  * All Platforms
+    * Bug 17877: Tor Browser 5.0.5 is using the wrong Mozilla build tag
+
+Tor Browser 5.0.5 -- December 15 2015
+ * All Platforms
+   * Update Firefox to 38.5.0esr
+   * Update Tor to 0.2.7.6
+   * Update OpenSSL to 1.0.1q
+   * Update NoScript to 2.7
+   * Update HTTPS Everywhere to 5.1.1
+   * Update Torbutton to 1.9.3.7
+     * Bug 16990: Avoid matching '250 ' to the end of node name
+     * Bug 17565: Tor fundraising campaign donation banner
+     * Bug 17770: Fix alignments on donation banner
+     * Bug 17792: Include donation banner in some non en-US Tor Browsers
+     * Translation updates
+   * Bug 17207: Hide MIME types and plugins from websites
+   * Bug 16909+17383: Adapt to HTTPS-Everywhere build changes
+   * Bug 16863: Avoid confusing error when loop.enabled is false
+   * Bug 17502: Add a preference for hiding "Open with" on download dialog
+   * Bug 17446: Prevent canvas extraction by third parties (fixup of #6253)
+   * Bug 16441: Suppress "Reset Tor Browser" prompt
+   * Bug 17747: Add ndnop3 as new default obfs4 bridge
 
 Tor Browser 5.5a4 -- November 3 2015
  * All Platforms
