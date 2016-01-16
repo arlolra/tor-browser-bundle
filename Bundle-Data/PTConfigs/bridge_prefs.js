@@ -1,5 +1,5 @@
 # Tor Launcher preferences (default bridges):
-pref("extensions.torlauncher.default_bridge_recommended_type", "obfs3");
+pref("extensions.torlauncher.default_bridge_recommended_type", "obfs4");
 
 // Default bridges.
 pref("extensions.torlauncher.default_bridge.obfs3.1", "obfs3 83.212.101.3:80 A09D536DD1752D542E1FBB3C9CE4449D51298239");
