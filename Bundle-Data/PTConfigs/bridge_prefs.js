@@ -21,9 +21,10 @@ pref("extensions.torlauncher.default_bridge.fte-ipv6.2", "fte [2001:49f0:d00a:1:
 pref("extensions.torlauncher.default_bridge.scramblesuit.1", "scramblesuit 83.212.101.3:443 A09D536DD1752D542E1FBB3C9CE4449D51298239 password=XTCXLG2JAMJKZW2POLBAOWOQETQSMASH");
 
 pref("extensions.torlauncher.default_bridge.obfs4.1", "obfs4 198.245.60.50:443 752CF7825B3B9EA6A98C83AC41F7099D67007EA5 cert=xpmQtKUqQ/6v5X7ijgYE/f03+l2/EuQ1dexjyUhh16wQlu/cpXUGalmhDIlhuiQPNEKmKw iat-mode=0");
-pref("extensions.torlauncher.default_bridge.obfs4.2", "obfs4 109.105.109.165:24215 8DFCD8FB3285E855F5A55EDDA35696C743ABFC4E cert=Bvg/itxeL4TWKLP6N1MaQzSOC6tcRIBv6q57DYAZc3b2AzuM+/TfB7mqTFEfXILCjEwzVA iat-mode=0");
+pref("extensions.torlauncher.default_bridge.obfs4.2", "obfs4 109.105.109.165:10527 8DFCD8FB3285E855F5A55EDDA35696C743ABFC4E cert=Bvg/itxeL4TWKLP6N1MaQzSOC6tcRIBv6q57DYAZc3b2AzuM+/TfB7mqTFEfXILCjEwzVA iat-mode=0");
 pref("extensions.torlauncher.default_bridge.obfs4.3", "obfs4 83.212.101.3:41213 A09D536DD1752D542E1FBB3C9CE4449D51298239 cert=lPRQ/MXdD1t5SRZ9MquYQNT9m5DV757jtdXdlePmRCudUU9CFUOX1Tm7/meFSyPOsud7Cw iat-mode=0");
 pref("extensions.torlauncher.default_bridge.obfs4.4", "obfs4 104.131.108.182:56880 EF577C30B9F788B0E1801CF7E433B3B77792B77A cert=0SFhfDQrKjUJP8Qq6wrwSICEPf3Vl/nJRsYxWbg3QRoSqhl2EB78MPS2lQxbXY4EW1wwXA iat-mode=0");
+pref("extensions.torlauncher.default_bridge.obfs4.5", "obfs4 109.105.109.147:13764 BBB28DF0F201E706BE564EFE690FE9577DD8386D cert=KfMQN/tNMFdda61hMgpiMI7pbwU1T+wxjTulYnfw+4sgvG0zSH7N7fwT10BI8MUdAD7iJA iat-mode=0");
 
 pref("extensions.torlauncher.default_bridge.meek-google.1", "meek 0.0.2.0:1 46D4A71197B8FA515A826C6B017C522FE264655B url=https://meek-reflect.appspot.com/ front=www.google.com");
 pref("extensions.torlauncher.default_bridge.meek-amazon.1", "meek 0.0.2.0:2 B9E7141C594AF25699E0079C1F0146F409495296 url=https://d2zfqthxsdq309.cloudfront.net/ front=a0.awsstatic.com");
