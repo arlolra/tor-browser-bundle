@@ -1,3 +1,52 @@
+Tor Browser 5.5 -- January 26 2016
+ * All Platforms
+   * Update Firefox to 38.6.0esr
+   * Update libevent to 2.0.22-stable
+   * Update NoScript to 2.9.0.2
+   * Update Torbutton to 1.9.4.3
+     * Bug 16990: Show circuit display for connections using multi-party channels
+     * Bug 18019: Avoid empty prompt shown after non-en-US update
+     * Bug 18004: Remove Tor fundraising donation banner
+     * Bug 16940: After update, load local change notes
+     * Bug 17108: Polish about:tor appearance
+     * Bug 17568: Clean up tor-control-port.js
+     * Bug 16620: Move window.name handling into a Firefox patch
+     * Bug 17351: Code cleanup
+     * Translation updates
+   * Update Tor Launcher to 0.2.7.8
+     * Bug 18113: Randomly permutate available default bridges of chosen type
+   * Bug 13313: Bundle a fixed set of fonts to defend against fingerprinting
+   * Bug 10140: Add new Tor Browser locale (Japanese)
+   * Bug 17428: Remove Flashproxy
+   * Bug 13512: Load a static tab with change notes after an update
+   * Bug 9659: Avoid loop due to optimistic data SOCKS code (fix of #3875)
+   * Bug 15564: Isolate SharedWorkers by first-party domain
+   * Bug 16940: After update, load local change notes
+   * Bug 17759: Apply whitelist to local fonts in @font-face (fix of #13313)
+   * Bug 17009: Shift and Alt keys leak physical keyboard layout (fix of #15646)
+   * Bug 17369: Disable RC4 fallback
+   * Bug 17442: Remove custom updater certificate pinning
+   * Bug 16620: Move window.name handling into a Firefox patch
+   * Bug 17220: Support math symbols in font whitelist
+   * Bug 10599+17305: Include updater and build patches needed for hardened builds
+   * Bug 18115+18102+18071+18091: Update/add new obfs4 bridge
+   * Bug 18072: Change recommended pluggable transport type to obfs4
+   * Bug 18008: Create a new MAR Signing key and bake it into Tor Browser
+   * Bug 16322: Use onion address for DuckDuckGo search engine
+   * Bug 17917: Changelog after update is empty if JS is disabled
+ * Windows
+   * Bug 17250: Add localized font names to font whitelist
+   * Bug 16707: Allow more system fonts to get used on Windows
+   * Bug 13819: Ship expert bundles with console enabled
+   * Bug 17250: Fix broken Japanese fonts
+   * Bug 17870: Add intermediate certificate for authenticode signing
+ * OS X
+   * Bug 17122: Rename Japanese OS X bundle
+   * Bug 16707: Allow more system fonts to get used on OS X
+   * Bug 17661: Whitelist font .Helvetica Neue DeskInterface
+ * Linux
+   * Bug 16672: Don't use font whitelisting for Linux users
+
 Tor Browser 5.5a6-hardened -- January 7 2016
  * All Platforms
    * Update NoScript to 2.9
