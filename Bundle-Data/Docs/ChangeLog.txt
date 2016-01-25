@@ -13,7 +13,7 @@ Tor Browser 6.0a1 -- January 27 2016
      * Bug 11773: Setup wizard UI flow improvements
      * Translation updates
    * Bug 17428: Remove Flashproxy
-   * Bug 18115+18102+18071+18091: Update/add new obfs4 bridge
+   * Bug 18115+18104+18071+18091: Update/add new obfs4 bridge
    * Bug 18072: Change recommended pluggable transport type to obfs4
    * Bug 18008: Create a new MAR Signing key and bake it into Tor Browser
    * Bug 16322: Use onion address for DuckDuckGo search engine
@@ -55,7 +55,7 @@ Tor Browser 5.5 -- January 26 2016
    * Bug 16620: Move window.name handling into a Firefox patch
    * Bug 17220: Support math symbols in font whitelist
    * Bug 10599+17305: Include updater and build patches needed for hardened builds
-   * Bug 18115+18102+18071+18091: Update/add new obfs4 bridge
+   * Bug 18115+18104+18071+18091: Update/add new obfs4 bridge
    * Bug 18072: Change recommended pluggable transport type to obfs4
    * Bug 18008: Create a new MAR Signing key and bake it into Tor Browser
    * Bug 16322: Use onion address for DuckDuckGo search engine
