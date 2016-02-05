@@ -48,7 +48,7 @@ MAKE_TARGET=$TARGET
 while [ $status != done ]; do
   n=$(expr $n + 1)
   printf "%s: Starting build number %d. target=$TARGET.\n" $0 $n | tee -a $logfile
-  date | tee -a $logfile
+  date -u | tee -a $logfile
   killall qemu-system-i386 qemu-system-x86_64
   make $MAKE_TARGET > build-logs/build-$(date -u +%s).log && status=done
   printf "%s: Tried building $MAKE_TARGET %d times. Status: %s.\n" $0 $n $status | tee -a $logfile
@@ -57,7 +57,7 @@ while [ $status != done ]; do
 done
 
 if [ $status = done ]; then
-  NEWDESTDIR=$DESTDIR-$(date +%F)
+  NEWDESTDIR=$DESTDIR-$(date -u +%F)
   echo "$0: renaming $DESTDIR -> $NEWDESTDIR" | tee -a $logfile
   mv $DESTDIR $NEWDESTDIR
   cd $NEWDESTDIR || exit 3
@@ -72,7 +72,7 @@ else
       FILES="$logfile \
              ../../gitian-builder/var/build.log \
              ../../gitian-builder/var/target.log"
-      tail -n 50 $FILES | $MAILX -E -s "Nightly build failure -- $(date +%F)" \
+      tail -n 50 $FILES | $MAILX -E -s "Nightly build failure -- $(date -u +%F)" \
                                  $LOGSENDER -- $LOGRECIPIENTS
   fi
 fi
