@@ -15,6 +15,7 @@ packages:
 - "libxml2-utils"
 - "sqlite3"
 - "python-lxml"
+- "rsync"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-launcher.git"

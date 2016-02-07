@@ -149,7 +149,7 @@ script: |
   # it downloaded during building. Just pretending and thus avoiding another
   # dependency should be fine here as txsocksx catches the exception due to
   # missing __version__ and __sha__ .
-  mkdir vcversioner-1.14.1.1-py2.6.egg
+  mkdir vcversioner-1.14.1.1-py2.7.egg
   $PYTHON setup.py build --build-lib build
   cp -a build/txsocksx $PTDIR/
   cd ..

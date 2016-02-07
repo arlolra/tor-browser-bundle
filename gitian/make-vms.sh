@@ -25,13 +25,20 @@ build_and_test_vm() {
   local arch="$1"; shift
   local bits="$1"; shift
 
-  if [ ! -f ./base-$dist-$arch.qcow2 ];
+  if [ ! -f ./base-$dist-$arch ];
   then
     if [ "z$USE_LXC" = "z1" ];
     then
       export LXC_SUITE=$dist
       export LXC_ARCH=$arch
-      ./bin/make-base-vm --suite $dist --lxc --arch $arch
+      if [ "$dist" = "wheezy" ];
+      then
+        export DISTRO=debian
+        ./bin/make-base-vm --distro debian --suite $dist --lxc --arch $arch
+      else
+        export DISTRO=ubuntu
+        ./bin/make-base-vm --suite $dist --lxc --arch $arch
+      fi
     else
       if [ "$dist" = "wheezy" ];
       then
