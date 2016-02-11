@@ -51,9 +51,12 @@ files:
 - "mar-tools-linux32.zip"
 - "mar-tools-linux64.zip"
 - "tbb-docs.zip"
-- "NotoSansCJKsc-Regular.otf"
 - "STIXv1.1.1-latex.zip"
 - "NotoEmoji-Regular.ttf"
+- "NotoSansJP-Regular.otf"
+- "NotoSansKR-Regular.otf"
+- "NotoSansSC-Regular.otf"
+- "NotoSansTC-Regular.otf"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -141,10 +144,10 @@ script: |
   for fontfile in $NOTO_FONTS_UNHINTED; do
     cp "noto-fonts/unhinted/$fontfile" ${TB_STAGE_DIR}/Browser/fonts/
   done
-  cp NotoSansCJKsc-Regular.otf ${TB_STAGE_DIR}/Browser/fonts/
   unzip -o STIXv1.1.1-latex.zip -d STIX
   cp "STIX/Fonts/fonts/opentype/public/stix/STIXMath-Regular.otf" ${TB_STAGE_DIR}/Browser/fonts/
   cp NotoEmoji-Regular.ttf ${TB_STAGE_DIR}/Browser/fonts/
+  cp {NotoSansJP-Regular.otf,NotoSansKR-Regular.otf,NotoSansSC-Regular.otf,NotoSansTC-Regular.otf} ${TB_STAGE_DIR}/Browser/fonts/
   #
   unzip relativelink-src.zip
   cp RelativeLink/* ${TB_STAGE_DIR}/Browser/
