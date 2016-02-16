@@ -1,3 +1,20 @@
+Tor Browser 6.0a2-hardened -- February 15 2016
+ * All Platforms
+   * Update Firefox to 38.6.1esr
+   * Update NoScript to 2.9.0.3
+   * Bug 18168: Don't clear an iframe's window.name (fix of #16620)
+   * Bug 18137: Add two new obfs4 default bridges
+ * Windows
+   * Bug 18169: Whitelist zh-CN UI font
+ * OSX
+   * Bug 18172: Add Emoji support
+ * Linux
+   * Bug 18172: Add Emoji support
+ * Build System
+   * Linux
+     * Bug 15578: Switch to Debian Wheezy guest VMs (10.04 LTS is EOL)
+     * Bug 18198: Building the hardened Tor Browser in a Debian Wheezy VM is broken
+
 Tor Browser 6.0a2 -- February 15 2016
  * All Platforms
    * Update Firefox to 38.6.1esr
@@ -10,6 +27,11 @@ Tor Browser 6.0a2 -- February 15 2016
    * Bug 18172: Add Emoji support
  * Linux
    * Bug 18172: Add Emoji support
+
+Tor Browser 5.5.2 -- February 12 2016
+ * All Platforms
+   * Update Firefox to 38.6.1esr
+   * Update NoScript to 2.9.0.3
 
 Tor Browser 5.5.1 -- February 4 2016
  * All Platforms
