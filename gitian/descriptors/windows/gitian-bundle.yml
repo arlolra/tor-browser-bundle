@@ -140,11 +140,17 @@ script: |
   unzip ~/build/tor-win32-gbuilt.zip
   unzip ~/build/windows-skeleton.zip
   unzip ~/build/tbb-docs.zip
+  EXTOVERRIDESPATH=Data/Browser/profile.default/preferences/extension-overrides.js
   if [ $BUILD_PT_BUNDLES ]; then
     unzip ~/build/pluggable-transports-win32-gbuilt.zip
     cat ~/build/torrc-defaults-appendix-windows >> Data/Tor/torrc-defaults
-    cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
+    cat ~/build/bridge_prefs.js >> $EXTOVERRIDESPATH
     cat ~/build/meek-http-helper-user.js >> Data/Browser/profile.meek-http-helper/user.js
+  fi
+  # If not building a multi-lingual package, suppress the language prompt.
+  if [ "z$MULTI_LINGUAL" != "z1" ]; then
+    echo 'pref("extensions.torlauncher.prompt_for_locale", false);' >> $EXTOVERRIDESPATH
+    echo 'pref("intl.locale.matchOS", false);' >> $EXTOVERRIDESPATH
   fi
   cd ../../..
   #

@@ -180,6 +180,11 @@ script: |
     cat ~/build/bridge_prefs.js >> $EXTOVERRIDESPATH
     cat ~/build/meek-http-helper-user.js >> $MEEKPROFILEPATH/user.js
   fi
+  # If not building a multi-lingual package, suppress the language prompt.
+  if [ "z$MULTI_LINGUAL" != "z1" ]; then
+    echo 'pref("extensions.torlauncher.prompt_for_locale", false);' >> $EXTOVERRIDESPATH
+    echo 'pref("intl.locale.matchOS", false);' >> $EXTOVERRIDESPATH
+  fi
   # Install a "tor" shim that sets the working directory. See #10030.
   mv $TORBINPATH/tor $TORBINPATH/tor.real
   if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
