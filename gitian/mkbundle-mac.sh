@@ -55,15 +55,45 @@ rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
 rm -f $GITIAN_DIR/inputs/TorBrowser.app.meek-http-helper.zip
 (cd PTConfigs/mac && $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/TorBrowser.app.meek-http-helper.zip TorBrowser.app.meek-http-helper)
-cp PTConfigs/mac/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
-cp PTConfigs/bridge_prefs.js $GITIAN_DIR/inputs/
+if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+# FTE is temporarily disabled due to bug 18495.
+  grep -v 'fteproxy' PTConfigs/mac/torrc-defaults-appendix > $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
+  grep -v 'default_bridge\.fte' PTConfigs/bridge_prefs.js > $GITIAN_DIR/inputs/bridge_prefs.js
+else
+  cp PTConfigs/mac/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
+  cp PTConfigs/bridge_prefs.js $GITIAN_DIR/inputs/
+fi
 cp PTConfigs/meek-http-helper-user.js $GITIAN_DIR/inputs/
 cp mac-tor.sh $GITIAN_DIR/inputs/
 
-cd mac
 rm -f $GITIAN_DIR/inputs/mac-skeleton.zip
-$WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-skeleton.zip .
-cd ../mac-desktop.dmg
+if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+  # The Bundle-Data is designed for embedded data, so we need to modify
+  # the structure when we want the data to be outside the app directory.
+  # We also create an override.ini file to disable the profile migrator.
+  SKELETON_TMP=$GITIAN_DIR/inputs/mac-skeleton-tmp
+  SKELETON_TMP_RESOURCES=$SKELETON_TMP/Contents/Resources
+  rm -rf $SKELETON_TMP
+  mkdir -p $SKELETON_TMP_RESOURCES/browser
+  echo "[XRE]" > $SKELETON_TMP_RESOURCES/browser/override.ini
+  echo "EnableProfileMigrator=0" >> $SKELETON_TMP_RESOURCES/browser/override.ini
+  mkdir -p $SKELETON_TMP_RESOURCES/distribution/preferences
+  cp -p mac/TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js $SKELETON_TMP_RESOURCES/distribution/preferences
+  mkdir -p $SKELETON_TMP_RESOURCES/TorBrowser/Tor
+  cp -p mac/TorBrowser/Data/Tor/torrc-defaults $SKELETON_TMP_RESOURCES/TorBrowser/Tor/
+  # Place a copy of the bookmarks.html file at the top. It will be moved into
+  # browser/omni.ja by code inside descriptors/mac/gitian-bundle.yml
+  cp -p mac/TorBrowser/Data/Browser/profile.default/bookmarks.html $SKELETON_TMP
+  cd $SKELETON_TMP
+  $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-skeleton.zip .
+  cd -
+else
+  cd mac
+  $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/mac-skeleton.zip .
+  cd -
+fi
+
+cd mac-desktop.dmg
 rm -f $GITIAN_DIR/inputs/dmg-desktop.tar.xz
 $WRAPPER_DIR/build-helpers/dtar.sh $GITIAN_DIR/inputs/dmg-desktop.tar.xz .
 cd ../mac-applications.dmg

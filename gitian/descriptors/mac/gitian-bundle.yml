@@ -69,6 +69,22 @@ script: |
   export TORBROWSER_APP="TorBrowser"
   export TORBROWSER_NAME="TorBrowserBundle"
 
+  if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+    DOCSPATH=Contents/Resources/TorBrowser/Docs
+    EXTSPATH=Contents/Resources/distribution/extensions
+    TORBINPATH=Contents/MacOS/Tor
+    TORCONFIGPATH=Contents/Resources/TorBrowser/Tor
+    EXTOVERRIDESPATH=Contents/Resources/distribution/preferences//extension-overrides.js
+    MEEKPROFILEPATH=Contents/Resources/TorBrowser/Tor/PluggableTransports/template-profile.meek-http-helper
+  else
+    DOCSPATH=TorBrowser/Docs
+    EXTSPATH=TorBrowser/Data/Browser/profile.default/extensions
+    TORBINPATH=TorBrowser/Tor
+    TORCONFIGPATH=TorBrowser/Data/Tor
+    EXTOVERRIDESPATH=TorBrowser/Data/Browser/profile.default/preferences/extension-overrides.js
+    MEEKPROFILEPATH=TorBrowser/Data/Browser/profile.meek-http-helper
+  fi
+
   # Building libfaketime.
   cd faketime
   make
@@ -83,10 +99,9 @@ script: |
   MARTOOLS=~/build/mar-tools
   #
   mkdir -p $OUTDIR/
-  mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
-  mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
-  mkdir -p $TORBROWSER_NAME.app/TorBrowser/Data/Browser/Caches
-  mkdir -p $TORBROWSER_NAME.app/TorBrowser/Docs/sources
+  mkdir -p $TORBROWSER_NAME.app/$EXTSPATH/https-everywhere-eff@eff.org
+  mkdir -p $TORBROWSER_NAME.app/$MEEKPROFILEPATH/extensions
+  mkdir -p $TORBROWSER_NAME.app/$DOCSPATH/sources
   mkdir -p $TORBROWSER_NAME.app/Contents/MacOS
   mkdir -p dmg
   #
@@ -97,7 +112,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/tor-launcher@torproject.org.xpi .
+  ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/$EXTSPATH/tor-launcher@torproject.org.xpi .
   cd ../../../
   #
   cd torbutton
@@ -107,7 +122,7 @@ script: |
   mkdir pkg/tmp
   cd pkg/tmp
   unzip ../*.xpi
-  ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/torbutton@torproject.org.xpi .
+  ~/build/dzip.sh ../../../$TORBROWSER_NAME.app/$EXTSPATH/torbutton@torproject.org.xpi .
   cd ../../../
   #
   cd https-everywhere
@@ -120,11 +135,11 @@ script: |
   ./makexpi.sh
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
   rm ./pkg/*-amo.xpi
-  cp pkg/*.xpi ../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  cp pkg/*.xpi ../$TORBROWSER_NAME.app/$EXTSPATH/https-everywhere@eff.org.xpi
   cd ..
   #
-  cp *.xpi ./$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/
-  cd $TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/
+  cp *.xpi ./$TORBROWSER_NAME.app/$EXTSPATH/
+  cd $TORBROWSER_NAME.app/$EXTSPATH/
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
   cd https-everywhere-eff@eff.org
   unzip ../https-everywhere@eff.org.xpi
@@ -132,7 +147,7 @@ script: |
   cd ~/build/
   #
   cd meek/firefox
-  ~/build/dzip.sh ../../$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.meek-http-helper/extensions/meek-http-helper@bamsoftware.com.xpi .
+  ~/build/dzip.sh ../../$TORBROWSER_NAME.app/$MEEKPROFILEPATH/extensions/meek-http-helper@bamsoftware.com.xpi .
   cd ~/build/
   #
   # Install fonts.
@@ -154,23 +169,30 @@ script: |
   fi
   cd $TORBROWSER_NAME.app
   unzip ~/build/mac-skeleton.zip
-  cd TorBrowser
+  if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+    mv bookmarks.html ~/build
+  fi
+  cd $DOCSPATH/..
   unzip ~/build/tbb-docs.zip
+  cd -
   if [ $BUILD_PT_BUNDLES ]; then
-    cat ~/build/torrc-defaults-appendix-mac >> Data/Tor/torrc-defaults
-    cat ~/build/bridge_prefs.js >> Data/Browser/profile.default/preferences/extension-overrides.js
-    cat ~/build/meek-http-helper-user.js >> Data/Browser/profile.meek-http-helper/user.js
+    cat ~/build/torrc-defaults-appendix-mac >> $TORCONFIGPATH/torrc-defaults
+    cat ~/build/bridge_prefs.js >> $EXTOVERRIDESPATH
+    cat ~/build/meek-http-helper-user.js >> $MEEKPROFILEPATH/user.js
   fi
   # Install a "tor" shim that sets the working directory. See #10030.
-  mv Tor/tor Tor/tor.real
-  cp ~/build/mac-tor.sh Tor/tor
-  cd ..
+  mv $TORBINPATH/tor $TORBINPATH/tor.real
+  if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+    cp ~/build/mac-tor.sh $TORCONFIGPATH/tor
+  else
+    cp ~/build/mac-tor.sh $TORBINPATH/tor
+  fi
   unzip ~/build/tor-browser-mac$GBUILD_BITS-gbuilt.zip
   cd ..
   #
   # Copy reproducibility info
-  cp versions $TORBROWSER_NAME.app/TorBrowser/Docs/sources/
-  cp bundle.inputs $TORBROWSER_NAME.app/TorBrowser/Docs/sources/
+  cp versions $TORBROWSER_NAME.app/$DOCSPATH/sources/
+  cp bundle.inputs $TORBROWSER_NAME.app/$DOCSPATH/sources/
   #
   # Set up DMG skeleton
   cd libdmg-hfsplus
@@ -186,20 +208,33 @@ script: |
   pushd $TORBROWSER_NAME.app/Contents/Resources/browser/
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
+  if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+    # Embed our default bookmarks.
+    mkdir -p defaults/profile/
+    cp -p ~/build/bookmarks.html defaults/profile/
+    zip -Xm omni.ja defaults/profile/bookmarks.html
+  fi
   # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   rm -rf defaults
   popd
-  # Install a headless copy of TorBrowser.app, with a modified Info.plist so
-  # that it runs without a dock icon. See #11429.
-  pushd $TORBROWSER_NAME.app/TorBrowser/Tor/PluggableTransports
-  mkdir -p TorBrowser.app.meek-http-helper/Contents
-  (cd TorBrowser.app.meek-http-helper/Contents && ln -s ../../../../../Contents/* .)
-  rm -f TorBrowser.app.meek-http-helper/Contents/Info.plist
-  ~/build/background-plist.py ../../../Contents/Info.plist > TorBrowser.app.meek-http-helper/Contents/Info.plist
-  unzip ~/build/TorBrowser.app.meek-http-helper.zip
-  popd
+  if [ "z$DATA_OUTSIDE_APP_DIR" != "z1" ]; then
+    # Install a headless copy of TorBrowser.app, with a modified Info.plist so
+    # that it runs without a dock icon. See #11429.
+    # When DATA_OUTSIDE_APP_DIR is set, this approach is not used because it
+    # is incompatible with Apple's Gatekeeper signing process. Instead,
+    # firefox has been modified to accept an --invisible command line option
+    # that causes it to hide the dock icon when running as the meek http
+    # helper browser (meek-client-torbrowser invokes firefox with --invisible).
+    pushd $TORBROWSER_NAME.app/TorBrowser/Tor/PluggableTransports
+    mkdir -p TorBrowser.app.meek-http-helper/Contents
+    (cd TorBrowser.app.meek-http-helper/Contents && ln -s ../../../../../Contents/* .)
+    rm -f TorBrowser.app.meek-http-helper/Contents/Info.plist
+    ~/build/background-plist.py ../../../Contents/Info.plist > TorBrowser.app.meek-http-helper/Contents/Info.plist
+    unzip ~/build/TorBrowser.app.meek-http-helper.zip
+    popd
+  fi
 
   unzip mac-langpacks.zip
   MAC_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_MAC"
@@ -212,7 +247,7 @@ script: |
     for LANG in $MAC_LOCALES
     do
       xpi=$LANG.xpi
-      cp $xpi ~/build/$TORBROWSER_NAME.app/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+      cp $xpi ~/build/$TORBROWSER_NAME.app/$EXTSPATH/langpack-$LANG@firefox.mozilla.org.xpi
     done
     popd
 
@@ -223,10 +258,7 @@ script: |
     zip -Xm omni.ja update.locale
     popd
   fi
-  #
-  # XXX: We need to insert these placeholders because otherwise mkisofs won't
-  # include these otherwise empty dirs:
-  touch ~/build/$TORBROWSER_NAME.app/TorBrowser/Data/Browser/Caches/placeholder.txt
+
   # Recreate precomplete file (needs to be accurate for full MAR updates).
   pushd ~/build/$TORBROWSER_NAME.app/Contents/Resources/
   rm -f precomplete
@@ -249,7 +281,7 @@ script: |
       xpi=mac-langpacks/$LANG.xpi
       DEST=$TORBROWSER_APP
       cp -a ${TORBROWSER_NAME}_plain.app ~/build/dmg/$DEST.app
-      cp $xpi ~/build/dmg/$DEST.app/TorBrowser/Data/Browser/profile.default/extensions/langpack-$LANG@firefox.mozilla.org.xpi
+      cp $xpi ~/build/dmg/$DEST.app/$EXTSPATH/langpack-$LANG@firefox.mozilla.org.xpi
 
       pushd ~/build/dmg/$DEST.app/Contents/Resources/browser/
       mkdir -p defaults/preferences

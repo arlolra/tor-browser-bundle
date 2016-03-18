@@ -8,4 +8,8 @@ export DYLD_LIBRARY_PATH=.:$DYLD_LIBRARY_PATH
 # otherwise set to "/" when an application bundle is started from Finder.
 # https://trac.torproject.org/projects/tor/ticket/10030
 cd "$(dirname "$0")"
+if [ ! -f tor.real -a -d ../../../MacOS/Tor ]; then
+  # On newer releases of Tor Browser, tor.real is in Contents/MacOS/Tor/.
+  cd ../../../MacOS/Tor
+fi
 exec ./tor.real "$@"

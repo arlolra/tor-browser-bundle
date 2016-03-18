@@ -39,6 +39,7 @@ remotes:
 - "url": "https://git.torproject.org/pluggable-transports/obfs4.git"
   "dir": "obfs4"
 files:
+- "versions"
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
 - "pyyaml.tar.gz"
@@ -53,8 +54,20 @@ files:
 - "openssl-mac64-utils.zip"
 script: |
   INSTDIR="$HOME/install"
-  TBDIR="$INSTDIR/TorBrowserBundle.app/TorBrowser"
-  PTDIR="$TBDIR/Tor/PluggableTransports"
+  source versions
+  TBDIR="$INSTDIR/TorBrowserBundle.app"
+  if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+    PTDIR="$TBDIR/Contents/MacOS/Tor/PluggableTransports"
+    DOCSDIR="$TBDIR/Contents/Resources/TorBrowser/Docs"
+    TORBINDIR="$TBDIR/Contents/MacOS/Tor"
+    # TODO: Fix packaging of fte so it can be included. See bug 18495.
+    INCLUDE_FTE=0
+  else
+    PTDIR="$TBDIR/TorBrowser/Tor/PluggableTransports"
+    DOCSDIR="$TBDIR/TorBrowser/Docs"
+    TORBINDIR="$TBDIR/TorBrowser/Tor"
+    INCLUDE_FTE=1
+  fi
   export LIBRARY_PATH="$INSTDIR/lib"
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   export FAKETIME=$REFERENCE_DATETIME
@@ -68,10 +81,15 @@ script: |
   sudo dpkg -i *.deb
   tar xaf multiarch-darwin*tar.xz
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
-  unzip -d $INSTDIR gmp-mac64-utils.zip
-  unzip -d $INSTDIR openssl-mac64-utils.zip
-  # FTE only needs libgmp.10.dylib and no libgmpxx anymore.
-  cp $INSTDIR/gmp/lib/libgmp.10.dylib $TBDIR/Tor/
+  if [ "z$INCLUDE_FTE" = "z1" ]; then
+    unzip -d $INSTDIR gmp-mac64-utils.zip
+    unzip -d $INSTDIR openssl-mac64-utils.zip
+    # FTE only needs libgmp.10.dylib and no libgmpxx anymore.
+    cp $INSTDIR/gmp/lib/libgmp.10.dylib $TORBINDIR/
+    FTE_EXTRA_CFLAGS=" -I$INSTDIR/gmp/include -L$INSTDIR/gmp/lib"
+  else
+    FTE_EXTRA_CFLAGS=""
+  fi
 
   #
   export AR=$HOME/build/apple-osx/bin/i686-apple-darwin11-ar
@@ -80,8 +98,8 @@ script: |
   # http://bugs.python.org/issue9437
   export LDSHARED="$CC -pthread -shared"
   # XXX Clean up these flags?
-  export CFLAGS="-m64 -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -I$INSTDIR/gmp/include -L$INSTDIR/gmp/lib"
-  export CXXFLAGS="-m64 -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1 -I$INSTDIR/gmp/include -L$INSTDIR/gmp/lib"
+  export CFLAGS="-m64 -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1$FTE_EXTRA_CFLAGS"
+  export CXXFLAGS="-m64 -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/i686-apple-darwin10/4.2.1$FTE_EXTRA_CFLAGS"
   export LDFLAGS="-L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -F/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks -mmacosx-version-min=10.5"
 
   # Building go
@@ -99,6 +117,8 @@ script: |
   CGO_ENABLED=1 CC_FOR_TARGET="$CC $CFLAGS $LDFLAGS" CC= CFLAGS= LDFLAGS= ./make.bash
   cd ../..
   export PATH="$PATH:$PWD/go/bin"
+
+  if [ "z$INCLUDE_FTE" = "z1" ]; then
 
   # Building pyptlib
   cd pyptlib
@@ -179,8 +199,8 @@ script: |
   python setup.py build --build-lib build
   cp -a build/obfsproxy $PTDIR/
   cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
-  mkdir -p $TBDIR/Docs/Obfsproxy
-  cp -a {LICENSE,README} $TBDIR/Docs/Obfsproxy
+  mkdir -p $DOCSDIR/Obfsproxy
+  cp -a {LICENSE,README} $DOCSDIR/Obfsproxy
   # XXX: Workaround for bug 11190
   sed 's/python2/python/' -i $PTDIR/obfsproxy.bin
   cd ..
@@ -190,9 +210,9 @@ script: |
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CFLAGS" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CXXFLAGS" make
   cp -ra fte $PTDIR/
-  mkdir -p $TBDIR/Docs/libfte
-  cp -a {LICENSE,README.md} $TBDIR/Docs/libfte
-  cp -an thirdparty/re2/LICENSE $TBDIR/Docs/libfte/LICENSE.re2
+  mkdir -p $DOCSDIR/libfte
+  cp -a {LICENSE,README.md} $DOCSDIR/libfte
+  cp -an thirdparty/re2/LICENSE $DOCSDIR/libfte/LICENSE.re2
   cd ..
 
   # Building fteproxy
@@ -200,9 +220,12 @@ script: |
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   cp -a bin/fteproxy $PTDIR/fteproxy.bin
   cp -ra fteproxy $PTDIR/
-  mkdir -p $TBDIR/Docs/fteproxy
-  cp -a {COPYING,README.md} $TBDIR/Docs/fteproxy
+  mkdir -p $DOCSDIR/fteproxy
+  cp -a {COPYING,README.md} $DOCSDIR/fteproxy
   cd ..
+
+  fi
+  # end of 'INCLUDE_FTE' section
 
   # Building goptlib
   cd goptlib
@@ -225,8 +248,8 @@ script: |
   go build -ldflags '-s'
   cp -a meek-client-torbrowser $PTDIR
   cd ..
-  mkdir -p $TBDIR/Docs/meek
-  cp -a README doc/*.1 $TBDIR/Docs/meek
+  mkdir -p $DOCSDIR/meek
+  cp -a README doc/*.1 $DOCSDIR/meek
   cd ..
 
   # Building go ed25519
