@@ -8,6 +8,9 @@ BUNDLE_LOCALES_WIN32="ja"
 BUNDLE_LOCALES_MAC="ja-JP-mac"
 BUILD_PT_BUNDLES=1
 
+# DATA_OUTSIDE_APP_DIR is only implemented for Mac OS.
+DATA_OUTSIDE_APP_DIR=1
+
 # If you remove MULTI_LINGUAL=1, be sure to use a version of Tor Launcher
 # that does not include the language prompt.
 MULTI_LINGUAL=1
