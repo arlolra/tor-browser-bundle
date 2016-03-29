@@ -25,7 +25,8 @@ build_and_test_vm() {
   local arch="$1"; shift
   local bits="$1"; shift
 
-  if [ ! -f ./base-$dist-$arch ];
+  if [ "z$USE_LXC" = "z1" -a ! -f ./base-$dist-$arch ] \
+      || [ "z$USE_LXC" != "z1" -a ! -f ./base-$dist-$arch.qcow2 ];
   then
     if [ "z$USE_LXC" = "z1" ];
     then
