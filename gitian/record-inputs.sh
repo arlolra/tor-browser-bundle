@@ -25,7 +25,7 @@ rm -f bundle.inputs
 
 sha256sum $OSXSDK_PACKAGE >> bundle.inputs
 sha256sum $OPENSSL_PACKAGE >> bundle.inputs
-sha256sum $TOOLCHAIN4_PACKAGE >> bundle.inputs
+sha256sum $CCTOOLS_PACKAGE >> bundle.inputs
 echo >> bundle.inputs
 sha256sum noscript@noscript.net.xpi >> bundle.inputs
 echo >> bundle.inputs

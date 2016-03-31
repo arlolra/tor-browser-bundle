@@ -1,7 +1,8 @@
 ---
 name: "tor-mac"
+distro: "debian"
 suites:
-- "precise"
+- "wheezy"
 architectures:
 - "i386"
 packages:

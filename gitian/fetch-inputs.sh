@@ -6,6 +6,7 @@
 MIRROR_URL=https://people.torproject.org/~mikeperry/mirrors/sources/
 MIRROR_URL_DCF=https://people.torproject.org/~dcf/mirrors/sources/
 MIRROR_URL_ASN=https://people.torproject.org/~asn/mirrors/sources/
+MIRROR_URL_GK=https://people.torproject.org/~gk/mirrors/sources/
 set -e
 set -u
 umask 0022
@@ -131,11 +132,18 @@ do
   fi
 done
 
-for i in TOOLCHAIN4 TOOLCHAIN4_OLD OSXSDK OSXSDK_OLD MSVCR100
+for i in TOOLCHAIN4_OLD OSXSDK OSXSDK_OLD MSVCR100
 do
   PACKAGE="${i}_PACKAGE"
   URL="${MIRROR_URL}${!PACKAGE}"
   get "${!PACKAGE}" "${MIRROR_URL}${!PACKAGE}"
+done
+
+for i in CCTOOLS
+do
+  PACKAGE="${i}_PACKAGE"
+  URL="${MIRROR_URL_GK}${!PACKAGE}"
+  get "${!PACKAGE}" "${MIRROR_URL_GK}${!PACKAGE}"
 done
 
 # XXX: Omit googlecode.com packages because Google won't allow wget -N
@@ -166,7 +174,7 @@ wget -U "" -N ${NOSCRIPT_URL}
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK + OSXSDK_OLD are not signed at all)
-for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED SETUPTOOLS OPENSSL GMP PARSLEY GO GCC STIXMATHFONT NOTOEMOJIFONT NOTOJPFONT NOTOKRFONT NOTOSCFONT NOTOTCFONT
+for i in OSXSDK OSXSDK_OLD TOOLCHAIN4_OLD CCTOOLS NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED SETUPTOOLS OPENSSL GMP PARSLEY GO GCC STIXMATHFONT NOTOEMOJIFONT NOTOJPFONT NOTOKRFONT NOTOSCFONT NOTOTCFONT
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"
@@ -257,6 +265,9 @@ https-everywhere      https://git.torproject.org/https-everywhere.git $HTTPSE_TA
 torbutton             https://git.torproject.org/torbutton.git            $TORBUTTON_TAG
 tor-launcher          https://git.torproject.org/tor-launcher.git         $TORLAUNCHER_TAG
 tor-browser           https://git.torproject.org/tor-browser.git          $TORBROWSER_TAG
+cmake                 https://cmake.org/cmake.git                         $CMAKE_TAG
+llvm                  https://github.com/llvm-mirror/llvm                 $LLVM_TAG
+clang                 https://github.com/llvm-mirror/clang                $CLANG_TAG
 mingw-w64-git         http://git.code.sf.net/p/mingw-w64/mingw-w64        $MINGW_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG

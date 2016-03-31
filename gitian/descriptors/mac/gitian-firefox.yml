@@ -1,13 +1,15 @@
 ---
 name: "torbrowser-mac"
+distro: "debian"
 suites:
-- "precise"
+- "wheezy"
 architectures:
 - "amd64"
 packages:
 - "autoconf2.13"
 - "unzip"
 - "yasm"
+- "rsync"
 - "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
@@ -16,9 +18,9 @@ remotes:
 - "url": "https://github.com/wolfcw/libfaketime"
   "dir": "faketime"
 files:
-- "gcc-linux64-precise-utils.zip"
+- "clang-linux64-wheezy-utils.zip"
+- "cctools.tar.gz"
 - "MacOSX10.7.sdk.tar.gz"
-- "x86_64-apple-darwin10.tar.xz"
 - "re-dzip.sh"
 - "dzip.sh"
 - "fix-info-plist.py"
@@ -46,18 +48,11 @@ script: |
   export FAKETIME=$REFERENCE_DATETIME
   cd ..
 
-  unzip -d $INSTDIR ~/build/gcc-linux64-precise-utils.zip
-  # We need a link to our GCC, otherwise the system cc gets used which points to
-  # /usr/bin/gcc.
-  ln -s gcc $INSTDIR/gcc/bin/cc
-  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib64
-  # XXX: cross-compiler path is needed for ICU
-  export PATH=/home/ubuntu/build/x-tools/x86_64-apple-darwin10/bin:$INSTDIR/gcc/bin:$PATH
-
-  tar xaf x86_64-apple-darwin10.tar.xz
-  tar xaf MacOSX10.7.sdk.tar.gz
-  #
   cd tor-browser
+  # Extracting all the necessary tools
+  tar xaf ../MacOSX10.7.sdk.tar.gz
+  tar xaf ../cctools.tar.gz
+  unzip ../clang-linux64-wheezy-utils.zip
   TB_COMMIT_DATE=$(git show -s --format='%ci')
   COPYRIGHT_YEAR=${TB_COMMIT_DATE%%-*}
   mv .mozconfig-mac .mozconfig

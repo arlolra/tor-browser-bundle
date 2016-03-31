@@ -1,7 +1,8 @@
 ---
 name: "bundle-mac"
+distro: "debian"
 suites:
-- "precise"
+- "wheezy"
 architectures:
 - "amd64"
 packages:
@@ -12,6 +13,7 @@ packages:
 - "python-lxml"
 - "libxml2-utils"
 - "sqlite3"
+- "rsync"
 # Needed for the .dmgs
 - "genisoimage"
 - "cmake"
