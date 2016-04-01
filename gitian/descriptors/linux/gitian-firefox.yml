@@ -20,6 +20,8 @@ packages:
 - "python-dev"
 # To pass configure since ESR 31.
 - "libpulse-dev"
+# To pass configure since ESR 45.
+- "libgconf2-dev"
 # We built GCC but not the libmpc2, thus we need to install it.
 - "libmpc2"
 reference_datetime: "2000-01-01 00:00:00"
