@@ -47,6 +47,7 @@ files:
 - "wine-wrappers"
 - "python.msi"
 - "py2exe.exe"
+- "go14.tar.gz"
 - "go.tar.gz"
 - "dzip.sh"
 - "pyc-timestamp.sh"
@@ -139,19 +140,34 @@ script: |
   cp -a dist/gcc.exe dist/g++.exe dist/dllwrap.exe $WINEROOT/windows/
   cd ..
 
+  # Building go 1.4.x
+  # This is needed to bootstrap the go that we actually use
+  # https://golang.org/doc/install/source#go14
+  tar xvf go14.tar.gz --transform='s,^go\>,go1.4,'
+  cd go1.4/src
+  # Disable cgo to avoid conflicts with newer GCC. cgo is not needed for the bootstrap go.
+  # https://github.com/golang/go/issues/13114#issuecomment-186922245
+  # Disable CC etc. that are set up for cross builds.
+  CGO_ENABLED=0 CC= CFLAGS= LDFLAGS= ./make.bash
+  cd ../..
+  export GOROOT_BOOTSTRAP="$PWD/go1.4"
+
   # Building go
+  CC=i686-w64-mingw32-gcc
+  # Create a cc-for-target script that closes over CC, CFLAGS, and LDFLAGS.
+  # Go's CC_FOR_TARGET only allows a command name, not a command with arguments.
+  # https://github.com/golang/go/issues/15457
+  CC_FOR_TARGET="$(pwd)/cc-for-target"
+  echo "#!/bin/sh" > "$CC_FOR_TARGET"
+  echo "exec $CC $CFLAGS $LDFLAGS \"\$@\"" >> "$CC_FOR_TARGET"
+  chmod +x "$CC_FOR_TARGET"
   # http://golang.org/doc/install/source#environment
   export GOPATH="$HOME/go"
   export GOOS=windows
   export GOARCH=386
   tar xvf go.tar.gz
   cd go/src
-  # http://golang.org/cmd/cgo/:
-  # "To enable cgo during cross compiling builds, set the CGO_ENABLED
-  # environment variable to 1 when building the Go tools with make.bash. Also,
-  # set CC_FOR_TARGET to the C cross compiler for the target. CC will be used
-  # for compiling for the host."
-  CGO_ENABLED=1 CC_FOR_TARGET="i686-w64-mingw32-gcc" CC= CFLAGS= LDFLAGS= ./make.bash
+  CGO_ENABLED=1 CC_FOR_TARGET="$CC_FOR_TARGET" CC= CFLAGS= LDFLAGS= ./make.bash
   cd ../..
   export PATH="$PATH:$PWD/go/bin"
 

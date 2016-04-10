@@ -46,6 +46,7 @@ files:
 - "zope.interface.zip"
 - "twisted.tar.bz2"
 - "parsley.tar.gz"
+- "go14.tar.gz"
 - "go.tar.gz"
 - "dzip.sh"
 - "gmp-linux32-utils.zip"
@@ -73,6 +74,17 @@ script: |
   unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
   # FTE only needs libgmp.so.10 and no libgmpxx anymore.
   cp $INSTDIR/gmp/lib/libgmp.so.10 $INSTDIR/Tor
+
+  # Building go 1.4.x
+  # This is needed to bootstrap the go that we actually use
+  # https://golang.org/doc/install/source#go14
+  tar xvf go14.tar.gz --transform='s,^go\>,go1.4,'
+  cd go1.4/src
+  # Disable cgo to avoid conflicts with newer GCC. cgo is not needed for the bootstrap go.
+  # https://github.com/golang/go/issues/13114#issuecomment-186922245
+  CGO_ENABLED=0 ./make.bash
+  cd ../..
+  export GOROOT_BOOTSTRAP="$PWD/go1.4"
 
   # Building go
   # http://golang.org/doc/install/source#environment
