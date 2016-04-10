@@ -53,7 +53,9 @@ TWISTED_VER=13.2.0
 PY2EXE_VER=0.6.9
 SETUPTOOLS_VER=1.4
 PARSLEY_VER=1.2
-GO_VER=1.4.2
+# We need a Go 1.4 to bootstrap later versions; see https://golang.org/doc/install/source#go14
+GO14_VER=1.4.3
+GO_VER=1.6.2
 NSIS_VER=2.51
 
 ## File names for the source packages
@@ -75,6 +77,7 @@ TWISTED_PACKAGE=Twisted-${TWISTED_VER}.tar.bz2
 PY2EXE_PACKAGE=py2exe-${PY2EXE_VER}.win32-py2.7.exe
 SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 PARSLEY_PACKAGE=Parsley-${PARSLEY_VER}.tar.gz
+GO14_PACKAGE=go${GO14_VER}.src.tar.gz
 GO_PACKAGE=go${GO_VER}.src.tar.gz
 NSIS_PACKAGE=nsis-${NSIS_VER}-src.tar.bz2
 NSIS_DEBIAN_PACKAGE=nsis_${NSIS_VER}-1.debian.tar.xz
@@ -101,7 +104,8 @@ TWISTED_HASH=095175638c019ac7c0604f4c291724a16ff1acd062e181b01293bf4dcbc62cf3
 PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
 SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 PARSLEY_HASH=50d30cee70770fd44db7cea421cb2fb75af247c3a1cd54885c06b30a7c85dd23
-GO_HASH=299a6fd8f8adfdce15bc06bde926e7b252ae8e24dd5b16b7d8791ed79e7b5e9b
+GO14_HASH=9947fc705b0b841b5938c48b22dc33e9647ec0752bae66e50278df4f23f64959
+GO_HASH=787b0b750d037016a30c6ed05a8a70a91b2e9db4bd9b1a2453aa502a63f1bccc
 NSIS_HASH=43d4c9209847e35eb6e2c7cd5a7586e1445374c056c2c7899e40a080e17a1be7
 NSIS_DEBIAN_HASH=1dee6957b4a4b8dfe69bcf28bc7f301a13b96b3fa5a394e36c8926ae781e774a
 GCC_HASH=b7dafdf89cbb0e20333dbf5b5349319ae06e3d1a30bf3515b5488f7e89dca5ad
@@ -130,6 +134,7 @@ TWISTED_URL=https://pypi.python.org/packages/source/T/Twisted/${TWISTED_PACKAGE}
 PY2EXE_URL=http://liquidtelecom.dl.sourceforge.net/project/py2exe/py2exe/${PY2EXE_VER}/${PY2EXE_PACKAGE}
 SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS_PACKAGE}
 PARSLEY_URL=https://pypi.python.org/packages/source/P/Parsley/${PARSLEY_PACKAGE}
+GO14_URL=https://golang.org/dl/${GO14_PACKAGE}
 GO_URL=https://golang.org/dl/${GO_PACKAGE}
 NSIS_URL=http://downloads.sourceforge.net/nsis/${NSIS_PACKAGE}
 NSIS_DEBIAN_URL=http://http.debian.net/debian/pool/main/n/nsis/${NSIS_DEBIAN_PACKAGE}

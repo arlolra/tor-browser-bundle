@@ -49,7 +49,9 @@ M2CRYPTO_VER=0.21.1
 PY2EXE_VER=0.6.9
 SETUPTOOLS_VER=1.4
 PARSLEY_VER=1.2
-GO_VER=1.4.2
+# We need a Go 1.4 to bootstrap later versions; see https://golang.org/doc/install/source#go14
+GO14_VER=1.4.3
+GO_VER=1.6.2
 
 ## File names for the source packages
 OPENSSL_PACKAGE=openssl-${OPENSSL_VER}.tar.gz
@@ -71,6 +73,7 @@ M2CRYPTO_PACKAGE=M2Crypto-${M2CRYPTO_VER}.tar.gz
 PY2EXE_PACKAGE=py2exe-${PY2EXE_VER}.win32-py2.7.exe
 SETUPTOOLS_PACKAGE=setuptools-${SETUPTOOLS_VER}.tar.gz
 PARSLEY_PACKAGE=Parsley-${PARSLEY_VER}.tar.gz
+GO14_PACKAGE=go${GO14_VER}.src.tar.gz
 GO_PACKAGE=go${GO_VER}.src.tar.gz
 STIXMATHFONT_PACKAGE=STIXv1.1.1-latex.zip
 NOTOEMOJIFONT_PACKAGE=NotoEmoji-Regular.ttf
@@ -96,7 +99,8 @@ M2CRYPTO_HASH=25b94498505c2d800ee465db0cc1aff097b1615adc3ac042a1c85ceca264fc0a
 PY2EXE_HASH=610a8800de3d973ed5ed4ac505ab42ad058add18a68609ac09e6cf3598ef056c
 SETUPTOOLS_HASH=75d288687066ed124311d6ca5f40ffa92a0e81adcd7fff318c6e84082713cf39
 PARSLEY_HASH=50d30cee70770fd44db7cea421cb2fb75af247c3a1cd54885c06b30a7c85dd23
-GO_HASH=299a6fd8f8adfdce15bc06bde926e7b252ae8e24dd5b16b7d8791ed79e7b5e9b
+GO14_HASH=9947fc705b0b841b5938c48b22dc33e9647ec0752bae66e50278df4f23f64959
+GO_HASH=787b0b750d037016a30c6ed05a8a70a91b2e9db4bd9b1a2453aa502a63f1bccc
 STIXMATHFONT_HASH=e3b0f712e2644438eee2d0dcd2b10b2d54f1b972039de95b2f8e800bae1adbd8
 NOTOEMOJIFONT_HASH=415dc6290378574135b64c808dc640c1df7531973290c4970c51fdeb849cb0c5
 NOTOJPFONT_HASH=3e8146c4ce0945f255cb9dbc12b392380af80bd117e0a60eae555c99c7e618da
@@ -123,6 +127,7 @@ M2CRYPTO_URL=https://pypi.python.org/packages/source/M/M2Crypto/${M2CRYPTO_PACKA
 PY2EXE_URL=http://softlayer-dal.dl.sourceforge.net/project/py2exe/py2exe/${PY2EXE_VER}/${PY2EXE_PACKAGE}
 SETUPTOOLS_URL=https://pypi.python.org/packages/source/s/setuptools/${SETUPTOOLS_PACKAGE}
 PARSLEY_URL=https://pypi.python.org/packages/source/P/Parsley/${PARSLEY_PACKAGE}
+GO14_URL=https://golang.org/dl/${GO14_PACKAGE}
 GO_URL=https://golang.org/dl/${GO_PACKAGE}
 STIXMATHFONT_URL=http://iweb.dl.sourceforge.net/project/stixfonts/Current%20Release/${STIXMATHFONT_PACKAGE}
 NOTOEMOJIFONT_URL=https://github.com/googlei18n/noto-emoji/raw/2f1ffdd6fbbd05d6f382138a3d3adcd89c5ce800/fonts/${NOTOEMOJIFONT_PACKAGE}
