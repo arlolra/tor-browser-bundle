@@ -79,6 +79,8 @@ script: |
   mkdir -p $PTDIR/
   mkdir -p $OUTDIR/
   #
+  # dpkg requires sbin directories in the PATH
+  export PATH="/usr/sbin:/sbin:$PATH"
   sudo dpkg -i *.deb
   tar xaf multiarch-darwin*tar.xz
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
