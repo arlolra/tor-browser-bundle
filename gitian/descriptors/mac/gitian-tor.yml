@@ -6,7 +6,6 @@ suites:
 architectures:
 - "i386"
 packages:
-- "faketime"
 - "unzip"
 - "automake"
 - "zip"
@@ -32,8 +31,6 @@ script: |
     TORBINDIR="$TBDIR/TorBrowser/Tor"
     TORCONFIGDIR="$TBDIR/TorBrowser/Data/Tor"
   fi
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
