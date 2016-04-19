@@ -131,11 +131,12 @@ then
   PYPTLIB_TAG=refs/tags/$PYPTLIB_TAG
   OBFSPROXY_TAG=refs/tags/$OBFSPROXY_TAG
   OBFS4_TAG=refs/tags/$OBFS4_TAG
+  CMAKE_TAG=refs/tags/$CMAKE_TAG
 fi
 
 cd $GITIAN_DIR
 
-if [ ! -f inputs/gcc-$GCC_VER-linux64-precise-utils.zip -o \
+if [ ! -f inputs/clang-$CLANG_VER-linux64-wheezy-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];
@@ -143,7 +144,7 @@ then
   echo
   echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
   echo
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG,faketime=$FAKETIME_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG,faketime=$FAKETIME_TAG,cmake=$CMAKE_TAG,llvm=$LLVM_TAG,clang=$CLANG_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./utils-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -152,7 +153,7 @@ then
 
   cd inputs
   cp -a ../build/out/*-utils.zip .
-  ln -sf gcc-$GCC_VER-linux64-precise-utils.zip gcc-linux64-precise-utils.zip
+  ln -sf clang-$CLANG_VER-linux64-wheezy-utils.zip clang-linux64-wheezy-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
   ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
@@ -166,7 +167,7 @@ else
   # We might have built the utilities in the past but maybe the links are
   # pointing to the wrong version. Refresh them.
   cd inputs
-  ln -sf gcc-$GCC_VER-linux64-precise-utils.zip gcc-linux64-precise-utils.zip
+  ln -sf clang-$CLANG_VER-linux64-wheezy-utils.zip clang-linux64-wheezy-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
   ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip

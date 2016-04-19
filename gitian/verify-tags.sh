@@ -102,11 +102,14 @@ goptlib               goptlib.gpg               $GOPTLIB_TAG
 meek                  meek.gpg                  $MEEK_TAG
 obfs4                 obfs4proxy.gpg            $OBFS4_TAG
 https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
+cmake                 cmake.gpg                 $CMAKE_TAG
 EOF
 
 while read dir commit; do
   check_git_hash "$dir" "$commit"
 done << EOF
+llvm                    $LLVM_TAG
+clang                   $CLANG_TAG
 mingw-w64-git           $MINGW_TAG
 libdmg-hfsplus          $LIBDMG_TAG
 libfte                  $LIBFTE_TAG
@@ -140,7 +143,7 @@ done
 
 # Verify packages with weak or no signatures via direct sha256 check
 # (OpenSSL is signed with MD5, and OSXSDK + OSXSDK_OLD are not signed at all)
-for i in OSXSDK OSXSDK_OLD TOOLCHAIN4 TOOLCHAIN4_OLD NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED SETUPTOOLS OPENSSL GMP PARSLEY GO GCC STIXMATHFONT NOTOEMOJIFONT NOTOJPFONT NOTOKRFONT NOTOSCFONT NOTOTCFONT
+for i in OSXSDK OSXSDK_OLD TOOLCHAIN4_OLD CCTOOLS NOSCRIPT MSVCR100 PYCRYPTO ARGPARSE PYYAML ZOPEINTERFACE TWISTED SETUPTOOLS OPENSSL GMP PARSLEY GO GCC STIXMATHFONT NOTOEMOJIFONT NOTOJPFONT NOTOKRFONT NOTOSCFONT NOTOTCFONT
 do
    PACKAGE="${i}_PACKAGE"
    HASH="${i}_HASH"

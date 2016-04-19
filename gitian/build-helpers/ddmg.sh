@@ -15,7 +15,7 @@ cd $@
 find . -type f | sed -e 's/^\.\///' | sort | xargs -i echo "{}={}" > ~/build/filelist.txt
 find . -type l | sed -e 's/^\.\///' | sort | xargs -i echo "{}={}" >> ~/build/filelist.txt
 
-mkisofs -D -V "Tor Browser" -no-pad -R -apple -o ~/build/tbb-uncompressed.dmg -path-list ~/build/filelist.txt -graft-points -gid 20 -dir-mode 0750 -new-dir-mode 0750
+genisoimage -D -V "Tor Browser" -no-pad -R -apple -o ~/build/tbb-uncompressed.dmg -path-list ~/build/filelist.txt -graft-points -gid 20 -dir-mode 0750 -new-dir-mode 0750
 
 cd ~/build
 

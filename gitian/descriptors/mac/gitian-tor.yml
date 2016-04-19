@@ -1,11 +1,11 @@
 ---
 name: "tor-mac"
+distro: "debian"
 suites:
-- "precise"
+- "wheezy"
 architectures:
 - "i386"
 packages:
-- "faketime"
 - "unzip"
 - "automake"
 - "zip"
@@ -31,8 +31,6 @@ script: |
     TORBINDIR="$TBDIR/TorBrowser/Tor"
     TORCONFIGDIR="$TBDIR/TorBrowser/Data/Tor"
   fi
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -42,6 +40,8 @@ script: |
   mkdir -p $TORCONFIGDIR/
   mkdir -p $OUTDIR/
   #
+  # dpkg requires sbin directories in the PATH
+  export PATH="/usr/sbin:/sbin:$PATH"
   sudo dpkg -i *.deb
   tar xaf multiarch-darwin*tar.xz
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
