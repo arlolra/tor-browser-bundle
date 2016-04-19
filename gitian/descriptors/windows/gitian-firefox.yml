@@ -100,7 +100,7 @@ script: |
   # stall otherwise right at the beginning. See #13877 for details.
   export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
   export FAKETIME_SKIP_CMDS="python2.7,make"
-  make BUILD_HOSTNAME="gitian" $MAKEOPTS -f client.mk build
+  make $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
