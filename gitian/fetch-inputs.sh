@@ -100,7 +100,7 @@ update_git() {
   fi
 
   if [ -n "$tag" ]; then
-    (cd "$dir" && git checkout "$tag")
+    (cd "$dir" && git checkout -f "$tag")
   fi
 
   # If we're not verifying tags, then some of the tags
