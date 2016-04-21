@@ -106,7 +106,8 @@ if [ ! -f inputs/binutils-$BINUTILS_VER-win32-utils.zip -o \
      ! -f inputs/zlib-${ZLIB_TAG_ORIG#v}-win32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-win32-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-win32-utils.zip -o \
-     ! -f inputs/gmp-$GMP_VER-win32-utils.zip ];
+     ! -f inputs/gmp-$GMP_VER-win32-utils.zip -o \
+     ! -f inputs/nsis-$NSIS_VER-win32-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Windows Bundle (1/5 for Windows) ******"
@@ -128,6 +129,7 @@ then
   ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
   ln -sf gcclibs-$GCC_VER-win32-utils.zip gcclibs-win32-utils.zip
   ln -sf gcc-$GCC_VER-linux32-precise-utils.zip gcc-linux32-precise-utils.zip
+  ln -sf nsis-$NSIS_VER-win32-utils.zip nsis-win32-utils.zip
   cd ..
   #cp -a result/utils-win-res.yml inputs/
 else
@@ -144,6 +146,7 @@ else
   ln -sf gmp-$GMP_VER-win32-utils.zip gmp-win32-utils.zip
   ln -sf gcclibs-$GCC_VER-win32-utils.zip gcclibs-win32-utils.zip
   ln -sf gcc-$GCC_VER-linux32-precise-utils.zip gcc-linux32-precise-utils.zip
+  ln -sf nsis-$NSIS_VER-win32-utils.zip nsis-win32-utils.zip
   cd ..
 fi
 

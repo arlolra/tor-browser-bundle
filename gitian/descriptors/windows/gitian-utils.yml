@@ -13,6 +13,9 @@ packages:
 - "g++-mingw-w64-i686"
 # Needed for compiling gcc.
 - "libmpc-dev"
+# Needed for compiling nsis.
+- "scons"
+- "libcppunit-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "http://git.code.sf.net/p/mingw-w64/mingw-w64"
@@ -30,6 +33,9 @@ files:
 - "peXXigen.patch"
 - "versions"
 - "dzip.sh"
+- "nsis.tar.bz2"
+- "nsis-debian.tar.xz"
+- "nsis-missing-unistd-include.patch"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -157,6 +163,27 @@ script: |
   make install
   cd ..
 
+  # Building nsis
+  tar xf nsis.tar.bz2
+  cd nsis-${NSIS_VER}-src
+  tar xf ../nsis-debian.tar.xz
+  patch -p1 < ../nsis-missing-unistd-include.patch
+  # nsis_system_zlib.patch and parallel_build.patch cause build errors
+  # so we remove them
+  rm -f debian/patches/nsis_system_zlib.patch
+  rm -f debian/patches/parallel_build.patch
+  for patch in $(grep '\.patch$' debian/patches/series)
+  do
+     [ -f debian/patches/$patch ] && patch -p1 < debian/patches/$patch
+  done
+  # When the gcc-mingw-w64-i686 package is installed, files from
+  # /usr/i686-w64-mingw32/include are used, causing the build to fail.
+  # To prevent that we remove the gcc-mingw-w64-i686 package.
+  sudo -i apt-get remove -y gcc-mingw-w64-i686
+  scons APPEND_CCFLAGS="-fgnu89-inline" VERSION=${NSIS_VER} SKIPUTILS='NSIS Menu' XGCC_W32_PREFIX=i686-w64-mingw32- PREFIX=$INSTDIR/nsis
+  scons APPEND_CCFLAGS="-fgnu89-inline" VERSION=${NSIS_VER} SKIPUTILS='NSIS Menu' XGCC_W32_PREFIX=i686-w64-mingw32- PREFIX=$INSTDIR/nsis install
+  cd ..
+
   # Grabbing the remaining results
   cd $INSTDIR
   # We might want to bump binutils independent of bumping mingw-w64.
@@ -168,4 +195,5 @@ script: |
   ~/build/dzip.sh openssl-$OPENSSL_VER-win32-utils.zip openssl
   ~/build/dzip.sh gmp-$GMP_VER-win32-utils.zip gmp
   ~/build/dzip.sh gcclibs-$GCC_VER-win32-utils.zip gcclibs
+  ~/build/dzip.sh nsis-$NSIS_VER-win32-utils.zip nsis
   cp *-utils.zip $OUTDIR/

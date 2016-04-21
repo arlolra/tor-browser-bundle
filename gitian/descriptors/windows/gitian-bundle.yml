@@ -7,7 +7,6 @@ architectures:
 packages:
 - "unzip"
 - "zip"
-- "nsis"
 # Needed to compensate NSIS's failure of regenerating the PE-file checksum and
 # proper padding.
 - "python-pefile"
@@ -50,6 +49,7 @@ files:
 - "mar-tools-win32.zip"
 - "tbb-docs.zip"
 - "pe_checksum_fix.py"
+- "nsis-win32-utils.zip"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -71,6 +71,9 @@ script: |
   # Extract the MAR tools.
   unzip -d ~/build ~/build/mar-tools-win32.zip
   MARTOOLS=~/build/mar-tools
+  # Extract nsis
+  unzip -d $INSTDIR ~/build/nsis-win32-utils.zip
+  export PATH=$INSTDIR/nsis/bin:$PATH
   #
   mkdir -p $OUTDIR/
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
