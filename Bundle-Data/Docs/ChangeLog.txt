@@ -1,7 +1,21 @@
+Tor Browser 6.0a4-hardened -- March 17 2016
+ * All Platforms
+   * Update Firefox to 38.7.1esr
+   * Update Torbutton to 1.9.5.2
+     * Bug 18557: Exempt Graphite from the Security Slider
+   * Bug 18536: Make Mosaddegh and MaBishomarim available on port 80 and 443
+
 Tor Browser 6.0a4 -- March 17 2016
  * All Platforms
    * Update Firefox to 38.7.1esr
    * Update Torbutton to 1.9.5.2
+     * Bug 18557: Exempt Graphite from the Security Slider
+   * Bug 18536: Make Mosaddegh and MaBishomarim available on port 80 and 443
+
+Tor Browser 5.5.4 -- March 16 2016
+ * All Platforms
+   * Update Firefox to 38.7.1esr
+   * Update Torbutton to 1.9.4.5
      * Bug 18557: Exempt Graphite from the Security Slider
    * Bug 18536: Make Mosaddegh and MaBishomarim available on port 80 and 443
 
@@ -107,6 +121,28 @@ Tor Browser 5.5.1 -- February 4 2016
    * Bug 18172: Add Emoji support
  * Linux
    * Bug 18172: Add Emoji support
+
+Tor Browser 6.0a1-hardened -- January 27 2016
+ * All Platforms
+   * Update Firefox to 38.6.0esr
+   * Update NoScript to 2.9.0.2
+   * Update Torbutton to 1.9.5
+     * Bug 16990: Show circuit display for connections using multi-party channels
+     * Bug 18019: Avoid empty prompt shown after non-en-US update
+     * Bug 18004: Remove Tor fundraising donation banner
+     * Code cleanup
+     * Translation updates
+   * Update Tor Launcher to 0.2.8.3
+     * Bug 18113: Randomly permutate available default bridges of chosen type
+     * Bug 11773: Setup wizard UI flow improvements
+     * Translation updates
+   * Bug 17428: Remove Flashproxy
+   * Bug 18115+18104+18071+18091: Update/add new obfs4 bridge
+   * Bug 18072: Change recommended pluggable transport type to obfs4
+   * Bug 18008: Create a new MAR Signing key and bake it into Tor Browser
+   * Bug 16322: Use onion address for DuckDuckGo search engine
+   * Bug 17917: Changelog after update is empty if JS is disabled
+   * Bug 17790: Map the proper SHIFT characters to the digit keys (fix of #15646)
 
 Tor Browser 6.0a1 -- January 27 2016
  * All Platforms
