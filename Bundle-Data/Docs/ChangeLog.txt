@@ -75,7 +75,7 @@ Tor Browser 5.5.4 -- March 16 2016
      * Bug 18557: Exempt Graphite from the Security Slider
    * Bug 18536: Make Mosaddegh and MaBishomarim available on port 80 and 443
 
-Tor Browser 6.0a3-hardened -- March 8
+Tor Browser 6.0a3-hardened -- March 8 2016
  * All Platforms
    * Update Firefox to 38.7.0esr
    * Update Tor to 0.2.8.1-alpha
@@ -95,7 +95,7 @@ Tor Browser 6.0a3-hardened -- March 8
  * Windows
    * Bug 18292: Disable staged updates on Windows
 
-Tor Browser 6.0a3 -- March 8
+Tor Browser 6.0a3 -- March 8 2016
  * All Platforms
    * Update Firefox to 38.7.0esr
    * Update Tor to 0.2.8.1-alpha
