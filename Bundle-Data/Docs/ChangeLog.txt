@@ -1,4 +1,4 @@
-Tor Browser 6.0a5 -- April 27
+Tor Browser 6.0a5 -- April 27 2016
  * All Platforms
    * Update Firefox to 45.1.0esr
    * Update Tor to 0.2.8.2-alpha
