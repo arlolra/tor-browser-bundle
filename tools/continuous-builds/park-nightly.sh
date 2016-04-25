@@ -1,18 +1,14 @@
 #! /bin/sh                                                                      
-# usage: park-nightly.sh [DIR]
+# usage: park-nightly.sh [DESTDIR]
 
-V=1	#debug is enabled by default for now
-
+V=0                             # Verbose.
 if [ "$1" = "-v" ]; then
   V=1
   shift
 fi
 
-DIR=$1
-[ -z "$DIR" ] && DIR=~/public_html/builds
-
-DSTDIR=tbb-nightly-$(date -u +%F) # Must be the same as at source.
-[ -z "$V" ] || echo "Aiming to fill up $DIR/$DSTDIR"
+DESTDIR=$1; shift
+[ -z "$DESTDIR" ] && DESTDIR=~/public_html/builds
 
 do_check() {
     SAVEDPWD=$PWD
@@ -25,29 +21,41 @@ do_check() {
     cd $SAVEDPWD
 }
 
-if [ -d $DIR/$DSTDIR ] && [ -e $DIR/$DSTDIR/tbb-nightly.stamp ]; then
-    [ -z "$V" ] || echo "Files already here, just doing the checking"
-    do_check $DIR/$DSTDIR
-    exit
-fi
-
+# Create a staging directory and cd there.
 STAGINGDIR=.staging.$(date -u +%s)
 [ -z "$V" ] || echo "Temporary staging dir is $STAGINGDIR"
 [ -d $STAGINGDIR ] || mkdir $STAGINGDIR
 chmod 700 $STAGINGDIR; cd $STAGINGDIR || exit 7
 
+# Untar incoming data.
 [ -z "$V" ] || echo "Saving files to disk"
 TAROPT=x
 [ -z "$V" ] || TAROPT=${TAROPT}v
 tar $TAROPT -f - || exit 6
-touch $DSTDIR/tbb-nightly.stamp
 
-do_check $DSTDIR || exit 2
-[ -d $DIR/$DSTDIR ] && [ -e $DIR/$DSTDIR/tbb-nightly.stamp ] && \
-    rm -rf $DIR/$DSTDIR
-[ -z "$V" ] || echo "Moving $DSTDIR to $DIR/"
-mv $DSTDIR $DIR/ || exit 1
+# Tar file should contain exactly one directory.
+INCOMING=$(ls | head -1)
+[ -z "$V" ] || echo "Aiming to fill up $DESTDIR/$INCOMING"
+
+# Stamp the directory.
+touch $INCOMING/park-nightly.stamp
+
+# Verify checksums.
+do_check $INCOMING || exit 2
+
+# Clean up destination directory iff it has a stamp file.
+[ -d $DESTDIR/$INCOMING ] && [ -e $DESTDIR/$INCOMING/park-nightly.stamp ] && \
+    rm -rf $DESTDIR/$INCOMING
+
+# Move incoming data to destination directory.
+[ -d $DESTDIR ] || mkdir $DESTDIR
+[ -z "$V" ] || echo "Moving $INCOMING to $DESTDIR/"
+mv $INCOMING $DESTDIR/ || exit 1
 [ -z "$V" ] || echo "All good, all good"
 
+# Clean up staging directory and remove old builds.
 cd ..; rmdir $STAGINGDIR
-[ -x ~/usr/bin/prune-old-builds ] && ~/usr/bin/prune-old-builds $DIR
+if [ -x ~/usr/bin/prune-old-builds ]; then
+    ~/usr/bin/prune-old-builds --prefix=tbb-nightly- $DESTDIR
+    ~/usr/bin/prune-old-builds --prefix=tbb-nightly-hardened- $DESTDIR
+fi
