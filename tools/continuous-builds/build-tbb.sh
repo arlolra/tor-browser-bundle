@@ -43,6 +43,7 @@ logfile=build-logs/$(date -u +%s).log
 
 cd $BUILDDIR || exit 1
 status=init
+[ -n "$BUILD_TBB_FAKE_STATUS" ] && status=$BUILD_TBB_FAKE_STATUS
 n=0
 MAKE_TARGET=$TARGET
 while [ $status != done ]; do
