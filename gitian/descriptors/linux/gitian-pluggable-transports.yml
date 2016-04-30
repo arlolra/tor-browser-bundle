@@ -56,6 +56,8 @@ remotes:
   "dir": "obfs4"
 - "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
   "dir": "depot_tools"
+- "url": "https://github.com/keroserene/go-webrtc.git"
+  "dir": "go-webrtc"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
