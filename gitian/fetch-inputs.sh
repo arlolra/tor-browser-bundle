@@ -287,6 +287,7 @@ goxcrypto             https://go.googlesource.com/crypto  $GO_X_CRYPTO_TAG
 goxnet                https://go.googlesource.com/net  $GO_X_NET_TAG
 obfs4                 https://git.torproject.org/pluggable-transports/obfs4.git $OBFS4_TAG
 noto-fonts            https://github.com/googlei18n/noto-fonts $NOTOFONTS_TAG
+depot_tools           https://chromium.googlesource.com/chromium/tools/depot_tools.git $DEPOT_TOOLS_TAG
 EOF
 
 # HTTPS-Everywhere is special, too. We need to initialize the git submodules and

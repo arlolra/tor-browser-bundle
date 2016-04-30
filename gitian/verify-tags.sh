@@ -121,6 +121,7 @@ siphash                 $GOSIPHASH_TAG
 goxcrypto               $GO_X_CRYPTO_TAG
 goxnet                  $GO_X_NET_TAG
 noto-fonts              $NOTOFONTS_TAG
+depot_tools             $DEPOT_TOOLS_TAG
 EOF
 
 # Verify signatures on signed packages

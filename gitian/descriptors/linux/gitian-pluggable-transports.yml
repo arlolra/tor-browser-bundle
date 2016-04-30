@@ -41,6 +41,8 @@ remotes:
   "dir": "goxnet"
 - "url": "https://git.torproject.org/pluggable-transports/obfs4.git"
   "dir": "obfs4"
+- "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
+  "dir": "depot_tools"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -262,6 +264,12 @@ script: |
   go build -ldflags '-s'
   cp -a obfs4proxy $PTDIR
   cd ../..
+
+  # Setting up depot_tools
+  # https://dev.chromium.org/developers/how-tos/install-depot-tools
+  export PATH="$PATH:$PWD/depot_tools"
+  # Disable automatic updating.
+  export DEPOT_TOOLS_UPDATE=0
 
   # Grabbing the results and making sure timestamps don't spoil them
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
