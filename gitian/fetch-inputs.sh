@@ -297,5 +297,27 @@ git submodule init
 git submodule update
 cd ..
 
+# WebRTC is special, having its own build system that brings in lots of Chromium dependencies.
+# https://webrtc.org/native-code/development/
+# depot_tools must have been downloaded before running this code.
+dir=webrtc
+PATH="$PATH:$PWD/depot_tools"
+# GYP_CROSSCOMPILE=1 and GYP_DEFINES="use_x11=0" prevent probing for certain dependencies.
+# Use --no-history because the whole checkout with history is about 12 GB.
+export GYP_CROSSCOMPILE=1
+export GYP_DEFINES="use_x11=0"
+mkdir -p "$dir"
+cd "$dir"
+if [ ! -d "src" ];
+then
+  # "fetch" is part of depot_tools.
+  fetch --nohooks --no-history webrtc
+fi
+# "gclient" is part of depot_tools. This download takes a long time the first time.
+# JAVA_HOME is needed in a hook for libjingle. The readlink line tries to find the current JRE.
+# default-java comes from the package default-jdk-headless.
+JAVA_HOME=/usr/lib/jvm/default-java gclient sync --with_branch_heads --no-history -r $WEBRTC_TAG
+cd ..
+
 exit 0
 

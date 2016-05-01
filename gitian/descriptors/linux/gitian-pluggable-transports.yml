@@ -15,6 +15,19 @@ packages:
 - "swig"
 - "zip"
 - "hardening-wrapper"
+- "pkg-config"
+- "gtk2.0-dev"
+- "libpci-dev"
+- "libdbus-1-dev"
+- "libgnome-keyring-dev"
+- "libnss3-dev"
+- "libffi-dev"
+- "libasound2-dev"
+- "libpulse-dev"
+- "libudev-dev"
+- "libgl1-mesa-dev"
+- "default-jre-headless"
+- "default-jdk"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
@@ -57,6 +70,11 @@ files:
 - "gmp-linux64-utils.zip"
 - "openssl-linux32-utils.zip"
 - "openssl-linux64-utils.zip"
+- "binutils-linux32-utils.zip"
+- "binutils-linux64-utils.zip"
+- "gcc-linux32-utils.zip"
+- "gcc-linux64-utils.zip"
+- "webrtc"
 script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
@@ -78,6 +96,35 @@ script: |
   unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
   # FTE only needs libgmp.so.10 and no libgmpxx anymore.
   cp $INSTDIR/gmp/lib/libgmp.so.10 $INSTDIR/Tor
+
+  # Preparing Binutils and GCC for webrtc
+  unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
+  # Make sure gold is used with the hardening wrapper for full RELRO, see
+  # #13031.
+  cd $INSTDIR/binutils/bin
+  rm ld
+  cp /usr/bin/hardened-ld ./
+  mv ld.gold ld.gold.real
+  ln -sf hardened-ld ld.gold
+  ln -sf ld.gold ld
+  cd ~/build
+  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
+  # Make sure we use the hardening wrapper when compiling Tor Browser.
+  cd $INSTDIR/gcc/bin
+  cp /usr/bin/hardened-cc ./
+  mv gcc gcc.real
+  mv c++ c++.real
+  ln -sf hardened-cc gcc
+  ln -sf hardened-cc c++
+  cd ~/build
+  export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  ARCH=""
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ARCH="64"
+  fi
+  # Make sure our GCC gets properly used.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib$ARCH
 
   # Building go 1.4.x
   # This is needed to bootstrap the go that we actually use
@@ -270,6 +317,16 @@ script: |
   export PATH="$PATH:$PWD/depot_tools"
   # Disable automatic updating.
   export DEPOT_TOOLS_UPDATE=0
+
+  # Building webrtc
+  export GYP_CROSSCOMPILE=1
+  export GYP_DEFINES="OS=linux target_arch=$(if [ $GBUILD_BITS = 32 ]; then echo ia32; else echo x64; fi) use_sysroot=0 linux_use_bundled_gold=0 linux_use_gold_flags=0 linux_use_bundled_binutils=0 use_gconf=0 clang=0 host_clang=0 use_x11=0 werror="
+  cd webrtc/src
+  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
+  # "ninja" is part of depot_tools.
+  ninja -C out/Release
+  ar crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o')
+  cd ../..
 
   # Grabbing the results and making sure timestamps don't spoil them
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1

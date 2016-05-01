@@ -154,6 +154,7 @@ do
    fi
 done
 
+# webrtc? Its fetch brings in sources from many repos.
 
 cd "$INPUTS_DIR"
 verify_git "." "$WRAPPER_DIR/gpg/torbutton.gpg" "$GITIAN_TAG"
