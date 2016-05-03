@@ -1,3 +1,48 @@
+Tor Browser 6.0a5-hardened -- April 28 2016
+ * All Platforms
+   * Update Firefox to 45.1.0esr
+   * Update Tor to 0.2.8.2-alpha
+   * Update Torbutton to 1.9.5.3
+     * Bug 18466: Make Torbutton compatible with Firefox ESR 45
+     * Translation updates
+   * Update Tor Launcher to 0.2.8.4
+     * Bug 13252: Do not store data in the application bundle
+     * Bug 10534: Don't advertise the help desk directly anymore
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.1.6
+   * Update NoScript to 2.9.0.11
+   * Update meek to 0.22 (tag 0.22-18371-2)
+     * Bug 18371: Symlinks are incompatible with Gatekeeper signing
+   * Bug 15197 and child tickets: Rebase Tor Browser patches to ESR 45
+   * Bug 18900: Fix broken updater on Linux
+   * Bug 18042: Disable SHA1 certificate support
+   * Bug 18821: Disable libmdns support for desktop and mobile
+   * Bug 18848: Disable additional welcome URL shown on first start
+   * Bug 14970: Exempt our extensions from signing requirement
+   * Bug 16328: Disable MediaDevices.enumerateDevices
+   * Bug 16673: Disable HTTP Alternative-Services
+   * Bug 17167: Disable Mozilla's tracking protection
+   * Bug 18603: Disable performance-based WebGL fingerprinting option
+   * Bug 18738: Disable Selfsupport and Unified Telemetry
+   * Bug 18799: Disable Network Tickler
+   * Bug 18800: Remove DNS lookup in lockfile code
+   * Bug 18801: Disable dom.push preferences
+   * Bug 18802: Remove the JS-based Flash VM (Shumway)
+   * Bug 18863: Disable MozTCPSocket explicitly
+   * Bug 15640: Place Canvas MediaStream behind site permission
+   * Bug 16326: Verify cache isolation for Request and Fetch APIs
+   * Bug 18741: Fix OCSP and favicon isolation for ESR 45
+   * Bug 16998: Disable <link rel="preconnect"> for now
+   * Bug 17506: Reenable building hardened Tor Browser with startup cache
+   * Bug 18898: Exempt the meek extension from the signing requirement as well
+   * Bug 18899: Don't copy Torbutton, TorLauncher, etc. into meek profile
+   * Bug 18890: Test importScripts() for cache and network isolation
+   * Bug 18726: Add new default obfs4 bridge (GreenBelt)
+ * Build System
+   * Bug 16224: Don't use BUILD_HOSTNAME anymore in Firefox builds
+   * Bug 18699: Stripping fails due to obsolete Browser/components directory
+   * Bug 18698: Include libgconf2-dev for our Linux builds
+
 Tor Browser 6.0a5 -- April 28 2016
  * All Platforms
    * Update Firefox to 45.1.0esr
@@ -57,6 +102,16 @@ Tor Browser 6.0a5 -- April 28 2016
    * Linux
      * Bug 18699: Stripping fails due to obsolete Browser/components directory
      * Bug 18698: Include libgconf2-dev for our Linux builds
+
+Tor Browser 5.5.5 -- April 26 2016
+ * All Platforms
+   * Update Firefox to 38.8.0esr
+   * Update Tor Launcher to 0.2.7.9
+     * Bug 10534: Don't advertise the help desk directly anymore
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.1.6
+   * Update NoScript to 2.9.0.11
+   * Bug 18726: Add new default obfs4 bridge (GreenBelt)
 
 Tor Browser 6.0a4-hardened -- March 17 2016
  * All Platforms
