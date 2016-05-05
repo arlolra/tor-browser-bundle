@@ -289,6 +289,7 @@ obfs4                 https://git.torproject.org/pluggable-transports/obfs4.git 
 noto-fonts            https://github.com/googlei18n/noto-fonts $NOTOFONTS_TAG
 depot_tools           https://chromium.googlesource.com/chromium/tools/depot_tools.git $DEPOT_TOOLS_TAG
 go-webrtc             https://github.com/keroserene/go-webrtc $GO_WEBRTC_TAG
+snowflake             https://git.torproject.org/pluggable-transports/snowflake.git $SNOWFLAKE_TAG
 EOF
 
 # HTTPS-Everywhere is special, too. We need to initialize the git submodules and

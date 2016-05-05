@@ -43,6 +43,8 @@ remotes:
   "dir": "depot_tools"
 - "url": "https://github.com/keroserene/go-webrtc.git"
   "dir": "go-webrtc"
+- "url": "https://git.torproject.org/pluggable-transports/snowflake.git"
+  "dir": "snowflake"
 files:
 - "versions"
 - "pycrypto.tar.gz"
