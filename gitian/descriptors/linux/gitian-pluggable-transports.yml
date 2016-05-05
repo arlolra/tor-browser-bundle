@@ -327,8 +327,34 @@ script: |
   JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
   # "ninja" is part of depot_tools.
   ninja -C out/Release
-  ar crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o')
+  # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
+  # dump_syms_regtest.o is actually an executable, not an object file. If not
+  # excluded, it results in the error:
+  # libwebrtc-linux-386-magic.a(dump_syms_regtest.o): unsupported ELF file type 2
+  ar crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o' -not -name 'dump_syms_regtest.o')
   cd ../..
+
+  # Building go-webrtc
+  cd go-webrtc
+  # Delete the prebuilt webrtc library.
+  rm -rf include/ lib/
+  # Copy the webrtc headers.
+  INCLUDE_DIR="$PWD/include"
+  (cd ../webrtc/src && for h in $(find talk/ webrtc/ -type f -name '*.h'); do
+    mkdir -p "$INCLUDE_DIR/$(dirname $h)"
+    cp -f "$h" "$INCLUDE_DIR/$h"
+  done)
+  mkdir -p lib
+  cp -f ../webrtc/src/libwebrtc-magic.a lib/libwebrtc-linux-$(if [ $GBUILD_BITS = 32 ]; then echo 386; else echo amd64; fi)-magic.a
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/github.com/keroserene/"
+  ln -sf "$PWD" "$GOPATH/src/github.com/keroserene/go-webrtc"
+  # The go-webrtc package sets _GLIBCXX_USE_CXX11_ABI=0 for compatibility with
+  # the prebuilt libwebrtc-magic.a libraries. Since we build our own
+  # libwebrtc-magic.a with the C++11 ABI, we have to undo that setting here,
+  # using CGO_CXXFLAGS.
+  CGO_CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=1 go install github.com/keroserene/go-webrtc
+  cd ..
 
   # Grabbing the results and making sure timestamps don't spoil them
   export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
