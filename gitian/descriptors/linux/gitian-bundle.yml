@@ -194,6 +194,10 @@ script: |
   cp -a ${TB_STAGE_DIR} ${PKG_DIR}
   #
   pushd ${PKG_DIR}/Browser/browser/
+  # For the proper search engines in our language packs
+  unzip omni.ja chrome/en-US/locale/browser/searchplugins*
+  mv chrome/en-US/locale/browser/searchplugins ~/build
+  rm -rf chrome
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
@@ -204,6 +208,21 @@ script: |
   #
   unzip linux-langpacks.zip
   LINUX_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_LINUX"
+  # Prepare our language packs for using the proper search engines. See bug
+  # 18915 for more details.
+  for LANG in $LINUX_LOCALES
+  do
+    xpi=linux-langpacks/$LANG.xpi
+    unzip -d prep_$LANG $xpi
+    search_plugins_path=prep_$LANG/browser/chrome/$LANG/locale/browser
+    rm -rf $search_plugins_path/searchplugins
+    cp -rf ~/build/searchplugins $search_plugins_path
+    rm $xpi
+    cd prep_$LANG
+    zip -r9 ../$xpi *
+    cd ..
+    rm -rf prep_$LANG
+  done
   # If we are building a multi-lingual package, add all of the language packs.
   if [ "z$MULTI_LINGUAL" = "z1" ]; then
     pushd linux-langpacks
