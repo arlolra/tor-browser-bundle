@@ -11,6 +11,9 @@ shift
 find $@ -executable -exec chmod 750 {} \;
 find $@ ! -executable -exec chmod 640 {} \;
 
+[ -n "$REFERENCE_DATETIME" ] && \
+        find $@ -exec touch --date="$REFERENCE_DATETIME" {} \;
+
 cd $@
 find . -type f | sed -e 's/^\.\///' | sort | xargs -i echo "{}={}" > ~/build/filelist.txt
 find . -type l | sed -e 's/^\.\///' | sort | xargs -i echo "{}={}" >> ~/build/filelist.txt
