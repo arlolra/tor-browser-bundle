@@ -197,7 +197,7 @@ script: |
   # For the proper search engines in our language packs
   unzip omni.ja chrome/en-US/locale/browser/searchplugins*
   mv chrome/en-US/locale/browser/searchplugins ~/build
-  rm -rf chrome
+  rm -rf chrome/en-US
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
