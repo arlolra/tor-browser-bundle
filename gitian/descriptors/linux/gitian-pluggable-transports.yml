@@ -16,16 +16,11 @@ packages:
 - "zip"
 - "hardening-wrapper"
 - "pkg-config"
-- "gtk2.0-dev"
-- "libpci-dev"
-- "libdbus-1-dev"
-- "libgnome-keyring-dev"
-- "libnss3-dev"
-- "libffi-dev"
 - "libasound2-dev"
-- "libpulse-dev"
 - "libudev-dev"
-- "libgl1-mesa-dev"
+- "libx11-dev"
+- "libxext-dev"
+- "libxrandr-dev"
 - "default-jre-headless"
 - "default-jdk"
 reference_datetime: "2000-01-01 00:00:00"
@@ -329,11 +324,21 @@ script: |
   # Do not use bundled utilities.
   GYP_DEFINES+=" clang=0 host_clang=0 use_sysroot=0"
   GYP_DEFINES+=" linux_use_bundled_gold=0 linux_use_gold_flags=0 linux_use_bundled_binutils=0"
-  # Avoid some dependencies.
-  GYP_DEFINES+=" use_x11=0 use_gconf=0"
-  GYP_DEFINES+=" werror="
+  # Avoid some dependencies. Some of these don't seem to work fully; for
+  # example even with use_alsa=0 we need libasound2-dev.
+  GYP_DEFINES+=" use_x11=0 use_gtk=0 use_gconf=0 use_alsa=0 use_pulseaudio=0 use_libpci=0 include_internal_audio_device=0 enabled_libjingle_device_manager=0"
+  # examples and tests also bring in dependencies.
+  GYP_DEFINES+=" include_examples=0 include_tests=0"
+  # embedded=1 is supposed to turn of various features; see
+  # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
+  GYP_DEFINES+=" embedded=1"
   JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
   ninja -C out/Release
+  # Run ninja once more, without include_tests=0, in order to build just the
+  # FakeAudioCaptureModule that go-webrtc uses.
+  GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
+  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
+  ninja -C out/Release libjingle_peerconnection_unittest.isolated
   # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
   # dump_syms_regtest.o is actually an executable, not an object file. If not
   # excluded, it results in the error:
