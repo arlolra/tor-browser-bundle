@@ -323,11 +323,16 @@ script: |
   export DEPOT_TOOLS_UPDATE=0
 
   # Building webrtc
-  export GYP_CROSSCOMPILE=1
-  export GYP_DEFINES="OS=linux target_arch=$(if [ $GBUILD_BITS = 32 ]; then echo ia32; else echo x64; fi) use_sysroot=0 linux_use_bundled_gold=0 linux_use_gold_flags=0 linux_use_bundled_binutils=0 use_gconf=0 clang=0 host_clang=0 use_x11=0 werror="
   cd webrtc/src
+  export GYP_CROSSCOMPILE=1
+  export GYP_DEFINES="OS=linux target_arch=$(if [ $GBUILD_BITS = 32 ]; then echo ia32; else echo x64; fi)"
+  # Do not use bundled utilities.
+  GYP_DEFINES+=" clang=0 host_clang=0 use_sysroot=0"
+  GYP_DEFINES+=" linux_use_bundled_gold=0 linux_use_gold_flags=0 linux_use_bundled_binutils=0"
+  # Avoid some dependencies.
+  GYP_DEFINES+=" use_x11=0 use_gconf=0"
+  GYP_DEFINES+=" werror="
   JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
-  # "ninja" is part of depot_tools.
   ninja -C out/Release
   # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
   # dump_syms_regtest.o is actually an executable, not an object file. If not
