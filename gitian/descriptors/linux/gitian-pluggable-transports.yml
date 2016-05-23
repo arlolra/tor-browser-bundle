@@ -7,7 +7,6 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "faketime"
 - "unzip"
 - "python-setuptools"
 - "python-dev"
@@ -57,7 +56,7 @@ script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
   mkdir -p $PTDIR
-  export FAKETIME=$REFERENCE_DATETIME
+  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   export PYTHON=python2
@@ -262,7 +261,6 @@ script: |
   cd ../..
 
   # Grabbing the results and making sure timestamps don't spoil them
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   cd $INSTDIR
   ~/build/dzip.sh pluggable-transports-linux$GBUILD_BITS-gbuilt.zip Tor/ Docs/
   cp pluggable-transports-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

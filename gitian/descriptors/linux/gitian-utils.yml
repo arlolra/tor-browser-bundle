@@ -7,7 +7,6 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "faketime"
 - "automake"
 - "libtool"
 - "zip"
@@ -33,6 +32,7 @@ files:
 - "binutils.tar.bz2"
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
+- "openssl-Make-build-reproducible.patch"
 - "gmp.tar.bz2"
 - "versions"
 - "dzip.sh"
@@ -41,7 +41,7 @@ script: |
   source versions
   export TZ=UTC
   export LC_ALL=C
-  export FAKETIME=$REFERENCE_DATETIME
+  export REFERENCE_DATETIME
   umask 0022
 
   # Config options for hardening-wrapper
@@ -76,10 +76,6 @@ script: |
   # anymore. It seems it got audited for those problems already:
   # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=48817.
   export DEB_BUILD_HARDENING_FORMAT=0
-  # libfaketime gets into our way when building GCC 4.9.x. See:
-  # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=61314 for details. Thus, we
-  # avoid it for the toolchain and cross our fingers.
-  # TODO: Test a newer libfaketime than 0.8.
   # Building GCC
   tar xjf gcc.tar.bz2
   cd gcc-*
@@ -99,9 +95,9 @@ script: |
   cd ..
 
   # Building OpenSSL
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   tar xzf openssl.tar.gz
   cd openssl-*
+  patch -p1 < ../openssl-Make-build-reproducible.patch
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   if [ $GBUILD_BITS == "64" ];
   then
@@ -114,8 +110,6 @@ script: |
   make
   make install
   cd ..
-
-  export LD_PRELOAD=""
 
   # Building GMP
   tar xjf gmp.tar.bz2
@@ -131,7 +125,10 @@ script: |
   cd ..
 
   # Grabbing the remaining results and making sure timestamps don't spoil them
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
+  # Since we stopped using libfaketime, the binutils, gcc, openssl,
+  # libevent archives are no longer reproducible. The main reason
+  # is that they include some .a archives which include timestamps.
+  # Those files are however not part of the files we ship.
   cd $INSTDIR
   ~/build/dzip.sh binutils-$BINUTILS_VER-linux$GBUILD_BITS-utils.zip binutils
   ~/build/dzip.sh gcc-$GCC_VER-linux$GBUILD_BITS-utils.zip gcc

@@ -5,7 +5,6 @@ suites:
 architectures:
 - "i386"
 packages:
-- "faketime"
 - "automake"
 - "libtool"
 - "zip"
@@ -28,6 +27,7 @@ files:
 - "binutils.tar.bz2"
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
+- "openssl-Make-build-reproducible.patch"
 - "gmp.tar.bz2"
 - "enable-reloc-section-ld.patch"
 - "peXXigen.patch"
@@ -39,6 +39,7 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
+  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -115,13 +116,6 @@ script: |
   cp i686-w64-mingw32/libgcc/shlib/libgcc_s_sjlj-1.dll $INSTDIR/gcclibs
   cd ..
 
-  # XXX: Build the libraries we include into the bundles deterministically. As
-  # libfaketime breaks the mingw-w64 build (probably due to bug 11459) we omit
-  # the compiler and linker from it. It seems we get away with this strategy
-  # and the libgcc* and libss* which we ship, too, are still built in a
-  # reproducible fashion.
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
   # Building zlib
   export CFLAGS="-mwindows -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security"
   export LDFLAGS="-mwindows -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/"
@@ -143,6 +137,7 @@ script: |
   # Building OpenSSL
   tar xzf openssl.tar.gz
   cd openssl-*
+  patch -p1 < ../openssl-Make-build-reproducible.patch
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit Windows.
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw "-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" --prefix=$INSTDIR/openssl
@@ -185,6 +180,10 @@ script: |
   cd ..
 
   # Grabbing the remaining results
+  # Since we stopped using libfaketime, the gcc, gmp, zlib, openssl,
+  # libevent, mingw-w64 archives are no longer reproducible. The main
+  # reason is that they include some .a archives which include timestamps.
+  # Those files are however not part of the files we ship.
   cd $INSTDIR
   # We might want to bump binutils independent of bumping mingw-w64.
   touch binutils-$BINUTILS_VER-win32-utils.zip

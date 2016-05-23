@@ -28,8 +28,6 @@ remotes:
   "dir": "meek"
 - "url": "https://github.com/googlei18n/noto-fonts.git"
   "dir": "noto-fonts"
-- "url": "https://github.com/wolfcw/libfaketime"
-  "dir": "faketime"
 files:
 - "tor-browser-linux32-gbuilt.zip"
 - "tor-browser-linux64-gbuilt.zip"
@@ -61,20 +59,12 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
+  export REFERENCE_DATETIME
   export LIBRARY_PATH="$INSTDIR/lib"
   export TZ=UTC
   export LC_ALL=C
   export TORBROWSER_VERSION=`cat bare-version`
   umask 0022
-
-  # Building libfaketime
-  cd faketime
-  make
-  DESTDIR="$INSTDIR/faketime" make install
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME=$REFERENCE_DATETIME
-  export FAKETIME_SKIP_CMDS="rsync"
-  cd ..
 
   mkdir -p $OUTDIR/
   # When we build with MULTI_LINGUAL=1, the browser will be packaged inside a
@@ -202,6 +192,7 @@ script: |
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
+  touch --date="$REFERENCE_DATETIME" defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   rm -rf defaults
   popd
@@ -237,6 +228,7 @@ script: |
     # app.update.url).
     pushd ${PKG_DIR}/Browser/
     echo ${PKG_LOCALE} > update.locale
+    touch --date="$REFERENCE_DATETIME" update.locale
     zip -Xm omni.ja update.locale
     popd
   fi
@@ -267,6 +259,7 @@ script: |
       cp ~/build/000-tor-browser.js defaults/preferences/
       # Set the locale of the bundle.
       echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+      touch --date="$REFERENCE_DATETIME" defaults/preferences/000-tor-browser.js
       zip -Xm omni.ja defaults/preferences/000-tor-browser.js
       rm -rf defaults
       popd
@@ -276,6 +269,7 @@ script: |
       # recreate precomplete file (needs to be accurate for full MAR updates).
       pushd tor-browser_$LANG/Browser/
       echo "$LANG" > update.locale
+      touch --date="$REFERENCE_DATETIME" update.locale
       zip -Xm omni.ja update.locale
       rm -rf dictionaries
       rm -f precomplete
