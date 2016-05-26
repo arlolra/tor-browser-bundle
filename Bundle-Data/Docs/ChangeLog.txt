@@ -46,6 +46,7 @@ Tor Browser 6.0 -- May 30
    * Bug 18703: Fix circuit isolation issues on Page Info dialog
    * bug 19115: Tor Browser should not fall back to Bing as its search engine
    * Bug 18915+19065: Use our search plugins in localized builds
+   * Bug 19176: Zip our language packs deterministically
    * Bug 18811: Fix first-party isolation for blobs URLs in Workers
    * Bug 18950:	Disable or audit Reader View
    * Bug 18886: Remove Pocket
