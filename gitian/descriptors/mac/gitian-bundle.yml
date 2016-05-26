@@ -266,7 +266,7 @@ script: |
     cp -rf ~/build/searchplugins $search_plugins_path
     rm $xpi
     cd prep_$LANG
-    zip -r9 ../$xpi *
+    ~/build/dzip.sh ../$xpi .
     cd ..
     rm -rf prep_$LANG
   done
