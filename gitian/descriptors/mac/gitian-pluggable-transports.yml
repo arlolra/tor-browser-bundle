@@ -57,6 +57,9 @@ files:
 - "go.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
+- "clang-linux64-wheezy-utils.zip"
+- "cctools.tar.gz"
+- "MacOSX10.7.sdk.tar.gz"
 - "dzip.sh"
 - "gmp-mac64-utils.zip"
 - "openssl-mac64-utils.zip"
@@ -327,23 +330,33 @@ script: |
   # Disable automatic updating.
   export DEPOT_TOOLS_UPDATE=0
 
+  # mac_sdk=/usr/lib/apple/SDKs/MacOSX10.6.sdk
+  # clang_dir=
+
+  # Extracting all the necessary tools
+  tar xaf MacOSX10.7.sdk.tar.gz
+  tar xaf cctools.tar.gz
+  unzip clang-linux64-wheezy-utils.zip
+  SDKROOT="$PWD/MacOSX10.7.sdk"
+
   # Building webrtc
   export CC_host=gcc
-  export CXX_host=gcc
+  export CXX_host=g++
   cd webrtc/src
+  echo "print(\"$SDKROOT\")" > build/mac/find_sdk.py
   export GYP_CROSSCOMPILE=1
   export GYP_DEFINES="OS=mac target_arch=x64"
   # Do not use bundled utilities.
-  GYP_DEFINES+=" clang=0 host_clang=0 use_sysroot=0"
-  # Avoid some dependencies. Some of these don't seem to work fully; for
-  # example even with use_alsa=0 we need libasound2-dev.
+  GYP_DEFINES+=" clang=1 host_clang=0 use_sysroot=1"
   GYP_DEFINES+=" include_internal_audio_device=0 enabled_libjingle_device_manager=0"
   # examples and tests also bring in dependencies.
   GYP_DEFINES+=" include_examples=0 include_tests=0"
   # embedded=1 is supposed to turn of various features; see
   # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
   GYP_DEFINES+=" embedded=1"
+  GYP_DEFINES+=" mac_sdk_path=$SDKROOT make_clang_dir=$HOME/build/clang"
   webrtc/build/gyp_webrtc
+  sed -i -e 's#\$(SDKROOT)#/usr/lib/apple/SDKs/MacOSX10.6.sdk#g' out/Release/obj/webrtc/tools/*.ninja
   ninja -C out/Release
   # Run ninja once more, without include_tests=0, in order to build just the
   # FakeAudioCaptureModule that go-webrtc uses.
