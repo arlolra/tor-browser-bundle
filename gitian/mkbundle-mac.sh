@@ -136,7 +136,8 @@ fi
 
 cd $GITIAN_DIR
 
-if [ ! -f inputs/clang-$CLANG_VER-linux64-wheezy-utils.zip -o \
+if [ ! -f inputs/clang-$CLANG_VER-linux32-wheezy-utils.zip -o \
+     ! -f inputs/clang-$CLANG_VER-linux64-wheezy-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];

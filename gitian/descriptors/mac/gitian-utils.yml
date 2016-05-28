@@ -38,27 +38,28 @@ script: |
   export LC_ALL=C
   umask 0022
 
-  if [ $GBUILD_BITS == "64" ];
+  # Cmake first
+  cd cmake
+  ./bootstrap --prefix=$INSTDIR/cmake
+  make $MAKEOPTS
+  make install
+  export PATH=$PATH:$INSTDIR/cmake/bin
+  # Clang
+  cd ../llvm
+  mv ../clang tools/
+  export LLVM_HOME=`pwd`
+  mkdir build
+  cd build
+  cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTDIR/clang -DCMAKE_BUILD_TYPE:STRING=Release $LLVM_HOME
+  make $MAKEOPTS
+  make install
+  cd $INSTDIR
+  ~/build/dzip.sh clang-$CLANG_VER-linux$GBUILD_BITS-wheezy-utils.zip clang
+  cp *utils.zip $OUTDIR/
+
+  cd $HOME/build
+  if [ $GBUILD_BITS == "32" ];
   then
-    # Cmake first
-    cd cmake
-    ./bootstrap --prefix=$INSTDIR/cmake
-    make $MAKEOPTS
-    make install
-    export PATH=$PATH:$INSTDIR/cmake/bin
-    # Clang
-    cd ../llvm
-    mv ../clang tools/
-    export LLVM_HOME=`pwd`
-    mkdir build
-    cd build
-    cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTDIR/clang -DCMAKE_BUILD_TYPE:STRING=Release $LLVM_HOME
-    make $MAKEOPTS
-    make install
-    cd $INSTDIR
-    ~/build/dzip.sh clang-$CLANG_VER-linux64-wheezy-utils.zip clang
-    cp *utils.zip $OUTDIR/
-  else
     # Building libfaketime.
     cd faketime
     export GIT_COMMITTER_NAME="nobody"
