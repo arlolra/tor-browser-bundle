@@ -21,6 +21,7 @@ Tor Browser 6.0 -- May 30
      * Bug 18904: Mac OS: meek-http-helper profile not updated
    * Bug 15197 and child tickets: Rebase Tor Browser patches to ESR 45
    * Bug 18900: Fix broken updater on Linux
+   * Bug 19121: The update.xml hash should get checked during update
    * Bug 18042: Disable SHA1 certificate support
    * Bug 18821: Disable libmdns support for desktop and mobile
    * Bug 18848: Disable additional welcome URL shown on first start
