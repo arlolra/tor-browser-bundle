@@ -15,7 +15,7 @@ versions:
     6.0.1:
         platformVersion: 45.2.0
         detailsURL: https://blog.torproject.org/blog/tor-browser-601-released
-        download_url: https://www.torproject.org/dist/torbrowser/6.0.1
+        download_url: https://cdn.torproject.org/aus1/torbrowser/6.0.1
         incremental_from:
           - 5.5.5
           - 6.0
@@ -27,7 +27,7 @@ versions:
     6.0a5:
         platformVersion: 45.1.0
         detailsURL: https://blog.torproject.org/blog/tor-browser-60a5-released
-        download_url: https://www.torproject.org/dist/torbrowser/6.0a5
+        download_url: https://cdn.torproject.org/aus1/torbrowser/6.0a5
         incremental_from:
           - 6.0a4
         migrate_archs:
