@@ -57,7 +57,7 @@ files:
 - "go.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
-- "clang-linux64-wheezy-utils.zip"
+- "clang-linux32-wheezy-utils.zip"
 - "cctools.tar.gz"
 - "MacOSX10.7.sdk.tar.gz"
 - "dzip.sh"
@@ -336,7 +336,7 @@ script: |
   # Extracting all the necessary tools
   tar xaf MacOSX10.7.sdk.tar.gz
   tar xaf cctools.tar.gz
-  unzip clang-linux64-wheezy-utils.zip
+  unzip clang-linux32-wheezy-utils.zip
   SDKROOT="$PWD/MacOSX10.7.sdk"
 
   # Building webrtc
