@@ -1,3 +1,12 @@
+Tor Browser 6.0.1 -- June 7
+ * All Platforms
+   * Update Firefox to 45.2.0esr
+   * Bug 18884: Don't build the loop extension
+   * Bug 19187: Backport fix for crash related to popup menus
+   * Bug 19212: Fix crash related to network panel in developer tools
+ * Linux
+   * Bug 19189: Backport for working around a linker (gold) bug
+
 Tor Browser 6.0 -- May 30
  * All Platforms
    * Update Firefox to 45.1.1esr
