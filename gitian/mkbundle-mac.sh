@@ -155,6 +155,7 @@ then
   cd inputs
   cp -a ../build/out/*-utils.zip .
   ln -sf clang-$CLANG_VER-linux64-wheezy-utils.zip clang-linux64-wheezy-utils.zip
+  ln -sf clang-$CLANG_VER-linux32-wheezy-utils.zip clang-linux32-wheezy-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
   ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
@@ -169,6 +170,7 @@ else
   # pointing to the wrong version. Refresh them.
   cd inputs
   ln -sf clang-$CLANG_VER-linux64-wheezy-utils.zip clang-linux64-wheezy-utils.zip
+  ln -sf clang-$CLANG_VER-linux32-wheezy-utils.zip clang-linux32-wheezy-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
   ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
