@@ -39,8 +39,10 @@ sub exit_error {
     exit (exists $_[1] ? $_[1] : 1);
 }
 
-sub build_target_by_os {
-    $config->{build_targets}{$_[0]} ? $config->{build_targets}{$_[0]} : $_[0];
+sub build_targets_by_os {
+    return ($_[0]) unless $config->{build_targets}{$_[0]};
+    my $r = $config->{build_targets}{$_[0]};
+    return ref $r eq 'ARRAY' ? @$r : ($r);
 }
 
 sub get_nbprocs {
@@ -313,16 +315,17 @@ sub write_htaccess {
         my $files = $config->{versions}{$version}{files};
         $htaccess .= "RewriteRule ^[^\/]+/$version/ no-update.xml $flags\n";
         foreach my $os (sort keys %$files) {
-            my $bt = build_target_by_os($os);
-            foreach my $lang (sort keys %{$files->{$os}}) {
-                foreach my $from_version (sort keys %{$files->{$os}{$lang}{partial}}) {
-                    $htaccess .= "RewriteRule ^$bt/$from_version/$lang "
-                              .  "$from_version-$version-$os-$lang.xml $flags\n";
+            foreach my $bt (build_targets_by_os($os)) {
+                foreach my $lang (sort keys %{$files->{$os}}) {
+                    foreach my $from_version (sort keys %{$files->{$os}{$lang}{partial}}) {
+                        $htaccess .= "RewriteRule ^$bt/$from_version/$lang "
+                                  .  "$from_version-$version-$os-$lang.xml $flags\n";
+                    }
+                    $htaccess .= "RewriteRule ^$bt/[^\/]+/$lang "
+                              .  "$version-$os-$lang.xml $flags\n";
                 }
-                $htaccess .= "RewriteRule ^$bt/[^\/]+/$lang "
-                          .  "$version-$os-$lang.xml $flags\n";
+                $htaccess .= "RewriteRule ^$bt/ $version-$os-en-US.xml $flags\n";
             }
-            $htaccess .= "RewriteRule ^$bt $version-$os-en-US.xml $flags\n";
         }
         write_htdocs($channel, '.htaccess', $htaccess);
     }
@@ -426,10 +429,14 @@ sub check_has_incremental {
     return undef;
 }
 
+sub build_targets_list {
+    map { ref $_ eq 'ARRAY' ? @$_ : $_ } values %{$config->{build_targets}};
+}
+
 sub check_update_responses_channel {
     my ($config, $base_url, $channel) = @_;
     my $channel_version = $config->{channels}{$channel};
-    foreach my $build_target (values %{$config->{build_targets}}) {
+    foreach my $build_target (build_targets_list()) {
         foreach my $lang (qw(en-US de)) {
             my $url = "$base_url/$channel/$build_target/1.0/$lang";
             my $dom = get_remote_xml($url);
