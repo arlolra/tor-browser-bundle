@@ -342,6 +342,8 @@ script: |
   # Building webrtc
   export CC_host=gcc
   export CXX_host=g++
+  unset CC
+  unset CXX
   cd webrtc/src
   echo "print(\"$SDKROOT\")" > build/mac/find_sdk.py
   export GYP_CROSSCOMPILE=1
