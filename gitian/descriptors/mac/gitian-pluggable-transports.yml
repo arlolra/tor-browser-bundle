@@ -337,7 +337,7 @@ script: |
   tar xaf MacOSX10.7.sdk.tar.gz
   tar xaf cctools.tar.gz
   unzip clang-linux32-wheezy-utils.zip
-  SDKROOT="$PWD/MacOSX10.7.sdk"
+  export SDKROOT="$PWD/MacOSX10.7.sdk"
 
   # Building webrtc
   export CC_host=gcc
