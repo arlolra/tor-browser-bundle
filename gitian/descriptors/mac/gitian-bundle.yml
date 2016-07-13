@@ -71,6 +71,9 @@ script: |
   export TORBROWSER_APP="TorBrowser"
   export TORBROWSER_NAME="TorBrowserBundle"
 
+  # ddmg.sh needs DATA_OUTSIDE_APP_DIR
+  export DATA_OUTSIDE_APP_DIR
+
   if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
     DOCSPATH=Contents/Resources/TorBrowser/Docs
     EXTSPATH=Contents/Resources/distribution/extensions
