@@ -349,14 +349,24 @@ script: |
   export GYP_CROSSCOMPILE=1
   export GYP_DEFINES="OS=mac target_arch=x64"
   # Do not use bundled utilities.
-  GYP_DEFINES+=" clang=1 host_clang=0 use_sysroot=1"
+  GYP_DEFINES+=" clang=1 host_clang=0 clang_xcode=0 use_sysroot=1"
   GYP_DEFINES+=" include_internal_audio_device=0 enabled_libjingle_device_manager=0"
   # examples and tests also bring in dependencies.
   GYP_DEFINES+=" include_examples=0 include_tests=0"
   # embedded=1 is supposed to turn of various features; see
   # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
   GYP_DEFINES+=" embedded=1"
-  GYP_DEFINES+=" mac_sdk_path=$SDKROOT make_clang_dir=$HOME/build/clang"
+  GYP_DEFINES+=" mac_sdk=$SDKROOT mac_sdk_path=$SDKROOT make_clang_dir=$HOME/build/clang"
+  GYP_DEFINES+=" use_custom_libcxx=1"
+  GYP_DEFINES+=" clang_use_chrome_plugins=0"
+  # GYP_DEFINES+=' cflags="-std=gnu++11 -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot '$SDKROOT'"'
+  export CXXFLAGS="-std=gnu++11 -stdlib=libc++ -mmacosx-version-min=10.6 -target x86_64-apple-darwin10 -isysroot $SDKROOT -I$SDKROOT/usr/include -I$SDKROOT/usr/include/c++/4.2.1"
+  #  -mlinker-version=136 -isysroot $SDKROOT"
+  unset LDFLAGS
+  unset CFLAGS
+  #  -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot $SDKROOT
+  # -std=gnu++11
+  # .mozconfig-mac
   webrtc/build/gyp_webrtc
   sed -i -e 's#\$(SDKROOT)#/usr/lib/apple/SDKs/MacOSX10.6.sdk#g' out/Release/obj/webrtc/tools/*.ninja
   ninja -C out/Release
