@@ -1,3 +1,15 @@
+Tor Browser 6.0.2 -- June 21
+ * All Platforms
+   * Update Torbutton to 1.9.5.5
+     * Bug 19417: Clear asmjscache
+   * Bug 19401: Fix broken PDF download button
+   * Bug 19411: Don't show update icon if a partial update failed
+   * Bug 19400: Back out GCC bug workaround to avoid asmjs crash
+ * Windows
+   * Bug 19348: Adapt to more than one build target on Windows (fixes updates)
+ * Linux
+   * Bug 19276: Disable Xrender due to possible performance regressions
+
 Tor Browser 6.5a1-hardened -- June 8
  * All Platforms
    * Update Firefox to 45.2.0esr
