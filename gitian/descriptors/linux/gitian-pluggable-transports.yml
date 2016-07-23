@@ -329,13 +329,14 @@ script: |
   # embedded=1 is supposed to turn of various features; see
   # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
   GYP_DEFINES+=" embedded=1"
-  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
+  GYP_DEFINES+=" werror="
+  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc.py
   ninja -C out/Release
   # Run ninja once more, without include_tests=0, in order to build just the
   # FakeAudioCaptureModule that go-webrtc uses.
   GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
-  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc
-  ninja -C out/Release libjingle_peerconnection_unittest.isolated
+  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc.py
+  ninja -C out/Release peerconnection_unittests.isolated
   # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
   # dump_syms_regtest.o is actually an executable, not an object file. If not
   # excluded, it results in the error:
