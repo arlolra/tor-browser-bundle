@@ -124,6 +124,7 @@ noto-fonts              $NOTOFONTS_TAG
 depot_tools             $DEPOT_TOOLS_TAG
 go-webrtc               $GO_WEBRTC_TAG
 snowflake               $SNOWFLAKE_TAG
+uniuri                  $UNIURI_TAG
 EOF
 
 # Verify signatures on signed packages

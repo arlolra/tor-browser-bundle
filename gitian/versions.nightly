@@ -52,6 +52,7 @@ DEPOT_TOOLS_TAG=master
 WEBRTC_TAG=f33698296719f956497d2dbff81b5080864a8804 # https://chromium.googlesource.com/external/webrtc.git/+/refs/branch-heads/52
 GO_WEBRTC_TAG=master
 SNOWFLAKE_TAG=master
+UNIURI_TAG=master
 
 GITIAN_TAG=tor-browser-builder-4
 
