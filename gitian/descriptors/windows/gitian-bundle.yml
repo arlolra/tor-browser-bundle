@@ -161,8 +161,38 @@ script: |
   cp ../versions "Tor Browser"/Browser/TorBrowser/Docs/sources/
   cp ../bundle.inputs "Tor Browser"/Browser/TorBrowser/Docs/sources/
 
+  #
+  pushd "Tor Browser"/Browser/browser/
+  # For the proper search engines in our language packs
+  unzip omni.ja chrome/en-US/locale/browser/searchplugins*
+  mv chrome/en-US/locale/browser/searchplugins ~/build
+  rm -rf chrome
+  unzip omni.ja defaults/preferences/000-tor-browser.js
+  cp defaults/preferences/000-tor-browser.js ~/build/
+  # Set the locale bundle.
+  echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
+  zip -Xm omni.ja defaults/preferences/000-tor-browser.js
+  rm -rf defaults
+  popd
+  #
+
   unzip ../win32-langpacks.zip
   WIN32_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_WIN32"
+  # Prepare our language packs for using the proper search engines. See bug
+  # 18915 for more details.
+  for LANG in $WIN32_LOCALES
+  do
+    xpi=win32-langpacks/$LANG.xpi
+    unzip -d prep_$LANG $xpi
+    search_plugins_path=prep_$LANG/browser/chrome/$LANG/locale/browser
+    rm -rf $search_plugins_path/searchplugins
+    cp -rf ~/build/searchplugins $search_plugins_path
+    rm $xpi
+    cd prep_$LANG
+    ~/build/dzip.sh ../$xpi .
+    cd ..
+    rm -rf prep_$LANG
+  done
   PKG_LOCALE="en-US"
   # If we are building a multi-lingual package, add all of the language packs
   # and use "ALL" in the package name and as the locale for update purposes.
@@ -184,16 +214,6 @@ script: |
     popd
   fi
 
-  #
-  pushd "Tor Browser"/Browser/browser/
-  unzip omni.ja defaults/preferences/000-tor-browser.js
-  cp defaults/preferences/000-tor-browser.js ~/build/
-  # Set the locale bundle.
-  echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
-  zip -Xm omni.ja defaults/preferences/000-tor-browser.js
-  rm -rf defaults
-  popd
-  #
   # Recreate precomplete file (needs to be accurate for full MAR updates).
   pushd "Tor Browser"/Browser/
   rm -f precomplete

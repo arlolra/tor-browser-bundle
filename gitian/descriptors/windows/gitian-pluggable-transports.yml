@@ -144,7 +144,7 @@ script: |
   mkdir -p build/bdist.win32/winexe/bundle-2.7/
   cp -a $INSTDIR/python/python27.dll build/bdist.win32/winexe/bundle-2.7/
   LD_PRELOAD= $INSTPYTHON setup.py py2exe
-  cp -a dist/gcc.exe dist/g++.exe dist/dllwrap.exe dist/swig.exe $WINEROOT/windows/
+  cp -a dist/gcc.exe dist/g++.exe dist/dllwrap.exe $WINEROOT/windows/
   cd ..
 
   # Building go 1.4.x

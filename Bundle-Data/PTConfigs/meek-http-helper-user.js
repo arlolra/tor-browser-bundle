@@ -40,3 +40,7 @@ user_pref("network.proxy.socks_port", 9);
 user_pref("network.proxy.socks_remote_dns", true);
 
 user_pref("extensions.enabledAddons", "meek-http-helper@bamsoftware.com:1.0");
+
+// Ensure that distribution extensions (e.g., Tor Launcher) are not copied
+// into the meek-http-helper profile.
+user_pref("extensions.installDistroAddons", false);

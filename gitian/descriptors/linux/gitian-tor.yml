@@ -7,7 +7,6 @@ architectures:
 - "i386"
 - "amd64"
 packages:
-- "faketime"
 - "unzip"
 - "automake"
 - "libtool"
@@ -30,7 +29,7 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export FAKETIME=$REFERENCE_DATETIME
+  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -94,7 +93,6 @@ script: |
   done
 
   # Grabbing the results and making sure timestamps don't spoil them
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   ~/build/dzip.sh tor-linux$GBUILD_BITS-gbuilt.zip Data/ Tor/
   ~/build/dzip.sh tor-linux$GBUILD_BITS-debug.zip Debug/
   cp tor-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

@@ -12,8 +12,6 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
-- "url": "https://github.com/wolfcw/libfaketime"
-  "dir": "faketime"
 files:
 - "gcc-linux32-precise-utils.zip"
 - "mingw-w64-win32-utils.zip"
@@ -28,6 +26,7 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
+  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -43,14 +42,6 @@ script: |
   # Make sure our custom mingw and GCC (as host compiler) get used.
   export LD_LIBRARY_PATH=$INSTDIR/gcc/lib
   export PATH=$INSTDIR/mingw-w64/bin:$INSTDIR/gcc/bin:$PATH
-
-  # Building libfaketime
-  cd faketime
-  make
-  DESTDIR="$INSTDIR/faketime" make install
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME=$REFERENCE_DATETIME
-  cd ..
 
   # We don't want to link against msvcrt.dll due to bug 9084.
   i686-w64-mingw32-g++ -dumpspecs > msvcr100.spec
@@ -82,10 +73,7 @@ script: |
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  # |configure| can't cope with nano seconds faked. And even if we would revert
-  # that feature it would hang sometimes for unknown but to libfaketime related
-  # reasons.
-  export LD_PRELOAD=""
+  export MOZ_BUILD_DATE=$(date -d "$REFERENCE_DATETIME" +%Y%m%d%H%M%S)
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   #
@@ -93,13 +81,6 @@ script: |
   cp ~/build/i686* ~/build/bin/
   export PATH=~/build/bin:$PATH
   #
-  # We need libfaketime for all the timestamps e.g. written into the libraries.
-  # BUT we need to exclude |make build| from it. Otherwise the build fails close
-  # to the end, see #12811 comment 14 and #12461 comment 8 and later.
-  # Additionally, we need to exclude |python2.7| as well as the build would
-  # stall otherwise right at the beginning. See #13877 for details.
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME_SKIP_CMDS="python2.7,make"
   make $MAKEOPTS -f client.mk build
   #
   make -C obj-* package INNER_MAKE_PACKAGE=true

@@ -6,12 +6,9 @@ suites:
 architectures:
 - "i386"
 packages:
-- "faketime"
 - "unzip"
 - "python-setuptools"
 - "python-dev"
-# Needed by M2Crypto
-- "swig"
 - "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
@@ -81,8 +78,7 @@ script: |
     INCLUDE_FTE=1
   fi
   export LIBRARY_PATH="$INSTDIR/lib"
-  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
-  export FAKETIME=$REFERENCE_DATETIME
+  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022

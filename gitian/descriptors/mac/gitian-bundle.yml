@@ -71,6 +71,9 @@ script: |
   export TORBROWSER_APP="TorBrowser"
   export TORBROWSER_NAME="TorBrowserBundle"
 
+  # ddmg.sh needs DATA_OUTSIDE_APP_DIR
+  export DATA_OUTSIDE_APP_DIR
+
   if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
     DOCSPATH=Contents/Resources/TorBrowser/Docs
     EXTSPATH=Contents/Resources/distribution/extensions
@@ -181,6 +184,12 @@ script: |
     cat ~/build/torrc-defaults-appendix-mac >> $TORCONFIGPATH/torrc-defaults
     cat ~/build/bridge_prefs.js >> $EXTOVERRIDESPATH
     cat ~/build/meek-http-helper-user.js >> $MEEKPROFILEPATH/user.js
+    if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
+      # Create the meek-template-sha256sum.txt file by generating a list
+      # of hashes (one for each file within the meek-http-helper profile) and
+      # and then generating one final hash from the contents of the list.
+      sha256sum `find $MEEKPROFILEPATH -type f | sort` | sha256sum | sed -e 's/ *-$//' > $MEEKPROFILEPATH/meek-template-sha256sum.txt
+    fi
   fi
   # If not building a multi-lingual package, suppress the language prompt.
   if [ "z$MULTI_LINGUAL" != "z1" ]; then
@@ -213,6 +222,10 @@ script: |
   cd ..
   #
   pushd $TORBROWSER_NAME.app/Contents/Resources/browser/
+  # For the proper search engines in our language packs
+  unzip omni.ja chrome/en-US/locale/browser/searchplugins*
+  mv chrome/en-US/locale/browser/searchplugins ~/build
+  rm -rf chrome
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
@@ -245,6 +258,21 @@ script: |
 
   unzip mac-langpacks.zip
   MAC_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_MAC"
+  # Prepare our language packs for using the proper search engines. See bug
+  # 18915 for more details.
+  for LANG in $MAC_LOCALES
+  do
+    xpi=mac-langpacks/$LANG.xpi
+    unzip -d prep_$LANG $xpi
+    search_plugins_path=prep_$LANG/browser/chrome/$LANG/locale/browser
+    rm -rf $search_plugins_path/searchplugins
+    cp -rf ~/build/searchplugins $search_plugins_path
+    rm $xpi
+    cd prep_$LANG
+    ~/build/dzip.sh ../$xpi .
+    cd ..
+    rm -rf prep_$LANG
+  done
   PKG_LOCALE="en-US"
   # If we are building a multi-lingual package, add all of the language packs
   # and use "ALL" in the package name and as the locale for update purposes.

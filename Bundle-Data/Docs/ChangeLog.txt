@@ -1,19 +1,161 @@
-Tor Browser 6.0a5 -- April 27 2016
+Tor Browser 6.0.2 -- June 21
  * All Platforms
-   * Update Firefox to 45.1.0esr
-   * Update Tor to 0.2.8.2-alpha
-   * Update Torbutton to 1.9.5.3
+   * Update Torbutton to 1.9.5.5
+     * Bug 19417: Clear asmjscache
+   * Bug 19401: Fix broken PDF download button
+   * Bug 19411: Don't show update icon if a partial update failed
+   * Bug 19400: Back out GCC bug workaround to avoid asmjs crash
+ * Windows
+   * Bug 19348: Adapt to more than one build target on Windows (fixes updates)
+ * Linux
+   * Bug 19276: Disable Xrender due to possible performance regressions
+
+Tor Browser 6.5a1-hardened -- June 8
+ * All Platforms
+   * Update Firefox to 45.2.0esr
+   * Update Tor to 0.2.8.3-alpha
+   * Update Torbutton to 1.9.6
+     * Bug 18743: Pref to hide 'Sign in to Sync' button in hamburger menu
+     * Bug 18905: Hide unusable items from help menu
+     * Bug 17599: Provide shortcuts for New Identity and New Circuit
+     * Bug 18980: Remove obsolete toolbar button code
+     * Bug 18238: Remove unused Torbutton code and strings
+     * Translation updates
+     * Code clean-up
+   * Update Tor Launcher to 0.2.8.5
+     * Bug 18947: Tor Browser is not starting on OS X if put into /Applications
+   * Update HTTPS-Everywhere to 5.1.9
+   * Update meek to 0.22 (tag 0.22-18371-3)
+   * Bug 19121: The update.xml hash should get checked during update
+   * Bug 12523: Mark JIT pages as non-writable
+   * Bug 19193: Reduce timing precision for AudioContext, HTMLMediaElement, and MediaStream
+   * Bug 19164: Remove support for SHA-1 HPKP pins
+   * Bug 19186: KeyboardEvents are only rounding to 100ms
+   * Bug 18884: Don't build the loop extension
+   * Bug 19187: Backport fix for crash related to popup menus
+   * Bug 19212: Fix crash related to network panel in developer tools
+   * Bug 18703: Fix circuit isolation issues on Page Info dialog
+   * bug 19115: Tor Browser should not fall back to Bing as its search engine
+   * Bug 18915+19065: Use our search plugins in localized builds
+   * Bug 19176: Zip our language packs deterministically
+   * Bug 18811: Fix first-party isolation for blobs URLs in Workers
+   * Bug 18950:	Disable or audit Reader View
+   * Bug 18886: Remove Pocket
+   * Bug 18619: Tor Browser reports "InvalidStateError" in browser console
+   * Bug 18945: Disable monitoring the connected state of Tor Browser users
+   * Bug 18855: Don't show error after add-on directory clean-up
+   * Bug 18885: Disable the option of logging TLS/SSL key material
+   * Bug 18770: SVGs should not show up on Page Info dialog when disabled
+   * Bug 18958: Spoof screen.orientation values
+   * Bug 19047: Disable Heartbeat prompts
+   * Bug 18914: Use English-only label in <isindex/> tags
+   * Bug 18996: Investigate server logging in esr45-based Tor Browser
+   * Bug 17790: Add unit tests for keyboard fingerprinting defenses
+   * Bug 18995: Regression test to ensure CacheStorage is disabled
+   * Bug 18912: Add automated tests for updater cert pinning
+   * Bug 16728: Add test cases for favicon isolation
+   * Bug 18976: Remove some FTE bridges
+ * Linux
+   * Bug 19189: Backport for working around a linker (gold) bug
+ * Build System
+   * All PLatforms
+     * Bug 18333: Upgrade Go to 1.6.2
+     * Bug 18919: Remove unused keys and unused dependencies
+     * Bug 18291: Remove some uses of libfaketime
+     * Bug 18845: Make zip and tar helpers generate reproducible archives
+
+Tor Browser 6.5a1 -- June 8
+ * All Platforms
+   * Update Firefox to 45.2.0esr
+   * Update Tor to 0.2.8.3-alpha
+   * Update Torbutton to 1.9.6
+     * Bug 18743: Pref to hide 'Sign in to Sync' button in hamburger menu
+     * Bug 18905: Hide unusable items from help menu
+     * Bug 17599: Provide shortcuts for New Identity and New Circuit
+     * Bug 18980: Remove obsolete toolbar button code
+     * Bug 18238: Remove unused Torbutton code and strings
+     * Translation updates
+     * Code clean-up
+   * Update Tor Launcher to 0.2.9.3
+     * Bug 18947: Tor Browser is not starting on OS X if put into /Applications
+   * Update HTTPS-Everywhere to 5.1.9
+   * Update meek to 0.22 (tag 0.22-18371-3)
+     * Bug 18904: Mac OS: meek-http-helper profile not updated
+   * Bug 19121: The update.xml hash should get checked during update
+   * Bug 12523: Mark JIT pages as non-writable
+   * Bug 19193: Reduce timing precision for AudioContext, HTMLMediaElement, and MediaStream
+   * Bug 19164: Remove support for SHA-1 HPKP pins
+   * Bug 19186: KeyboardEvents are only rounding to 100ms
+   * Bug 18884: Don't build the loop extension
+   * Bug 19187: Backport fix for crash related to popup menus
+   * Bug 19212: Fix crash related to network panel in developer tools
+   * Bug 18703: Fix circuit isolation issues on Page Info dialog
+   * bug 19115: Tor Browser should not fall back to Bing as its search engine
+   * Bug 18915+19065: Use our search plugins in localized builds
+   * Bug 19176: Zip our language packs deterministically
+   * Bug 18811: Fix first-party isolation for blobs URLs in Workers
+   * Bug 18950:	Disable or audit Reader View
+   * Bug 18886: Remove Pocket
+   * Bug 18619: Tor Browser reports "InvalidStateError" in browser console
+   * Bug 18945: Disable monitoring the connected state of Tor Browser users
+   * Bug 18855: Don't show error after add-on directory clean-up
+   * Bug 18885: Disable the option of logging TLS/SSL key material
+   * Bug 18770: SVGs should not show up on Page Info dialog when disabled
+   * Bug 18958: Spoof screen.orientation values
+   * Bug 19047: Disable Heartbeat prompts
+   * Bug 18914: Use English-only label in <isindex/> tags
+   * Bug 18996: Investigate server logging in esr45-based Tor Browser
+   * Bug 17790: Add unit tests for keyboard fingerprinting defenses
+   * Bug 18995: Regression test to ensure CacheStorage is disabled
+   * Bug 18912: Add automated tests for updater cert pinning
+   * Bug 16728: Add test cases for favicon isolation
+   * Bug 18976: Remove some FTE bridges
+ * OS X
+   * Bug 18951: HTTPS-E is missing after update
+   * Bug 18904: meek-http-helper profile not updated
+   * Bug 18928: Upgrade is not smooth (requires another restart)
+ * Linux
+   * Bug 19189: Backport for working around a linker (gold) bug
+ * Build System
+   * All PLatforms
+     * Bug 18333: Upgrade Go to 1.6.2
+     * Bug 18919: Remove unused keys and unused dependencies
+     * Bug 18291: Remove some uses of libfaketime
+     * Bug 18845: Make zip and tar helpers generate reproducible archives
+
+Tor Browser 6.0.1 -- June 7
+ * All Platforms
+   * Update Firefox to 45.2.0esr
+   * Bug 18884: Don't build the loop extension
+   * Bug 19187: Backport fix for crash related to popup menus
+   * Bug 19212: Fix crash related to network panel in developer tools
+ * Linux
+   * Bug 19189: Backport for working around a linker (gold) bug
+
+Tor Browser 6.0 -- May 30
+ * All Platforms
+   * Update Firefox to 45.1.1esr
+   * Update OpenSSL to 1.0.1t
+   * Update Torbutton to 1.9.5.4
      * Bug 18466: Make Torbutton compatible with Firefox ESR 45
+     * Bug 18743: Pref to hide 'Sign in to Sync' button in hamburger menu
+     * Bug 18905: Hide unusable items from help menu
+     * Bug 16017: Allow users to more easily set a non-tor SSH proxy
+     * Bug 17599: Provide shortcuts for New Identity and New Circuit
      * Translation updates
-   * Update Tor Launcher to 0.2.9.1
+     * Code clean-up
+   * Update Tor Launcher to 0.2.9.3
      * Bug 13252: Do not store data in the application bundle
-     * Bug 10534: Don't advertise the help desk directly anymore
+     * Bug 18947: Tor Browser is not starting on OS X if put into /Applications
+     * Bug 11773: Setup wizard UI flow improvements
      * Translation updates
-   * Update HTTPS-Everywhere to 5.1.6
-   * Update NoScript to 2.9.0.11
-   * Update meek to 0.22 (tag 0.22-18371-2)
+   * Update HTTPS-Everywhere to 5.1.9
+   * Update meek to 0.22 (tag 0.22-18371-3)
      * Bug 18371: Symlinks are incompatible with Gatekeeper signing
+     * Bug 18904: Mac OS: meek-http-helper profile not updated
    * Bug 15197 and child tickets: Rebase Tor Browser patches to ESR 45
+   * Bug 18900: Fix broken updater on Linux
+   * Bug 19121: The update.xml hash should get checked during update
    * Bug 18042: Disable SHA1 certificate support
    * Bug 18821: Disable libmdns support for desktop and mobile
    * Bug 18848: Disable additional welcome URL shown on first start
@@ -32,6 +174,140 @@ Tor Browser 6.0a5 -- April 27 2016
    * Bug 16326: Verify cache isolation for Request and Fetch APIs
    * Bug 18741: Fix OCSP and favicon isolation for ESR 45
    * Bug 16998: Disable <link rel="preconnect"> for now
+   * Bug 18898: Exempt the meek extension from the signing requirement as well
+   * Bug 18899: Don't copy Torbutton, TorLauncher, etc. into meek profile
+   * Bug 18890: Test importScripts() for cache and network isolation
+   * Bug 18886: Hide pocket menu items when Pocket is disabled
+   * Bug 18703: Fix circuit isolation issues on Page Info dialog
+   * bug 19115: Tor Browser should not fall back to Bing as its search engine
+   * Bug 18915+19065: Use our search plugins in localized builds
+   * Bug 19176: Zip our language packs deterministically
+   * Bug 18811: Fix first-party isolation for blobs URLs in Workers
+   * Bug 18950:	Disable or audit Reader View
+   * Bug 18886: Remove Pocket
+   * Bug 18619: Tor Browser reports "InvalidStateError" in browser console
+   * Bug 18945: Disable monitoring the connected state of Tor Browser users
+   * Bug 18855: Don't show error after add-on directory clean-up
+   * Bug 18885: Disable the option of logging TLS/SSL key material
+   * Bug 18770: SVGs should not show up on Page Info dialog when disabled
+   * Bug 18958: Spoof screen.orientation values
+   * Bug 19047: Disable Heartbeat prompts
+   * Bug 18914: Use English-only label in <isindex/> tags
+   * Bug 18996: Investigate server logging in esr45-based Tor Browser
+   * Bug 17790: Add unit tests for keyboard fingerprinting defenses
+   * Bug 18995: Regression test to ensure CacheStorage is disabled
+   * Bug 18912: Add automated tests for updater cert pinning
+   * Bug 16728: Add test cases for favicon isolation
+   * Bug 18976: Remove some FTE bridges
+ * Windows
+   * Bug 13419: Support ICU in Windows builds
+   * Bug 16874: Fix broken https://sports.yahoo.com/dailyfantasy page
+   * Bug 18767: Context menu is broken on Windows in ESR 45 based Tor Browser
+ * OS X
+   * Bug 6540: Support OS X Gatekeeper
+   * Bug 13252: Tor Browser should not store data in the application bundle
+   * Bug 18951: HTTPS-E is missing after update
+   * Bug 18904: meek-http-helper profile not updated
+   * Bug 18928: Upgrade is not smooth (requires another restart)
+ * Build System
+   * All Platforms
+     * Bug 18127: Add LXC support for building with Debian guest VMs
+     * Bug 16224: Don't use BUILD_HOSTNAME anymore in Firefox builds
+     * Bug 18919: Remove unused keys and unused dependencies
+   * Windows
+     * Bug 17895: Use NSIS 2.51 for installer to avoid DLL hijacking
+     * Bug 18290: Bump mingw-w64 commit we use
+   * OS X
+     * Bug 18331: Update toolchain for Firefox 45 ESR
+     * Bug 18690: Switch to Debian Wheezy guest VMs
+   * Linux
+     * Bug 18699: Stripping fails due to obsolete Browser/components directory
+     * Bug 18698: Include libgconf2-dev for our Linux builds
+     * Bug 15578: Switch to Debian Wheezy guest VMs (10.04 LTS is EOL)
+
+Tor Browser 6.0a5-hardened -- April 28 2016
+ * All Platforms
+   * Update Firefox to 45.1.0esr
+   * Update Tor to 0.2.8.2-alpha
+   * Update Torbutton to 1.9.5.3
+     * Bug 18466: Make Torbutton compatible with Firefox ESR 45
+     * Translation updates
+   * Update Tor Launcher to 0.2.8.4
+     * Bug 13252: Do not store data in the application bundle
+     * Bug 10534: Don't advertise the help desk directly anymore
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.1.6
+   * Update NoScript to 2.9.0.11
+   * Update meek to 0.22 (tag 0.22-18371-2)
+     * Bug 18371: Symlinks are incompatible with Gatekeeper signing
+   * Bug 15197 and child tickets: Rebase Tor Browser patches to ESR 45
+   * Bug 18900: Fix broken updater on Linux
+   * Bug 18042: Disable SHA1 certificate support
+   * Bug 18821: Disable libmdns support for desktop and mobile
+   * Bug 18848: Disable additional welcome URL shown on first start
+   * Bug 14970: Exempt our extensions from signing requirement
+   * Bug 16328: Disable MediaDevices.enumerateDevices
+   * Bug 16673: Disable HTTP Alternative-Services
+   * Bug 17167: Disable Mozilla's tracking protection
+   * Bug 18603: Disable performance-based WebGL fingerprinting option
+   * Bug 18738: Disable Selfsupport and Unified Telemetry
+   * Bug 18799: Disable Network Tickler
+   * Bug 18800: Remove DNS lookup in lockfile code
+   * Bug 18801: Disable dom.push preferences
+   * Bug 18802: Remove the JS-based Flash VM (Shumway)
+   * Bug 18863: Disable MozTCPSocket explicitly
+   * Bug 15640: Place Canvas MediaStream behind site permission
+   * Bug 16326: Verify cache isolation for Request and Fetch APIs
+   * Bug 18741: Fix OCSP and favicon isolation for ESR 45
+   * Bug 16998: Disable <link rel="preconnect"> for now
+   * Bug 17506: Reenable building hardened Tor Browser with startup cache
+   * Bug 18898: Exempt the meek extension from the signing requirement as well
+   * Bug 18899: Don't copy Torbutton, TorLauncher, etc. into meek profile
+   * Bug 18890: Test importScripts() for cache and network isolation
+   * Bug 18726: Add new default obfs4 bridge (GreenBelt)
+ * Build System
+   * Bug 16224: Don't use BUILD_HOSTNAME anymore in Firefox builds
+   * Bug 18699: Stripping fails due to obsolete Browser/components directory
+   * Bug 18698: Include libgconf2-dev for our Linux builds
+
+Tor Browser 6.0a5 -- April 28 2016
+ * All Platforms
+   * Update Firefox to 45.1.0esr
+   * Update Tor to 0.2.8.2-alpha
+   * Update Torbutton to 1.9.5.3
+     * Bug 18466: Make Torbutton compatible with Firefox ESR 45
+     * Translation updates
+   * Update Tor Launcher to 0.2.9.1
+     * Bug 13252: Do not store data in the application bundle
+     * Bug 10534: Don't advertise the help desk directly anymore
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.1.6
+   * Update NoScript to 2.9.0.11
+   * Update meek to 0.22 (tag 0.22-18371-2)
+     * Bug 18371: Symlinks are incompatible with Gatekeeper signing
+   * Bug 15197 and child tickets: Rebase Tor Browser patches to ESR 45
+   * Bug 18900: Fix broken updater on Linux
+   * Bug 18042: Disable SHA1 certificate support
+   * Bug 18821: Disable libmdns support for desktop and mobile
+   * Bug 18848: Disable additional welcome URL shown on first start
+   * Bug 14970: Exempt our extensions from signing requirement
+   * Bug 16328: Disable MediaDevices.enumerateDevices
+   * Bug 16673: Disable HTTP Alternative-Services
+   * Bug 17167: Disable Mozilla's tracking protection
+   * Bug 18603: Disable performance-based WebGL fingerprinting option
+   * Bug 18738: Disable Selfsupport and Unified Telemetry
+   * Bug 18799: Disable Network Tickler
+   * Bug 18800: Remove DNS lookup in lockfile code
+   * Bug 18801: Disable dom.push preferences
+   * Bug 18802: Remove the JS-based Flash VM (Shumway)
+   * Bug 18863: Disable MozTCPSocket explicitly
+   * Bug 15640: Place Canvas MediaStream behind site permission
+   * Bug 16326: Verify cache isolation for Request and Fetch APIs
+   * Bug 18741: Fix OCSP and favicon isolation for ESR 45
+   * Bug 16998: Disable <link rel="preconnect"> for now
+   * Bug 18898: Exempt the meek extension from the signing requirement as well
+   * Bug 18899: Don't copy Torbutton, TorLauncher, etc. into meek profile
+   * Bug 18890: Test importScripts() for cache and network isolation
    * Bug 18726: Add new default obfs4 bridge (GreenBelt)
  * Windows
    * Bug 13419: Support ICU in Windows builds
@@ -53,6 +329,16 @@ Tor Browser 6.0a5 -- April 27 2016
    * Linux
      * Bug 18699: Stripping fails due to obsolete Browser/components directory
      * Bug 18698: Include libgconf2-dev for our Linux builds
+
+Tor Browser 5.5.5 -- April 26 2016
+ * All Platforms
+   * Update Firefox to 38.8.0esr
+   * Update Tor Launcher to 0.2.7.9
+     * Bug 10534: Don't advertise the help desk directly anymore
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.1.6
+   * Update NoScript to 2.9.0.11
+   * Bug 18726: Add new default obfs4 bridge (GreenBelt)
 
 Tor Browser 6.0a4-hardened -- March 17 2016
  * All Platforms

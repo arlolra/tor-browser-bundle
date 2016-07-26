@@ -15,8 +15,6 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
-- "url": "https://github.com/wolfcw/libfaketime"
-  "dir": "faketime"
 files:
 - "clang-linux64-wheezy-utils.zip"
 - "cctools.tar.gz"
@@ -24,29 +22,17 @@ files:
 - "re-dzip.sh"
 - "dzip.sh"
 - "fix-info-plist.py"
-- "libfaketime.patch"
 - "versions"
 script: |
   INSTDIR="$HOME/install/"
   source versions
+  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
   #
   mkdir -p $INSTDIR/TorBrowser.app/Contents/MacOS/
   mkdir -p $OUTDIR/
-
-  # Building libfaketime.
-  cd faketime
-  export GIT_COMMITTER_NAME="nobody"
-  export GIT_COMMITTER_EMAIL="nobody@localhost"
-  export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
-  git am ~/build/libfaketime.patch
-  make
-  DESTDIR="$INSTDIR/faketime" make install
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME=$REFERENCE_DATETIME
-  cd ..
 
   cd tor-browser
   # Extracting all the necessary tools
@@ -62,20 +48,9 @@ script: |
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  # |configure| can't cope with nano seconds faked. And even if we would revert
-  # that feature it would hang sometimes for unknown but to libfaketime related
-  # reasons.
-  export LD_PRELOAD=""
+  export MOZ_BUILD_DATE=$(date -d "$REFERENCE_DATETIME" +%Y%m%d%H%M%S)
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  # We need libfaketime for all the timestamps e.g. written into the libraries.
-  # BUT we need to exclude |make build| from it. Otherwise the build fails close
-  # to the end, see #12812 comment 6 and #12461 comment 8 and later.
-  # Additionally, we need to exclude |rsync| due to #10153 which is reproducible
-  # reliably with the new libfaketime and |python2.7| as well as the build would
-  # stall otherwise right at the beginning. See #13877 for details.
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME_SKIP_CMDS="python2.7,rsync,make"
   make $MAKEOPTS -f client.mk build
   #
   make -C obj-macos package INNER_MAKE_PACKAGE=true

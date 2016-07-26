@@ -1,0 +1,28 @@
+From b88c021b5a7c539f821b7b7c47c72138cc3c3271 Mon Sep 17 00:00:00 2001
+From: Kurt Roeckx <kurt@roeckx.be>
+Date: Fri, 2 Jan 2015 12:27:57 +0100
+Subject: [PATCH] Make build reproducible
+
+It contained a date on when it was build.
+
+Reviewed-by: Rich Salz <rsalz@openssl.org>
+---
+ crypto/cversion.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/crypto/cversion.c b/crypto/cversion.c
+index 9e6f50d78182..c417d1d1121f 100644
+--- a/crypto/cversion.c
++++ b/crypto/cversion.c
+@@ -68,7 +68,11 @@ const char *SSLeay_version(int t)
+         return OPENSSL_VERSION_TEXT;
+     if (t == SSLEAY_BUILT_ON) {
+ #ifdef DATE
++# ifdef OPENSSL_USE_BUILD_DATE
+         return (DATE);
++# else
++        return("built on: reproducible build, date unspecified");
++# endif
+ #else
+         return ("built on: date not available");
+ #endif

@@ -28,8 +28,6 @@ remotes:
   "dir": "meek"
 - "url": "https://github.com/googlei18n/noto-fonts.git"
   "dir": "noto-fonts"
-- "url": "https://github.com/wolfcw/libfaketime"
-  "dir": "faketime"
 files:
 - "tor-browser-linux32-gbuilt.zip"
 - "tor-browser-linux64-gbuilt.zip"
@@ -61,20 +59,12 @@ files:
 script: |
   INSTDIR="$HOME/install"
   source versions
+  export REFERENCE_DATETIME
   export LIBRARY_PATH="$INSTDIR/lib"
   export TZ=UTC
   export LC_ALL=C
   export TORBROWSER_VERSION=`cat bare-version`
   umask 0022
-
-  # Building libfaketime
-  cd faketime
-  make
-  DESTDIR="$INSTDIR/faketime" make install
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME=$REFERENCE_DATETIME
-  export FAKETIME_SKIP_CMDS="rsync"
-  cd ..
 
   mkdir -p $OUTDIR/
   # When we build with MULTI_LINGUAL=1, the browser will be packaged inside a
@@ -194,16 +184,36 @@ script: |
   cp -a ${TB_STAGE_DIR} ${PKG_DIR}
   #
   pushd ${PKG_DIR}/Browser/browser/
+  # For the proper search engines in our language packs
+  unzip omni.ja chrome/en-US/locale/browser/searchplugins*
+  mv chrome/en-US/locale/browser/searchplugins ~/build
+  rm -rf chrome/en-US
   unzip omni.ja defaults/preferences/000-tor-browser.js
   cp defaults/preferences/000-tor-browser.js ~/build/
   # Set the locale of the bundle.
   echo "pref(\"general.useragent.locale\", \"en-US\");" >> defaults/preferences/000-tor-browser.js
+  touch --date="$REFERENCE_DATETIME" defaults/preferences/000-tor-browser.js
   zip -Xm omni.ja defaults/preferences/000-tor-browser.js
   rm -rf defaults
   popd
   #
   unzip linux-langpacks.zip
   LINUX_LOCALES="$BUNDLE_LOCALES $BUNDLE_LOCALES_LINUX"
+  # Prepare our language packs for using the proper search engines. See bug
+  # 18915 for more details.
+  for LANG in $LINUX_LOCALES
+  do
+    xpi=linux-langpacks/$LANG.xpi
+    unzip -d prep_$LANG $xpi
+    search_plugins_path=prep_$LANG/browser/chrome/$LANG/locale/browser
+    rm -rf $search_plugins_path/searchplugins
+    cp -rf ~/build/searchplugins $search_plugins_path
+    rm $xpi
+    cd prep_$LANG
+    ~/build/dzip.sh ../$xpi .
+    cd ..
+    rm -rf prep_$LANG
+  done
   # If we are building a multi-lingual package, add all of the language packs.
   if [ "z$MULTI_LINGUAL" = "z1" ]; then
     pushd linux-langpacks
@@ -218,6 +228,7 @@ script: |
     # app.update.url).
     pushd ${PKG_DIR}/Browser/
     echo ${PKG_LOCALE} > update.locale
+    touch --date="$REFERENCE_DATETIME" update.locale
     zip -Xm omni.ja update.locale
     popd
   fi
@@ -248,6 +259,7 @@ script: |
       cp ~/build/000-tor-browser.js defaults/preferences/
       # Set the locale of the bundle.
       echo "pref(\"general.useragent.locale\", \"$LANG\");" >> defaults/preferences/000-tor-browser.js
+      touch --date="$REFERENCE_DATETIME" defaults/preferences/000-tor-browser.js
       zip -Xm omni.ja defaults/preferences/000-tor-browser.js
       rm -rf defaults
       popd
@@ -257,6 +269,7 @@ script: |
       # recreate precomplete file (needs to be accurate for full MAR updates).
       pushd tor-browser_$LANG/Browser/
       echo "$LANG" > update.locale
+      touch --date="$REFERENCE_DATETIME" update.locale
       zip -Xm omni.ja update.locale
       rm -rf dictionaries
       rm -f precomplete

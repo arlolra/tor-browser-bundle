@@ -28,8 +28,6 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor-browser.git"
   "dir": "tor-browser"
-- "url": "https://github.com/wolfcw/libfaketime"
-  "dir": "faketime"
 files:
 - "binutils-linux32-utils.zip"
 - "binutils-linux64-utils.zip"
@@ -41,6 +39,7 @@ files:
 script: |
   source versions
   INSTDIR="$HOME/install"
+  export REFERENCE_DATETIME
   export CFLAGS="-frandom-seed=tor"
   export CXXFLAGS="-frandom-seed=tor"
   export TZ=UTC
@@ -87,42 +86,17 @@ script: |
   mkdir -p $INSTDIR/Debug/Browser/components
   mkdir -p $INSTDIR/Debug/Browser/browser/components
 
-  # Building libfaketime
-  cd faketime
-  make
-  DESTDIR="$INSTDIR/faketime" make install
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME=$REFERENCE_DATETIME
-  cd ..
-
   cd tor-browser
   # .git and the src takes up a lot of useless space, and we need the space to build
   rm -rf .git
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  # |configure| can't cope with nano seconds faked. And even if we would revert
-  # that feature it would hang sometimes for unknown but to libfaketime related
-  # reasons.
-  export LD_PRELOAD=""
+  export MOZ_BUILD_DATE=$(date -d "$REFERENCE_DATETIME" +%Y%m%d%H%M%S)
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
-  # We need libfaketime for all the timestamps e.g. written into the libraries.
-  # BUT we need to exclude |make build| from it. Otherwise the build fails close
-  # to the end, see #12461 comment 8 and later. Additionally, we need to avoid
-  # breaking the ICU compilation. Exlcuding |bash| helps here. See #12461
-  # comment 13. Finally, we need to exclude |python2.7| as not doing so would
-  # stall the build right at the beginning. See #13877.
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
-  export FAKETIME_SKIP_CMDS="python2.7,bash,make"
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   make $MAKEOPTS -f client.mk build
-  # Packaging is broken with libfaketime enabled, thus we disable it again. See
-  # #12461 comments 11 and 12 for details.
-  export LD_PRELOAD=""
   make -C obj-* package INNER_MAKE_PACKAGE=true
-  # Without libfaketime enabled we would get different omni.ja and *debug.zip
-  # files.
-  export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
   cp -a obj-*/dist/firefox/* $INSTDIR/Browser/
   # Remove firefox-bin (we don't use it, see ticket #10126)
   rm -f $INSTDIR/Browser/firefox-bin
