@@ -63,6 +63,7 @@ script: |
   # embedded=1 is supposed to turn of various features; see
   # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
   GYP_DEFINES+=" embedded=1"
+  GYP_DEFINES+=" werror="
   GYP_DEFINES+=" mac_sdk=$SDKROOT mac_sdk_path=$SDKROOT make_clang_dir=$HOME/build/clang"
   GYP_DEFINES+=" use_custom_libcxx=1"
   GYP_DEFINES+=" clang_use_chrome_plugins=0"
@@ -74,14 +75,14 @@ script: |
   #  -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot $SDKROOT
   # -std=gnu++11
   # .mozconfig-mac
-  webrtc/build/gyp_webrtc
-  sed -i -e 's#\$(SDKROOT)#/usr/lib/apple/SDKs/MacOSX10.6.sdk#g' out/Release/obj/webrtc/tools/*.ninja
+  webrtc/build/gyp_webrtc.py
+  find out/Release -name '*.ninja' -print0 | xargs -0 sed -i -e 's#\$(SDKROOT)#'"$SDKROOT"'#g'
   ninja -C out/Release
   # Run ninja once more, without include_tests=0, in order to build just the
   # FakeAudioCaptureModule that go-webrtc uses.
   GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
-  webrtc/build/gyp_webrtc
-  ninja -C out/Release libjingle_peerconnection_unittest.isolated
+  webrtc/build/gyp_webrtc.py
+  ninja -C out/Release peerconnection_unittests.isolated
   # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
   # dump_syms_regtest.o is actually an executable, not an object file. If not
   # excluded, it results in the error:
