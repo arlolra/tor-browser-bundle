@@ -37,10 +37,11 @@ verify_git() {
 
   local gpghome=$(mktemp -d)
   echo "rm -rf '$gpghome'" >> "$CLEANUP"
-  GNUPGHOME="$gpghome" gpg --import "$keyring"
+  GNUPGHOME="$gpghome" gpg --no-default-keyring --keyring trustedkeys.gpg --import "$keyring"
 
   pushd .
   cd "$dir"
+  git config --local gpg.program "$WRAPPER_DIR/git-gpg-wrapper"
   if ! GNUPGHOME="$gpghome" git tag -v "$tag"; then
     echo >&2 "$dir: verification of tag $tag against $keyring failed!"
     exit 1
