@@ -138,6 +138,8 @@ cd $GITIAN_DIR
 
 if [ ! -f inputs/clang-$CLANG_VER-linux32-wheezy-utils.zip -o \
      ! -f inputs/clang-$CLANG_VER-linux64-wheezy-utils.zip -o \
+     ! -f inputs/libcxx-linux32-wheezy-utils.zip -o \
+     ! -f inputs/libcxx-linux64-wheezy-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];
@@ -145,7 +147,7 @@ then
   echo
   echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
   echo
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG,faketime=$FAKETIME_TAG,cmake=$CMAKE_TAG,llvm=$LLVM_TAG,clang=$CLANG_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG,faketime=$FAKETIME_TAG,cmake=$CMAKE_TAG,llvm=$LLVM_TAG,clang=$CLANG_TAG,libcxx=$LIBCXX_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./utils-fail-mac.log.`date +%Y%m%d%H%M%S`
