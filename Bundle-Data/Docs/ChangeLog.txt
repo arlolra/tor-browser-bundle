@@ -32,6 +32,9 @@ Tor Browser 6.5a2 -- August 3
    * Bug 19269: Icon doesn't appear in Applications folder or Dock
  * Android
    * Bug 19484: Avoid compilation error when MOZ_UPDATER is not defined
+ * Build System
+   * All Platforms
+     * Bug 19703: Upgrade Go to 1.6.3
 
 Tor Browser 6.0.2 -- June 21
  * All Platforms
