@@ -1,3 +1,38 @@
+Tor Browser 6.5a2 -- August 3
+ * All Platforms
+   * Update Firefox to 45.3.0esr
+   * Update Tor to tor-0.2.8.5-rc
+   * Update Torbutton to 1.9.6.1
+     * Bug 19689: Use proper parent window for plugin prompt
+     * Bug 19206: Avoid SOCKS auth and NEWNYM collisions when sharing a tor client
+     * Bug 19417: Disable asm.js (but add code to clear on New Identity if enabled)
+     * Bug 19273: Improve external app launch handling and associated warnings
+     * Bug 8725: Block addon resource and url fingerprinting with nsIContentPolicy
+   * Update HTTPS-Everywhere to 5.2.1
+   * Update NoScript to 2.9.0.12
+   * Bug 19417: Disable asmjs for now
+   * Bug 19715: Disable the meek-google pluggable transport option
+   * Bug 19714: Remove mercurius4 obfs4 bridge
+   * Bug 19585: Fix regression test for keyboard layout fingerprinting
+   * Bug 19515: Tor Browser is crashing in graphics code
+   * Bug 18513: Favicon requests can bypass New Identity
+   * Bug 19273: Write C++ patch for external app launch handling
+   * Bug 16998: Isolate preconnect requests to URL bar domain
+   * Bug 18923: Add script to run all Tor Browser regression tests
+   * Bug 19478: Prevent millisecond resolution leaks in File API
+   * Bug 19401: Fix broken PDF download button
+   * Bug 19411: Don't show update icon if a partial update failed
+   * Bug 19400: Back out GCC bug workaround to avoid asmjs crash
+   * Bug 19735: Switch default search engine to DuckDuckGo
+ * Windows
+   * Bug 19348: Adapt to more than one build target on Windows (fixes updates)
+ * Linux
+   * Bug 19276: Disable Xrender due to possible performance regressions
+ * OS X
+   * Bug 19269: Icon doesn't appear in Applications folder or Dock
+ * Android
+   * Bug 19484: Avoid compilation error when MOZ_UPDATER is not defined
+
 Tor Browser 6.0.2 -- June 21
  * All Platforms
    * Update Torbutton to 1.9.5.5
