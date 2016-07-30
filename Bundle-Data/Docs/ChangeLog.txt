@@ -26,8 +26,10 @@ Tor Browser 6.5a2 -- August 3
    * Bug 19735: Switch default search engine to DuckDuckGo
  * Windows
    * Bug 19348: Adapt to more than one build target on Windows (fixes updates)
+   * Bug 19725: Remove old updater files left on disk after upgrade to 6.x
  * Linux
    * Bug 19276: Disable Xrender due to possible performance regressions
+   * Bug 19725: Remove old updater files left on disk after upgrade to 6.x
  * OS X
    * Bug 19269: Icon doesn't appear in Applications folder or Dock
  * Android
