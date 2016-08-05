@@ -72,7 +72,7 @@ files:
 - "binutils-linux64-utils.zip"
 - "gcc-linux32-utils.zip"
 - "gcc-linux64-utils.zip"
-- "webrtc"
+- "webrtc.tar.gz"
 script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
@@ -325,6 +325,7 @@ script: |
   export DEPOT_TOOLS_UPDATE=0
 
   # Building webrtc
+  tar xaf webrtc.tar.gz
   cd webrtc/src
   export GYP_CROSSCOMPILE=1
   export GYP_DEFINES="OS=linux target_arch=$(if [ $GBUILD_BITS = 32 ]; then echo ia32; else echo x64; fi)"

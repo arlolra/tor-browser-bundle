@@ -322,6 +322,7 @@ fi
 # default-java comes from the package default-jdk-headless.
 JAVA_HOME=/usr/lib/jvm/default-java gclient sync --with_branch_heads --no-history -r $WEBRTC_TAG
 cd ..
+tar --exclude .git -czf webrtc.tar.gz webrtc
 
 exit 0
 

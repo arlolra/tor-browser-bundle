@@ -62,7 +62,7 @@ files:
 - "dzip.sh"
 - "gmp-mac64-utils.zip"
 - "openssl-mac64-utils.zip"
-- "webrtc"
+- "webrtc.tar.gz"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -342,6 +342,7 @@ script: |
   # Extracting all the necessary tools
   tar xaf MacOSX10.7.sdk.tar.gz
   tar xaf cctools.tar.gz
+  tar xaf webrtc.tar.gz
   unzip clang-linux32-wheezy-utils.zip
   export SDKROOT="$PWD/MacOSX10.7.sdk"
 
