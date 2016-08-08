@@ -84,6 +84,7 @@ sub get_version_files {
     return if $config->{versions}{$version}{files};
     my $files = {};
     my $vdir = "$releases_dir/$version";
+    my $download_url = "$config->{download}{mars_url}/$version";
     opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
     foreach my $file (readdir $d) {
         next unless -f "$vdir/$file";
@@ -91,7 +92,7 @@ sub get_version_files {
             my ($os, $lang) = ($1, $2);
             $files->{$os}{$lang}{complete} = {
                 type => 'complete',
-                URL => "$config->{versions}{$version}{download_url}/$file",
+                URL => "$download_url/$file",
                 size => -s "$vdir/$file",
                 hashFunction => 'SHA512',
                 hashValue => get_sha512_hex_of_file("$vdir/$file"),
@@ -102,7 +103,7 @@ sub get_version_files {
             my ($os, $from_version, $lang) = ($1, $2, $3);
             $files->{$os}{$lang}{partial}{$from_version} = {
                 type => 'partial',
-                URL => "$config->{versions}{$version}{download_url}/$file",
+                URL => "$download_url/$file",
                 size => -s "$vdir/$file",
                 hashFunction => 'SHA512',
                 hashValue => get_sha512_hex_of_file("$vdir/$file"),
@@ -117,6 +118,7 @@ sub get_version_downloads {
     my ($config, $version) = @_;
     my $downloads = {};
     my $vdir = "$releases_dir/$version";
+    my $download_url = "$config->{download}{bundles_url}/$version";
     opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
     foreach my $file (readdir $d) {
         next unless -f "$vdir/$file";
@@ -131,8 +133,8 @@ sub get_version_downloads {
             next;
         }
         $downloads->{$os}{$lang} = {
-            binary => "$config->{versions}{$version}{download_url}/$file",
-            sig => "$config->{versions}{$version}{download_url}/$file.asc",
+            binary => "$download_url/$file",
+            sig => "$download_url/$file.asc",
         };
     }
     closedir $d;
@@ -175,12 +177,13 @@ sub create_incremental_mar {
     my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.incremental.mar";
     print "Starting $mar_file\n";
     my $mar_file_path = "$releases_dir/$new_version/$mar_file";
+    my $download_url = "$config->{download}{mars_url}/$new_version";
     my $finished_file = sub {
         exit_error "Error creating $mar_file" unless $_[1] == 0;
         print "Finished $mar_file\n";
         $config->{versions}{$new_version}{files}{$os}{$lang}{partial}{$from_version} = {
             type => 'partial',
-            URL => "$config->{versions}{$new_version}{download_url}/$mar_file",
+            URL => "$download_url/$mar_file",
             size => -s $mar_file_path,
             hashFunction => 'SHA512',
             hashValue => get_sha512_hex_of_file($mar_file_path),
@@ -205,7 +208,7 @@ sub create_incremental_mars_for_version {
     $pm->run_on_finish(sub { $_[2]->(@_) });
     my $v = $config->{versions}{$version};
     foreach my $from_version (@{$v->{incremental_from}}) {
-        $config->{versions}{$from_version} //= { download_url => '' };
+        $config->{versions}{$from_version} //= {};
         get_version_files($config, $from_version);
         my $from_v = $config->{versions}{$from_version};
         foreach my $os (keys %{$v->{files}}) {

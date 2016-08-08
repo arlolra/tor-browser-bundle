@@ -3,6 +3,8 @@ releases_dir: ../../gitian
 download:
     archive_url: https://archive.torproject.org/tor-package-archive/torbrowser
     gpg_keyring: ../../gitian/gpg/torbrowser.gpg
+    bundles_url: https://dist.torproject.org/torbrowser
+    mars_url: https://cdn.torproject.org/aus1/torbrowser
 build_targets:
     linux32: Linux_x86-gcc3
     linux64: Linux_x86_64-gcc3
@@ -19,7 +21,6 @@ versions:
     6.0.1:
         platformVersion: 45.2.0
         detailsURL: https://blog.torproject.org/blog/tor-browser-601-released
-        download_url: https://cdn.torproject.org/aus1/torbrowser/6.0.1
         incremental_from:
           - 5.5.5
           - 6.0
@@ -31,7 +32,6 @@ versions:
     6.5a2:
         platformVersion: 45.3.0
         detailsURL: https://blog.torproject.org/blog/tor-browser-65a2-released
-        download_url: https://cdn.torproject.org/aus1/torbrowser/6.5a2
         incremental_from:
           - 6.5a1
         migrate_archs:
