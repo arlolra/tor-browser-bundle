@@ -1,4 +1,5 @@
 ---
+releases_dir: ../../gitian
 download:
     archive_url: https://archive.torproject.org/tor-package-archive/torbrowser
     gpg_keyring: ../../gitian/gpg/torbrowser.gpg

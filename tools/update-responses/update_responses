@@ -30,7 +30,8 @@ setlocale(LC_ALL, "C");
 my $htdocsdir = "$FindBin::Bin/htdocs";
 my $config = LoadFile("$FindBin::Bin/config.yml");
 my %htdocsfiles;
-my $releases_dir = "$FindBin::Bin/../../gitian";
+my $releases_dir = $config->{releases_dir};
+$releases_dir = "$FindBin::Bin/$releases_dir" unless $releases_dir =~ m/^\//;
 my @check_errors;
 
 sub exit_error {
