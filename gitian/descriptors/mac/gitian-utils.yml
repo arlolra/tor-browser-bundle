@@ -7,6 +7,7 @@ architectures:
 - "i386"
 - "amd64"
 packages:
+- "faketime"
 - "automake"
 - "libtool"
 - "zip"
@@ -14,6 +15,8 @@ reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/libevent/libevent.git"
   "dir": "libevent"
+- "url": "https://github.com/wolfcw/libfaketime"
+  "dir": "faketime"
 - "url": "https://github.com/llvm-mirror/llvm"
   "dir": "llvm"
 - "url": "https://github.com/llvm-mirror/clang"
@@ -24,14 +27,13 @@ files:
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "openssl.tar.gz"
-- "openssl-Make-build-reproducible.patch"
 - "gmp.tar.bz2"
 - "versions"
 - "dzip.sh"
+- "libfaketime.patch"
 script: |
   INSTDIR="$HOME/install"
   source versions
-  export REFERENCE_DATETIME
   export TZ=UTC
   export LC_ALL=C
   umask 0022
@@ -54,13 +56,21 @@ script: |
     make $MAKEOPTS
     make install
     cd $INSTDIR
-    # Since we stopped using libfaketime, the clang archive is no longer
-    # reproducible. The reason is that it includes some .a archives and
-    # other files which include timestamps.
-    # Those files are however not part of the files we ship.
     ~/build/dzip.sh clang-$CLANG_VER-linux64-wheezy-utils.zip clang
     cp *utils.zip $OUTDIR/
   else
+    # Building libfaketime.
+    cd faketime
+    export GIT_COMMITTER_NAME="nobody"
+    export GIT_COMMITTER_EMAIL="nobody@localhost"
+    export GIT_COMMITTER_DATE="$REFERENCE_DATETIME"
+    git am ~/build/libfaketime.patch
+    make
+    DESTDIR="$INSTDIR/faketime" make install
+    export FAKETIME_SKIP_CMDS="make"
+    export FAKETIME=$REFERENCE_DATETIME
+    cd ..
+
     # dpkg requires sbin directories in the PATH
     export PATH="/usr/sbin:/sbin:$PATH"
     sudo dpkg -i *.deb
@@ -81,14 +91,15 @@ script: |
     ./autogen.sh
     find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
     ./configure --disable-static --host=i686-apple-darwin11 --prefix=$INSTDIR/libevent
+    export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
     make $MAKEOPTS
     make install
     cd ..
 
     # Building OpenSSL
+    # We still need libfaketime here it seems, see #19856 for details.
     tar xzf openssl.tar.gz
     cd openssl-*
-    patch -p1 < ../openssl-Make-build-reproducible.patch
     find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
     # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit OS X.
     ./Configure --cross-compile-prefix=i686-apple-darwin11- $CFLAGS darwin64-x86_64-cc --prefix=$INSTDIR/openssl enable-ec_nistp_64_gcc_128
@@ -101,19 +112,20 @@ script: |
     # Building GMP
     tar xjf gmp.tar.bz2
     cd gmp-*
+    # |configure| can't cope with nano seconds faked. And even if we would revert
+    # that feature it would hang sometimes for unknown but to libfaketime related
+    # reasons.
+    export LD_PRELOAD=""
     find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
     # Even if we are not shipping libgmpxx anymore we still need --enable-xcc
     # during compile time.
     ./configure --host=x86_64-apple-darwin11 --prefix=$INSTDIR/gmp --disable-static --enable-shared --enable-cxx
+    export LD_PRELOAD="$INSTDIR/faketime/usr/local/lib/faketime/libfaketime.so.1"
     make
     make install
     cd ..
 
     # Grabbing the results
-    # Since we stopped using libfaketime, the openssl archive is no
-    # longer reproducible. The main reason is that it includes some .a
-    # archives which include timestamps.
-    # Those files are however not part of the files we ship.
     cd $INSTDIR
     ~/build/dzip.sh openssl-$OPENSSL_VER-mac64-utils.zip openssl
     ~/build/dzip.sh libevent-${LIBEVENT_TAG#release-}-mac64-utils.zip libevent
