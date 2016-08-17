@@ -4,7 +4,7 @@ distro: "debian"
 suites:
 - "wheezy"
 architectures:
-- "amd64"
+- "i386"
 packages:
 - "unzip"
 - "zip"
@@ -15,11 +15,13 @@ remotes:
 files:
 - "versions"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
-- "clang-linux64-wheezy-utils.zip"
+- "clang-linux32-wheezy-utils.zip"
 - "cctools.tar.gz"
 - "MacOSX10.7.sdk.tar.gz"
+- "libcxx-linux64-wheezy-utils.zip"
 - "dzip.sh"
 - "webrtc.tar.gz"
+- "webrtc-mac.patch"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -29,6 +31,11 @@ script: |
   umask 0022
   #
   mkdir -p $OUTDIR/
+
+  tar xaf multiarch-darwin*tar.xz
+  export PATH="$PATH:$HOME/build/apple-osx/bin/"
+  #For gmp, need to trick it so it knows we're doing a 64 bit build
+  for i in ~/build/apple-osx/bin/i686-apple-darwin11-*; do j=`echo $i | sed 's/i686/x86_64/'`; ln -s $i $j; done;
 
   # Setting up depot_tools
   # https://dev.chromium.org/developers/how-tos/install-depot-tools
@@ -43,15 +50,25 @@ script: |
   tar xaf MacOSX10.7.sdk.tar.gz
   tar xaf cctools.tar.gz
   tar xaf webrtc.tar.gz
-  unzip clang-linux64-wheezy-utils.zip
+  unzip clang-linux32-wheezy-utils.zip
+  unzip libcxx-linux64-wheezy-utils.zip
+  export PATH=$PATH:$PWD/clang/bin
   export SDKROOT="$PWD/MacOSX10.7.sdk"
+  # ld needs libLTO.so from llvm
+  export LD_LIBRARY_PATH="$PWD/clang/lib"
 
   # Building webrtc
-  export CC_host=gcc
-  export CXX_host=g++
+  export CC_host=clang
+  export CXX_host=clang++
+  export LINK_host=clang++
+  export CFLAGS_host=
+  export CXXFLAGS_host=
+  export LDFLAGS_host=
+  export AR=x86_64-apple-darwin11-ar
   unset CC
   unset CXX
   cd webrtc/src
+  patch -p1 < ../../webrtc-mac.patch
   echo "print(\"$SDKROOT\")" > build/mac/find_sdk.py
   export GYP_CROSSCOMPILE=1
   export GYP_DEFINES="OS=mac target_arch=x64"
@@ -65,29 +82,48 @@ script: |
   GYP_DEFINES+=" embedded=1"
   GYP_DEFINES+=" werror="
   GYP_DEFINES+=" mac_sdk=$SDKROOT mac_sdk_path=$SDKROOT make_clang_dir=$HOME/build/clang"
-  GYP_DEFINES+=" use_custom_libcxx=1"
+  GYP_DEFINES+=" use_custom_libcxx=0"
   GYP_DEFINES+=" clang_use_chrome_plugins=0"
-  # GYP_DEFINES+=' cflags="-std=gnu++11 -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot '$SDKROOT'"'
-  export CXXFLAGS="-std=gnu++11 -stdlib=libc++ -mmacosx-version-min=10.6 -target x86_64-apple-darwin10 -isysroot $SDKROOT -I$SDKROOT/usr/include -I$SDKROOT/usr/include/c++/4.2.1"
-  #  -mlinker-version=136 -isysroot $SDKROOT"
-  unset LDFLAGS
-  unset CFLAGS
-  #  -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot $SDKROOT
-  # -std=gnu++11
+  # GYP_DEFINES+=' cflags="-std=gnu++11 -target x86_64-apple-darwin11 -mlinker-version=136 -isysroot '$SDKROOT'"'
+  export CFLAGS="-I$HOME/build/libcxx/include/c++/v1 -stdlib=libc++ -mmacosx-version-min=10.7 -target x86_64-apple-darwin11 -B$HOME/build/apple-osx/bin -isysroot $SDKROOT -I$HOME/build/libcxx"
+  export CXXFLAGS="-std=c++11 -I$HOME/build/libcxx/include/c++/v1 -stdlib=libc++ -mmacosx-version-min=10.7 -target x86_64-apple-darwin11 -B$HOME/build/apple-osx/bin -isysroot $SDKROOT -I$HOME/build/libcxx"
+  # MacOSX10.7.sdk is missing the NS_ASSUME_NONNULL_BEGIN and
+  # NS_ASSUME_NONNULL_END macros, which can be safely defined as noops.
+  CFLAGS="$CFLAGS -DNS_ASSUME_NONNULL_BEGIN= -DNS_ASSUME_NONNULL_END="
+  CXXFLAGS="$CXXFLAGS -DNS_ASSUME_NONNULL_BEGIN= -DNS_ASSUME_NONNULL_END="
+  # MacOSX10.7.sdk is also missing NS_DESIGNATED_INITIALIZER.
+  # http://timekl.com/blog/2014/12/09/objective-cs-designated-secret/
+  CFLAGS="$CFLAGS -DNS_DESIGNATED_INITIALIZER='__attribute__((objc_designated_initializer))'"
+  CXXFLAGS="$CXXFLAGS -DNS_DESIGNATED_INITIALIZER='__attribute__((objc_designated_initializer))'"
+  CFLAGS="$CFLAGS -DNSAssert="
+  CXXFLAGS="$CXXFLAGS -DNSAssert="
+  export LDFLAGS="-target x86_64-apple-darwin11 -L$HOME/build/libcxx/lib -stdlib=libc++ -mlinker-version=136 -B$HOME/build/apple-osx/bin -isysroot $SDKROOT"
   # .mozconfig-mac
   webrtc/build/gyp_webrtc.py
   find out/Release -name '*.ninja' -print0 | xargs -0 sed -i -e 's#\$(SDKROOT)#'"$SDKROOT"'#g'
+  # Rewrite ldflags in build files that erroneously use LDFLAGS instead of LDFLAGS_host.
+  find out/Release/obj.host -name '*.ninja' -print0 | xargs -0 sed -i -e '/^ldflags = .*[^$]$/ cldflags ='"$LDFLAGS_host" -e '/^ldflags = .*\$$/,/[^$]$/ cldflags ='"$LDFLAGS_host"
+  # Rewrite libs specifications that refer directly to a framework directory.
+  # That doesn't work with the ld we're using (gives "can't map file, errno=19").
+  find out/Release/obj -name '*.ninja' -print0 | xargs -0 sed -i -e 's#'"$SDKROOT"'/System/Library/Frameworks/\(\w\+\)\.framework#-framework \1#g'
+  # The build system seems to assume that the mergesort(3) function is
+  # available when compiling for mac. Trick yasm into using its built-in
+  # version.
+  sed -i -e '$i#undef HAVE_MERGESORT' ./chromium/src/third_party/yasm/source/patched-yasm/util.h
   ninja -C out/Release
   # Run ninja once more, without include_tests=0, in order to build just the
   # FakeAudioCaptureModule that go-webrtc uses.
   GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
   webrtc/build/gyp_webrtc.py
-  ninja -C out/Release peerconnection_unittests.isolated
+  find out/Release -name '*.ninja' -print0 | xargs -0 sed -i -e 's#\$(SDKROOT)#'"$SDKROOT"'#g'
+  find out/Release/obj.host -name '*.ninja' -print0 | xargs -0 sed -i -e '/^ldflags = .*[^$]$/ cldflags ='"$LDFLAGS_host" -e '/^ldflags = .*\$$/,/[^$]$/ cldflags ='"$LDFLAGS_host"
+  find out/Release/obj -name '*.ninja' -print0 | xargs -0 sed -i -e 's#'"$SDKROOT"'/System/Library/Frameworks/\(\w\+\)\.framework#-framework \1#g'
+  ninja -C out/Release obj/webrtc/api/test/peerconnection_unittests.fakeaudiocapturemodule.o
   # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
   # dump_syms_regtest.o is actually an executable, not an object file. If not
   # excluded, it results in the error:
   # libwebrtc-linux-386-magic.a(dump_syms_regtest.o): unsupported ELF file type 2
-  ar crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o' -not -name 'dump_syms_regtest.o')
+  $AR crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o' -not -name 'dump_syms_regtest.o')
   cd ../..
 
   # Grabbing the result
