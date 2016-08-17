@@ -145,7 +145,7 @@ if [ ! -f inputs/clang-$CLANG_VER-linux32-wheezy-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];
 then
   echo
-  echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
+  echo "****** Starting Utilities Component of Mac Bundle (1/6 for Mac) ******"
   echo
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG,faketime=$FAKETIME_TAG,cmake=$CMAKE_TAG,llvm=$LLVM_TAG,clang=$CLANG_TAG,libcxx=$LIBCXX_TAG $DESCRIPTOR_DIR/mac/gitian-utils.yml
   if [ $? -ne 0 ];
@@ -165,7 +165,7 @@ then
   #cp -a result/utils-mac-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built Utilities Component of Mac Bundle (1/5 for
+  echo "****** SKIPPING already built Utilities Component of Mac Bundle (1/6 for
   Mac) ******"
   echo
   # We might have built the utilities in the past but maybe the links are
@@ -182,7 +182,7 @@ fi
 if [ ! -f inputs/tor-mac64-gbuilt.zip ];
 then
   echo
-  echo "****** Starting Tor Component of Mac Bundle (2/5 for Mac) ******"
+  echo "****** Starting Tor Component of Mac Bundle (2/6 for Mac) ******"
   echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor=$TOR_TAG $DESCRIPTOR_DIR/mac/gitian-tor.yml
@@ -196,14 +196,14 @@ then
   #cp -a result/tor-mac-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built Tor Component of Mac Bundle (2/5 for Mac) ******"
+  echo "****** SKIPPING already built Tor Component of Mac Bundle (2/6 for Mac) ******"
   echo
 fi
 
 if [ ! -f inputs/tor-browser-mac64-gbuilt.zip ];
 then
   echo
-  echo "****** Starting TorBrowser Component of Mac Bundle (3/5 for Mac) ******"
+  echo "****** Starting TorBrowser Component of Mac Bundle (3/6 for Mac) ******"
   echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG,faketime=$FAKETIME_TAG $DESCRIPTOR_DIR/mac/gitian-firefox.yml
@@ -218,17 +218,38 @@ then
   #cp -a result/torbrowser-mac-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (3/5 for Mac) ******"
+  echo "****** SKIPPING already built TorBrowser Component of Mac Bundle (3/6 for Mac) ******"
+  echo
+fi
+
+if [ ! -f inputs/webrtc-mac64-gbuilt.zip ];
+then
+  echo
+  echo "****** Starting WebRTC Component of Mac Bundle (4/6 for Mac) ******"
+  echo
+
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit depot_tools=$DEPOT_TOOLS_TAG $DESCRIPTOR_DIR/mac/gitian-webrtc.yml
+  if [ $? -ne 0 ];
+  then
+    #mv var/build.log ./webrtc-fail-mac.log.`date +%Y%m%d%H%M%S`
+    exit 1
+  fi
+
+  cp -a build/out/webrtc-mac*-gbuilt.zip inputs/
+  #cp -a result/webrtc-mac-res.yml inputs/
+else
+  echo
+  echo "****** SKIPPING already built WebRTC Component of Mac Bundle (4/6 for Mac) ******"
   echo
 fi
 
 if [ ! -f inputs/pluggable-transports-mac64-gbuilt.zip ];
 then
   echo
-  echo "****** Starting Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"
+  echo "****** Starting Pluggable Transports Component of Mac Bundle (5/6 for Mac) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG,goptlib=$GOPTLIB_TAG,meek=$MEEK_TAG,ed25519=$GOED25519_TAG,siphash=$GOSIPHASH_TAG,goxcrypto=$GO_X_CRYPTO_TAG,goxnet=$GO_X_NET_TAG,obfs4=$OBFS4_TAG,depot_tools=$DEPOT_TOOLS_TAG,go-webrtc=$GO_WEBRTC_TAG,snowflake=$SNOWFLAKE_TAG,uniuri=$UNIURI_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG,goptlib=$GOPTLIB_TAG,meek=$MEEK_TAG,ed25519=$GOED25519_TAG,siphash=$GOSIPHASH_TAG,goxcrypto=$GO_X_CRYPTO_TAG,goxnet=$GO_X_NET_TAG,obfs4=$OBFS4_TAG,go-webrtc=$GO_WEBRTC_TAG,snowflake=$SNOWFLAKE_TAG,uniuri=$UNIURI_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
@@ -239,7 +260,7 @@ then
   #cp -a result/pluggable-transports-mac-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"
+  echo "****** SKIPPING already built Pluggable Transports Component of Mac Bundle (5/6 for Mac) ******"
   echo
 fi
 
@@ -247,7 +268,7 @@ fi
 if [ ! -f inputs/bundle-mac.gbuilt ];
 then
   echo
-  echo "****** Starting Bundling+Localization Component of Mac Bundle (5/5 for Mac) ******"
+  echo "****** Starting Bundling+Localization Component of Mac Bundle (6/6 for Mac) ******"
   echo
 
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
@@ -264,7 +285,7 @@ then
   touch inputs/bundle-mac.gbuilt
 else
   echo
-  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (5/5 for Mac) ******"
+  echo "****** SKIPPING already built Bundling+Localization Component of Mac Bundle (6/6 for Mac) ******"
   echo
 fi
 

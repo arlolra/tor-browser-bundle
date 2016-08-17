@@ -36,8 +36,6 @@ remotes:
   "dir": "goxnet"
 - "url": "https://git.torproject.org/pluggable-transports/obfs4.git"
   "dir": "obfs4"
-- "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
-  "dir": "depot_tools"
 - "url": "https://github.com/keroserene/go-webrtc.git"
   "dir": "go-webrtc"
 - "url": "https://git.torproject.org/pluggable-transports/snowflake.git"
@@ -56,13 +54,11 @@ files:
 - "go.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
-- "clang-linux32-wheezy-utils.zip"
-- "cctools.tar.gz"
 - "MacOSX10.7.sdk.tar.gz"
+- "webrtc-mac64-gbuilt.zip"
 - "dzip.sh"
 - "gmp-mac64-utils.zip"
 - "openssl-mac64-utils.zip"
-- "webrtc.tar.gz"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -328,65 +324,6 @@ script: |
   cd obfs4proxy
   go build -ldflags '-s'
   cp -a obfs4proxy $PTDIR
-  cd ../..
-
-  # Setting up depot_tools
-  # https://dev.chromium.org/developers/how-tos/install-depot-tools
-  export PATH="$PATH:$PWD/depot_tools"
-  # Disable automatic updating.
-  export DEPOT_TOOLS_UPDATE=0
-
-  # mac_sdk=/usr/lib/apple/SDKs/MacOSX10.6.sdk
-  # clang_dir=
-
-  # Extracting all the necessary tools
-  tar xaf MacOSX10.7.sdk.tar.gz
-  tar xaf cctools.tar.gz
-  tar xaf webrtc.tar.gz
-  unzip clang-linux32-wheezy-utils.zip
-  export SDKROOT="$PWD/MacOSX10.7.sdk"
-
-  # Building webrtc
-  export CC_host=gcc
-  export CXX_host=g++
-  unset CC
-  unset CXX
-  cd webrtc/src
-  echo "print(\"$SDKROOT\")" > build/mac/find_sdk.py
-  export GYP_CROSSCOMPILE=1
-  export GYP_DEFINES="OS=mac target_arch=x64"
-  # Do not use bundled utilities.
-  GYP_DEFINES+=" clang=1 host_clang=0 clang_xcode=0 use_sysroot=1"
-  GYP_DEFINES+=" include_internal_audio_device=0 enabled_libjingle_device_manager=0"
-  # examples and tests also bring in dependencies.
-  GYP_DEFINES+=" include_examples=0 include_tests=0"
-  # embedded=1 is supposed to turn of various features; see
-  # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
-  GYP_DEFINES+=" embedded=1"
-  GYP_DEFINES+=" mac_sdk=$SDKROOT mac_sdk_path=$SDKROOT make_clang_dir=$HOME/build/clang"
-  GYP_DEFINES+=" use_custom_libcxx=1"
-  GYP_DEFINES+=" clang_use_chrome_plugins=0"
-  # GYP_DEFINES+=' cflags="-std=gnu++11 -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot '$SDKROOT'"'
-  export CXXFLAGS="-std=gnu++11 -stdlib=libc++ -mmacosx-version-min=10.6 -target x86_64-apple-darwin10 -isysroot $SDKROOT -I$SDKROOT/usr/include -I$SDKROOT/usr/include/c++/4.2.1"
-  #  -mlinker-version=136 -isysroot $SDKROOT"
-  unset LDFLAGS
-  unset CFLAGS
-  #  -target x86_64-apple-darwin10 -mlinker-version=136 -isysroot $SDKROOT
-  # -std=gnu++11
-  # .mozconfig-mac
-  webrtc/build/gyp_webrtc
-  sed -i -e 's#\$(SDKROOT)#/usr/lib/apple/SDKs/MacOSX10.6.sdk#g' out/Release/obj/webrtc/tools/*.ninja
-  ninja -C out/Release
-  # Run ninja once more, without include_tests=0, in order to build just the
-  # FakeAudioCaptureModule that go-webrtc uses.
-  GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
-  webrtc/build/gyp_webrtc
-  ninja -C out/Release libjingle_peerconnection_unittest.isolated
-  # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
-  # dump_syms_regtest.o is actually an executable, not an object file. If not
-  # excluded, it results in the error:
-  # libwebrtc-linux-386-magic.a(dump_syms_regtest.o): unsupported ELF file type 2
-  ar crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o' -not -name 'dump_syms_regtest.o')
   cd ../..
 
   # Grabbing the result
