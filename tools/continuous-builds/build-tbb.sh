@@ -69,9 +69,9 @@ if [ $status = done ]; then
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
   if [ -n "$LOGRECIPIENTS" ]; then
-      FILES="$logfile \
-             ../../gitian-builder/var/build.log \
-             ../../gitian-builder/var/target.log"
+      FILES="$logfile"
+      [ -r ../../gitian-builder/var/build.log ] && FILES="$FILES ../../gitian-builder/var/build.log"
+      [ -r ../../gitian-builder/var/target.log ] && FILES="$FILES ../../gitian-builder/var/target.log"
       tail -n 50 $FILES | $MAILX -E -s "Nightly build failure -- $(date -u +%F)" \
                                  $LOGSENDER -- $LOGRECIPIENTS
   fi
