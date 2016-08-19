@@ -1,3 +1,9 @@
+Tor Browser 6.0.4 -- August 16
+ * All Platforms
+   * Update Tor to 0.2.8.6
+   * Update NoScript to 2.9.0.14
+   * Bug 19890: Disable installation of system addons
+
 Tor Browser 6.5a2-hardened -- August 3
  * All Platforms
    * Update Firefox to 45.3.0esr
