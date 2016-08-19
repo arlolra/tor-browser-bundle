@@ -7,8 +7,11 @@ if [ "$1" = "-v" ]; then
   shift
 fi
 
-DESTDIR=$1; shift
-[ -z "$DESTDIR" ] && DESTDIR=~/public_html/builds
+DESTDIR=~/public_html/builds
+if [ -n "$DESTDIR" ]; then
+    DESTDIR=$1
+    shift
+fi
 
 do_check() {
     SAVEDPWD=$PWD
