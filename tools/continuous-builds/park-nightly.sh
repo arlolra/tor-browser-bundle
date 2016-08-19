@@ -8,7 +8,7 @@ if [ "$1" = "-v" ]; then
 fi
 
 DESTDIR=~/public_html/builds
-if [ -n "$DESTDIR" ]; then
+if [ -n "$1" ]; then
     DESTDIR=$1
     shift
 fi
