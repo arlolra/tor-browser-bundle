@@ -103,7 +103,7 @@ script: |
   # FakeAudioCaptureModule that go-webrtc uses.
   GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
   JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc.py
-  ninja -C out/Release peerconnection_unittests.isolated
+  ninja -C out/Release obj/webrtc/api/test/peerconnection_unittests.fakeaudiocapturemodule.o
   # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
   # dump_syms_regtest.o is actually an executable, not an object file. If not
   # excluded, it results in the error:
