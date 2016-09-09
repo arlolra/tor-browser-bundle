@@ -45,6 +45,16 @@ signmars-alpha:
 signmars-nightly:
 	./signmars.sh versions.nightly
 
+dmg2mars:
+	cd $(shell ../tools/update-responses/get_channel_version release) && ../../tools/dmg2mar
+	$(TORSOCKS) ../tools/update-responses/download_missing_versions release
+	../tools/update-responses/gen_incrementals release
+
+dmg2mars-alpha:
+	cd $(shell ../tools/update-responses/get_channel_version alpha) && ../../tools/dmg2mar
+	$(TORSOCKS) ../tools/update-responses/download_missing_versions alpha
+	../tools/update-responses/gen_incrementals alpha
+
 update_responses:
 	../tools/update-responses/update_responses release
 

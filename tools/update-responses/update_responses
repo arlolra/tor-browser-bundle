@@ -596,6 +596,12 @@ my %actions = (
         download_missing_versions($config, @channels);
     },
     check_update_responses_deployement => \&check_update_responses,
+    get_channel_version => sub {
+        my ($config) = @_;
+        exit_error "Wrong arguments" unless @ARGV == 1;
+        exit_error "Unknown channel" unless $config->{channels}{$ARGV[0]};
+        print $config->{channels}{$ARGV[0]}, "\n";
+    },
 );
 
 my $action = fileparse($PROGRAM_NAME);
