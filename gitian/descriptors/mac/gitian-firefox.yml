@@ -19,6 +19,7 @@ files:
 - "clang-linux64-wheezy-utils.zip"
 - "cctools.tar.gz"
 - "MacOSX10.7.sdk.tar.gz"
+- "get-moz-build-date"
 - "re-dzip.sh"
 - "dzip.sh"
 - "fix-info-plist.py"
@@ -48,7 +49,7 @@ script: |
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  export MOZ_BUILD_DATE=$(date -d "$REFERENCE_DATETIME" +%Y%m%d%H%M%S)
+  eval $(~/build/get-moz-build-date $(cat browser/config/version.txt))
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   make $MAKEOPTS -f client.mk build

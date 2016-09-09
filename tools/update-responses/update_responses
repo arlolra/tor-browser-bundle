@@ -238,6 +238,30 @@ sub channel_to_version {
     return map { $config->{channels}{$_} } @channels;
 }
 
+sub get_buildinfos {
+    my ($config, $version) = @_;
+    return if exists $config->{versions}{$version}{buildID};
+    my $files = $config->{versions}{$version}{files};
+    foreach my $os (keys %$files) {
+        foreach my $lang (keys %{$files->{$os}}) {
+            next unless $files->{$os}{$lang}{complete};
+            my $tmpdir = File::Temp->newdir();
+            extract_mar(mar_filename($version, $os, $lang), "$tmpdir");
+            my $appfile = "$tmpdir/application.ini" if -f "$tmpdir/application.ini";
+            $appfile = "$tmpdir/Contents/Resources/application.ini"
+                                if -f "$tmpdir/Contents/Resources/application.ini";
+            exit_error "Could not find application.ini" unless $appfile;
+            foreach my $line (read_file("$tmpdir/application.ini")) {
+                if ($line =~ m/^BuildID=(.*)$/) {
+                    $config->{versions}{$version}{buildID} = $1;
+                    return;
+                }
+            }
+            exit_error "Could not extract buildID from application.ini";
+        }
+    }
+}
+
 sub get_response {
     my ($config, $version, $os, @patches) = @_;
     my $res;
@@ -257,7 +281,7 @@ sub get_response {
         displayVersion => $version,
         appVersion => $version,
         platformVersion => get_config($config, $version, $os, 'platformVersion'),
-        buildID => '20000101000000',
+        buildID => get_config($config, $version, $os, 'buildID'),
         detailsURL => get_config($config, $version, $os, 'detailsURL'),
         actions => 'showURL',
         openURL => get_config($config, $version, $os, 'detailsURL'),
@@ -281,6 +305,7 @@ sub write_responses {
     foreach my $channel (@channels) {
         my $version = $config->{channels}{$channel};
         get_version_files($config, $version);
+        get_buildinfos($config, $version);
         my $files = $config->{versions}{$version}{files};
         my $migrate_archs = $config->{versions}{$version}{migrate_archs} // {};
         foreach my $old_os (keys %$migrate_archs) {

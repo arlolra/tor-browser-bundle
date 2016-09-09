@@ -15,6 +15,7 @@ remotes:
 files:
 - "gcc-linux32-precise-utils.zip"
 - "mingw-w64-win32-utils.zip"
+- "get-moz-build-date"
 - "re-dzip.sh"
 - "dzip.sh"
 - "gcclibs-win32-utils.zip"
@@ -73,7 +74,7 @@ script: |
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  export MOZ_BUILD_DATE=$(date -d "$REFERENCE_DATETIME" +%Y%m%d%H%M%S)
+  eval $(~/build/get-moz-build-date $(cat browser/config/version.txt))
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   #
