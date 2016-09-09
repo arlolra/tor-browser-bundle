@@ -104,7 +104,7 @@ script: |
   MARTOOLS=~/build/mar-tools
   #
   mkdir -p $OUTDIR/
-  mkdir -p $TORBROWSER_NAME.app/$EXTSPATH/https-everywhere-eff@eff.org
+  mkdir -p $TORBROWSER_NAME.app/$EXTSPATH
   mkdir -p $TORBROWSER_NAME.app/$MEEKPROFILEPATH/extensions
   mkdir -p $TORBROWSER_NAME.app/$DOCSPATH/sources
   mkdir -p $TORBROWSER_NAME.app/Contents/MacOS
@@ -139,16 +139,13 @@ script: |
   rm -f .git/refs/heads/master
   ./makexpi.sh
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
-  rm ./pkg/*-amo.xpi
-  cp pkg/*.xpi ../$TORBROWSER_NAME.app/$EXTSPATH/https-everywhere@eff.org.xpi
+  rm pkg/*-amo.xpi
+  cp pkg/*.xpi ../$TORBROWSER_NAME.app/$EXTSPATH/https-everywhere-eff@eff.org.xpi
   cd ..
   #
   cp *.xpi ./$TORBROWSER_NAME.app/$EXTSPATH/
   cd $TORBROWSER_NAME.app/$EXTSPATH/
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
-  cd https-everywhere-eff@eff.org
-  unzip ../https-everywhere@eff.org.xpi
-  rm ../https-everywhere@eff.org.xpi
   cd ~/build/
   #
   cd meek/firefox

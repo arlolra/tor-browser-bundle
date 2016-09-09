@@ -76,7 +76,7 @@ script: |
   export PATH=$INSTDIR/nsis/bin:$PATH
   #
   mkdir -p $OUTDIR/
-  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
+  mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/Caches
   mkdir -p tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Docs/sources
@@ -109,16 +109,13 @@ script: |
   rm -f .git/refs/heads/master
   ./makexpi.sh
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
-  rm ./pkg/*-amo.xpi
-  cp ./pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  rm pkg/*-amo.xpi
+  cp pkg/*.xpi ../tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org.xpi
   cd ..
   #
   cp *.xpi tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
   cd tbb-windows-installer/"Tor Browser"/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
-  cd https-everywhere-eff@eff.org
-  unzip ../https-everywhere@eff.org.xpi
-  rm ../https-everywhere@eff.org.xpi
   cd ~/build/
   #
   cd meek/firefox

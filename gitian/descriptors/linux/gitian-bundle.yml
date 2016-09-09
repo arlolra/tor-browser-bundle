@@ -71,7 +71,7 @@ script: |
   # directory named tor-browser (instead of tor-browser_en-US). Therefore we
   # stage everything under tor-browser-stage to avoid a conflict.
   TB_STAGE_DIR=tor-browser-stage
-  mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org
+  mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.meek-http-helper/extensions
   mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/Caches
   mkdir -p ${TB_STAGE_DIR}/Browser/TorBrowser/Docs/sources/
@@ -109,16 +109,13 @@ script: |
   rm -f .git/refs/heads/master
   ./makexpi.sh
   # Since 5.0.2 a .xpi for AMO is built, too. We don't need it.
-  rm ./pkg/*-amo.xpi
-  cp pkg/*.xpi ../${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere@eff.org.xpi
+  rm pkg/*-amo.xpi
+  cp pkg/*.xpi ../${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/https-everywhere-eff@eff.org.xpi
   cd ..
   #
   cp *.xpi ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions/
   cd ${TB_STAGE_DIR}/Browser/TorBrowser/Data/Browser/profile.default/extensions
   mv noscript@noscript.net.xpi {73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
-  cd https-everywhere-eff@eff.org/
-  unzip ../https-everywhere@eff.org.xpi
-  rm ../https-everywhere@eff.org.xpi
   cd ~/build
   #
   cd meek/firefox
