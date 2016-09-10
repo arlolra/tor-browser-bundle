@@ -1,10 +1,10 @@
-Tor Browser 6.0.4 -- August 16
+Tor Browser 6.0.4 -- August 16 2016
  * All Platforms
    * Update Tor to 0.2.8.6
    * Update NoScript to 2.9.0.14
    * Bug 19890: Disable installation of system addons
 
-Tor Browser 6.5a2-hardened -- August 3
+Tor Browser 6.5a2-hardened -- August 3 2016
  * All Platforms
    * Update Firefox to 45.3.0esr
    * Update Tor to tor-0.2.8.5-rc
@@ -37,7 +37,7 @@ Tor Browser 6.5a2-hardened -- August 3
    * All Platforms
      * Bug 19703: Upgrade Go to 1.6.3
 
-Tor Browser 6.5a2 -- August 3
+Tor Browser 6.5a2 -- August 3 2016
  * All Platforms
    * Update Firefox to 45.3.0esr
    * Update Tor to tor-0.2.8.5-rc
@@ -77,7 +77,7 @@ Tor Browser 6.5a2 -- August 3
    * All Platforms
      * Bug 19703: Upgrade Go to 1.6.3
 
-Tor Browser 6.0.3 -- August 2
+Tor Browser 6.0.3 -- August 2 2016
  * All Platforms
    * Update Firefox to 45.3.0esr
    * Update Torbutton to 1.9.5.6
@@ -96,7 +96,7 @@ Tor Browser 6.0.3 -- August 2
  * Android
    * Bug 19484: Avoid compilation error when MOZ_UPDATER is not defined
 
-Tor Browser 6.0.2 -- June 21
+Tor Browser 6.0.2 -- June 21 2016
  * All Platforms
    * Update Torbutton to 1.9.5.5
      * Bug 19417: Clear asmjscache
@@ -108,7 +108,7 @@ Tor Browser 6.0.2 -- June 21
  * Linux
    * Bug 19276: Disable Xrender due to possible performance regressions
 
-Tor Browser 6.5a1-hardened -- June 8
+Tor Browser 6.5a1-hardened -- June 8 2016
  * All Platforms
    * Update Firefox to 45.2.0esr
    * Update Tor to 0.2.8.3-alpha
@@ -162,7 +162,7 @@ Tor Browser 6.5a1-hardened -- June 8
      * Bug 18291: Remove some uses of libfaketime
      * Bug 18845: Make zip and tar helpers generate reproducible archives
 
-Tor Browser 6.5a1 -- June 8
+Tor Browser 6.5a1 -- June 8 2016
  * All Platforms
    * Update Firefox to 45.2.0esr
    * Update Tor to 0.2.8.3-alpha
@@ -221,7 +221,7 @@ Tor Browser 6.5a1 -- June 8
      * Bug 18291: Remove some uses of libfaketime
      * Bug 18845: Make zip and tar helpers generate reproducible archives
 
-Tor Browser 6.0.1 -- June 7
+Tor Browser 6.0.1 -- June 7 2016
  * All Platforms
    * Update Firefox to 45.2.0esr
    * Bug 18884: Don't build the loop extension
@@ -230,7 +230,7 @@ Tor Browser 6.0.1 -- June 7
  * Linux
    * Bug 19189: Backport for working around a linker (gold) bug
 
-Tor Browser 6.0 -- May 30
+Tor Browser 6.0 -- May 30 2016
  * All Platforms
    * Update Firefox to 45.1.1esr
    * Update OpenSSL to 1.0.1t
