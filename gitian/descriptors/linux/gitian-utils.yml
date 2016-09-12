@@ -32,7 +32,6 @@ files:
 - "binutils.tar.bz2"
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
-- "openssl-Make-build-reproducible.patch"
 - "gmp.tar.bz2"
 - "versions"
 - "dzip.sh"
@@ -97,7 +96,6 @@ script: |
   # Building OpenSSL
   tar xzf openssl.tar.gz
   cd openssl-*
-  patch -p1 < ../openssl-Make-build-reproducible.patch
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   if [ $GBUILD_BITS == "64" ];
   then

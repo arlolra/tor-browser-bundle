@@ -27,7 +27,6 @@ files:
 - "binutils.tar.bz2"
 - "gcc.tar.bz2"
 - "openssl.tar.gz"
-- "openssl-Make-build-reproducible.patch"
 - "gmp.tar.bz2"
 - "enable-reloc-section-ld.patch"
 - "peXXigen.patch"
@@ -137,7 +136,6 @@ script: |
   # Building OpenSSL
   tar xzf openssl.tar.gz
   cd openssl-*
-  patch -p1 < ../openssl-Make-build-reproducible.patch
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   # TODO: Add enable-ec_nistp_64_gcc_128 for 64bit Windows.
   ./Configure -shared --cross-compile-prefix=i686-w64-mingw32- mingw "-fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -fno-strict-overflow -Wno-missing-field-initializers -Wformat -Wformat-security -Wl,--dynamicbase -Wl,--nxcompat -Wl,--enable-reloc-section -lssp -L$INSTDIR/gcclibs/" --prefix=$INSTDIR/openssl
