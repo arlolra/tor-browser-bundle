@@ -68,13 +68,14 @@ script: |
   # Our flags don't get passed to NSS. We need to do that manually using an
   # obscure one.
   export DLLFLAGS="-specs=/home/ubuntu/build/msvcr100.spec"
+  # run get-moz-build-date before removing .git, which is used to get the year
+  eval $(~/build/get-moz-build-date $(cat browser/config/version.txt))
   # .git and the src takes up a lot of useless space, and we need the space to build
   #git archive HEAD | tar -x -C $OUTDIR/src
   rm -rf .git
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   rm -f configure
   rm -f js/src/configure
-  eval $(~/build/get-moz-build-date $(cat browser/config/version.txt))
   make -f client.mk configure CONFIGURE_ARGS="--with-tor-browser-version=${TORBROWSER_VERSION} --enable-update-channel=${TORBROWSER_UPDATE_CHANNEL} --enable-bundled-fonts"
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   #
