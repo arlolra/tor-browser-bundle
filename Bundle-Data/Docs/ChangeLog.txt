@@ -1,3 +1,41 @@
+Tor Browser 6.5a3 -- September 20 2016
+ * All Platforms
+   * Update Firefox to 45.4.0esr
+   * Update Tor to 0.2.9.2-alpha
+   * Update OpenSSL to 1.0.2h (bug 20095)
+   * Update Torbutton to 1.9.6.3
+     * Bug 17334: Move referrer spoofing for .onion domains into tor-browser.git
+     * Bug 17767: Make "JavaScript disabled" more visible in Security Slider
+     * Bug 18589: Clear site security settings during New Identity
+     * Bug 19906: "Maximizing Tor Browser" Notification can exist multiple times
+     * Bug 19837: Whitelist internal URLs that Firefox requires for media
+     * Bug 15852: Remove/synchronize Torbutton SOCKS pref logic
+     * Bug 19733: GETINFO response parser doesn't handle AF_UNIX entries + IPv6
+     * Bug 14271: Make Torbutton work with Unix Domain Socket option
+     * Translation updates
+   * Update Tor Launcher to 0.2.10
+     * Bug 14272: Make Tor Launcher work with Unix Domain Socket option
+     * Bug 19568: Set CurProcD for Thunderbird/Instantbird
+     * Bug 19432: Remove special handling for Instantbird/Thunderbird
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.2.4
+   * Update NoScript to 2.9.0.14
+   * Bug 14273: Backport patches for Unix Domain Socket support
+   * Bug 19890: Disable installation of system addons
+   * Bug 17334: Spoof referrer when leaving a .onion domain
+   * Bug 20092: Rotate ports for default obfs4 bridges
+   * Bug 20040: Add update support for unpacked HTTPS Everywhere
+   * Bug 20118: Don't unpack HTTPS Everywhere anymore
+   * Bug 19336+19835: Enhance about:tbupdate page
+ * Android
+   * Bug 19706: Store browser data in the app home directory
+ * Build system
+   * All platforms
+     * Bug 20133: Don't apply OpenSSL patch anymore
+     * Bug 19528: Set MOZ_BUILD_DATE based on Firefox version
+   * OS X
+     * Bug 19856: Make OS X builds reproducible again
+
 Tor Browser 6.0.4 -- August 16 2016
  * All Platforms
    * Update Tor to 0.2.8.6
