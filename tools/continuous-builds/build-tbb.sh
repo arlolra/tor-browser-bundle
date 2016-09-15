@@ -74,6 +74,6 @@ else
       [ -r ../../gitian-builder/var/build.log ] && FILES="$FILES ../../gitian-builder/var/build.log"
       [ -r ../../gitian-builder/var/target.log ] && FILES="$FILES ../../gitian-builder/var/target.log"
       tail -n 50 $FILES | $MAILX -E -s "Nightly build failure -- $(date -u +%F)" \
-                                 $LOGSENDER -- $LOGRECIPIENTS
+                                 $LOGSENDER $LOGRECIPIENTS
   fi
 fi
