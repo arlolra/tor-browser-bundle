@@ -89,6 +89,7 @@ script: |
 
   cd tor-browser
   # run get-moz-build-date before removing .git, which is used to get the year
+  chmod +x ~/build/get-moz-build-date
   eval $(~/build/get-moz-build-date $(cat browser/config/version.txt))
   # .git and the src takes up a lot of useless space, and we need the space to build
   rm -rf .git

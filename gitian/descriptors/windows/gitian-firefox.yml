@@ -69,6 +69,7 @@ script: |
   # obscure one.
   export DLLFLAGS="-specs=/home/ubuntu/build/msvcr100.spec"
   # run get-moz-build-date before removing .git, which is used to get the year
+  chmod +x ~/build/get-moz-build-date
   eval $(~/build/get-moz-build-date $(cat browser/config/version.txt))
   # .git and the src takes up a lot of useless space, and we need the space to build
   #git archive HEAD | tar -x -C $OUTDIR/src
