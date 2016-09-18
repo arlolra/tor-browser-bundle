@@ -36,6 +36,26 @@ Tor Browser 6.5a3 -- September 20 2016
    * OS X
      * Bug 19856: Make OS X builds reproducible again
 
+Tor Browser 6.0.5 -- September 16
+ * All Platforms
+   * Update Firefox to 45.4.0esr
+   * Update Tor to 0.2.8.7
+   * Update Torbutton to 1.9.5.7
+     * Bug 18589: Clear site security settings during New Identity
+     * Bug 19906: "Maximizing Tor Browser" Notification can exist multiple times
+   * Update HTTPS-Everywhere to 5.2.4
+   * Bug 20092: Rotate ports for default obfs4 bridges
+   * Bug 20040: Add update support for unpacked HTTPS Everywhere
+ * Windows
+   * Bug 19725: Remove old updater files left on disk after upgrade to 6.x
+ * Linux
+   * Bug 19725: Remove old updater files left on disk after upgrade to 6.x
+ * Android
+   * Bug 19706: Store browser data in the app home directory
+ * Build system
+   * All platforms
+     * Upgrade Go to 1.4.3
+
 Tor Browser 6.0.4 -- August 16 2016
  * All Platforms
    * Update Tor to 0.2.8.6
