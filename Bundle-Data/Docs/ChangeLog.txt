@@ -35,6 +35,7 @@ Tor Browser 6.5a3 -- September 20 2016
      * Bug 19528: Set MOZ_BUILD_DATE based on Firefox version
    * OS X
      * Bug 19856: Make OS X builds reproducible again
+     * Bug 19410: Fix incremental updates by taking signatures into account
 
 Tor Browser 6.0.5 -- September 16
  * All Platforms
