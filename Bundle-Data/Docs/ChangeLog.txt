@@ -6,7 +6,7 @@ Tor Browser 6.5a3 -- September 20 2016
    * Update Torbutton to 1.9.6.4
      * Bug 17334: Move referrer spoofing for .onion domains into tor-browser.git
      * Bug 17767: Make "JavaScript disabled" more visible in Security Slider
-     * Bug 18589: Clear site security settings during New Identity
+     * Bug 19995: Clear site security settings during New Identity
      * Bug 19906: "Maximizing Tor Browser" Notification can exist multiple times
      * Bug 19837: Whitelist internal URLs that Firefox requires for media
      * Bug 15852: Remove/synchronize Torbutton SOCKS pref logic
@@ -42,7 +42,7 @@ Tor Browser 6.0.5 -- September 16
    * Update Firefox to 45.4.0esr
    * Update Tor to 0.2.8.7
    * Update Torbutton to 1.9.5.7
-     * Bug 18589: Clear site security settings during New Identity
+     * Bug 19995: Clear site security settings during New Identity
      * Bug 19906: "Maximizing Tor Browser" Notification can exist multiple times
    * Update HTTPS-Everywhere to 5.2.4
    * Bug 20092: Rotate ports for default obfs4 bridges
