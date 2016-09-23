@@ -66,6 +66,8 @@ script: |
   ln -sf hardened-cc c++
   cd ~/build
   export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  # GN needs libatomic.so.1 here.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib
   ARCH=""
   if [ $GBUILD_BITS == "64" ];
   then
@@ -83,6 +85,15 @@ script: |
   # Building webrtc
   tar xaf webrtc.tar.gz
   cd webrtc/src
+
+  # First, build a copy of GN, rather than use the prebuilt copy in buildtools/linux64.
+  cd tools/gn
+  # __STDC_FORMAT_MACROS is needed for a definition of PRIxPTR from inttypes.h.
+  CXXFLAGS=-D__STDC_FORMAT_MACROS=1 LDFLAGS=-latomic ./bootstrap/bootstrap.py --no-rebuild --no-clean
+  cd ../..
+  # This is where bootstrap.py stashes the built gn.
+  GN="$PWD/out_bootstrap/gn"
+
   export GYP_CROSSCOMPILE=1
   export GYP_DEFINES="OS=linux target_arch=$(if [ $GBUILD_BITS = 32 ]; then echo ia32; else echo x64; fi)"
   # Do not use bundled utilities.
