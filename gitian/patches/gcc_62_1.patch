@@ -1,0 +1,23 @@
+From 1ec6206ea80ceb5df843ea0bc4ef04d9ab17257e Mon Sep 17 00:00:00 2001
+From: Georg Koppen <gk@torproject.org>
+Date: Wed, 14 Sep 2016 12:53:19 +0000
+Subject: [PATCH 1/2] Revert "2015-09-17  Catherine Moore 
+ <clm@codesourcery.com>"
+
+This reverts commit a63a17505346bb3a91ce3de6fe238264c4d849ac.
+
+diff --git a/libstdc++-v3/src/c++11/debug.cc b/libstdc++-v3/src/c++11/debug.cc
+index f25304c..308802e 100644
+--- a/libstdc++-v3/src/c++11/debug.cc
++++ b/libstdc++-v3/src/c++11/debug.cc
+@@ -32,7 +32,6 @@
+ #include <debug/safe_local_iterator.h>
+ 
+ #include <cassert>
+-#include <cstdio>
+ 
+ #include <algorithm> // for std::min
+ #include <functional> // for _Hash_impl
+-- 
+2.9.3
+
