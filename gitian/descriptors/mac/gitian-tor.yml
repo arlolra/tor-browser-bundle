@@ -33,6 +33,7 @@ script: |
   fi
   export TZ=UTC
   export LC_ALL=C
+  export REFERENCE_DATETIME
   umask 0022
   #
   mkdir -p $INSTDIR/bin/
