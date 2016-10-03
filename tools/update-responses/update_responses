@@ -175,8 +175,12 @@ sub mar_filename {
 sub create_incremental_mar {
     my ($config, $pm, $from_version, $new_version, $os, $lang) = @_;
     my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.incremental.mar";
-    print "Starting $mar_file\n";
     my $mar_file_path = "$releases_dir/$new_version/$mar_file";
+    if ($ENV{MAR_SKIP_EXISTING} && -f $mar_file_path) {
+        print "Skipping $mar_file\n";
+        return;
+    }
+    print "Starting $mar_file\n";
     my $download_url = "$config->{download}{mars_url}/$new_version";
     my $finished_file = sub {
         exit_error "Error creating $mar_file" unless $_[1] == 0;
