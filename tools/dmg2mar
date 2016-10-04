@@ -98,7 +98,11 @@ sub convert_files {
     my $pm = Parallel::ForkManager->new(get_nbprocs);
     $pm->run_on_finish(sub { print "Finished $_[2]\n" });
     foreach my $file (get_dmg_files_from_sha256sums) {
-        my $output = "tor-browser-osx64-$file->{version}_$file->{lang}.mar";
+        # The 'ja' locale is a special case: it is called 'ja-JP-mac'
+        # internally on OSX, but the dmg file still uses 'ja' to avoid
+        # confusing users.
+        my $mar_lang = $file->{lang} eq 'ja' ? 'ja-JP-mac' : $file->{lang};
+        my $output = "tor-browser-osx64-$file->{version}_$mar_lang.mar";
         my $step_name = "$file->{filename} -> $output";
         print "Starting $step_name\n";
         $pm->start($step_name) and next;
