@@ -4,19 +4,21 @@ distro: "debian"
 suites:
 - "wheezy"
 architectures:
-- "i386"
+- "amd64"
 packages:
 - "unzip"
 - "automake"
+- "faketime"
 - "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/tor.git"
   "dir": "tor"
 files:
-- "versions"
+- "clang-linux64-wheezy-utils.zip"
+- "cctools.tar.gz"
 - "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
-- "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
+- "versions"
 - "dzip.sh"
 - "openssl-mac64-utils.zip"
 - "libevent-mac64-utils.zip"
@@ -33,35 +35,47 @@ script: |
   fi
   export TZ=UTC
   export LC_ALL=C
-  export REFERENCE_DATETIME
+  export FAKETIME=$REFERENCE_DATETIME
   umask 0022
   #
   mkdir -p $INSTDIR/bin/
   mkdir -p $TORBINDIR/
   mkdir -p $TORCONFIGDIR/
   mkdir -p $OUTDIR/
-  #
-  # dpkg requires sbin directories in the PATH
-  export PATH="/usr/sbin:/sbin:$PATH"
-  sudo dpkg -i *.deb
-  tar xaf multiarch-darwin*tar.xz
-  export PATH="$PATH:$HOME/build/apple-osx/bin/"
+
+  # Extracting and copying all the necessary utilities and libraries. We still
+  # need the 10.6 SDK if we want to support OSX 10.6.
+  ar x apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb
+  tar xaf data.tar.gz
+  tar xaf cctools.tar.gz
+  unzip clang-linux64-wheezy-utils.zip
   unzip -d $INSTDIR openssl-mac64-utils.zip
   unzip -d $INSTDIR libevent-mac64-utils.zip
   cp $INSTDIR/libevent/lib/libevent-*.dylib $TORBINDIR/
   LIBEVENT_FILE=`basename $INSTDIR/libevent/lib/libevent-*.dylib`
 
+  # Setting the proper flags and variables
+  # ld needs libLTO.so from llvm
+  export LD_LIBRARY_PATH="/home/debian/build/clang/lib"
+  export PATH="/home/debian/build/cctools/bin:$PATH"
+  CROSS_CCTOOLS_PATH="/home/debian/build/cctools"
+  CROSS_SYSROOT="/home/debian/build/usr/lib/apple/SDKs/MacOSX10.6.sdk"
+  FLAGS="-target x86_64-apple-darwin10 -mlinker-version=136 -B $CROSS_CCTOOLS_PATH/bin -isysroot $CROSS_SYSROOT"
+  export CC="/home/debian/build/clang/bin/clang $FLAGS"
+  export CXX="/home/debian/build/clang/bin/clang++ $FLAGS"
+  export CPP="/home/debian/build/clang/bin/clang $FLAGS -E"
+  export LLVMCONFIG="/home/debian/build/clang/bin/llvm-config"
+  export LDFLAGS="-Wl,-syslibroot,$CROSS_SYSROOT -Wl,-dead_strip"
+
   # Building tor
-  # XXX Clean up these flags?
-  export CFLAGS="-m64 -I${INSTDIR}/openssl/include -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/include/ -I/usr/lib/gcc/i686-apple-darwin10/4.2.1/include/ -I.  -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
-  export LDFLAGS="-m64 -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/ -L/usr/lib/apple/SDKs/MacOSX10.6.sdk/usr/lib/system/ -mmacosx-version-min=10.5"
   cd tor
   git update-index --refresh -q
   mkdir -p $OUTDIR/src
   #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  ./configure --enable-static-openssl --disable-asciidoc --host=i686-apple-darwin11 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR
+  ./configure --enable-static-openssl --disable-asciidoc --host=x86_64-apple-darwin10 --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR
+  export LD_PRELOAD=/usr/lib/faketime/libfaketime.so.1
   make $MAKEOPTS
   make install
   cd $INSTDIR
@@ -69,7 +83,7 @@ script: |
   cp share/tor/geoip $TORCONFIGDIR/
   cp share/tor/geoip6 $TORCONFIGDIR/
   cd $TORBINDIR/
-  i686-apple-darwin11-install_name_tool -change $INSTDIR/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
+  x86_64-apple-darwin10-install_name_tool -change $INSTDIR/libevent/lib/$LIBEVENT_FILE @executable_path/$LIBEVENT_FILE tor
 
   # Grabbing the result
   cd $INSTDIR
