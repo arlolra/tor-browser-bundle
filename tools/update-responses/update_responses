@@ -197,6 +197,12 @@ sub create_incremental_mar {
     my $tmpdir = File::Temp->newdir();
     extract_mar(mar_filename($from_version, $os, $lang), "$tmpdir/A");
     extract_mar(mar_filename($new_version, $os, $lang), "$tmpdir/B");
+    if ($ENV{CHECK_CODESIGNATURE_EXISTS}) {
+        unless (-f "$tmpdir/A/TorBrowser.app/Contents/_CodeSignature/CodeResources"
+            && -f "$tmpdir/B/TorBrowser.app/Contents/_CodeSignature/CodeResources") {
+            exit_error "Missing code signature while creating $mar_file";
+        }
+    }
     my ($out, $err, $success) = capture_exec('make_incremental_update.sh',
                                    $mar_file_path, "$tmpdir/A", "$tmpdir/B");
     if (!$success) {
