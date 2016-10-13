@@ -75,6 +75,10 @@ script: |
     make install
     cd ../..
     install -s $INSTDIR/bin/tor.exe $INSTDIR/Tor/
+    if [ "$BUILD" == "expert" ]
+    then
+      install -s $INSTDIR/bin/tor-gencert.exe $INSTDIR/Tor/
+    fi
     cp $INSTDIR/share/tor/geoip $INSTDIR/Data/Tor/
     cp $INSTDIR/share/tor/geoip6 $INSTDIR/Data/Tor/
 
