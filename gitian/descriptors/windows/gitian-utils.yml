@@ -35,8 +35,6 @@ files:
 - "nsis.tar.bz2"
 - "nsis-debian.tar.xz"
 - "nsis-missing-unistd-include.patch"
-- "gcc_62_1.patch"
-- "gcc_62_2.patch"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -81,11 +79,6 @@ script: |
   mkdir gcc
   cd gcc
   tar -xjvf ../gcc.tar.bz2
-  cd gcc-*
-  # Workaround for https://gcc.gnu.org/bugzilla/show_bug.cgi?id=77459.
-  patch -p1 < ~/build/gcc_62_1.patch
-  patch -p1 < ~/build/gcc_62_2.patch
-  cd ..
   # We don't want to link against msvcrt.dll due to bug 9084.
   i686-w64-mingw32-g++ -dumpspecs > ~/build/msvcr100.spec
   sed 's/msvcrt/msvcr100/' -i ~/build/msvcr100.spec
