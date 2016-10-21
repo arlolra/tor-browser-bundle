@@ -113,11 +113,11 @@ update_git() {
 
 ##############################################################################
 # Get+verify sigs that exist
-for i in OPENSSL BINUTILS GCC PYCRYPTO PYTHON_MSI GMP
+for i in OPENSSL BINUTILS GCC PYTHON_MSI GMP
 do
   PACKAGE="${i}_PACKAGE"
   URL="${i}_URL"
-  if [ "${i}" == "PYCRYPTO" -o "${i}" == "PYTHON_MSI" -o "${i}" == "OPENSSL" ]; then
+  if [ "${i}" == "PYTHON_MSI" -o "${i}" == "OPENSSL" ]; then
     SUFFIX="asc"
   else
     SUFFIX="sig"
@@ -162,7 +162,7 @@ do
   get "${!PACKAGE}" "${MIRROR_URL_ASN}${!PACKAGE}"
 done
 
-for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY GO14 GO STIXMATHFONT NOTOEMOJIFONT NOTOJPFONT NOTOKRFONT NOTOSCFONT NOTOTCFONT NSIS NSIS_DEBIAN
+for i in ZOPEINTERFACE TWISTED PY2EXE SETUPTOOLS PARSLEY GO14 GO STIXMATHFONT NOTOEMOJIFONT NOTOJPFONT NOTOKRFONT NOTOSCFONT NOTOTCFONT NSIS NSIS_DEBIAN PYCRYPTO
 do
   URL="${i}_URL"
   PACKAGE="${i}_PACKAGE"
