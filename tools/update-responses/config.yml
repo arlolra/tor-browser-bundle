@@ -1,4 +1,9 @@
 ---
+appname_marfile: tor-browser
+appname_bundle_osx: TorBrowser
+appname_bundle_linux: tor-browser
+appname_bundle_win: torbrowser-install
+appdir_osx: TorBrowser.app
 releases_dir: ../../gitian
 download:
     archive_url: https://archive.torproject.org/tor-package-archive/torbrowser

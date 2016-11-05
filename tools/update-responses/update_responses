@@ -82,13 +82,14 @@ sub get_sha512_hex_of_file {
 sub get_version_files {
     my ($config, $version) = @_;
     return if $config->{versions}{$version}{files};
+    my $appname = $config->{appname_marfile};
     my $files = {};
     my $vdir = "$releases_dir/$version";
     my $download_url = "$config->{download}{mars_url}/$version";
     opendir(my $d, $vdir) or exit_error "Error opening directory $vdir";
     foreach my $file (readdir $d) {
         next unless -f "$vdir/$file";
-        if ($file =~ m/^tor-browser-([^-]+)-${version}_(.+)\.mar$/) {
+        if ($file =~ m/^$appname-([^-]+)-${version}_(.+)\.mar$/) {
             my ($os, $lang) = ($1, $2);
             $files->{$os}{$lang}{complete} = {
                 type => 'complete',
@@ -99,7 +100,7 @@ sub get_version_files {
             };
             next;
         }
-        if ($file =~ m/^tor-browser-([^-]+)-(.+)-${version}_(.+)\.incremental\.mar$/) {
+        if ($file =~ m/^$appname-([^-]+)-(.+)-${version}_(.+)\.incremental\.mar$/) {
             my ($os, $from_version, $lang) = ($1, $2, $3);
             $files->{$os}{$lang}{partial}{$from_version} = {
                 type => 'partial',
@@ -123,11 +124,11 @@ sub get_version_downloads {
     foreach my $file (readdir $d) {
         next unless -f "$vdir/$file";
         my ($os, $lang);
-        if ($file =~ m/^TorBrowser-$version-osx64_(.+).dmg$/) {
+        if ($file =~ m/^$config->{appname_bundle_osx}-$version-osx64_(.+).dmg$/) {
             ($os, $lang) = ('osx64', $1);
-        } elsif ($file =~ m/^tor-browser-(linux32|linux64)-${version}_(.+).tar.xz$/) {
+        } elsif ($file =~ m/^$config->{appname_bundle_linux}-(linux32|linux64)-${version}_(.+).tar.xz$/) {
             ($os, $lang) = ($1, $2);
-        } elsif ($file =~ m/^torbrowser-install-${version}_(.+).exe$/) {
+        } elsif ($file =~ m/^$config->{appname_bundle_win}-${version}_(.+).exe$/) {
             ($os, $lang) = ('win32', $1);
         } else {
             next;
@@ -168,13 +169,14 @@ sub extract_mar {
 }
 
 sub mar_filename {
-    my ($version, $os, $lang) = @_;
-    "$releases_dir/$version/tor-browser-$os-${version}_$lang.mar";
+    my ($appname, $version, $os, $lang) = @_;
+    "$releases_dir/$version/$appname-$os-${version}_$lang.mar";
 }
 
 sub create_incremental_mar {
     my ($config, $pm, $from_version, $new_version, $os, $lang) = @_;
-    my $mar_file = "tor-browser-$os-${from_version}-${new_version}_$lang.incremental.mar";
+    my $appname = $config->{appname_marfile};
+    my $mar_file = "$appname-$os-${from_version}-${new_version}_$lang.incremental.mar";
     my $mar_file_path = "$releases_dir/$new_version/$mar_file";
     if ($ENV{MAR_SKIP_EXISTING} && -f $mar_file_path) {
         print "Skipping $mar_file\n";
@@ -195,11 +197,11 @@ sub create_incremental_mar {
     };
     return if $pm->start($finished_file);
     my $tmpdir = File::Temp->newdir();
-    extract_mar(mar_filename($from_version, $os, $lang), "$tmpdir/A");
-    extract_mar(mar_filename($new_version, $os, $lang), "$tmpdir/B");
+    extract_mar(mar_filename($appname, $from_version, $os, $lang), "$tmpdir/A");
+    extract_mar(mar_filename($appname, $new_version, $os, $lang), "$tmpdir/B");
     if ($ENV{CHECK_CODESIGNATURE_EXISTS}) {
-        unless (-f "$tmpdir/A/TorBrowser.app/Contents/_CodeSignature/CodeResources"
-            && -f "$tmpdir/B/TorBrowser.app/Contents/_CodeSignature/CodeResources") {
+        unless (-f "$tmpdir/A/$config->{appdir_osx}/Contents/_CodeSignature/CodeResources"
+            && -f "$tmpdir/B/$config->{appdir_osx}/Contents/_CodeSignature/CodeResources") {
             exit_error "Missing code signature while creating $mar_file";
         }
     }
@@ -256,7 +258,9 @@ sub get_buildinfos {
         foreach my $lang (keys %{$files->{$os}}) {
             next unless $files->{$os}{$lang}{complete};
             my $tmpdir = File::Temp->newdir();
-            extract_mar(mar_filename($version, $os, $lang), "$tmpdir");
+            extract_mar(
+                mar_filename($config->{appname_marfile}, $version, $os, $lang),
+                "$tmpdir");
             my $appfile = "$tmpdir/application.ini" if -f "$tmpdir/application.ini";
             $appfile = "$tmpdir/Contents/Resources/application.ini"
                                 if -f "$tmpdir/Contents/Resources/application.ini";
