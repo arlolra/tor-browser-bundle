@@ -379,7 +379,8 @@ sub write_downloads_json {
             version => $version,
             downloads => get_version_downloads($config, $version),
         };
-        write_htdocs($channel, 'downloads.json', encode_json($data));
+        write_htdocs($channel, 'downloads.json',
+            JSON->new->utf8->canonical->encode($data));
     }
 }
 
