@@ -590,6 +590,7 @@ my %actions = (
                 unless $config->{channels}{$channel};
             $htdocsfiles{$channel} = { '.' => 1, '..' => 1 };
         }
+        extract_martools;
         write_responses($config, @channels);
         write_htaccess($config, @channels);
         write_downloads_json($config, @channels);
