@@ -40,6 +40,23 @@ script: |
   tar xaf ../MacOSX10.7.sdk.tar.gz
   tar xaf ../cctools.tar.gz
   unzip ../clang-linux64-wheezy-utils.zip
+  # Bug 20439: build with PIE
+  # If we add -fPIE to the FLAGS, the build fails in js/src/ctypes/libffi
+  # with libtool giving an error:
+  #   libtool: compile: unable to infer tagged configuration
+  # To avoid this error, we add -fPIE using wrappers on clang and clang++
+  mv clang/bin/clang clang/bin/clang.real
+  mv clang/bin/clang++ clang/bin/clang++.real
+  cat > clang/bin/clang << EOF
+  #!/bin/sh
+  exec $(pwd)/clang/bin/clang.real -fPIE "\$@"
+  EOF
+  cat > clang/bin/clang++ << EOF
+  #!/bin/sh
+  exec $(pwd)/clang/bin/clang++.real -fPIE "\$@"
+  EOF
+  chmod +x clang/bin/clang clang/bin/clang++
+  #
   TB_COMMIT_DATE=$(git show -s --format='%ci')
   COPYRIGHT_YEAR=${TB_COMMIT_DATE%%-*}
   mv .mozconfig-mac .mozconfig
