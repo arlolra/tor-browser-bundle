@@ -1,5 +1,5 @@
 TORBROWSER_VERSION_TYPE=release
-BUNDLE_LOCALES="ar de es-ES fa fr it ko nl pl pt-PT ru tr vi zh-CN"
+BUNDLE_LOCALES="ar de es-ES fa fr it ko nl pl pt-BR ru tr vi zh-CN"
 BUNDLE_LOCALES_LINUX="ja"
 BUNDLE_LOCALES_WIN32="ja"
 BUNDLE_LOCALES_MAC="ja-JP-mac"
