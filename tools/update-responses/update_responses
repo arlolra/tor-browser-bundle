@@ -355,6 +355,7 @@ sub write_htaccess {
     foreach my $channel (@channels) {
         my $htaccess = "RewriteEngine On\n";
         my $version = $config->{channels}{$channel};
+        my $migrate_langs = $config->{versions}{$version}{migrate_langs} // {};
         my $files = $config->{versions}{$version}{files};
         $htaccess .= "RewriteRule ^[^\/]+/$version/ no-update.xml $flags\n";
         foreach my $os (sort keys %$files) {
@@ -366,6 +367,10 @@ sub write_htaccess {
                     }
                     $htaccess .= "RewriteRule ^$bt/[^\/]+/$lang "
                               .  "$version-$os-$lang.xml $flags\n";
+                }
+                foreach my $lang (sort keys %$migrate_langs) {
+                    $htaccess .= "RewriteRule ^$bt/[^\/]+/$lang "
+                              .  "$version-$os-$migrate_langs->{$lang}.xml $flags\n";
                 }
                 $htaccess .= "RewriteRule ^$bt/ $version-$os-en-US.xml $flags\n";
             }

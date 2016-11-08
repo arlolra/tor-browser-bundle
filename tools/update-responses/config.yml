@@ -40,6 +40,8 @@ versions:
           - 6.5a4
         migrate_archs:
           osx32: osx64
+        migrate_langs:
+            pt-PT: pt-BR
         osx32:
             minSupportedOSVersion: 10.8
             detailsURL: https://blog.torproject.org/blog/end-life-plan-tor-browser-32-bit-macs#updating
