@@ -265,7 +265,7 @@ sub get_buildinfos {
             $appfile = "$tmpdir/Contents/Resources/application.ini"
                                 if -f "$tmpdir/Contents/Resources/application.ini";
             exit_error "Could not find application.ini" unless $appfile;
-            foreach my $line (read_file("$tmpdir/application.ini")) {
+            foreach my $line (read_file($appfile)) {
                 if ($line =~ m/^BuildID=(.*)$/) {
                     $config->{versions}{$version}{buildID} = $1;
                     return;
