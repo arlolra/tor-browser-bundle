@@ -3,7 +3,7 @@ Tor Browser 6.5a4 -- November 16 2016
    * Update Firefox to 45.5.0esr
    * Update Tor to 0.2.9.5-alpha
    * Update OpenSSL to 1.0.2j
-   * Update Torbutton to 1.9.6.5
+   * Update Torbutton to 1.9.6.6
      * Bug 20414: Add donation banner on about:tor for 2016 campaign
      * Bug 20111: use Unix domain sockets for SOCKS port by default
      * Bug 19459: Move resizing code to tor-browser.git
