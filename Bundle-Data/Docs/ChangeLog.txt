@@ -41,10 +41,15 @@ Tor Browser 6.5a4 -- November 16 2016
    * Bug 20399+15852: Code clean-up
  * Windows
    * Bug 20342: Add tor-gencert.exe to expert bundle
+   * Bug 18175: Maximizing window and restarting leads to non-rounded window size
+   * Bug 13437: Rounded inner window accidentally grows to non-rounded size
  * OS X
    * Bug 20204: Windows don't drag on macOS Sierra anymore
    * Bug 20250: Meek fails on macOS Sierra if built with Go < 1.7
+   * Bug 20590: Badly resized window due to security slider notification bar on OS X
    * Bug 20439: Make the build PIE on OSX
+ * Linux
+   * Bug 15953: Weird resizing dance on Tor Browser startup
  * Build system
    * All platforms
      * Bug 20023: Upgrade Go to 1.7.3
