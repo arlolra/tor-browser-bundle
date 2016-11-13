@@ -3,7 +3,7 @@ Tor Browser 6.5a4 -- November 16 2016
    * Update Firefox to 45.5.0esr
    * Update Tor to 0.2.9.5-alpha
    * Update OpenSSL to 1.0.2j
-   * Update Torbutton to 1.9.6.6
+   * Update Torbutton to 1.9.6.7
      * Bug 20414: Add donation banner on about:tor for 2016 campaign
      * Bug 20111: use Unix domain sockets for SOCKS port by default
      * Bug 19459: Move resizing code to tor-browser.git
@@ -38,6 +38,7 @@ Tor Browser 6.5a4 -- November 16 2016
    * Bug 19838: Add dgoulet's bridge and add another one commented out
    * Bug 19481: Point the update URL to aus1.torproject.org
    * Bug 20296: Rotate ports again for default obfs4 bridges
+   * Bug 20651: DuckDuckGo does not work with JavaScript disabled
    * Bug 20399+15852: Code clean-up
  * Windows
    * Bug 20342: Add tor-gencert.exe to expert bundle
