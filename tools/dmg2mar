@@ -35,6 +35,12 @@ use File::Find;
 use Parallel::ForkManager;
 use Cwd;
 
+# If the application is not TorBrowser (for instance, TorMessenger)
+# set the application name in the TOR_APPNAME_BUNDLE_OSX and in
+# the TOR_APPNAME_MARFILE environment variables
+my $appname = $ENV{TOR_APPNAME_BUNDLE_OSX} // 'TorBrowser';
+my $appname_mar = $ENV{TOR_APPNAME_MARFILE} // 'tor-browser';
+
 sub exit_error {
     print STDERR "Error: ", $_[0], "\n";
     chdir '/';
@@ -89,7 +95,7 @@ sub get_dmg_files_from_sha256sums {
     foreach my $line (read_file('sha256sums-unsigned-build.txt')) {
         my (undef, $filename) = split '  ', $line;
         chomp $filename;
-        next unless $filename =~ m/^TorBrowser-(.+)-osx64_(.+)\.dmg$/;
+        next unless $filename =~ m/^$appname-(.+)-osx64_(.+)\.dmg$/;
         push @files, { filename => $filename, version => $1, lang => $2 };
     }
     return @files;
@@ -103,7 +109,7 @@ sub convert_files {
         # internally on OSX, but the dmg file still uses 'ja' to avoid
         # confusing users.
         my $mar_lang = $file->{lang} eq 'ja' ? 'ja-JP-mac' : $file->{lang};
-        my $output = "tor-browser-osx64-$file->{version}_$mar_lang.mar";
+        my $output = "$appname_mar-osx64-$file->{version}_$mar_lang.mar";
         my $step_name = "$file->{filename} -> $output";
         print "Starting $step_name\n";
         $pm->start($step_name) and next;
@@ -121,7 +127,7 @@ sub convert_files {
                 unless system('mar', '-C', $tmpdir_oldmar, '-x', $oldmar) == 0;
         my $wanted = sub {
             my $file = $File::Find::name;
-            $file =~ s{^$tmpdir/TorBrowser\.app/}{};
+            $file =~ s{^$tmpdir/$appname\.app/}{};
             if (-f "$tmpdir_oldmar/$file") {
                 my (undef, undef, $mode) = stat("$tmpdir_oldmar/$file");
                 chmod $mode, $File::Find::name;
@@ -130,11 +136,11 @@ sub convert_files {
             chmod 0644, $File::Find::name if -f $File::Find::name;
             chmod 0755, $File::Find::name if -d $File::Find::name;
         };
-        find($wanted, "$tmpdir/TorBrowser.app");
+        find($wanted, "$tmpdir/$appname.app");
 
         unlink $output;
         (undef, $err, $success) =  capture_exec('make_full_update.sh', '-q',
-                                        $output, "$tmpdir/TorBrowser.app");
+                                        $output, "$tmpdir/$appname.app");
         exit_error "Error updating $output: $err" unless $success;
         $pm->finish;
     }
@@ -147,7 +153,7 @@ sub remove_incremental_mars {
     foreach my $line (read_file('sha256sums-unsigned-build.incrementals.txt')) {
         my (undef, $filename) = split '  ', $line;
         chomp $filename;
-        next unless $filename =~ m/^tor-browser-osx64.+\.incremental\.mar$/;
+        next unless $filename =~ m/^$appname_mar-osx64.+\.incremental\.mar$/;
         next unless -f $filename;
         print "Removing $filename\n";
         unlink $filename;
