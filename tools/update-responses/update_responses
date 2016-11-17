@@ -200,8 +200,8 @@ sub create_incremental_mar {
     extract_mar(mar_filename($appname, $from_version, $os, $lang), "$tmpdir/A");
     extract_mar(mar_filename($appname, $new_version, $os, $lang), "$tmpdir/B");
     if ($ENV{CHECK_CODESIGNATURE_EXISTS}) {
-        unless (-f "$tmpdir/A/$config->{appdir_osx}/Contents/_CodeSignature/CodeResources"
-            && -f "$tmpdir/B/$config->{appdir_osx}/Contents/_CodeSignature/CodeResources") {
+        unless (-f "$tmpdir/A/Contents/_CodeSignature/CodeResources"
+            && -f "$tmpdir/B/Contents/_CodeSignature/CodeResources") {
             exit_error "Missing code signature while creating $mar_file";
         }
     }
