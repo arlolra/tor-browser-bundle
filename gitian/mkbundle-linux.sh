@@ -110,7 +110,9 @@ if [ ! -f inputs/binutils-$BINUTILS_VER-linux32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux32-utils.zip -o \
      ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-linux32-utils.zip -o \
-     ! -f inputs/gmp-$GMP_VER-linux64-utils.zip ];
+     ! -f inputs/gmp-$GMP_VER-linux64-utils.zip -o \
+     ! -f inputs/go-$GO_VER-linux32-utils.zip -o \
+     ! -f inputs/go-$GO_VER-linux64-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Linux Bundle (1/6 for Linux) ******"
@@ -135,6 +137,8 @@ then
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip libevent-linux64-utils.zip
   ln -sf gmp-$GMP_VER-linux32-utils.zip gmp-linux32-utils.zip
   ln -sf gmp-$GMP_VER-linux64-utils.zip gmp-linux64-utils.zip
+  ln -sf go-$GO_VER-linux32-utils.zip go-linux32-utils.zip
+  ln -sf go-$GO_VER-linux64-utils.zip go-linux64-utils.zip
   cd ..
   #cp -a result/utils-linux-res.yml inputs/
 else
@@ -154,6 +158,8 @@ else
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-linux64-utils.zip libevent-linux64-utils.zip
   ln -sf gmp-$GMP_VER-linux32-utils.zip gmp-linux32-utils.zip
   ln -sf gmp-$GMP_VER-linux64-utils.zip gmp-linux64-utils.zip
+  ln -sf go-$GO_VER-linux32-utils.zip go-linux32-utils.zip
+  ln -sf go-$GO_VER-linux64-utils.zip go-linux64-utils.zip
   cd ..
 fi
 
