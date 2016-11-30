@@ -1,3 +1,10 @@
+Tor Browser 6.5a5 -- December 1 2016
+ * All Platforms
+   * Update Firefox to 45.5.1esr
+   * Update NoScript to 2.9.5.2
+ * Linux
+   * Bug 20691: Updater breaks if unix domain sockets are used
+
 Tor Browser 6.5a4-hardened -- November 16 2016
  * All Platforms
    * Update Firefox to 45.5.0esr
