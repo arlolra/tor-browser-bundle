@@ -254,7 +254,13 @@ cd ..
 git remote set-url origin https://git.torproject.org/builders/gitian-builder.git
 git fetch origin
 git fetch --tags origin # XXX - why do we fetch tags specifically?
-git checkout "$GITIAN_TAG"
+# If we're not verifying tags, then the branch requires an update.
+if [ $VERIFY_TAGS -eq 0 ];
+then
+  git pull
+else
+  git checkout "$GITIAN_TAG"
+fi
 cd inputs
 
 while read dir url tag; do
