@@ -12,7 +12,6 @@ use Cwd;
 use File::Copy;
 use File::Temp;
 use File::Find;
-use File::Which;
 use POSIX qw(setlocale LC_ALL);
 use IO::CaptureOutput qw(capture_exec);
 use Parallel::ForkManager;
@@ -33,6 +32,8 @@ my %htdocsfiles;
 my $releases_dir = $config->{releases_dir};
 $releases_dir = "$FindBin::Bin/$releases_dir" unless $releases_dir =~ m/^\//;
 my @check_errors;
+my $initPATH = $ENV{PATH};
+my $initLD_LIBRARY_PATH = $ENV{LD_LIBRARY_PATH};
 
 sub exit_error {
     print STDERR "Error: ", $_[0], "\n";
@@ -253,6 +254,7 @@ sub channel_to_version {
 sub get_buildinfos {
     my ($config, $version) = @_;
     return if exists $config->{versions}{$version}{buildID};
+    extract_martools($version);
     my $files = $config->{versions}{$version}{files};
     foreach my $os (keys %$files) {
         foreach my $lang (keys %{$files->{$os}}) {
@@ -393,12 +395,6 @@ sub write_downloads_json {
     }
 }
 
-sub check_deps {
-    foreach my $bin (qw(bunzip2 mar mbsdiff make_incremental_update.sh)) {
-        exit_error "Cannot find $bin in PATH" unless which($bin);
-    }
-}
-
 sub osname {
     my ($osname) = capture_exec('uname', '-s');
     my ($arch) = capture_exec('uname', '-m');
@@ -414,17 +410,18 @@ sub osname {
 
 my $martools_tmpdir;
 sub extract_martools {
+    my ($version) = @_;
     my $osname = osname;
-    my $marzip = "$FindBin::Bin/../../../gitian-builder/inputs/mar-tools-$osname.zip";
+    my $marzip = "$releases_dir/$version/mar-tools-$osname.zip";
     $martools_tmpdir = File::Temp->newdir();
     my $old_cwd = getcwd;
     chdir $martools_tmpdir;
     my (undef, undef, $success) = capture_exec('unzip', $marzip);
     chdir $old_cwd;
     exit_error "Error extracting $marzip" unless $success;
-    $ENV{PATH} .= ":$martools_tmpdir/mar-tools";
-    if ($ENV{LD_LIBRARY_PATH}) {
-        $ENV{LD_LIBRARY_PATH} .= ":$martools_tmpdir/mar-tools";
+    $ENV{PATH} = "$martools_tmpdir/mar-tools:$initPATH";
+    if ($initLD_LIBRARY_PATH) {
+        $ENV{LD_LIBRARY_PATH} = "$initLD_LIBRARY_PATH:$martools_tmpdir/mar-tools";
     } else {
         $ENV{LD_LIBRARY_PATH} = "$martools_tmpdir/mar-tools";
     }
@@ -534,6 +531,23 @@ sub download_version {
     move "$tmpdir/sha256sums-unsigned-build.txt", "$destdir/sha256sums-unsigned-build.txt";
     my %sums = map { chomp; reverse split '  ', $_ }
                  read_file "$destdir/sha256sums-unsigned-build.txt";
+
+    my $martools = 'mar-tools-' . osname . '.zip';
+    exit_error "Error downloading $urldir/$martools\n"
+        unless getstore("$urldir/$martools", "$tmpdir/$martools") == 200;
+    exit_error "Error downloading $urldir/$martools.asc\n"
+        unless getstore("$urldir/$martools.asc", "$tmpdir/$martools.asc") == 200;
+    if (system('gpg', '--no-default-keyring', '--keyring',
+            "$FindBin::Bin/$config->{download}{gpg_keyring}", '--verify',
+            "$tmpdir/$martools.asc", "$tmpdir/$martools")) {
+        exit_error "Error checking gpg signature for $version/$martools";
+    }
+    exit_error "Wrong checksum for $version/$martools"
+        unless $sums{$martools} eq sha256_hex(read_file("$tmpdir/$martools"));
+    move "$tmpdir/$martools", "$destdir/$martools";
+    move "$tmpdir/$martools.asc", "$destdir/$martools.asc";
+    extract_martools($version);
+
     foreach my $file (sort grep { $_ =~ m/\.mar$/ } keys %sums) {
         print "Downloading $file\n";
         exit_error "Error downloading $urldir/$file\n"
@@ -595,7 +609,6 @@ my %actions = (
                 unless $config->{channels}{$channel};
             $htdocsfiles{$channel} = { '.' => 1, '..' => 1 };
         }
-        extract_martools;
         write_responses($config, @channels);
         write_htaccess($config, @channels);
         write_downloads_json($config, @channels);
@@ -603,9 +616,8 @@ my %actions = (
     },
     gen_incrementals => sub {
         my ($config) = @_;
-        extract_martools;
-        check_deps;
         foreach my $version (channel_to_version($config, @ARGV)) {
+            extract_martools($version);
             get_version_files($config, $version);
             create_incremental_mars_for_version($config, $version);
         }
@@ -613,7 +625,6 @@ my %actions = (
     download_missing_versions => sub {
         my ($config) = @_;
         my @channels = @ARGV ? @ARGV : keys %{$config->{channels}};
-        extract_martools;
         download_missing_versions($config, @channels);
     },
     check_update_responses_deployement => \&check_update_responses,
