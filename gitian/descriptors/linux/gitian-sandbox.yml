@@ -1,0 +1,77 @@
+---
+name: "sandbox-linux"
+distro: "debian"
+suites:
+- "jessie"
+architectures:
+- "i386"
+- "amd64"
+packages:
+- "unzip"
+- "zip"
+- "hardening-wrapper"
+# Needed for the sandboxing code
+- "libx11-dev"
+- "pkg-config"
+- "libgtk-3-dev"
+backports_packages:
+- "libseccomp-dev"
+- "libseccomp2"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://github.com/pkg/error"
+  "dir": "errors"
+- "url": "https://github.com/constabulary/gb"
+  "dir": "gb"
+- "url": "https://git.schwanenlied.me/yawning/sandboxed-tor-browser"
+  "dir": "sandbox"
+files:
+- "go-linux32-utils.zip"
+- "go-linux64-utils.zip"
+- "dzip.sh"
+script: |
+  INSTDIR="$HOME/install"
+  mkdir $INSTDIR/sandbox
+  export REFERENCE_DATETIME
+  export TZ=UTC
+  export LC_ALL=C
+  umask 0022
+
+  # Config options for hardening-wrapper for the stub
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
+
+  unzip -d $INSTDIR go-linux$GBUILD_BITS-utils.zip
+  export GOROOT="$INSTDIR/go"
+  export GOPATH="$HOME/go"
+  export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
+
+  # Building errors
+  cd errors
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/github.com/pkg/"
+  ln -sf "$PWD" "$GOPATH/src/github.com/pkg/errors"
+  go install github.com/pkg/errors
+  cd ..
+
+  # Building gb
+  cd gb
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/github.com/constabulary/"
+  ln -sf "$PWD" "$GOPATH/src/github.com/constabulary/gb"
+  go install github.com/constabulary/gb/cmd/gb
+  cd ..
+
+  # XXX: Use own C compiler
+  # Building the sandbox
+  cd sandbox
+  make
+  cp bin/sandboxed-tor-browser $INSTDIR/sandbox
+  cd ..
+
+  cd $INSTDIR
+  ~/build/dzip.sh sandbox-linux$GBUILD_BITS.zip sandbox/
+  cp sandbox-linux$GBUILD_BITS.zip $OUTDIR/

@@ -78,6 +78,7 @@ die_msg() {
 # the utils both if we verify tags and if we don't.
 
 LIBEVENT_TAG_ORIG=$LIBEVENT_TAG
+SANDBOX_ORIG_TAG=$SANDBOX_TAG
 
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
@@ -112,7 +113,7 @@ if [ ! -f inputs/binutils-$BINUTILS_VER-linux32-utils.zip -o \
      ! -f inputs/gmp-$GMP_VER-linux64-utils.zip ];
 then
   echo
-  echo "****** Starting Utilities Component of Linux Bundle (1/5 for Linux) ******"
+  echo "****** Starting Utilities Component of Linux Bundle (1/6 for Linux) ******"
   echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit libevent=$LIBEVENT_TAG $DESCRIPTOR_DIR/linux/gitian-utils.yml
@@ -138,7 +139,7 @@ then
   #cp -a result/utils-linux-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built Utilities Component of Linux Bundle (1/5 for Linux) ******"
+  echo "****** SKIPPING already built Utilities Component of Linux Bundle (1/6 for Linux) ******"
   echo
   # We might have built the utilities in the past but maybe the links are
   # pointing to the wrong version. Refresh them.
@@ -160,7 +161,7 @@ if [ ! -f inputs/tor-linux32-gbuilt.zip -o \
      ! -f inputs/tor-linux64-gbuilt.zip ];
 then
   echo
-  echo "****** Starting Tor Component of Linux Bundle (2/5 for Linux) ******"
+  echo "****** Starting Tor Component of Linux Bundle (2/6 for Linux) ******"
   echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor=$TOR_TAG $DESCRIPTOR_DIR/linux/gitian-tor.yml
@@ -175,7 +176,7 @@ then
   #cp -a result/tor-linux-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built Tor Component of Linux Bundle (2/5 for Linux) ******"
+  echo "****** SKIPPING already built Tor Component of Linux Bundle (2/6 for Linux) ******"
   echo
 fi
 
@@ -184,7 +185,7 @@ if [ ! -f inputs/tor-browser-linux32-gbuilt.zip -o \
      ! -f inputs/tor-browser-linux64-gbuilt.zip ];
 then
   echo
-  echo "****** Starting TorBrowser Component of Linux Bundle (3/5 for Linux) ******"
+  echo "****** Starting TorBrowser Component of Linux Bundle (3/6 for Linux) ******"
   echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit tor-browser=$TORBROWSER_TAG,faketime=$FAKETIME_TAG $DESCRIPTOR_DIR/linux/gitian-firefox.yml
@@ -200,7 +201,7 @@ then
   #cp -a result/torbrowser-linux-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built TorBrowser Component of Linux Bundle (3/5 for Linux) ******"
+  echo "****** SKIPPING already built TorBrowser Component of Linux Bundle (3/6 for Linux) ******"
   echo
 fi
 
@@ -208,7 +209,7 @@ if [ ! -f inputs/pluggable-transports-linux32-gbuilt.zip -o \
      ! -f inputs/pluggable-transports-linux64-gbuilt.zip ];
 then
   echo
-  echo "****** Starting Pluggable Transports Component of Linux Bundle (4/5 for Linux) ******"
+  echo "****** Starting Pluggable Transports Component of Linux Bundle (4/6 for Linux) ******"
   echo
 
   ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG,goptlib=$GOPTLIB_TAG,meek=$MEEK_TAG,ed25519=$GOED25519_TAG,siphash=$GOSIPHASH_TAG,goxcrypto=$GO_X_CRYPTO_TAG,goxnet=$GO_X_NET_TAG,obfs4=$OBFS4_TAG $DESCRIPTOR_DIR/linux/gitian-pluggable-transports.yml
@@ -222,14 +223,35 @@ then
   #cp -a result/pluggable-transports-linux-res.yml inputs/
 else
   echo
-  echo "****** SKIPPING already built Pluggable Transports Component of Linux Bundle (4/5 for Linux) ******"
+  echo "****** SKIPPING already built Pluggable Transports Component of Linux Bundle (4/6 for Linux) ******"
+  echo
+fi
+
+if [ ! -f inputs/sandbox-linux32.zip -o \
+     ! -f inputs/sandbox-linux64.zip ];
+then
+  echo
+  echo "****** Starting Sandbox Component of Linux Bundle (5/6 for Linux) ******"
+  echo
+
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit errors=$ERRORS_TAG,gb=$GB_TAG,sandbox=$SANDBOX_TAG $DESCRIPTOR_DIR/linux/gitian-sandbox.yml
+  if [ $? -ne 0 ];
+  then
+    exit 1
+  fi
+
+  cp -a build/out/sandbox-linux*.zip inputs/
+  #cp -a result/sandbox-linux-res.yml inputs/
+else
+  echo
+  echo "****** SKIPPING already built Sandbox Component of Linux Bundle (5/6 for Linux) ******"
   echo
 fi
 
 if [ ! -f inputs/bundle-linux.gbuilt ];
 then
   echo
-  echo "****** Starting Bundling+Localization of Linux Bundle (5/5 for Linux) ******"
+  echo "****** Starting Bundling+Localization of Linux Bundle (6/6 for Linux) ******"
   echo
 
   cd $WRAPPER_DIR && ./record-inputs.sh $VERSIONS_FILE && cd $GITIAN_DIR
@@ -246,10 +268,12 @@ then
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/mar-tools-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/*debug.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
+  cp -a inputs/sandbox-linux32.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/sandbox-linux32-${SANDBOX_ORIG_TAG}.zip || exit 1
+  cp -a inputs/sandbox-linux64.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/sandbox-linux64-${SANDBOX_ORIG_TAG}.zip || exit 1
   touch inputs/bundle-linux.gbuilt
 else
   echo
-  echo "****** SKIPPING already built Bundling+Localization of Linux Bundle (5/5 for Linux) ******"
+  echo "****** SKIPPING already built Bundling+Localization of Linux Bundle (6/6 for Linux) ******"
   echo
 fi
 

@@ -32,7 +32,7 @@ build_and_test_vm() {
     then
       export LXC_SUITE=$dist
       export LXC_ARCH=$arch
-      if [ "$dist" = "wheezy" ];
+      if [ "$dist" = "wheezy" -o "$dist" = "jessie" ];
       then
         export DISTRO=debian
         ./bin/make-base-vm --distro debian --suite $dist --lxc --arch $arch
@@ -41,7 +41,7 @@ build_and_test_vm() {
         ./bin/make-base-vm --suite $dist --lxc --arch $arch
       fi
     else
-      if [ "$dist" = "wheezy" ];
+      if [ "$dist" = "wheezy" -o "$dist" = "jessie" ];
       then
         export DISTRO=debian
         ./bin/make-base-vm --distro debian --suite $dist --arch $arch
@@ -86,6 +86,24 @@ do
   rm ./base-wheezy-amd64*
   echo
   echo "Wheezy amd64 VM build failed... Trying again"
+  echo
+done
+
+while ! build_and_test_vm jessie i386 32
+do
+  stop-target 32 jessie
+  rm ./base-jessie-amd64*
+  echo
+  echo "Jessie i386 VM build failed... Trying again"
+  echo
+done
+
+while ! build_and_test_vm jessie amd64 64
+do
+  stop-target 64 jessie
+  rm ./base-jessie-amd64*
+  echo
+  echo "Jessie amd64 VM build failed... Trying again"
   echo
 done
 

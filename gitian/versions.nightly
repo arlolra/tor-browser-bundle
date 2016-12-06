@@ -48,6 +48,9 @@ GO_X_CRYPTO_TAG=master
 GO_X_NET_TAG=master
 OBFS4_TAG=master
 NOTOFONTS_TAG=720e34851382ee3c1ef024d8dffb68ffbfb234c2
+ERRORS_TAG=master
+GB_TAG=master
+SANDBOX_TAG=master
 
 GITIAN_TAG=tor-browser-builder-4
 

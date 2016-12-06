@@ -293,6 +293,9 @@ goxcrypto             https://go.googlesource.com/crypto  $GO_X_CRYPTO_TAG
 goxnet                https://go.googlesource.com/net  $GO_X_NET_TAG
 obfs4                 https://git.torproject.org/pluggable-transports/obfs4.git $OBFS4_TAG
 noto-fonts            https://github.com/googlei18n/noto-fonts $NOTOFONTS_TAG
+errors                https://github.com/pkg/errors $ERRORS_TAG
+gb                    https://github.com/constabulary/gb $GB_TAG
+sandbox               https://git.schwanenlied.me/yawning/sandboxed-tor-browser $SANDBOX_TAG
 EOF
 
 # HTTPS-Everywhere is special, too. We need to initialize the git submodules and
