@@ -29,6 +29,7 @@ files:
 - "go-linux32-utils.zip"
 - "go-linux64-utils.zip"
 - "dzip.sh"
+- "gb-build-dir.patch"
 script: |
   INSTDIR="$HOME/install"
   mkdir $INSTDIR/sandbox
@@ -59,6 +60,7 @@ script: |
 
   # Building gb
   cd gb
+  patch -p1 < ../gb-build-dir.patch
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   mkdir -p "$GOPATH/src/github.com/constabulary/"
   ln -sf "$PWD" "$GOPATH/src/github.com/constabulary/gb"
