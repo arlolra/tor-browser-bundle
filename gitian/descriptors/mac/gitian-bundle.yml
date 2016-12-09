@@ -47,6 +47,7 @@ files:
 - "mac-skeleton.zip"
 - "dmg-applications.tar.xz"
 - "dmg-desktop.tar.xz"
+- "mac-sandbox.tar.xz"
 - "mac-langpacks.zip"
 - "noscript@noscript.net.xpi"
 - "dzip.sh"
@@ -216,7 +217,11 @@ script: |
   cd ../../dmg
   # FIXME: Desktop or Application as dest?
   tar -Jxvf ~/build/dmg-applications.tar.xz
-  cd ..
+  SANDBOX_FOLDER="Sandboxed Tor Browser"
+  mkdir "$SANDBOX_FOLDER"
+  cd "$SANDBOX_FOLDER"
+  tar -Jxvf ~/build/mac-sandbox.tar.xz
+  cd ../..
   #
   pushd $TORBROWSER_NAME.app/Contents/Resources/browser/
   # For the proper search engines in our language packs
