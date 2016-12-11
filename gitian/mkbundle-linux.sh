@@ -78,7 +78,6 @@ die_msg() {
 # the utils both if we verify tags and if we don't.
 
 LIBEVENT_TAG_ORIG=$LIBEVENT_TAG
-SANDBOX_ORIG_TAG=$SANDBOX_TAG
 
 if [ "z$VERIFY_TAGS" = "z1" ];
 then
@@ -233,8 +232,8 @@ else
   echo
 fi
 
-if [ ! -f inputs/sandbox-linux32.zip -o \
-     ! -f inputs/sandbox-linux64.zip ];
+if [ ! -f inputs/sandbox-$SANDBOX_TAG-linux32.zip -o \
+     ! -f inputs/sandbox-$SANDBOX_TAG-linux64.zip ];
 then
   echo
   echo "****** Starting Sandbox Component of Linux Bundle (5/6 for Linux) ******"
@@ -246,7 +245,7 @@ then
     exit 1
   fi
 
-  cp -a build/out/sandbox-linux*.zip inputs/
+  cp -a build/out/sandbox-$SANDBOX_TAG-linux*.zip inputs/
   #cp -a result/sandbox-linux-res.yml inputs/
 else
   echo
@@ -274,8 +273,7 @@ then
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/mar-tools-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/*debug.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
-  cp -a inputs/sandbox-linux32.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/sandbox-linux32-${SANDBOX_ORIG_TAG}.zip || exit 1
-  cp -a inputs/sandbox-linux64.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/sandbox-linux64-${SANDBOX_ORIG_TAG}.zip || exit 1
+  cp -a inputs/sandbox-$SANDBOX_TAG-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   touch inputs/bundle-linux.gbuilt
 else
   echo
