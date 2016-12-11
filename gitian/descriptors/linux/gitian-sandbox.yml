@@ -33,6 +33,7 @@ files:
 - "gb-build-dir.patch"
 script: |
   INSTDIR="$HOME/install"
+  source versions
   mkdir $INSTDIR/sandbox
   export REFERENCE_DATETIME
   export TZ=UTC
