@@ -26,6 +26,7 @@ remotes:
 - "url": "https://git.schwanenlied.me/yawning/sandboxed-tor-browser"
   "dir": "sandbox"
 files:
+- "versions"
 - "go-linux32-utils.zip"
 - "go-linux64-utils.zip"
 - "dzip.sh"
@@ -75,5 +76,11 @@ script: |
   cd ..
 
   cd $INSTDIR
-  ~/build/dzip.sh sandbox-linux$GBUILD_BITS.zip sandbox/
-  cp sandbox-linux$GBUILD_BITS.zip $OUTDIR/
+  if [ "$SANDBOX_TAG" = "master" ]
+  then
+    SB_TAG="master"
+  else
+    SB_TAG=${SANDBOX_TAG#sandboxed-tor-browser-}
+  fi
+  ~/build/dzip.sh sandbox-$SB_TAG-linux$GBUILD_BITS.zip sandbox/
+  cp sandbox-$SB_TAG-linux$GBUILD_BITS.zip $OUTDIR/
