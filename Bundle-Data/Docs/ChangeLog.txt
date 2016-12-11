@@ -1,3 +1,33 @@
+Tor Browser 6.5a6 -- December 14 2016
+ * All Platforms
+   * Update Firefox to 45.6.0esr
+   * Tor to 0.2.9.6-rc
+   * Update Torbutton to 1.9.6.8
+     * Bug 16622: Timezone spoofing moved to tor-browser.git
+     * Bug 20701: Allow the directory listing stylesheet in the content policy
+     * Bug 20556: Use pt-BR strings from now on
+     * Bug 20614: Add links to Tor Browser User Manual
+     * Bug 20414: Fix non-rendering arrow on OS X
+     * Bug 20728: Fix bad preferences.xul dimensions
+     * Bug 20318: Remove helpdesk link from about:tor
+     * Bug 20753: Remove obsolete StartPage locale strings
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.2.8
+   * Bug 16622: Spoof timezone with Firefox patch
+   * Bug 20707: Fix broken preferences tab in non-en-US alpha bundles
+   * Bug 20709: Fix wrong update URL in alpha bundles
+   * Bug 20556: Start using pt-BR instead of pt-PT for Portuguese
+   * Bug 20809: Use non-/html search engine URL for DuckDuckGo search plugins
+   * Bug 20837: Activate iat-mode for certain obfs4 bridges
+   * Bug 20838: Uncomment NX01 default obfs4 bridge
+   * Bug 20840: Rotate ports a third time for default obfs4 bridges
+ * Linux
+   * Bug 20352: Integrate sandboxed-tor-browser into our Gitian build
+   * Bug 20758: Make Linux sandbox build deterministic
+   * Bug 10281: Use jemalloc4 and abort on redzone corruption
+ * OS X
+   * Bug 20121: Create Seatbelt profile(s) for Tor Browser
+
 Tor Browser 6.5a5-hardened -- December 1 2016
  * All Platforms
    * Update Firefox to 45.5.1esr
