@@ -105,7 +105,6 @@ script: |
   # Making the .ja files deterministic and grabbing the results
   cd $INSTDIR
   ~/build/re-dzip.sh Browser/omni.ja
-  ~/build/re-dzip.sh Browser/webapprt/omni.ja
   ~/build/re-dzip.sh Browser/browser/omni.ja
   ~/build/dzip.sh tor-browser-win32-gbuilt.zip Browser
 
