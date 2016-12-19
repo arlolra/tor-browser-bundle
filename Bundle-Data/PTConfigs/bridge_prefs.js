@@ -38,3 +38,5 @@ pref("extensions.torlauncher.default_bridge.obfs4.20", "obfs4 85.17.30.79:443 FC
 
 pref("extensions.torlauncher.default_bridge.meek-amazon.1", "meek 0.0.2.0:2 B9E7141C594AF25699E0079C1F0146F409495296 url=https://d2zfqthxsdq309.cloudfront.net/ front=a0.awsstatic.com");
 pref("extensions.torlauncher.default_bridge.meek-azure.1", "meek 0.0.2.0:3 A2C13B7DFCAB1CBF3A884B6EB99A98067AB6EF44 url=https://az786092.vo.msecnd.net/ front=ajax.aspnetcdn.com");
+
+pref("extensions.torlauncher.default_bridge.snowflake.1", "snowflake 0.0.3.0:1 B05EC36590AC0374F0E4D36DDA77908FD59D97F3");

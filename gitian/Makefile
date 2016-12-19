@@ -101,7 +101,7 @@ prep-alpha:
 	./check-prerequisites.sh
 	$(TORSOCKS) ./fetch-inputs.sh ../../gitian-builder/inputs/ versions.alpha
 
-clean: clean-utils clean-tor clean-browser clean-pt clean-sandbox clean-bundle
+clean: clean-utils clean-tor clean-browser clean-webrtc clean-pt clean-sandbox clean-bundle
 	rm -f ../../gitian-builder/inputs/*.yml
 	rm -f ../../gitian-builder/inputs/bundle.inputs
 	rm -f ../../gitian-builder/inputs/versions*
@@ -119,6 +119,9 @@ clean-browser: clean-bundle
 	rm -f ../../gitian-builder/inputs/tor-browser-mac*
 	rm -f ../../gitian-builder/inputs/tor-browser-win*
 	rm -f ../../gitian-builder/inputs/mar-tools-*
+
+clean-webrtc: clean-bundle
+	rm -f ../../gitian-builder/inputs/webrtc-*-gbuilt.zip
 
 clean-pt: clean-bundle
 	rm -f ../../gitian-builder/inputs/pluggable-transports*

@@ -277,6 +277,7 @@ tor-browser           https://git.torproject.org/tor-browser.git          $TORBR
 cmake                 https://cmake.org/cmake.git                         $CMAKE_TAG
 llvm                  https://github.com/llvm-mirror/llvm                 $LLVM_TAG
 clang                 https://github.com/llvm-mirror/clang                $CLANG_TAG
+libcxx                https://github.com/llvm-mirror/libcxx               $LIBCXX_TAG
 mingw-w64-git         http://git.code.sf.net/p/mingw-w64/mingw-w64        $MINGW_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG
@@ -296,6 +297,10 @@ noto-fonts            https://github.com/googlei18n/noto-fonts $NOTOFONTS_TAG
 errors                https://github.com/pkg/errors $ERRORS_TAG
 gb                    https://github.com/constabulary/gb $GB_TAG
 sandbox               https://git.schwanenlied.me/yawning/sandboxed-tor-browser $SANDBOX_TAG
+depot_tools           https://chromium.googlesource.com/chromium/tools/depot_tools.git $DEPOT_TOOLS_TAG
+go-webrtc             https://github.com/keroserene/go-webrtc $GO_WEBRTC_TAG
+snowflake             https://git.torproject.org/pluggable-transports/snowflake.git $SNOWFLAKE_TAG
+uniuri                https://github.com/dchest/uniuri $UNIURI_TAG
 EOF
 
 # HTTPS-Everywhere is special, too. We need to initialize the git submodules and
@@ -304,6 +309,29 @@ cd https-everywhere
 git submodule init
 git submodule update
 cd ..
+
+# WebRTC is special, having its own build system that brings in lots of Chromium dependencies.
+# https://webrtc.org/native-code/development/
+# depot_tools must have been downloaded before running this code.
+dir=webrtc
+PATH="$PATH:$PWD/depot_tools"
+# GYP_CROSSCOMPILE=1 and GYP_DEFINES="use_x11=0" prevent probing for certain dependencies.
+# Use --no-history because the whole checkout with history is about 12 GB.
+export GYP_CROSSCOMPILE=1
+export GYP_DEFINES="use_x11=0"
+mkdir -p "$dir"
+cd "$dir"
+if [ ! -d "src" ];
+then
+  # "fetch" is part of depot_tools.
+  fetch --nohooks --no-history webrtc
+fi
+# "gclient" is part of depot_tools. This download takes a long time the first time.
+# JAVA_HOME is needed in a hook for libjingle. The readlink line tries to find the current JRE.
+# default-java comes from the package default-jdk-headless.
+JAVA_HOME=/usr/lib/jvm/default-java gclient sync --with_branch_heads --no-history -r $WEBRTC_TAG
+cd ..
+tar --exclude .git -czf webrtc.tar.gz webrtc
 
 exit 0
 

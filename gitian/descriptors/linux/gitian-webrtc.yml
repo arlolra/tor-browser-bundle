@@ -1,0 +1,125 @@
+---
+name: "webrtc-linux"
+distro: "debian"
+suites:
+- "wheezy"
+architectures:
+- "i386"
+- "amd64"
+packages:
+- "unzip"
+- "zip"
+- "hardening-wrapper"
+- "libasound2-dev"
+- "libexpat1-dev"
+- "libudev-dev"
+- "libx11-dev"
+- "libxext-dev"
+- "libxrandr-dev"
+- "default-jre-headless"
+- "default-jdk"
+reference_datetime: "2000-01-01 00:00:00"
+remotes:
+- "url": "https://chromium.googlesource.com/chromium/tools/depot_tools.git"
+  "dir": "depot_tools"
+files:
+- "dzip.sh"
+- "binutils-linux32-utils.zip"
+- "binutils-linux64-utils.zip"
+- "gcc-linux32-utils.zip"
+- "gcc-linux64-utils.zip"
+- "webrtc.tar.gz"
+script: |
+  INSTDIR="$HOME/install"
+  export REFERENCE_DATETIME
+  export TZ=UTC
+  export LC_ALL=C
+  umask 0022
+  #
+  mkdir -p $OUTDIR/
+
+  # Config options for hardening-wrapper
+  export DEB_BUILD_HARDENING=1
+  export DEB_BUILD_HARDENING_STACKPROTECTOR=1
+  export DEB_BUILD_HARDENING_FORTIFY=1
+  export DEB_BUILD_HARDENING_FORMAT=1
+  export DEB_BUILD_HARDENING_PIE=1
+
+  # Preparing Binutils and GCC for webrtc
+  unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
+  # Make sure gold is used with the hardening wrapper for full RELRO, see
+  # #13031.
+  cd $INSTDIR/binutils/bin
+  rm ld
+  cp /usr/bin/hardened-ld ./
+  mv ld.gold ld.gold.real
+  ln -sf hardened-ld ld.gold
+  ln -sf ld.gold ld
+  cd ~/build
+  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
+  # Make sure we use the hardening wrapper when compiling Tor Browser.
+  cd $INSTDIR/gcc/bin
+  cp /usr/bin/hardened-cc ./
+  mv gcc gcc.real
+  mv c++ c++.real
+  ln -sf hardened-cc gcc
+  ln -sf hardened-cc c++
+  cd ~/build
+  export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  ARCH=""
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ARCH="64"
+  fi
+  # Make sure our GCC gets properly used.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib$ARCH
+
+  # Setting up depot_tools
+  # https://dev.chromium.org/developers/how-tos/install-depot-tools
+  export PATH="$PATH:$PWD/depot_tools"
+  # Disable automatic updating.
+  export DEPOT_TOOLS_UPDATE=0
+
+  # Building webrtc
+  tar xaf webrtc.tar.gz
+  cd webrtc/src
+  export GYP_CROSSCOMPILE=1
+  export GYP_DEFINES="OS=linux target_arch=$(if [ $GBUILD_BITS = 32 ]; then echo ia32; else echo x64; fi)"
+  # Do not use bundled utilities.
+  GYP_DEFINES+=" clang=0 host_clang=0 use_sysroot=0"
+  GYP_DEFINES+=" linux_use_bundled_gold=0 linux_use_gold_flags=0 linux_use_bundled_binutils=0"
+  # Avoid some dependencies. Some of these don't seem to work fully; for
+  # example even with use_alsa=0 we need libasound2-dev.
+  GYP_DEFINES+=" use_x11=0 use_gtk=0 use_gconf=0 use_alsa=0 use_pulseaudio=0 use_libpci=0 include_internal_audio_device=0 enabled_libjingle_device_manager=0"
+  # examples and tests also bring in dependencies.
+  GYP_DEFINES+=" include_examples=0 include_tests=0"
+  # embedded=1 is supposed to turn of various features; see
+  # https://bugs.chromium.org/p/chromium/issues/detail?id=318413.
+  GYP_DEFINES+=" embedded=1"
+  GYP_DEFINES+=" werror="
+  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc.py
+  ninja -C out/Release
+  # Run ninja once more, without include_tests=0, in order to build just the
+  # FakeAudioCaptureModule that go-webrtc uses.
+  GYP_DEFINES="$(echo "$GYP_DEFINES" | sed -e 's/include_tests=0//g')"
+  JAVA_HOME=/usr/lib/jvm/default-java webrtc/build/gyp_webrtc.py
+  ninja -C out/Release obj/webrtc/api/test/peerconnection_unittests.fakeaudiocapturemodule.o
+  # https://github.com/keroserene/go-webrtc/issues/23#issuecomment-175312648
+  # dump_syms_regtest.o is actually an executable, not an object file. If not
+  # excluded, it results in the error:
+  # libwebrtc-linux-386-magic.a(dump_syms_regtest.o): unsupported ELF file type 2
+  ar crs libwebrtc-magic.a $(find . -name '*.o' -not -name '*.main.o' -not -name 'dump_syms_regtest.o' | sort)
+  cd ../..
+
+  # Grabbing the result
+  cd $INSTDIR
+  mkdir -p webrtc/include webrtc/lib
+  cp -f $HOME/build/webrtc/src/libwebrtc-magic.a webrtc/lib/libwebrtc-linux-$(if [ $GBUILD_BITS = 32 ]; then echo 386; else echo amd64; fi)-magic.a
+  INCLUDE_DIR="$PWD/webrtc/include"
+  (cd $HOME/build/webrtc/src && for h in $(find talk/ webrtc/ -type f -name '*.h'); do
+    mkdir -p "$INCLUDE_DIR/$(dirname $h)"
+    cp -f "$h" "$INCLUDE_DIR/$h"
+  done)
+
+  ~/build/dzip.sh webrtc-linux$GBUILD_BITS-gbuilt.zip webrtc
+  cp webrtc-linux$GBUILD_BITS-gbuilt.zip $OUTDIR/

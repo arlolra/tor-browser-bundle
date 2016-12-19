@@ -6,3 +6,6 @@ ClientTransportPlugin obfs2,obfs3,obfs4,scramblesuit exec ./TorBrowser/Tor/Plugg
 
 ## meek configuration
 ClientTransportPlugin meek exec ./TorBrowser/Tor/PluggableTransports/meek-client-torbrowser -- ./TorBrowser/Tor/PluggableTransports/meek-client
+
+## snowflake configuration
+ClientTransportPlugin snowflake exec ./TorBrowser/Tor/PluggableTransports/snowflake-client -url https://snowflake-reg.appspot.com/ -front www.google.com -ice stun:stun.l.google.com:19302

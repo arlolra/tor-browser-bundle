@@ -12,6 +12,8 @@ packages:
 - "python-dev"
 - "zip"
 - "hardening-wrapper"
+- "pkg-config"
+- "libx11-dev"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
@@ -38,6 +40,12 @@ remotes:
   "dir": "goxnet"
 - "url": "https://git.torproject.org/pluggable-transports/obfs4.git"
   "dir": "obfs4"
+- "url": "https://github.com/keroserene/go-webrtc.git"
+  "dir": "go-webrtc"
+- "url": "https://git.torproject.org/pluggable-transports/snowflake.git"
+  "dir": "snowflake"
+- "url": "https://github.com/dchest/uniuri.git"
+  "dir": "uniuri"
 files:
 - "pycrypto.tar.gz"
 - "argparse.tar.gz"
@@ -52,6 +60,12 @@ files:
 - "openssl-linux64-utils.zip"
 - "go-linux32-utils.zip"
 - "go-linux64-utils.zip"
+- "binutils-linux32-utils.zip"
+- "binutils-linux64-utils.zip"
+- "gcc-linux32-utils.zip"
+- "gcc-linux64-utils.zip"
+- "webrtc-linux32-gbuilt.zip"
+- "webrtc-linux64-gbuilt.zip"
 script: |
   INSTDIR="$HOME/install"
   PTDIR="$INSTDIR/Tor/PluggableTransports"
@@ -77,6 +91,35 @@ script: |
   export PATH="$PATH:$GOROOT/bin"
   # FTE only needs libgmp.so.10 and no libgmpxx anymore.
   cp $INSTDIR/gmp/lib/libgmp.so.10 $INSTDIR/Tor
+
+  # Preparing Binutils and GCC for webrtc
+  unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
+  # Make sure gold is used with the hardening wrapper for full RELRO, see
+  # #13031.
+  cd $INSTDIR/binutils/bin
+  rm ld
+  cp /usr/bin/hardened-ld ./
+  mv ld.gold ld.gold.real
+  ln -sf hardened-ld ld.gold
+  ln -sf ld.gold ld
+  cd ~/build
+  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
+  # Make sure we use the hardening wrapper when compiling Tor Browser.
+  cd $INSTDIR/gcc/bin
+  cp /usr/bin/hardened-cc ./
+  mv gcc gcc.real
+  mv c++ c++.real
+  ln -sf hardened-cc gcc
+  ln -sf hardened-cc c++
+  cd ~/build
+  export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  ARCH=""
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ARCH="64"
+  fi
+  # Make sure our GCC gets properly used.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib$ARCH
 
   # Building pyptlib
   cd pyptlib
@@ -216,6 +259,14 @@ script: |
   go install github.com/dchest/siphash
   cd ..
 
+  # Building go uniuri
+  cd uniuri
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/github.com/dchest/"
+  ln -sf "$PWD" "$GOPATH/src/github.com/dchest/uniuri"
+  go install github.com/dchest/uniuri
+  cd ..
+
   # Building golang.org/x/crypto (obfs4proxy > 0.0.3 || Go >= 1.4)
   cd goxcrypto
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
@@ -243,6 +294,34 @@ script: |
   go build -ldflags '-s'
   cp -a obfs4proxy $PTDIR
   cd ../..
+
+  unzip webrtc-linux$GBUILD_BITS-gbuilt.zip
+
+  # Building go-webrtc
+  cd go-webrtc
+  # Replace the prebuilt webrtc library with our own one.
+  rm -rf include/ lib/
+  ln -sf ../webrtc/{include,lib} .
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+  mkdir -p "$GOPATH/src/github.com/keroserene/"
+  ln -sf "$PWD" "$GOPATH/src/github.com/keroserene/go-webrtc"
+  # The go-webrtc package sets _GLIBCXX_USE_CXX11_ABI=0 for compatibility with
+  # the prebuilt libwebrtc-magic.a libraries. Since we build our own
+  # libwebrtc-magic.a with the C++11 ABI, we have to undo that setting here,
+  # using CGO_CXXFLAGS.
+  CGO_CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=1 go install github.com/keroserene/go-webrtc
+  cd ..
+
+  # Building snowflake
+  cd snowflake
+  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
+  cd client
+  go build -ldflags '-s'
+  cp -a client $PTDIR/snowflake-client
+  cd ..
+  mkdir -p $INSTDIR/Docs/snowflake
+  cp -a README.md LICENSE $INSTDIR/Docs/snowflake
+  cd ..
 
   # Grabbing the results and making sure timestamps don't spoil them
   cd $INSTDIR
