@@ -1,0 +1,871 @@
+From 2f844d0200450a5ad399bee2fcedcabc7dc17ac2 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Fri, 5 Aug 2016 22:48:59 -0700
+Subject: [PATCH 01/13] Use flags for GNU grep, not BSD grep.
+
+Was giving this error:
+find: unknown predicate `-E'
+---
+ webrtc/sdk/sdk.gyp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/webrtc/sdk/sdk.gyp b/webrtc/sdk/sdk.gyp
+index 5bfbb24..474d877 100644
+--- a/webrtc/sdk/sdk.gyp
++++ b/webrtc/sdk/sdk.gyp
+@@ -226,7 +226,7 @@
+             'objc/Framework/Modules/module.modulemap',
+           ],
+           'mac_framework_headers': [
+-            '<!@(find -E objc/Framework/Headers -regex ".*(h)")',
++            '<!@(find objc/Framework/Headers -regextype posix-extended -regex ".*(h)")',
+           ],
+           'dependencies': [
+             '<(webrtc_root)/system_wrappers/system_wrappers.gyp:field_trial_default',
+-- 
+2.8.1
+
+From 6f54fcdfed77e1511ce8d17518f6bd816d7f2945 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Fri, 5 Aug 2016 22:52:29 -0700
+Subject: [PATCH 02/13] Remove flags not supported by Mac ld.
+
+-z
+--fatal-warnings
+-soname
+--whole-archive
+--start-group
+--end-group
+---
+ chromium/src/build/common.gypi                      | 3 ---
+ chromium/src/tools/gyp/pylib/gyp/generator/ninja.py | 8 ++++----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/chromium/src/build/common.gypi b/chromium/src/build/common.gypi
+index 88b4121..d2f918d 100644
+--- a/chromium/src/build/common.gypi
++++ b/chromium/src/build/common.gypi
+@@ -3577,8 +3577,6 @@
+     ['os_posix==1', {
+       'target_defaults': {
+         'ldflags': [
+-          '-Wl,-z,now',
+-          '-Wl,-z,relro',
+         ],
+         # TODO(glider): enable the default options on other systems.
+         'conditions': [
+@@ -3594,7 +3592,6 @@
+     ['os_posix==1 and disable_fatal_linker_warnings==0 and use_evdev_gestures==0 and (chromeos==0 or target_arch!="arm")', {
+       'target_defaults': {
+         'ldflags': [
+-          '-Wl,--fatal-warnings',
+         ],
+       },
+     }],
+diff --git a/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py b/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py
+index 9cfc706..4754834 100644
+--- a/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py
++++ b/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py
+@@ -2121,7 +2121,7 @@ def GenerateOutputForConfig(target_list, target_dicts, data, params,
+         'if ! cmp -s $lib.tmp $lib.TOC; then mv $lib.tmp $lib.TOC ; '
+         'fi; fi'
+         % { 'solink':
+-              '$ld -shared $ldflags -o $lib -Wl,-soname=$soname %(suffix)s',
++              '$ld -shared $ldflags -o $lib %(suffix)s',
+             'extract_toc':
+               ('{ $readelf -d $lib | grep SONAME ; '
+                '$nm -gD -f p $lib | cut -f1-2 -d\' \'; }')})
+@@ -2133,7 +2133,7 @@ def GenerateOutputForConfig(target_list, target_dicts, data, params,
+       command=mtime_preserving_solink_base % {'suffix': '@$link_file_list'},
+       rspfile='$link_file_list',
+       rspfile_content=
+-          '-Wl,--whole-archive $in $solibs -Wl,--no-whole-archive $libs',
++          '$in $solibs $libs',
+       pool='link_pool')
+     master_ninja.rule(
+       'solink_module',
+@@ -2141,13 +2141,13 @@ def GenerateOutputForConfig(target_list, target_dicts, data, params,
+       restat=True,
+       command=mtime_preserving_solink_base % {'suffix': '@$link_file_list'},
+       rspfile='$link_file_list',
+-      rspfile_content='-Wl,--start-group $in -Wl,--end-group $solibs $libs',
++      rspfile_content='$in $solibs $libs',
+       pool='link_pool')
+     master_ninja.rule(
+       'link',
+       description='LINK $out',
+       command=('$ld $ldflags -o $out '
+-               '-Wl,--start-group $in -Wl,--end-group $solibs $libs'),
++               '$in $solibs $libs'),
+       pool='link_pool')
+   elif flavor == 'win':
+     master_ninja.rule(
+-- 
+2.8.1
+
+From 1e7adec928193f3dd8a1f05e8e58b34f74b809ad Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Fri, 5 Aug 2016 22:59:10 -0700
+Subject: [PATCH 03/13] Undefine __APPLE__ in usrsctp.
+
+A comment in usrsctp.gyp says:
+	# usrsctp requires that __APPLE__ is undefined for compilation (for
+	# historical reasons)
+But it only adds -U__APPLE__ to xcode_settings, not the ordinary cflags.
+---
+ chromium/src/third_party/usrsctp/usrsctp.gyp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/chromium/src/third_party/usrsctp/usrsctp.gyp b/chromium/src/third_party/usrsctp/usrsctp.gyp
+index 9533fb8..3625953 100644
+--- a/chromium/src/third_party/usrsctp/usrsctp.gyp
++++ b/chromium/src/third_party/usrsctp/usrsctp.gyp
+@@ -118,6 +118,8 @@
+             '__APPLE_USE_RFC_2292',
+             '__Userspace_os_Darwin',
+           ],
++          'cflags!': [ '-Werror', '-Wall' ],
++          'cflags': [ '-U__APPLE__', '-w' ],
+           # usrsctp requires that __APPLE__ is undefined for compilation (for
+           # historical reasons). There is a plan to change this, and when it
+           # happens and we re-roll DEPS for usrsctp, we can remove the manual
+-- 
+2.8.1
+
+From 2f2e1883bce16c15023688edff3e3ca4dc210b4f Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Fri, 5 Aug 2016 23:02:00 -0700
+Subject: [PATCH 04/13] Include <sys/socket.h> in macifaddrs_converter.cc.
+
+Without this, when built against MacOSX10.7.sdk, there are errors:
+
+In file included from ../../webrtc/base/macifaddrs_converter.cc:13:
+/home/debian/build/MacOSX10.7.sdk/usr/include/net/if.h:300:19: error: field has incomplete type 'struct sockaddr'
+                struct  sockaddr ifru_addr;
+
+Related references:
+https://trac.macports.org/ticket/49012
+https://trac.macports.org/browser/trunk/dports/gnome/gstreamer1/files/patch-struct-sockadr.diff?rev=140712
+---
+ webrtc/base/macifaddrs_converter.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/webrtc/base/macifaddrs_converter.cc b/webrtc/base/macifaddrs_converter.cc
+index 2ad070e..1995f19 100644
+--- a/webrtc/base/macifaddrs_converter.cc
++++ b/webrtc/base/macifaddrs_converter.cc
+@@ -10,6 +10,7 @@
+ 
+ #include <memory>
+ 
++#include <sys/socket.h>
+ #include <net/if.h>
+ #include <sys/ioctl.h>
+ #include <unistd.h>
+-- 
+2.8.1
+
+From 6c06998c7829bdb2012ee9b008ec7f3b29e150a4 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Fri, 5 Aug 2016 23:08:47 -0700
+Subject: [PATCH 05/13] Allow non-mac to build .m and .mm sources (objc and
+ objc++).
+
+Without this, any .m or .mm files specified in sources are silently
+omitted.
+---
+ .../src/tools/gyp/pylib/gyp/generator/ninja.py     | 40 +++++++++++++++-------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
+
+diff --git a/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py b/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py
+index 4754834..220e351 100644
+--- a/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py
++++ b/chromium/src/tools/gyp/pylib/gyp/generator/ninja.py
+@@ -952,6 +952,8 @@ class NinjaWriter(object):
+       cflags = config.get('cflags', [])
+       cflags_c = config.get('cflags_c', [])
+       cflags_cc = config.get('cflags_cc', [])
++      cflags_objc = ['$cflags_c']
++      cflags_objcc = ['$cflags_cc']
+ 
+     # Respect environment variables related to build, but target-specific
+     # flags can still override them.
+@@ -996,12 +998,11 @@ class NinjaWriter(object):
+            for i in midl_include_dirs])
+ 
+     pch_commands = precompiled_header.GetPchBuildCommands(arch)
+-    if self.flavor == 'mac':
+-      # Most targets use no precompiled headers, so only write these if needed.
+-      for ext, var in [('c', 'cflags_pch_c'), ('cc', 'cflags_pch_cc'),
+-                       ('m', 'cflags_pch_objc'), ('mm', 'cflags_pch_objcc')]:
+-        include = precompiled_header.GetInclude(ext, arch)
+-        if include: ninja_file.variable(var, include)
++    # Most targets use no precompiled headers, so only write these if needed.
++    for ext, var in [('c', 'cflags_pch_c'), ('cc', 'cflags_pch_cc'),
++                     ('m', 'cflags_pch_objc'), ('mm', 'cflags_pch_objcc')]:
++      include = precompiled_header.GetInclude(ext, arch)
++      if include: ninja_file.variable(var, include)
+ 
+     arflags = config.get('arflags', [])
+ 
+@@ -1011,11 +1012,10 @@ class NinjaWriter(object):
+                            map(self.ExpandSpecial, cflags_c))
+     self.WriteVariableList(ninja_file, 'cflags_cc',
+                            map(self.ExpandSpecial, cflags_cc))
+-    if self.flavor == 'mac':
+-      self.WriteVariableList(ninja_file, 'cflags_objc',
+-                             map(self.ExpandSpecial, cflags_objc))
+-      self.WriteVariableList(ninja_file, 'cflags_objcc',
+-                             map(self.ExpandSpecial, cflags_objcc))
++    self.WriteVariableList(ninja_file, 'cflags_objc',
++                           map(self.ExpandSpecial, cflags_objc))
++    self.WriteVariableList(ninja_file, 'cflags_objcc',
++                           map(self.ExpandSpecial, cflags_objcc))
+     self.WriteVariableList(ninja_file, 'arflags',
+                            map(self.ExpandSpecial, arflags))
+     ninja_file.newline()
+@@ -1038,9 +1038,9 @@ class NinjaWriter(object):
+         # Add the _asm suffix as msvs is capable of handling .cc and
+         # .asm files of the same name without collision.
+         obj_ext = '_asm.obj'
+-      elif self.flavor == 'mac' and ext == 'm':
++      elif ext == 'm':
+         command = 'objc'
+-      elif self.flavor == 'mac' and ext == 'mm':
++      elif ext == 'mm':
+         command = 'objcxx'
+         self.uses_cpp = True
+       elif self.flavor == 'win' and ext == 'rc':
+@@ -2149,6 +2149,20 @@ def GenerateOutputForConfig(target_list, target_dicts, data, params,
+       command=('$ld $ldflags -o $out '
+                '$in $solibs $libs'),
+       pool='link_pool')
++    master_ninja.rule(
++      'objc',
++      description='OBJC $out',
++      command=('$cc -MMD -MF $out.d $defines $includes $cflags $cflags_objc '
++               '$cflags_pch_objc -c $in -o $out'),
++      depfile='$out.d',
++      deps=deps)
++    master_ninja.rule(
++      'objcxx',
++      description='OBJCXX $out',
++      command=('$cxx -MMD -MF $out.d $defines $includes $cflags $cflags_objcc '
++               '$cflags_pch_objcc -c $in -o $out'),
++      depfile='$out.d',
++      deps=deps)
+   elif flavor == 'win':
+     master_ninja.rule(
+         'alink',
+-- 
+2.8.1
+
+From 7c6c79ffafd339f446032d4b5aab8ed2cb33031d Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 10:20:24 -0700
+Subject: [PATCH 06/13] Propagate "-framework Foundations" in ldflags.
+
+This was being set in xcode_settings, but not in the ordinary ldflags.
+---
+ webrtc/base/base.gyp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/webrtc/base/base.gyp b/webrtc/base/base.gyp
+index 9e55efc..658634b 100644
+--- a/webrtc/base/base.gyp
++++ b/webrtc/base/base.gyp
+@@ -139,6 +139,10 @@
+         }],
+         ['OS=="mac" and build_with_chromium==0', {
+           'all_dependent_settings': {
++            'ldflags': [
++              # needed for logging_mac.mm
++              '-framework Foundation',
++            ],
+             'xcode_settings': {
+               'OTHER_LDFLAGS': [
+                 # needed for logging_mac.mm
+-- 
+2.8.1
+
+From 3c8525c87a12c9e0bc3e6cf024443d73f3d753b7 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 12:01:32 -0700
+Subject: [PATCH 07/13] Provide definitions of NS_ENUM and NS_OPTIONS.
+
+---
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMacros.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMacros.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMacros.h
+index f9f15c3..277676d 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMacros.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMacros.h
+@@ -25,4 +25,17 @@
+ #define RTC_FWD_DECL_OBJC_CLASS(classname) typedef struct objc_object classname
+ #endif
+ 
++// http://iamthewalr.us/blog/2012/11/ns_enum-and-ns_options/
++#if (__cplusplus && __cplusplus >= 201103L && (__has_extension(cxx_strong_enums) || __has_feature(objc_fixed_enum))) || (!__cplusplus && __has_feature(objc_fixed_enum))
++#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
++#if (__cplusplus)
++#define NS_OPTIONS(_type, _name) _type _name; enum : _type
++#else
++#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
++#endif
++#else
++#define NS_ENUM(_type, _name) _type _name; enum
++#define NS_OPTIONS(_type, _name) _type _name; enum
++#endif
++
+ #endif  // WEBRTC_BASE_OBJC_RTC_MACROS_H_
+-- 
+2.8.1
+
+From b57420e1032ed48a4f16c28ce02ebcc065d2e656 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 12:15:42 -0700
+Subject: [PATCH 08/13] Remove lightweight-generics annotations from NSArray
+ and NSDictionary.
+
+This doesn't seem to be supported by the compiler we're using. The error
+is:
+error: type arguments cannot be applied to non-parameterized class 'NSArray'
+
+find webrtc/sdk/objc -type f -print0 | xargs sed -0 -i -e 's/\<\(NSArray\|NSDictionary\)<[^>]*>/\1/g'
+---
+ webrtc/sdk/objc/Framework/Classes/RTCIceServer.mm              |  4 ++--
+ .../sdk/objc/Framework/Classes/RTCMediaConstraints+Private.h   |  2 +-
+ webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints.mm       | 10 +++++-----
+ webrtc/sdk/objc/Framework/Classes/RTCMediaStream.mm            |  4 ++--
+ webrtc/sdk/objc/Framework/Classes/RTCPeerConnection+Stats.mm   |  6 +++---
+ webrtc/sdk/objc/Framework/Classes/RTCPeerConnection.mm         |  4 ++--
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCConfiguration.h    |  2 +-
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCIceServer.h        |  6 +++---
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaConstraints.h |  4 ++--
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaStream.h      |  4 ++--
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCPeerConnection.h   |  6 +++---
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCRtpParameters.h    |  4 ++--
+ webrtc/sdk/objc/Framework/Headers/WebRTC/RTCStatsReport.h      |  2 +-
+ 13 files changed, 29 insertions(+), 29 deletions(-)
+
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCIceServer.mm b/webrtc/sdk/objc/Framework/Classes/RTCIceServer.mm
+index 41084b9..ff28bc7 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCIceServer.mm
++++ b/webrtc/sdk/objc/Framework/Classes/RTCIceServer.mm
+@@ -18,14 +18,14 @@
+ @synthesize username = _username;
+ @synthesize credential = _credential;
+ 
+-- (instancetype)initWithURLStrings:(NSArray<NSString *> *)urlStrings {
++- (instancetype)initWithURLStrings:(NSArray *)urlStrings {
+   NSParameterAssert(urlStrings.count);
+   return [self initWithURLStrings:urlStrings
+                          username:nil
+                        credential:nil];
+ }
+ 
+-- (instancetype)initWithURLStrings:(NSArray<NSString *> *)urlStrings
++- (instancetype)initWithURLStrings:(NSArray *)urlStrings
+                           username:(NSString *)username
+                         credential:(NSString *)credential {
+   NSParameterAssert(urlStrings.count);
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints+Private.h b/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints+Private.h
+index 606a132..1a8f23b 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints+Private.h
++++ b/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints+Private.h
+@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
+ /** Return a native Constraints object representing these constraints */
+ + (webrtc::MediaConstraintsInterface::Constraints)
+     nativeConstraintsForConstraints:
+-        (NSDictionary<NSString *, NSString *> *)constraints;
++        (NSDictionary *)constraints;
+ 
+ @end
+ 
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints.mm b/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints.mm
+index 11be2ec..2450516 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints.mm
++++ b/webrtc/sdk/objc/Framework/Classes/RTCMediaConstraints.mm
+@@ -39,14 +39,14 @@ MediaConstraints::GetOptional() const {
+ 
+ 
+ @implementation RTCMediaConstraints {
+-  NSDictionary<NSString *, NSString *> *_mandatory;
+-  NSDictionary<NSString *, NSString *> *_optional;
++  NSDictionary *_mandatory;
++  NSDictionary *_optional;
+ }
+ 
+ - (instancetype)initWithMandatoryConstraints:
+-    (NSDictionary<NSString *, NSString *> *)mandatory
++    (NSDictionary *)mandatory
+                          optionalConstraints:
+-    (NSDictionary<NSString *, NSString *> *)optional {
++    (NSDictionary *)optional {
+   if (self = [super init]) {
+     _mandatory = [[NSDictionary alloc] initWithDictionary:mandatory
+                                                 copyItems:YES];
+@@ -77,7 +77,7 @@ MediaConstraints::GetOptional() const {
+ 
+ + (webrtc::MediaConstraintsInterface::Constraints)
+     nativeConstraintsForConstraints:
+-        (NSDictionary<NSString *, NSString *> *)constraints {
++        (NSDictionary *)constraints {
+   webrtc::MediaConstraintsInterface::Constraints nativeConstraints;
+   for (NSString *key in constraints) {
+     NSAssert([key isKindOfClass:[NSString class]],
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCMediaStream.mm b/webrtc/sdk/objc/Framework/Classes/RTCMediaStream.mm
+index 0737dee..2547028 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCMediaStream.mm
++++ b/webrtc/sdk/objc/Framework/Classes/RTCMediaStream.mm
+@@ -34,11 +34,11 @@
+   return [self initWithNativeMediaStream:stream];
+ }
+ 
+-- (NSArray<RTCAudioTrack *> *)audioTracks {
++- (NSArray *)audioTracks {
+   return [_audioTracks copy];
+ }
+ 
+-- (NSArray<RTCVideoTrack *> *)videoTracks {
++- (NSArray *)videoTracks {
+   return [_videoTracks copy];
+ }
+ 
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection+Stats.mm b/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection+Stats.mm
+index ccbd58f..fe6833c 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection+Stats.mm
++++ b/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection+Stats.mm
+@@ -21,7 +21,7 @@ namespace webrtc {
+ class StatsObserverAdapter : public StatsObserver {
+  public:
+   StatsObserverAdapter(void (^completionHandler)
+-      (NSArray<RTCStatsReport *> *stats)) {
++      (NSArray *stats)) {
+     completion_handler_ = completionHandler;
+   }
+ 
+@@ -42,7 +42,7 @@ class StatsObserverAdapter : public StatsObserver {
+   }
+ 
+  private:
+-  void (^completion_handler_)(NSArray<RTCStatsReport *> *stats);
++  void (^completion_handler_)(NSArray *stats);
+ };
+ }  // namespace webrtc
+ 
+@@ -51,7 +51,7 @@ class StatsObserverAdapter : public StatsObserver {
+ - (void)statsForTrack:(RTCMediaStreamTrack *)mediaStreamTrack
+      statsOutputLevel:(RTCStatsOutputLevel)statsOutputLevel
+     completionHandler:
+-    (void (^)(NSArray<RTCStatsReport *> *stats))completionHandler {
++    (void (^)(NSArray *stats))completionHandler {
+   rtc::scoped_refptr<webrtc::StatsObserverAdapter> observer(
+       new rtc::RefCountedObject<webrtc::StatsObserverAdapter>
+           (completionHandler));
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection.mm b/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection.mm
+index 9a488fd..3d7bc02 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection.mm
++++ b/webrtc/sdk/objc/Framework/Classes/RTCPeerConnection.mm
+@@ -333,7 +333,7 @@ void PeerConnectionDelegateAdapter::OnIceCandidate(
+       : nil;
+ }
+ 
+-- (NSArray<RTCRtpSender *> *)senders {
++- (NSArray *)senders {
+   std::vector<rtc::scoped_refptr<webrtc::RtpSenderInterface>> nativeSenders(
+       _peerConnection->GetSenders());
+   NSMutableArray *senders = [[NSMutableArray alloc] init];
+@@ -345,7 +345,7 @@ void PeerConnectionDelegateAdapter::OnIceCandidate(
+   return senders;
+ }
+ 
+-- (NSArray<RTCRtpReceiver *> *)receivers {
++- (NSArray *)receivers {
+   std::vector<rtc::scoped_refptr<webrtc::RtpReceiverInterface>> nativeReceivers(
+       _peerConnection->GetReceivers());
+   NSMutableArray *receivers = [[NSMutableArray alloc] init];
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCConfiguration.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCConfiguration.h
+index 74e7801..eceff66 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCConfiguration.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCConfiguration.h
+@@ -62,7 +62,7 @@ RTC_EXPORT
+ @interface RTCConfiguration : NSObject
+ 
+ /** An array of Ice Servers available to be used by ICE. */
+-@property(nonatomic, copy) NSArray<RTCIceServer *> *iceServers;
++@property(nonatomic, copy) NSArray *iceServers;
+ 
+ /** Which candidates the ICE agent is allowed to use. The W3C calls it
+  * |iceTransportPolicy|, while in C++ it is called |type|. */
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCIceServer.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCIceServer.h
+index ff5489c..1af29e2 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCIceServer.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCIceServer.h
+@@ -18,7 +18,7 @@ RTC_EXPORT
+ @interface RTCIceServer : NSObject
+ 
+ /** URI(s) for this server represented as NSStrings. */
+-@property(nonatomic, readonly) NSArray<NSString *> *urlStrings;
++@property(nonatomic, readonly) NSArray *urlStrings;
+ 
+ /** Username to use if this RTCIceServer object is a TURN server. */
+ @property(nonatomic, readonly, nullable) NSString *username;
+@@ -29,13 +29,13 @@ RTC_EXPORT
+ - (nonnull instancetype)init NS_UNAVAILABLE;
+ 
+ /** Convenience initializer for a server with no authentication (e.g. STUN). */
+-- (instancetype)initWithURLStrings:(NSArray<NSString *> *)urlStrings;
++- (instancetype)initWithURLStrings:(NSArray *)urlStrings;
+ 
+ /**
+  * Initialize an RTCIceServer with its associated URLs, optional username,
+  * optional credential, and credentialType.
+  */
+-- (instancetype)initWithURLStrings:(NSArray<NSString *> *)urlStrings
++- (instancetype)initWithURLStrings:(NSArray *)urlStrings
+                           username:(nullable NSString *)username
+                         credential:(nullable NSString *)credential
+     NS_DESIGNATED_INITIALIZER;
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaConstraints.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaConstraints.h
+index adc73f2..6d122bb 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaConstraints.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaConstraints.h
+@@ -21,9 +21,9 @@ RTC_EXPORT
+ 
+ /** Initialize with mandatory and/or optional constraints. */
+ - (instancetype)initWithMandatoryConstraints:
+-    (nullable NSDictionary<NSString *, NSString *> *)mandatory
++    (nullable NSDictionary *)mandatory
+                          optionalConstraints:
+-    (nullable NSDictionary<NSString *, NSString *> *)optional
++    (nullable NSDictionary *)optional
+     NS_DESIGNATED_INITIALIZER;
+ 
+ @end
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaStream.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaStream.h
+index b97960d..146012e 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaStream.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCMediaStream.h
+@@ -22,10 +22,10 @@ RTC_EXPORT
+ @interface RTCMediaStream : NSObject
+ 
+ /** The audio tracks in this stream. */
+-@property(nonatomic, strong, readonly) NSArray<RTCAudioTrack *> *audioTracks;
++@property(nonatomic, strong, readonly) NSArray *audioTracks;
+ 
+ /** The video tracks in this stream. */
+-@property(nonatomic, strong, readonly) NSArray<RTCVideoTrack *> *videoTracks;
++@property(nonatomic, strong, readonly) NSArray *videoTracks;
+ 
+ /** An identifier for this media stream. */
+ @property(nonatomic, readonly) NSString *streamId;
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCPeerConnection.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCPeerConnection.h
+index 2ba8661..5a70f7f 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCPeerConnection.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCPeerConnection.h
+@@ -124,13 +124,13 @@ RTC_EXPORT
+  *  Note: reading this property returns different instances of RTCRtpSender.
+  *  Use isEqual: instead of == to compare RTCRtpSender instances.
+  */
+-@property(nonatomic, readonly) NSArray<RTCRtpSender *> *senders;
++@property(nonatomic, readonly) NSArray *senders;
+ 
+ /** Gets all RTCRtpReceivers associated with this peer connection.
+  *  Note: reading this property returns different instances of RTCRtpReceiver.
+  *  Use isEqual: instead of == to compare RTCRtpReceiver instances.
+  */
+-@property(nonatomic, readonly) NSArray<RTCRtpReceiver *> *receivers;
++@property(nonatomic, readonly) NSArray *receivers;
+ 
+ - (instancetype)init NS_UNAVAILABLE;
+ 
+@@ -205,7 +205,7 @@ RTC_EXPORT
+     (nullable RTCMediaStreamTrack *)mediaStreamTrack
+      statsOutputLevel:(RTCStatsOutputLevel)statsOutputLevel
+     completionHandler:
+-    (nullable void (^)(NSArray<RTCStatsReport *> *stats))completionHandler;
++    (nullable void (^)(NSArray *stats))completionHandler;
+ 
+ @end
+ 
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCRtpParameters.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCRtpParameters.h
+index bdebf84..136640d 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCRtpParameters.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCRtpParameters.h
+@@ -20,10 +20,10 @@ RTC_EXPORT
+ @interface RTCRtpParameters : NSObject
+ 
+ /** The currently active encodings in the order of preference. */
+-@property(nonatomic, copy) NSArray<RTCRtpEncodingParameters *> *encodings;
++@property(nonatomic, copy) NSArray *encodings;
+ 
+ /** The negotiated set of send codecs in order of preference. */
+-@property(nonatomic, copy) NSArray<RTCRtpCodecParameters *> *codecs;
++@property(nonatomic, copy) NSArray *codecs;
+ 
+ - (instancetype)init NS_DESIGNATED_INITIALIZER;
+ 
+diff --git a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCStatsReport.h b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCStatsReport.h
+index 5a55967..bcabab8 100644
+--- a/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCStatsReport.h
++++ b/webrtc/sdk/objc/Framework/Headers/WebRTC/RTCStatsReport.h
+@@ -28,7 +28,7 @@ RTC_EXPORT
+ @property(nonatomic, readonly) NSString *reportId;
+ 
+ /** A dictionary holding the actual stats. */
+-@property(nonatomic, readonly) NSDictionary<NSString *, NSString *> *values;
++@property(nonatomic, readonly) NSDictionary *values;
+ 
+ - (instancetype)init NS_UNAVAILABLE;
+ 
+-- 
+2.8.1
+
+From d64a945c5bc515ad12e356c0e75703a67f534fd9 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 13:48:57 -0700
+Subject: [PATCH 09/13] Use -fobjc-arc in webrtc/build/objc_common.gypi.
+
+Otherwise only in xcode_settings.
+---
+ webrtc/build/objc_common.gypi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/webrtc/build/objc_common.gypi b/webrtc/build/objc_common.gypi
+index ff908cf..dcbbbba 100644
+--- a/webrtc/build/objc_common.gypi
++++ b/webrtc/build/objc_common.gypi
+@@ -12,6 +12,9 @@
+   'variables': {
+     'objc_prefix_file': '../sdk/objc/WebRTC-Prefix.pch',
+   },
++  'cflags': [
++    '-fobjc-arc',
++  ],
+   'xcode_settings': {
+     'CLANG_ENABLE_OBJC_ARC': 'YES',
+     'CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS': 'YES',
+-- 
+2.8.1
+
+From 96223893313ad321f1f74c6b1d35614778645692 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 15:04:58 -0700
+Subject: [PATCH 10/13] Replace firstObject with objectAtIndex:0.
+
+firstObject doesn't exist in our version of the SDK.
+
+The two method calls are not exactly the same; on an empty array,
+firstObject returns nil while objectAtIndex:0 raises an exception. Let's
+hope that doesn't matter.
+
+find webrtc -type f -print0 | xargs -0 sed -i -e 's/\<firstObject\>/objectAtIndex:0/g'
+---
+ webrtc/examples/objc/AppRTCDemo/ARDAppClient.m                 | 2 +-
+ webrtc/modules/video_capture/ios/rtc_video_capture_ios_objc.mm | 2 +-
+ webrtc/sdk/objc/Framework/Classes/RTCFileLogger.mm             | 2 +-
+ webrtc/sdk/objc/Framework/UnitTests/RTCIceServerTest.mm        | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/webrtc/examples/objc/AppRTCDemo/ARDAppClient.m b/webrtc/examples/objc/AppRTCDemo/ARDAppClient.m
+index 86d18d1..80d2c8e 100644
+--- a/webrtc/examples/objc/AppRTCDemo/ARDAppClient.m
++++ b/webrtc/examples/objc/AppRTCDemo/ARDAppClient.m
+@@ -229,7 +229,7 @@ static BOOL const kARDAppClientEnableTracing = NO;
+   if (kARDAppClientEnableTracing) {
+     NSArray *paths = NSSearchPathForDirectoriesInDomains(
+         NSDocumentDirectory, NSUserDomainMask, YES);
+-    NSString *documentsDirPath = paths.firstObject;
++    NSString *documentsDirPath = paths.objectAtIndex:0;
+     NSString *filePath =
+         [documentsDirPath stringByAppendingPathComponent:@"webrtc-trace.txt"];
+     RTCStartInternalCapture(filePath);
+diff --git a/webrtc/modules/video_capture/ios/rtc_video_capture_ios_objc.mm b/webrtc/modules/video_capture/ios/rtc_video_capture_ios_objc.mm
+index e36c83b..6e6aa32 100644
+--- a/webrtc/modules/video_capture/ios/rtc_video_capture_ios_objc.mm
++++ b/webrtc/modules/video_capture/ios/rtc_video_capture_ios_objc.mm
+@@ -184,7 +184,7 @@ using namespace webrtc::videocapturemodule;
+ }
+ 
+ - (AVCaptureVideoDataOutput*)currentOutput {
+-  return [[_captureSession outputs] firstObject];
++  return [[_captureSession outputs] objectAtIndex:0];
+ }
+ 
+ - (void)startCaptureInBackgroundWithOutput:
+diff --git a/webrtc/sdk/objc/Framework/Classes/RTCFileLogger.mm b/webrtc/sdk/objc/Framework/Classes/RTCFileLogger.mm
+index c1fbd74..19842e2 100644
+--- a/webrtc/sdk/objc/Framework/Classes/RTCFileLogger.mm
++++ b/webrtc/sdk/objc/Framework/Classes/RTCFileLogger.mm
+@@ -35,7 +35,7 @@ const char *kRTCFileLoggerRotatingLogPrefix = "rotating_log";
+ - (instancetype)init {
+   NSArray *paths = NSSearchPathForDirectoriesInDomains(
+       NSDocumentDirectory, NSUserDomainMask, YES);
+-  NSString *documentsDirPath = [paths firstObject];
++  NSString *documentsDirPath = [paths objectAtIndex:0];
+   NSString *defaultDirPath =
+       [documentsDirPath stringByAppendingPathComponent:kDefaultLogDirName];
+   return [self initWithDirPath:defaultDirPath
+diff --git a/webrtc/sdk/objc/Framework/UnitTests/RTCIceServerTest.mm b/webrtc/sdk/objc/Framework/UnitTests/RTCIceServerTest.mm
+index a5159dc..097a42c 100644
+--- a/webrtc/sdk/objc/Framework/UnitTests/RTCIceServerTest.mm
++++ b/webrtc/sdk/objc/Framework/UnitTests/RTCIceServerTest.mm
+@@ -72,7 +72,7 @@
+       [[RTCIceServer alloc] initWithNativeServer:nativeServer];
+   EXPECT_EQ(1u, iceServer.urlStrings.count);
+   EXPECT_EQ("stun:stun.example.net",
+-      [NSString stdStringForString:iceServer.urlStrings.firstObject]);
++      [NSString stdStringForString:iceServer.urlStrings.objectAtIndex:0]);
+   EXPECT_EQ("username", [NSString stdStringForString:iceServer.username]);
+   EXPECT_EQ("password", [NSString stdStringForString:iceServer.credential]);
+ }
+-- 
+2.8.1
+
+From 5934f8a11d8d91324b5751bafb83a66520fb1c6d Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 15:50:48 -0700
+Subject: [PATCH 11/13] fobjc-arc
+
+---
+ talk/app/webrtc/legacy_objc_api.gyp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/talk/app/webrtc/legacy_objc_api.gyp b/talk/app/webrtc/legacy_objc_api.gyp
+index c55e74c..0a5be31 100755
+--- a/talk/app/webrtc/legacy_objc_api.gyp
++++ b/talk/app/webrtc/legacy_objc_api.gyp
+@@ -125,10 +125,16 @@
+             ],
+           },
+           'all_dependent_settings': {
++            'cflags': [
++              '-fobjc-arc',
++            ],
+             'xcode_settings': {
+               'CLANG_ENABLE_OBJC_ARC': 'YES',
+             },
+           },
++          'cflags': [
++            '-fobjc-arc',
++          ],
+           'xcode_settings': {
+             'CLANG_ENABLE_OBJC_ARC': 'YES',
+             # common.gypi enables this for mac but we want this to be disabled
+-- 
+2.8.1
+
+From ae3a79e7b2ec49edc0eb1669411a00c62857ae0b Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 15:51:00 -0700
+Subject: [PATCH 12/13] Use objectAtIndex instead of array index syntax.
+
+error: expected method to read array element not found on object of type 'NSMutableArray *'
+---
+ talk/app/webrtc/objc/RTCVideoTrack.mm | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/talk/app/webrtc/objc/RTCVideoTrack.mm b/talk/app/webrtc/objc/RTCVideoTrack.mm
+index 877e92e..4cba2dc 100644
+--- a/talk/app/webrtc/objc/RTCVideoTrack.mm
++++ b/talk/app/webrtc/objc/RTCVideoTrack.mm
+@@ -99,7 +99,7 @@
+   RTCVideoRendererAdapter* adapter = nil;
+   NSUInteger indexToRemove = NSNotFound;
+   for (NSUInteger i = 0; i < _adapters.count; i++) {
+-    adapter = _adapters[i];
++    adapter = [_adapters objectAtIndex:i];
+     if (adapter.videoRenderer == renderer) {
+       indexToRemove = i;
+       break;
+-- 
+2.8.1
+
+From 0f23923f16a0df0f4f2d5fbff0a35cbb3ed74c80 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Sat, 6 Aug 2016 15:51:29 -0700
+Subject: [PATCH 13/13] Hack out some more NS_ENUM and NS_OPTIONS.
+
+---
+ talk/app/webrtc/objc/public/RTCFileLogger.h              | 13 +++++++++++++
+ talk/app/webrtc/objc/public/RTCLogging.h                 | 13 +++++++++++++
+ talk/app/webrtc/objc/public/RTCPeerConnectionInterface.h | 13 +++++++++++++
+ 3 files changed, 39 insertions(+)
+
+diff --git a/talk/app/webrtc/objc/public/RTCFileLogger.h b/talk/app/webrtc/objc/public/RTCFileLogger.h
+index af43f8a..75a5ae6 100644
+--- a/talk/app/webrtc/objc/public/RTCFileLogger.h
++++ b/talk/app/webrtc/objc/public/RTCFileLogger.h
+@@ -32,6 +32,19 @@
+ #define NS_DESIGNATED_INITIALIZER
+ #endif
+ 
++// http://iamthewalr.us/blog/2012/11/ns_enum-and-ns_options/
++#if (__cplusplus && __cplusplus >= 201103L && (__has_extension(cxx_strong_enums) || __has_feature(objc_fixed_enum))) || (!__cplusplus && __has_feature(objc_fixed_enum))
++#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
++#if (__cplusplus)
++#define NS_OPTIONS(_type, _name) _type _name; enum : _type
++#else
++#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
++#endif
++#else
++#define NS_ENUM(_type, _name) _type _name; enum
++#define NS_OPTIONS(_type, _name) _type _name; enum
++#endif
++
+ typedef NS_ENUM(NSUInteger, RTCFileLoggerSeverity) {
+   kRTCFileLoggerSeverityVerbose,
+   kRTCFileLoggerSeverityInfo,
+diff --git a/talk/app/webrtc/objc/public/RTCLogging.h b/talk/app/webrtc/objc/public/RTCLogging.h
+index bcd160d..e105d9b 100644
+--- a/talk/app/webrtc/objc/public/RTCLogging.h
++++ b/talk/app/webrtc/objc/public/RTCLogging.h
+@@ -27,6 +27,19 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
++// http://iamthewalr.us/blog/2012/11/ns_enum-and-ns_options/
++#if (__cplusplus && __cplusplus >= 201103L && (__has_extension(cxx_strong_enums) || __has_feature(objc_fixed_enum))) || (!__cplusplus && __has_feature(objc_fixed_enum))
++#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
++#if (__cplusplus)
++#define NS_OPTIONS(_type, _name) _type _name; enum : _type
++#else
++#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
++#endif
++#else
++#define NS_ENUM(_type, _name) _type _name; enum
++#define NS_OPTIONS(_type, _name) _type _name; enum
++#endif
++
+ // Subset of rtc::LoggingSeverity.
+ typedef NS_ENUM(NSInteger, RTCLoggingSeverity) {
+   kRTCLoggingSeverityVerbose,
+diff --git a/talk/app/webrtc/objc/public/RTCPeerConnectionInterface.h b/talk/app/webrtc/objc/public/RTCPeerConnectionInterface.h
+index 1bab99a..eb625a4 100644
+--- a/talk/app/webrtc/objc/public/RTCPeerConnectionInterface.h
++++ b/talk/app/webrtc/objc/public/RTCPeerConnectionInterface.h
+@@ -29,6 +29,19 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
++// http://iamthewalr.us/blog/2012/11/ns_enum-and-ns_options/
++#if (__cplusplus && __cplusplus >= 201103L && (__has_extension(cxx_strong_enums) || __has_feature(objc_fixed_enum))) || (!__cplusplus && __has_feature(objc_fixed_enum))
++#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
++#if (__cplusplus)
++#define NS_OPTIONS(_type, _name) _type _name; enum : _type
++#else
++#define NS_OPTIONS(_type, _name) enum _name : _type _name; enum _name : _type
++#endif
++#else
++#define NS_ENUM(_type, _name) _type _name; enum
++#define NS_OPTIONS(_type, _name) _type _name; enum
++#endif
++
+ typedef NS_ENUM(NSInteger, RTCIceTransportsType) {
+   kRTCIceTransportsTypeNone,
+   kRTCIceTransportsTypeRelay,
+-- 
+2.8.1
+
