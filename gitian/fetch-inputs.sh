@@ -319,17 +319,38 @@ PATH="$PATH:$PWD/depot_tools"
 # Use --no-history because the whole checkout with history is about 12 GB.
 export GYP_CROSSCOMPILE=1
 export GYP_DEFINES="use_x11=0"
+# JAVA_HOME is needed in a hook for libjingle. The readlink line tries to find the current JRE.
+# default-java comes from the package default-jdk-headless.
+export JAVA_HOME=/usr/lib/jvm/default-java
 mkdir -p "$dir"
 cd "$dir"
 if [ ! -d "src" ];
 then
   # "fetch" is part of depot_tools.
-  fetch --nohooks --no-history webrtc
+  #fetch --nohooks --no-history webrtc
+  # FIXME: To avoid the unconditional `gclient sync` in the call to fetch,
+  # we inline the result of a `fetch --dry-run`
+  gclient root
+  gclient config --spec 'solutions = [
+  {
+    "managed": False,
+    "name": "src",
+    "url": "https://chromium.googlesource.com/external/webrtc.git",
+    "custom_deps": {},
+    "deps_file": "DEPS",
+    "safesync_url": "",
+  },
+]
+'
+  gclient sync --nohooks --no-history --with_branch_heads -r $WEBRTC_TAG
+  cd src
+  git submodule foreach 'git config -f $toplevel/.git/config submodule.$name.ignore all'
+  git config --add remote.origin.fetch '+refs/tags/*:refs/tags/*'
+  git config diff.ignoreSubmodules all
+  cd ..
 fi
 # "gclient" is part of depot_tools. This download takes a long time the first time.
-# JAVA_HOME is needed in a hook for libjingle. The readlink line tries to find the current JRE.
-# default-java comes from the package default-jdk-headless.
-JAVA_HOME=/usr/lib/jvm/default-java gclient sync --with_branch_heads --no-history -r $WEBRTC_TAG
+gclient sync --no-history --with_branch_heads -r $WEBRTC_TAG
 cd ..
 tar --exclude .git -czf webrtc.tar.gz webrtc
 
