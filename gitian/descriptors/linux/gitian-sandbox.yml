@@ -13,9 +13,6 @@ packages:
 - "libx11-dev"
 - "pkg-config"
 - "libgtk-3-dev"
-backports_packages:
-- "libseccomp-dev"
-- "libseccomp2"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
 - "url": "https://github.com/pkg/error"
