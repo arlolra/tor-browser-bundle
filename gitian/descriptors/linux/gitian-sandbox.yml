@@ -4,7 +4,6 @@ distro: "debian"
 suites:
 - "jessie"
 architectures:
-- "i386"
 - "amd64"
 packages:
 - "unzip"
@@ -27,7 +26,6 @@ remotes:
   "dir": "sandbox"
 files:
 - "versions"
-- "go-linux32-utils.zip"
 - "go-linux64-utils.zip"
 - "dzip.sh"
 - "gb-build-dir.patch"

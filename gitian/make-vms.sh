@@ -89,15 +89,6 @@ do
   echo
 done
 
-while ! build_and_test_vm jessie i386 32
-do
-  stop-target 32 jessie
-  rm ./base-jessie-amd64*
-  echo
-  echo "Jessie i386 VM build failed... Trying again"
-  echo
-done
-
 while ! build_and_test_vm jessie amd64 64
 do
   stop-target 64 jessie

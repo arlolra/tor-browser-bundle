@@ -261,8 +261,7 @@ else
   SB_TAG=${SANDBOX_TAG#sandboxed-tor-browser-}
 fi
 
-if [ ! -f inputs/sandbox-$SB_TAG-linux32.zip -o \
-     ! -f inputs/sandbox-$SB_TAG-linux64.zip ];
+if [ ! -f inputs/sandbox-$SB_TAG-linux64.zip ];
 then
   echo
   echo "****** Starting Sandbox Component of Linux Bundle (6/7 for Linux) ******"
@@ -274,7 +273,7 @@ then
     exit 1
   fi
 
-  cp -a build/out/sandbox-$SB_TAG-linux*.zip inputs/
+  cp -a build/out/sandbox-$SB_TAG-linux64.zip inputs/
   #cp -a result/sandbox-linux-res.yml inputs/
 else
   echo
@@ -302,7 +301,7 @@ then
   cp -a build/out/*.mar $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/mar-tools-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   cp -a inputs/*debug.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
-  cp -a inputs/sandbox-$SB_TAG-linux*.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
+  cp -a inputs/sandbox-$SB_TAG-linux64.zip $WRAPPER_DIR/$TORBROWSER_BUILDDIR/ || exit 1
   touch inputs/bundle-linux.gbuilt
 else
   echo
