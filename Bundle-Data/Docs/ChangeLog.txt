@@ -1,3 +1,32 @@
+Tor Browser 7.0a1 -- January 25 2017
+ * All Platforms
+   * Update Firefox to 45.7.0esr
+   * Tor to 0.3.0.1-alpha
+   * Update Torbutton to 1.9.7
+     * Bug 19898: Use DuckDuckGo on about:tor
+     * Bug 21091: Hide the update check menu entry when running under the sandbox
+     * Bug 21243: Add links to es, fr, and pt Tor Browser manual
+     * Bug 21194: Show snowflake in the circuit display
+     * Bug 21131: Remove 2016 donation banner
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.2.9
+   * Update NoScript to 2.9.5.3
+   * Bug 20471: Allow javascript: links from HTTPS first party pages
+   * Bug 20651: DuckDuckGo does not work with JavaScript disabled
+   * Bug 20589: Add new MAR signing key
+ * Windows
+   * Bug 20981: On Windows, check TZ for timezone first
+ * OS X
+   * Bug 20989: Browser sandbox profile is too restrictive on OSX 10.12.2
+ * Liunx
+   * Update sandboxed-tor-browser to 0.0.3
+   * Bug 20735: Add snowflake pluggable transport to alpha Linux builds
+ * Build system
+   * All platforms
+     * Bug 20927: Upgrade Go to 1.7.4
+   * Linux
+     * Bug 21103: Update descriptors for sandboxed-tor-browser 0.0.3
+
 Tor Browser 6.5a6-hardened -- December 14 2016
  * All Platforms
    * Update Firefox to 45.6.0esr
