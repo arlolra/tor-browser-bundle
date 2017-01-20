@@ -18,7 +18,7 @@ Tor Browser 7.0a1 -- January 25 2017
    * Bug 20981: On Windows, check TZ for timezone first
  * OS X
    * Bug 20989: Browser sandbox profile is too restrictive on OSX 10.12.2
- * Liunx
+ * Linux
    * Update sandboxed-tor-browser to 0.0.3
    * Bug 20735: Add snowflake pluggable transport to alpha Linux builds
  * Build system
