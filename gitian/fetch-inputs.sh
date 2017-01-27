@@ -277,7 +277,6 @@ tor-browser           https://git.torproject.org/tor-browser.git          $TORBR
 cmake                 https://cmake.org/cmake.git                         $CMAKE_TAG
 llvm                  https://github.com/llvm-mirror/llvm                 $LLVM_TAG
 clang                 https://github.com/llvm-mirror/clang                $CLANG_TAG
-libcxx                https://github.com/llvm-mirror/libcxx               $LIBCXX_TAG
 mingw-w64-git         http://git.code.sf.net/p/mingw-w64/mingw-w64        $MINGW_TAG
 pyptlib               https://git.torproject.org/pluggable-transports/pyptlib.git $PYPTLIB_TAG
 obfsproxy https://git.torproject.org/pluggable-transports/obfsproxy.git $OBFSPROXY_TAG

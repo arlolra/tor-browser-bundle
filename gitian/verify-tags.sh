@@ -111,7 +111,6 @@ while read dir commit; do
 done << EOF
 llvm                    $LLVM_TAG
 clang                   $CLANG_TAG
-libcxx                  $LIBCXX_TAG
 mingw-w64-git           $MINGW_TAG
 libdmg-hfsplus          $LIBDMG_TAG
 libfte                  $LIBFTE_TAG
