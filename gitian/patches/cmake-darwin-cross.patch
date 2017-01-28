@@ -1,0 +1,15 @@
+http://public.kitware.com/Bug/view.php?id=14603
+
+--- a/Modules/Platform/Darwin.cmake	2013-05-15 19:38:12.000000000 +0200
++++ b/Modules/Platform/Darwin.cmake	2013-05-30 21:17:12.610816018 +0200
+@@ -341,7 +341,9 @@
+     list(APPEND _apps_paths "${_apps}")
+   endif()
+ endforeach()
+-list(REMOVE_DUPLICATES _apps_paths)
++if(_apps_path)
++  list(REMOVE_DUPLICATES _apps_paths)
++endif(_apps_path)
+ set(CMAKE_SYSTEM_APPBUNDLE_PATH
+   ${_apps_paths})
+ unset(_apps_paths)
