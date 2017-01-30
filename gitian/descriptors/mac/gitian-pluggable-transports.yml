@@ -7,21 +7,9 @@ architectures:
 - "i386"
 packages:
 - "unzip"
-- "python-setuptools"
-- "python-dev"
 - "zip"
 reference_datetime: "2000-01-01 00:00:00"
 remotes:
-- "url": "https://git.torproject.org/pluggable-transports/pyptlib.git"
-  "dir": "pyptlib"
-- "url": "https://git.torproject.org/pluggable-transports/obfsproxy.git"
-  "dir": "obfsproxy"
-- "url": "https://github.com/kpdyer/libfte.git"
-  "dir": "libfte"
-- "url": "https://github.com/kpdyer/fteproxy.git"
-  "dir": "fteproxy"
-- "url": "https://github.com/habnabit/txsocksx.git"
-  "dir": "txsocksx"
 - "url": "https://git.torproject.org/pluggable-transports/goptlib.git"
   "dir": "goptlib"
 - "url": "https://git.torproject.org/pluggable-transports/meek.git"
@@ -38,20 +26,11 @@ remotes:
   "dir": "obfs4"
 files:
 - "versions"
-- "pycrypto.tar.gz"
-- "argparse.tar.gz"
-- "pyyaml.tar.gz"
-- "zope.interface.zip"
-- "twisted.tar.bz2"
-- "parsley.tar.gz"
 - "go14.tar.gz"
 - "go.tar.gz"
-- "apple-uni-sdk-10.6_20110407-0.flosoft1_i386.deb"
 - "MacOSX10.7.sdk.tar.gz"
 - "multiarch-darwin11-cctools127.2-gcc42-5666.3-llvmgcc42-2336.1-Linux-120724.tar.xz"
 - "dzip.sh"
-- "gmp-mac64-utils.zip"
-- "openssl-mac64-utils.zip"
 script: |
   INSTDIR="$HOME/install"
   source versions
@@ -60,13 +39,10 @@ script: |
     PTDIR="$TBDIR/Contents/MacOS/Tor/PluggableTransports"
     DOCSDIR="$TBDIR/Contents/Resources/TorBrowser/Docs"
     TORBINDIR="$TBDIR/Contents/MacOS/Tor"
-    # TODO: Fix packaging of fte so it can be included. See bug 18495.
-    INCLUDE_FTE=0
   else
     PTDIR="$TBDIR/TorBrowser/Tor/PluggableTransports"
     DOCSDIR="$TBDIR/TorBrowser/Docs"
     TORBINDIR="$TBDIR/TorBrowser/Tor"
-    INCLUDE_FTE=1
   fi
   export LIBRARY_PATH="$INSTDIR/lib"
   export REFERENCE_DATETIME
@@ -77,29 +53,14 @@ script: |
   mkdir -p $PTDIR/
   mkdir -p $OUTDIR/
   #
-  # dpkg requires sbin directories in the PATH
-  export PATH="/usr/sbin:/sbin:$PATH"
-  sudo dpkg -i *.deb
   tar xaf multiarch-darwin*tar.xz
   # The 10.7 SDK is needed for Go: https://bugs.torproject.org/20023#comment:6
   tar xaf MacOSX10.7.sdk.tar.gz
   export PATH="$PATH:$HOME/build/apple-osx/bin/"
-  if [ "z$INCLUDE_FTE" = "z1" ]; then
-    unzip -d $INSTDIR gmp-mac64-utils.zip
-    unzip -d $INSTDIR openssl-mac64-utils.zip
-    # FTE only needs libgmp.10.dylib and no libgmpxx anymore.
-    cp $INSTDIR/gmp/lib/libgmp.10.dylib $TORBINDIR/
-    FTE_EXTRA_CFLAGS=" -I$INSTDIR/gmp/include -L$INSTDIR/gmp/lib"
-  else
-    FTE_EXTRA_CFLAGS=""
-  fi
-
   #
   export AR=$HOME/build/apple-osx/bin/i686-apple-darwin11-ar
   export CC=$HOME/build/apple-osx/bin/i686-apple-darwin11-gcc
   export CXX=$HOME/build/apple-osx/bin/i686-apple-darwin11-g++
-  # http://bugs.python.org/issue9437
-  export LDSHARED="$CC -pthread -shared"
 
   # Building go 1.4.x
   # This is needed to bootstrap the go that we actually use
@@ -133,115 +94,6 @@ script: |
   CGO_ENABLED=1 CC_FOR_TARGET="$CC_FOR_TARGET" CC= CFLAGS= LDFLAGS= ./make.bash
   cd ../..
   export PATH="$PATH:$PWD/go/bin"
-
-  if [ "z$INCLUDE_FTE" = "z1" ]; then
-
-  # Building pyptlib
-  cd pyptlib
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
-  cp -a build/pyptlib $PTDIR/
-  cd ..
-
-  # Building PyCrypto
-  tar xzf pycrypto.tar.gz
-  cd pycrypto-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  # https://bugs.launchpad.net/pycrypto/+bug/1096207 for ac_cv_func_malloc_0_nonnull.
-  ac_cv_func_malloc_0_nonnull=yes sh configure --host=i686-apple-darwin11
-  LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers
-  python setup.py build --build-lib build
-  cp -a build/Crypto $PTDIR/
-  cd ..
-
-  # Building argparse
-  tar xzf argparse.tar.gz
-  cd argparse-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
-  cp -a build/argparse.py $PTDIR/
-  cd ..
-
-  # Building Zope interfaces
-  unzip zope.interface.zip
-  cd zope.interface-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
-  cp -a build/zope $PTDIR/
-  cd ..
-
-  # Building PyYAML
-  tar xzf pyyaml.tar.gz
-  cd PyYAML-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
-  cp -a build/yaml $PTDIR/
-  cd ..
-
-  # Building Twisted
-  tar xjf twisted.tar.bz2
-  cd Twisted-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  LDSHARED="$LDSHARED -framework Python" python setup.py build_ext --build-lib build -I/usr/lib/apple/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/Python.framework/Headers
-  python setup.py build --build-lib build
-  cp -a build/twisted $PTDIR/
-  cd ..
-
-  # Building Parsley
-  tar xzf parsley.tar.gz
-  cd Parsley-*
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
-  cp -a build/parsley.py $PTDIR/
-  cp -a build/ometa $PTDIR/
-  cp -a build/terml $PTDIR/
-  cd ..
-
-  # Building txsocksx
-  cd txsocksx
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  # Let's pretend we have the setup dependency already as we don't want to get
-  # it downloaded during building. Just pretending and thus avoiding another
-  # dependency should be fine here as txsocksx catches the exception due to
-  # missing __version__ and __sha__ .
-  mkdir vcversioner-1.14.1.1-py2.7.egg
-  python setup.py build --build-lib build
-  cp -a build/txsocksx $PTDIR/
-  cd ..
-
-  # Building obfsproxy
-  cd obfsproxy
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  python setup.py build --build-lib build
-  cp -a build/obfsproxy $PTDIR/
-  cp -a bin/obfsproxy $PTDIR/obfsproxy.bin
-  mkdir -p $DOCSDIR/Obfsproxy
-  cp -a {LICENSE,README} $DOCSDIR/Obfsproxy
-  # XXX: Workaround for bug 11190
-  sed 's/python2/python/' -i $PTDIR/obfsproxy.bin
-  cd ..
-
-  # Building libfte
-  cd libfte
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  CFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CFLAGS" CXXFLAGS="-L$INSTDIR/Tor -I$INSTDIR/gmp/include $CXXFLAGS" make
-  cp -ra fte $PTDIR/
-  mkdir -p $DOCSDIR/libfte
-  cp -a {LICENSE,README.md} $DOCSDIR/libfte
-  cp -an thirdparty/re2/LICENSE $DOCSDIR/libfte/LICENSE.re2
-  cd ..
-
-  # Building fteproxy
-  cd fteproxy
-  find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
-  cp -a bin/fteproxy $PTDIR/fteproxy.bin
-  cp -ra fteproxy $PTDIR/
-  mkdir -p $DOCSDIR/fteproxy
-  cp -a {COPYING,README.md} $DOCSDIR/fteproxy
-  cd ..
-
-  fi
-  # end of 'INCLUDE_FTE' section
 
   # Building goptlib
   cd goptlib

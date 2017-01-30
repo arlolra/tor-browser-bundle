@@ -55,17 +55,10 @@ rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
 rm -f $GITIAN_DIR/inputs/TorBrowser.app.meek-http-helper.zip
 (cd PTConfigs/mac && $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/TorBrowser.app.meek-http-helper.zip TorBrowser.app.meek-http-helper)
-if [ "z$DATA_OUTSIDE_APP_DIR" = "z1" ]; then
-# FTE is temporarily disabled due to bug 18495 and snowflake is Linux-only for
+cp PTConfigs/mac/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
+# FTE is temporarily removed due to bug 18495 and snowflake is Linux-only for
 # now.
-  grep -v 'fteproxy' PTConfigs/mac/torrc-defaults-appendix > $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
   grep -Ev 'default_bridge\.fte|default_bridge\.snowflake' PTConfigs/bridge_prefs.js > $GITIAN_DIR/inputs/bridge_prefs.js
-else
-  cp PTConfigs/mac/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-mac
-  # We don't have snowflake available on macOS yet.
-  grep -v 'default_bridge\.snowflake' PTConfigs/bridge_prefs.js > $GITIAN_DIR/inputs/bridge_prefs.js
-
-fi
 cp PTConfigs/meek-http-helper-user.js $GITIAN_DIR/inputs/
 cp mac-tor.sh $GITIAN_DIR/inputs/
 
@@ -144,8 +137,7 @@ cd $GITIAN_DIR
 
 if [ ! -f inputs/clang-$CLANG_VER-linux64-wheezy-utils.zip -o \
      ! -f inputs/openssl-$OPENSSL_VER-mac64-utils.zip -o \
-     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip -o \
-     ! -f inputs/gmp-$GMP_VER-mac64-utils.zip ];
+     ! -f inputs/libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip ];
 then
   echo
   echo "****** Starting Utilities Component of Mac Bundle (1/5 for Mac) ******"
@@ -162,7 +154,6 @@ then
   ln -sf clang-$CLANG_VER-linux64-wheezy-utils.zip clang-linux64-wheezy-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
-  ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
   cd ..
   #cp -a result/utils-mac-res.yml inputs/
 else
@@ -176,7 +167,6 @@ else
   ln -sf clang-$CLANG_VER-linux64-wheezy-utils.zip clang-linux64-wheezy-utils.zip
   ln -sf openssl-$OPENSSL_VER-mac64-utils.zip openssl-mac64-utils.zip
   ln -sf libevent-${LIBEVENT_TAG_ORIG#release-}-mac64-utils.zip libevent-mac64-utils.zip
-  ln -sf gmp-$GMP_VER-mac64-utils.zip gmp-mac64-utils.zip
   cd ..
 fi
 
@@ -229,7 +219,7 @@ then
   echo "****** Starting Pluggable Transports Component of Mac Bundle (4/5 for Mac) ******"
   echo
 
-  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit pyptlib=$PYPTLIB_TAG,obfsproxy=$OBFSPROXY_TAG,libfte=$LIBFTE_TAG,fteproxy=$FTEPROXY_TAG,txsocksx=$TXSOCKSX_TAG,goptlib=$GOPTLIB_TAG,meek=$MEEK_TAG,ed25519=$GOED25519_TAG,siphash=$GOSIPHASH_TAG,goxcrypto=$GO_X_CRYPTO_TAG,goxnet=$GO_X_NET_TAG,obfs4=$OBFS4_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
+  ./bin/gbuild -j $NUM_PROCS -m $VM_MEMORY --commit goptlib=$GOPTLIB_TAG,meek=$MEEK_TAG,ed25519=$GOED25519_TAG,siphash=$GOSIPHASH_TAG,goxcrypto=$GO_X_CRYPTO_TAG,goxnet=$GO_X_NET_TAG,obfs4=$OBFS4_TAG $DESCRIPTOR_DIR/mac/gitian-pluggable-transports.yml
   if [ $? -ne 0 ];
   then
     #mv var/build.log ./firefox-fail-mac.log.`date +%Y%m%d%H%M%S`
