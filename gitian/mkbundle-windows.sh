@@ -55,7 +55,8 @@ cd $WRAPPER_DIR/../Bundle-Data/
 rm -f $GITIAN_DIR/inputs/tbb-docs.zip
 $WRAPPER_DIR/build-helpers/dzip.sh $GITIAN_DIR/inputs/tbb-docs.zip ./Docs/
 cp PTConfigs/windows/torrc-defaults-appendix $GITIAN_DIR/inputs/torrc-defaults-appendix-windows
-cp PTConfigs/bridge_prefs.js $GITIAN_DIR/inputs/
+# We don't have snowflake available on Windows yet.
+grep -v 'default_bridge\.snowflake' PTConfigs/bridge_prefs.js > $GITIAN_DIR/inputs/bridge_prefs.js
 cp PTConfigs/meek-http-helper-user.js $GITIAN_DIR/inputs/
 
 cd windows
