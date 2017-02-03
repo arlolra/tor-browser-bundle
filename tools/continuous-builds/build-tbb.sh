@@ -43,6 +43,7 @@ logfile=build-logs/$(date -u +%s).log
 
 cd $BUILDDIR || exit 1
 status=init
+[ -n "$BUILD_TBB_FAKE_STATUS" ] && status=$BUILD_TBB_FAKE_STATUS
 n=0
 MAKE_TARGET=$TARGET
 while [ $status != done ]; do
@@ -69,9 +70,9 @@ if [ $status = done ]; then
 else
   echo "$0: giving up after $n tries" | tee -a $logfile
   if [ -n "$LOGRECIPIENTS" ]; then
-      FILES="$logfile \
-             ../../gitian-builder/var/build.log \
-             ../../gitian-builder/var/target.log"
+      FILES="$logfile"
+      [ -r ../../gitian-builder/var/build.log ] && FILES="$FILES ../../gitian-builder/var/build.log"
+      [ -r ../../gitian-builder/var/target.log ] && FILES="$FILES ../../gitian-builder/var/target.log"
       tail -n 50 $FILES | $MAILX -E -s "Nightly build failure -- $(date -u +%F)" \
                                  $LOGSENDER -- $LOGRECIPIENTS
   fi
