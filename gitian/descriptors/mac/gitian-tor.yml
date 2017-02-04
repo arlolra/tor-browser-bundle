@@ -62,7 +62,6 @@ script: |
   CROSS_SYSROOT="/home/debian/build/usr/lib/apple/SDKs/MacOSX10.6.sdk"
   FLAGS="-target x86_64-apple-darwin10 -mlinker-version=136 -B $CROSS_CCTOOLS_PATH/bin -isysroot $CROSS_SYSROOT"
   export CC="/home/debian/build/clang/bin/clang $FLAGS"
-  export CXX="/home/debian/build/clang/bin/clang++ $FLAGS"
   export CPP="/home/debian/build/clang/bin/clang $FLAGS -E"
   export LLVMCONFIG="/home/debian/build/clang/bin/llvm-config"
   export LDFLAGS="-Wl,-syslibroot,$CROSS_SYSROOT -Wl,-dead_strip"
