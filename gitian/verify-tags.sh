@@ -104,6 +104,7 @@ meek                  meek.gpg                  $MEEK_TAG
 obfs4                 obfs4proxy.gpg            $OBFS4_TAG
 https-everywhere      https-everywhere.gpg      $HTTPSE_TAG
 cmake                 cmake.gpg                 $CMAKE_TAG
+sandbox               obfs4proxy.gpg            $SANDBOX_TAG
 EOF
 
 while read dir commit; do
