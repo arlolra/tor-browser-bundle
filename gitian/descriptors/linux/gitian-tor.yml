@@ -24,6 +24,8 @@ files:
 - "openssl-linux64-utils.zip"
 - "libevent-linux32-utils.zip"
 - "libevent-linux64-utils.zip"
+- "binutils-linux32-utils.zip"
+- "binutils-linux64-utils.zip"
 - "gcc-linux32-utils.zip"
 - "gcc-linux64-utils.zip"
 script: |
@@ -34,6 +36,10 @@ script: |
   export LC_ALL=C
   umask 0022
 
+  mkdir -p $INSTDIR/Data/Tor/
+  mkdir -p $INSTDIR/Tor/
+  mkdir -p $INSTDIR/Debug/Tor/
+
   # Config options for hardening-wrapper
   export DEB_BUILD_HARDENING=1
   export DEB_BUILD_HARDENING_STACKPROTECTOR=1
@@ -41,12 +47,37 @@ script: |
   export DEB_BUILD_HARDENING_FORMAT=1
   export DEB_BUILD_HARDENING_PIE=1
 
-  mkdir -p $INSTDIR/Data/Tor/
-  mkdir -p $INSTDIR/Tor/
-  mkdir -p $INSTDIR/Debug/Tor/
+  # Preparing Binutils and GCC for tor
+  unzip -d $INSTDIR binutils-linux$GBUILD_BITS-utils.zip
+  # Make sure gold is used with the hardening wrapper for full RELRO, see
+  # #13031.
+  cd $INSTDIR/binutils/bin
+  rm ld
+  cp /usr/bin/hardened-ld ./
+  mv ld.gold ld.gold.real
+  ln -sf hardened-ld ld.gold
+  ln -sf ld.gold ld
+  cd ~/build
+  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
+  # Make sure we use the hardening wrapper when compiling tor.
+  cd $INSTDIR/gcc/bin
+  cp /usr/bin/hardened-cc ./
+  mv gcc gcc.real
+  mv c++ c++.real
+  ln -sf hardened-cc gcc
+  ln -sf hardened-cc c++
+  cd ~/build
+  export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  ARCH=""
+  if [ $GBUILD_BITS == "64" ];
+  then
+    ARCH="64"
+  fi
+  # Make sure our GCC gets properly used.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib$ARCH
+
   unzip -d $INSTDIR openssl-linux$GBUILD_BITS-utils.zip
   unzip -d $INSTDIR libevent-linux$GBUILD_BITS-utils.zip
-  unzip -d $INSTDIR gcc-linux$GBUILD_BITS-utils.zip
   cp $INSTDIR/openssl/lib/libssl.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/openssl/lib/libcrypto.so.1.0.0 $INSTDIR/Tor/
   cp $INSTDIR/libevent/lib/libevent-2.0.so.5 $INSTDIR/Tor/
@@ -65,13 +96,11 @@ script: |
 
   chmod 700 $INSTDIR/Tor/*so*
   # This is needed to make RPATH unavailable. See bug 9150.
-  export LD_LIBRARY_PATH="$INSTDIR/Tor/"
+  export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$INSTDIR/Tor/"
 
   # Building tor
   cd tor
   git update-index --refresh -q
-  mkdir -p $OUTDIR/src
-  #git archive HEAD | tar -x -C $OUTDIR/src
   ./autogen.sh
   find -type f -print0 | xargs -0 touch --date="$REFERENCE_DATETIME"
   ./configure --disable-asciidoc --with-libevent-dir=$INSTDIR/libevent --with-openssl-dir=$INSTDIR/openssl --prefix=$INSTDIR
