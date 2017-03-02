@@ -20,7 +20,7 @@ remotes:
   "dir": "errors"
 - "url": "https://github.com/constabulary/gb"
   "dir": "gb"
-- "url": "https://git.schwanenlied.me/yawning/sandboxed-tor-browser"
+- "url": "https://git.torproject.org/tor-browser/sandboxed-tor-browser"
   "dir": "sandbox"
 files:
 - "versions"
