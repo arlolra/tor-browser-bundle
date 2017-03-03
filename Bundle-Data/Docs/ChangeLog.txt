@@ -1,3 +1,28 @@
+Tor Browser 7.0a2 -- March 7 2017
+ * All Platforms
+   * Update Firefox to 45.8.0esr
+   * Tor to 0.3.0.4-rc
+   * OpenSSL to 1.0.2k
+   * Update Torbutton to 1.9.7.1
+     * Bug 21396: Allow leaking of resource/chrome URIs (off by default)
+     * Bug 21574: Add link for zh manual and create manual links dynamically
+     * Bug 21330: Non-usable scrollbar appears in tor browser security settings
+     * Bug 21324: Don't update NoScript button with timer update
+     * Translation updates
+   * Update HTTPS-Everywhere to 5.2.11
+   * Bug 21514: Restore W^X JIT implementation removed from ESR45
+   * Bug 21536: Remove scramblesuit bridge
+   * Bug 21342: Move meek-azure to the meek.azureedge.net backend and cymrubridge02 bridge
+   * Bug 21348: Make snowflake only available on Linux for now
+ * Linux
+   * Bug 21326: Update the "Using a system-installed Tor" section in start script
+ * Build system
+   * OS X
+     * Bug 21343: Remove unused FTE related parts for macOS
+   * Linux
+     * Bug 17034: Use our built binutils and GCC for building tor
+     * Clean-up
+
 Tor Browser 7.0a1-hardened -- January 25 2017
  * All Platforms
    * Update Firefox to 45.7.0esr
