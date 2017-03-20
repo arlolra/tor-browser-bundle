@@ -314,10 +314,7 @@ cd ..
 # depot_tools must have been downloaded before running this code.
 dir=webrtc
 PATH="$PATH:$PWD/depot_tools"
-# GYP_CROSSCOMPILE=1 and GYP_DEFINES="use_x11=0" prevent probing for certain dependencies.
 # Use --no-history because the whole checkout with history is about 12 GB.
-export GYP_CROSSCOMPILE=1
-export GYP_DEFINES="use_x11=0"
 # JAVA_HOME is needed in a hook for libjingle. The readlink line tries to find the current JRE.
 # default-java comes from the package default-jdk-headless.
 export JAVA_HOME=/usr/lib/jvm/default-java

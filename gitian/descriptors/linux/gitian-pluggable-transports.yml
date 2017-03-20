@@ -113,6 +113,8 @@ script: |
   ln -sf hardened-cc c++
   cd ~/build
   export PATH=$INSTDIR/gcc/bin:$INSTDIR/binutils/bin:$PATH
+  # GN needs libatomic.so.1 here.
+  export LD_LIBRARY_PATH=$INSTDIR/gcc/lib
   ARCH=""
   if [ $GBUILD_BITS == "64" ];
   then
@@ -309,7 +311,8 @@ script: |
   # the prebuilt libwebrtc-magic.a libraries. Since we build our own
   # libwebrtc-magic.a with the C++11 ABI, we have to undo that setting here,
   # using CGO_CXXFLAGS.
-  CGO_CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=1 go install github.com/keroserene/go-webrtc
+  # __STDC_FORMAT_MACROS is needed for a definition of PRIxPTR from inttypes.h.
+  CGO_CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=1 -D__STDC_FORMAT_MACROS=1" CGO_LDFLAGS=-latomic go install github.com/keroserene/go-webrtc
   cd ..
 
   # Building snowflake
