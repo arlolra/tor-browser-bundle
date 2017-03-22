@@ -4,7 +4,6 @@ distro: "debian"
 suites:
 - "wheezy"
 architectures:
-- "i386"
 - "amd64"
 packages:
 - "unzip"

@@ -210,8 +210,7 @@ else
   echo
 fi
 
-if [ ! -f inputs/webrtc-linux32-gbuilt.zip -o \
-     ! -f inputs/webrtc-linux64-gbuilt.zip ];
+if [ ! -f inputs/webrtc-linux64-gbuilt.zip ];
 then
   echo
   echo "****** Starting WebRTC Component of Linux Bundle (4/7 for Linux) ******"
